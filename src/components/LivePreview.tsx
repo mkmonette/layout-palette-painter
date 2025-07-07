@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TemplateType, ColorPalette } from '@/types/template';
 import ModernHeroTemplate from '@/components/templates/ModernHeroTemplate';
@@ -9,6 +8,10 @@ import GradientHeroTemplate from '@/components/templates/GradientHeroTemplate';
 import SplitScreenTemplate from '@/components/templates/SplitScreenTemplate';
 import MagazineStyleTemplate from '@/components/templates/MagazineStyleTemplate';
 import StartupLandingTemplate from '@/components/templates/StartupLandingTemplate';
+import TechStartupTemplate from '@/components/templates/TechStartupTemplate';
+import CreativeAgencyTemplate from '@/components/templates/CreativeAgencyTemplate';
+import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
+import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
 
 interface LivePreviewProps {
   template: TemplateType;
@@ -34,6 +37,14 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette }) => 
         return <MagazineStyleTemplate colorPalette={colorPalette} />;
       case 'startup-landing':
         return <StartupLandingTemplate colorPalette={colorPalette} />;
+      case 'tech-startup':
+        return <TechStartupTemplate colorPalette={colorPalette} />;
+      case 'creative-agency':
+        return <CreativeAgencyTemplate colorPalette={colorPalette} />;
+      case 'saas-product':
+        return <SaasProductTemplate colorPalette={colorPalette} />;
+      case 'ecommerce-landing':
+        return <EcommerceLandingTemplate colorPalette={colorPalette} />;
       default:
         return <ModernHeroTemplate colorPalette={colorPalette} />;
     }

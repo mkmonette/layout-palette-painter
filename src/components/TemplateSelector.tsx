@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TemplateType } from '@/types/template';
 import { Button } from '@/components/ui/button';
@@ -56,6 +55,30 @@ const templates = [
     name: 'Startup Landing',
     description: 'Tech startup focused design',
     preview: 'bg-gradient-to-r from-emerald-400 to-blue-500'
+  },
+  {
+    id: 'tech-startup' as TemplateType,
+    name: 'Tech Startup',
+    description: 'Modern tech company with glassmorphism',
+    preview: 'bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600'
+  },
+  {
+    id: 'creative-agency' as TemplateType,
+    name: 'Creative Agency',
+    description: 'Bold creative studio design',
+    preview: 'bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500'
+  },
+  {
+    id: 'saas-product' as TemplateType,
+    name: 'SaaS Product',
+    description: 'Clean SaaS landing with features',
+    preview: 'bg-gradient-to-r from-violet-600 to-indigo-600'
+  },
+  {
+    id: 'ecommerce-landing' as TemplateType,
+    name: 'E-commerce Landing',
+    description: 'Product-focused e-commerce design',
+    preview: 'bg-gradient-to-r from-rose-400 to-pink-600'
   }
 ];
 

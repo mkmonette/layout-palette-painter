@@ -1,4 +1,3 @@
-
 export type TemplateType = 
   | 'modern-hero' 
   | 'minimal-header' 
@@ -7,7 +6,11 @@ export type TemplateType =
   | 'gradient-hero'
   | 'split-screen'
   | 'magazine-style'
-  | 'startup-landing';
+  | 'startup-landing'
+  | 'tech-startup'
+  | 'creative-agency'
+  | 'saas-product'
+  | 'ecommerce-landing';
 
 export interface ColorPalette {
   primary: string;
