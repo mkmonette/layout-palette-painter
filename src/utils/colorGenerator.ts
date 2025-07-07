@@ -1,4 +1,3 @@
-
 export interface ColorPalette {
   primary: string;
   secondary: string;
@@ -8,8 +7,8 @@ export interface ColorPalette {
   textLight: string;
 }
 
-// Predefined color palettes for different moods and styles
-const colorPalettes: ColorPalette[] = [
+// Light mode color palettes
+const lightColorPalettes: ColorPalette[] = [
   // Modern Blue
   {
     primary: '#3B82F6',
@@ -55,15 +54,6 @@ const colorPalettes: ColorPalette[] = [
     text: '#0C4A6E',
     textLight: '#0369A1'
   },
-  // Dark Mode
-  {
-    primary: '#60A5FA',
-    secondary: '#34D399',
-    accent: '#FBBF24',
-    background: '#111827',
-    text: '#F9FAFB',
-    textLight: '#D1D5DB'
-  },
   // Monochrome
   {
     primary: '#374151',
@@ -84,9 +74,77 @@ const colorPalettes: ColorPalette[] = [
   }
 ];
 
-export const generateColorPalette = (): ColorPalette => {
-  const randomIndex = Math.floor(Math.random() * colorPalettes.length);
-  return colorPalettes[randomIndex];
+// Dark mode color palettes
+const darkColorPalettes: ColorPalette[] = [
+  // Dark Blue
+  {
+    primary: '#60A5FA',
+    secondary: '#34D399',
+    accent: '#FBBF24',
+    background: '#111827',
+    text: '#F9FAFB',
+    textLight: '#D1D5DB'
+  },
+  // Dark Purple
+  {
+    primary: '#A78BFA',
+    secondary: '#F472B6',
+    accent: '#FB923C',
+    background: '#0F0F23',
+    text: '#F8FAFC',
+    textLight: '#CBD5E1'
+  },
+  // Dark Green
+  {
+    primary: '#6EE7B7',
+    secondary: '#5EEAD4',
+    accent: '#FCD34D',
+    background: '#064E3B',
+    text: '#ECFDF5',
+    textLight: '#A7F3D0'
+  },
+  // Dark Sunset
+  {
+    primary: '#FCA5A5',
+    secondary: '#FDBA74',
+    accent: '#FDE047',
+    background: '#451A03',
+    text: '#FEF3C7',
+    textLight: '#FED7AA'
+  },
+  // Dark Ocean
+  {
+    primary: '#7DD3FC',
+    secondary: '#67E8F9',
+    accent: '#6EE7B7',
+    background: '#0C4A6E',
+    text: '#F0F9FF',
+    textLight: '#BAE6FD'
+  },
+  // Dark Monochrome
+  {
+    primary: '#E5E7EB',
+    secondary: '#9CA3AF',
+    accent: '#FBBF24',
+    background: '#1F2937',
+    text: '#F9FAFB',
+    textLight: '#D1D5DB'
+  },
+  // Dark Pink
+  {
+    primary: '#F9A8D4',
+    secondary: '#C084FC',
+    accent: '#67E8F9',
+    background: '#701A75',
+    text: '#FAE8FF',
+    textLight: '#E879F9'
+  }
+];
+
+export const generateColorPalette = (isDarkMode: boolean = false): ColorPalette => {
+  const palettes = isDarkMode ? darkColorPalettes : lightColorPalettes;
+  const randomIndex = Math.floor(Math.random() * palettes.length);
+  return palettes[randomIndex];
 };
 
 // Helper functions for color manipulation

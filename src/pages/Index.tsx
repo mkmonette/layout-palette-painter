@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { Palette, RefreshCw, Settings, Eye } from 'lucide-react';
+import { Palette, RefreshCw, Settings, Eye, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
@@ -12,6 +14,7 @@ import { TemplateType } from '@/types/template';
 
 const Index = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [colorPalette, setColorPalette] = useState<ColorPalette>({
     primary: '#3B82F6',
     secondary: '#10B981',
@@ -26,7 +29,7 @@ const Index = () => {
     setIsGenerating(true);
     // Simulate generation delay for better UX
     setTimeout(() => {
-      const newPalette = generateColorPalette();
+      const newPalette = generateColorPalette(isDarkMode);
       setColorPalette(newPalette);
       setIsGenerating(false);
     }, 800);
@@ -37,6 +40,13 @@ const Index = () => {
       ...prev,
       [colorKey]: color
     }));
+  };
+
+  const handleModeToggle = (checked: boolean) => {
+    setIsDarkMode(checked);
+    // Automatically generate a new palette when switching modes
+    const newPalette = generateColorPalette(checked);
+    setColorPalette(newPalette);
   };
 
   return (
@@ -56,18 +66,32 @@ const Index = () => {
                 <p className="text-sm text-gray-600">Automatic Color Palette Generator</p>
               </div>
             </div>
-            <Button
-              onClick={handleGenerateColors}
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6"
-            >
-              {isGenerating ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Palette className="h-4 w-4 mr-2" />
-              )}
-              Generate Colors
-            </Button>
+            <div className="flex items-center space-x-4">
+              {/* Dark Mode Toggle */}
+              <div className="flex items-center space-x-2">
+                <Sun className="h-4 w-4 text-gray-600" />
+                <Switch
+                  checked={isDarkMode}
+                  onCheckedChange={handleModeToggle}
+                />
+                <Moon className="h-4 w-4 text-gray-600" />
+                <Label className="text-sm text-gray-600">
+                  {isDarkMode ? 'Dark' : 'Light'} Mode
+                </Label>
+              </div>
+              <Button
+                onClick={handleGenerateColors}
+                disabled={isGenerating}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6"
+              >
+                {isGenerating ? (
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Palette className="h-4 w-4 mr-2" />
+                )}
+                Generate Colors
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -76,6 +100,35 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Panel - Controls */}
           <div className="lg:col-span-1 space-y-6">
+            {/* Mode Selection */}
+            <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+              <div className="flex items-center space-x-2 mb-4">
+                {isDarkMode ? (
+                  <Moon className="h-5 w-5 text-blue-600" />
+                ) : (
+                  <Sun className="h-5 w-5 text-blue-600" />
+                )}
+                <h2 className="text-lg font-semibold">Color Mode</h2>
+              </div>
+              <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
+                <div className="flex items-center space-x-3">
+                  <Sun className="h-5 w-5 text-orange-500" />
+                  <span className="font-medium">Light</span>
+                </div>
+                <Switch
+                  checked={isDarkMode}
+                  onCheckedChange={handleModeToggle}
+                />
+                <div className="flex items-center space-x-3">
+                  <span className="font-medium">Dark</span>
+                  <Moon className="h-5 w-5 text-purple-600" />
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mt-3">
+                Generate palettes optimized for {isDarkMode ? 'dark' : 'light'} backgrounds
+              </p>
+            </Card>
+
             {/* Template Selection */}
             <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <div className="flex items-center space-x-2 mb-4">
@@ -104,6 +157,7 @@ const Index = () => {
             <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-0">
               <h3 className="font-medium text-gray-900 mb-2">How to use:</h3>
               <ul className="text-sm text-gray-600 space-y-1">
+                <li>• Choose between light or dark mode</li>
                 <li>• Select a layout template</li>
                 <li>• Click "Generate Colors" for automatic palettes</li>
                 <li>• Or manually adjust individual colors</li>
@@ -117,8 +171,13 @@ const Index = () => {
             <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold">Live Preview</h2>
-                <div className="text-sm text-gray-500 capitalize">
-                  Template: {selectedTemplate.replace('-', ' ')}
+                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                  <span className="capitalize">
+                    Template: {selectedTemplate.replace('-', ' ')}
+                  </span>
+                  <span className="px-2 py-1 rounded-full bg-gray-100 text-xs">
+                    {isDarkMode ? 'Dark' : 'Light'} Mode
+                  </span>
                 </div>
               </div>
               <div className="border rounded-lg overflow-hidden shadow-inner bg-white">
