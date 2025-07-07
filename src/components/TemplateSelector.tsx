@@ -32,6 +32,30 @@ const templates = [
     name: 'Creative Portfolio',
     description: 'Artistic portfolio layout',
     preview: 'bg-gradient-to-r from-green-500 to-teal-500'
+  },
+  {
+    id: 'gradient-hero' as TemplateType,
+    name: 'Gradient Hero',
+    description: 'Modern gradient background with floating elements',
+    preview: 'bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400'
+  },
+  {
+    id: 'split-screen' as TemplateType,
+    name: 'Split Screen',
+    description: 'Dynamic split layout with image showcase',
+    preview: 'bg-gradient-to-r from-indigo-600 to-cyan-500'
+  },
+  {
+    id: 'magazine-style' as TemplateType,
+    name: 'Magazine Style',
+    description: 'Editorial design with typography focus',
+    preview: 'bg-gradient-to-r from-slate-900 to-slate-700'
+  },
+  {
+    id: 'startup-landing' as TemplateType,
+    name: 'Startup Landing',
+    description: 'Tech startup focused design',
+    preview: 'bg-gradient-to-r from-emerald-400 to-blue-500'
   }
 ];
 
