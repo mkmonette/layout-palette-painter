@@ -138,6 +138,7 @@ const Index = () => {
               <TemplateSelector
                 selectedTemplate={selectedTemplate}
                 onTemplateChange={setSelectedTemplate}
+                colorPalette={colorPalette}
               />
             </Card>
 
