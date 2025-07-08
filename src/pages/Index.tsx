@@ -97,8 +97,8 @@ const Index = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Panel - Controls */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Left Panel - Mode Selection and Template Selection */}
           <div className="lg:col-span-1 space-y-6">
             {/* Mode Selection */}
             <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
@@ -142,18 +142,6 @@ const Index = () => {
               />
             </Card>
 
-            {/* Color Controls */}
-            <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-              <div className="flex items-center space-x-2 mb-4">
-                <Settings className="h-5 w-5 text-blue-600" />
-                <h2 className="text-lg font-semibold">Customize Colors</h2>
-              </div>
-              <ColorControls
-                colorPalette={colorPalette}
-                onColorChange={handleColorChange}
-              />
-            </Card>
-
             {/* Instructions */}
             <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-0">
               <h3 className="font-medium text-gray-900 mb-2">How to use:</h3>
@@ -167,7 +155,7 @@ const Index = () => {
             </Card>
           </div>
 
-          {/* Right Panel - Live Preview */}
+          {/* Center Panel - Live Preview */}
           <div className="lg:col-span-2">
             <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <div className="flex items-center justify-between mb-6">
@@ -187,6 +175,20 @@ const Index = () => {
                   colorPalette={colorPalette}
                 />
               </div>
+            </Card>
+          </div>
+
+          {/* Right Panel - Color Controls */}
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+              <div className="flex items-center space-x-2 mb-4">
+                <Settings className="h-5 w-5 text-blue-600" />
+                <h2 className="text-lg font-semibold">Customize Colors</h2>
+              </div>
+              <ColorControls
+                colorPalette={colorPalette}
+                onColorChange={handleColorChange}
+              />
             </Card>
           </div>
         </div>
