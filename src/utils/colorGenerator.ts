@@ -7,6 +7,14 @@ export interface ColorPalette {
   textLight: string;
 }
 
+export type ColorSchemeType = 
+  | 'monochromatic' 
+  | 'analogous' 
+  | 'complementary' 
+  | 'triadic' 
+  | 'tetradic'
+  | 'random';
+
 // Light mode color palettes
 const lightColorPalettes: ColorPalette[] = [
   // Modern Blue
@@ -141,14 +149,20 @@ const darkColorPalettes: ColorPalette[] = [
   }
 ];
 
-export const generateColorPalette = (isDarkMode: boolean = false): ColorPalette => {
-  const palettes = isDarkMode ? darkColorPalettes : lightColorPalettes;
-  const randomIndex = Math.floor(Math.random() * palettes.length);
-  return palettes[randomIndex];
+// Helper function to convert HSL to hex
+const hslToHex = (h: number, s: number, l: number): string => {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
 };
 
-// Helper functions for color manipulation
-export const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
+// Helper function to convert hex to HSL
+const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
   const r = parseInt(hex.slice(1, 3), 16) / 255;
   const g = parseInt(hex.slice(3, 5), 16) / 255;
   const b = parseInt(hex.slice(5, 7), 16) / 255;
@@ -160,7 +174,7 @@ export const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
   const l = (max + min) / 2;
 
   if (max === min) {
-    h = s = 0; // achromatic
+    h = s = 0;
   } else {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
@@ -175,13 +189,160 @@ export const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
   return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 };
 
-export const hslToHex = (h: number, s: number, l: number): string => {
-  l /= 100;
-  const a = s * Math.min(l, 1 - l) / 100;
-  const f = (n: number) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, '0');
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
+const generateMonochromaticScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+  const baseSaturation = 70 + Math.random() * 20; // 70-90%
+  
+  if (isDarkMode) {
+    return {
+      primary: hslToHex(baseHue, baseSaturation, 60),
+      secondary: hslToHex(baseHue, baseSaturation - 10, 50),
+      accent: hslToHex(baseHue, baseSaturation + 15, 70),
+      background: hslToHex(baseHue, 20, 8),
+      text: hslToHex(baseHue, 10, 95),
+      textLight: hslToHex(baseHue, 15, 75)
+    };
+  } else {
+    return {
+      primary: hslToHex(baseHue, baseSaturation, 50),
+      secondary: hslToHex(baseHue, baseSaturation - 15, 40),
+      accent: hslToHex(baseHue, baseSaturation + 10, 60),
+      background: hslToHex(baseHue, 15, 98),
+      text: hslToHex(baseHue, 30, 15),
+      textLight: hslToHex(baseHue, 20, 45)
+    };
+  }
 };
+
+const generateAnalogousScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+  const hue1 = baseHue;
+  const hue2 = (baseHue + 30) % 360;
+  const hue3 = (baseHue + 60) % 360;
+  
+  if (isDarkMode) {
+    return {
+      primary: hslToHex(hue1, 70, 60),
+      secondary: hslToHex(hue2, 65, 55),
+      accent: hslToHex(hue3, 80, 65),
+      background: hslToHex(hue1, 25, 8),
+      text: hslToHex(0, 0, 95),
+      textLight: hslToHex(hue1, 20, 75)
+    };
+  } else {
+    return {
+      primary: hslToHex(hue1, 75, 50),
+      secondary: hslToHex(hue2, 70, 45),
+      accent: hslToHex(hue3, 80, 55),
+      background: '#FFFFFF',
+      text: hslToHex(hue1, 40, 15),
+      textLight: hslToHex(hue1, 30, 45)
+    };
+  }
+};
+
+const generateComplementaryScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+  const complementaryHue = (baseHue + 180) % 360;
+  
+  if (isDarkMode) {
+    return {
+      primary: hslToHex(baseHue, 75, 60),
+      secondary: hslToHex(complementaryHue, 70, 55),
+      accent: hslToHex(complementaryHue, 85, 65),
+      background: hslToHex(baseHue, 30, 8),
+      text: '#F9FAFB',
+      textLight: hslToHex(baseHue, 25, 75)
+    };
+  } else {
+    return {
+      primary: hslToHex(baseHue, 80, 50),
+      secondary: hslToHex(complementaryHue, 75, 45),
+      accent: hslToHex(complementaryHue, 85, 55),
+      background: '#FFFFFF',
+      text: hslToHex(baseHue, 50, 15),
+      textLight: hslToHex(baseHue, 35, 45)
+    };
+  }
+};
+
+const generateTriadicScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+  const hue1 = baseHue;
+  const hue2 = (baseHue + 120) % 360;
+  const hue3 = (baseHue + 240) % 360;
+  
+  if (isDarkMode) {
+    return {
+      primary: hslToHex(hue1, 70, 60),
+      secondary: hslToHex(hue2, 65, 55),
+      accent: hslToHex(hue3, 75, 65),
+      background: hslToHex(hue1, 25, 8),
+      text: '#F9FAFB',
+      textLight: hslToHex(hue1, 20, 75)
+    };
+  } else {
+    return {
+      primary: hslToHex(hue1, 75, 50),
+      secondary: hslToHex(hue2, 70, 45),
+      accent: hslToHex(hue3, 80, 55),
+      background: '#FFFFFF',
+      text: hslToHex(hue1, 40, 15),
+      textLight: hslToHex(hue1, 30, 45)
+    };
+  }
+};
+
+const generateTetradicScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+  const hue1 = baseHue;
+  const hue2 = (baseHue + 90) % 360;
+  const hue3 = (baseHue + 180) % 360;
+  
+  if (isDarkMode) {
+    return {
+      primary: hslToHex(hue1, 70, 60),
+      secondary: hslToHex(hue2, 65, 55),
+      accent: hslToHex(hue3, 75, 65),
+      background: hslToHex(hue1, 25, 8),
+      text: '#F9FAFB',
+      textLight: hslToHex(hue1, 20, 75)
+    };
+  } else {
+    return {
+      primary: hslToHex(hue1, 75, 50),
+      secondary: hslToHex(hue2, 70, 45),
+      accent: hslToHex(hue3, 80, 55),
+      background: '#FFFFFF',
+      text: hslToHex(hue1, 40, 15),
+      textLight: hslToHex(hue1, 30, 45)
+    };
+  }
+};
+
+export const generateColorPalette = (isDarkMode: boolean = false): ColorPalette => {
+  const palettes = isDarkMode ? darkColorPalettes : lightColorPalettes;
+  const randomIndex = Math.floor(Math.random() * palettes.length);
+  return palettes[randomIndex];
+};
+
+export const generateColorScheme = (scheme: ColorSchemeType, isDarkMode: boolean = false): ColorPalette => {
+  if (scheme === 'random') {
+    return generateColorPalette(isDarkMode);
+  }
+
+  const baseHue = Math.floor(Math.random() * 360);
+  
+  switch (scheme) {
+    case 'monochromatic':
+      return generateMonochromaticScheme(baseHue, isDarkMode);
+    case 'analogous':
+      return generateAnalogousScheme(baseHue, isDarkMode);
+    case 'complementary':
+      return generateComplementaryScheme(baseHue, isDarkMode);
+    case 'triadic':
+      return generateTriadicScheme(baseHue, isDarkMode);
+    case 'tetradic':
+      return generateTetradicScheme(baseHue, isDarkMode);
+    default:
+      return generateColorPalette(isDarkMode);
+  }
+};
+
+// Export helper functions for backward compatibility
+export { hexToHsl, hslToHex };

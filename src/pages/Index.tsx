@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Palette, RefreshCw, Settings, Eye, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,13 +7,15 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
+import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import LivePreview from '@/components/LivePreview';
-import { generateColorPalette, ColorPalette } from '@/utils/colorGenerator';
+import { generateColorPalette, generateColorScheme, ColorPalette } from '@/utils/colorGenerator';
 import { TemplateType } from '@/types/template';
 
 const Index = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
   const [colorPalette, setColorPalette] = useState<ColorPalette>({
     primary: '#3B82F6',
     secondary: '#10B981',
@@ -27,9 +28,8 @@ const Index = () => {
 
   const handleGenerateColors = async () => {
     setIsGenerating(true);
-    // Simulate generation delay for better UX
     setTimeout(() => {
-      const newPalette = generateColorPalette(isDarkMode);
+      const newPalette = generateColorScheme(selectedScheme, isDarkMode);
       setColorPalette(newPalette);
       setIsGenerating(false);
     }, 800);
@@ -45,8 +45,12 @@ const Index = () => {
   const handleModeToggle = (checked: boolean) => {
     setIsDarkMode(checked);
     // Automatically generate a new palette when switching modes
-    const newPalette = generateColorPalette(checked);
+    const newPalette = generateColorScheme(selectedScheme, checked);
     setColorPalette(newPalette);
+  };
+
+  const handleSchemeChange = (scheme: ColorSchemeType) => {
+    setSelectedScheme(scheme);
   };
 
   return (
@@ -129,6 +133,14 @@ const Index = () => {
               </p>
             </Card>
 
+            {/* Color Scheme Selection */}
+            <ColorSchemeSelector
+              selectedScheme={selectedScheme}
+              onSchemeChange={handleSchemeChange}
+              onGenerateScheme={handleGenerateColors}
+              isGenerating={isGenerating}
+            />
+
             {/* Template Selection */}
             <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <div className="flex items-center space-x-2 mb-4">
@@ -147,8 +159,9 @@ const Index = () => {
               <h3 className="font-medium text-gray-900 mb-2">How to use:</h3>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>• Choose between light or dark mode</li>
-                <li>• Select a layout template</li>
-                <li>• Click "Generate Colors" for automatic palettes</li>
+                <li>• Select a color scheme type</li>
+                <li>• Pick a layout template</li>
+                <li>• Click "Generate" for automatic palettes</li>
                 <li>• Or manually adjust individual colors</li>
                 <li>• See changes instantly in the preview</li>
               </ul>
@@ -166,6 +179,9 @@ const Index = () => {
                   </span>
                   <span className="px-2 py-1 rounded-full bg-gray-100 text-xs">
                     {isDarkMode ? 'Dark' : 'Light'} Mode
+                  </span>
+                  <span className="px-2 py-1 rounded-full bg-purple-100 text-xs text-purple-700">
+                    {selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)} Scheme
                   </span>
                 </div>
               </div>
