@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, RefreshCw, Settings, Eye, Moon, Sun } from 'lucide-react';
+import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -9,6 +9,7 @@ import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import LivePreview from '@/components/LivePreview';
+import FullscreenPreview from '@/components/FullscreenPreview';
 import { generateColorPalette, generateColorScheme, ColorPalette } from '@/utils/colorGenerator';
 import { TemplateType } from '@/types/template';
 
@@ -25,6 +26,7 @@ const Index = () => {
     textLight: '#6B7280'
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const handleGenerateColors = async () => {
     setIsGenerating(true);
@@ -52,6 +54,38 @@ const Index = () => {
   const handleSchemeChange = (scheme: ColorSchemeType) => {
     setSelectedScheme(scheme);
   };
+
+  const handleFullscreenToggle = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  // Handle ESC key to exit fullscreen
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
+
+  // Render fullscreen mode
+  if (isFullscreen) {
+    return (
+      <FullscreenPreview
+        template={selectedTemplate}
+        colorPalette={colorPalette}
+        selectedScheme={selectedScheme}
+        isDarkMode={isDarkMode}
+        isGenerating={isGenerating}
+        onClose={() => setIsFullscreen(false)}
+        onGenerateColors={handleGenerateColors}
+        onSchemeChange={handleSchemeChange}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -173,16 +207,27 @@ const Index = () => {
             <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold">Live Preview</h2>
-                <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span className="capitalize">
-                    Template: {selectedTemplate.replace('-', ' ')}
-                  </span>
-                  <span className="px-2 py-1 rounded-full bg-gray-100 text-xs">
-                    {isDarkMode ? 'Dark' : 'Light'} Mode
-                  </span>
-                  <span className="px-2 py-1 rounded-full bg-purple-100 text-xs text-purple-700">
-                    {selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)} Scheme
-                  </span>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <span className="capitalize">
+                      Template: {selectedTemplate.replace('-', ' ')}
+                    </span>
+                    <span className="px-2 py-1 rounded-full bg-gray-100 text-xs">
+                      {isDarkMode ? 'Dark' : 'Light'} Mode
+                    </span>
+                    <span className="px-2 py-1 rounded-full bg-purple-100 text-xs text-purple-700">
+                      {selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)} Scheme
+                    </span>
+                  </div>
+                  <Button
+                    onClick={handleFullscreenToggle}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center space-x-2"
+                  >
+                    <Maximize className="h-4 w-4" />
+                    <span>Fullscreen</span>
+                  </Button>
                 </div>
               </div>
               <div className="border rounded-lg overflow-hidden shadow-inner bg-white">
