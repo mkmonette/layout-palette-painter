@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { TemplateType, ColorPalette, Template } from '@/types/template';
 import { Button } from '@/components/ui/button';
@@ -145,7 +144,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <div
-              className={`relative border rounded-lg overflow-hidden transition-all duration-200 cursor-pointer col-span-1 ${
+              className={`relative border rounded-lg overflow-hidden transition-all duration-200 cursor-pointer flex-1 min-w-0 ${
                 isSelected 
                   ? 'border-blue-500 ring-2 ring-blue-200 shadow-lg' 
                   : isLocked
@@ -220,6 +219,26 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
     );
   };
 
+  // Helper function to render template rows with exactly 3 columns
+  const renderTemplateRows = (templates: Template[]) => {
+    const rows = [];
+    for (let i = 0; i < templates.length; i += 3) {
+      const rowTemplates = templates.slice(i, i + 3);
+      rows.push(
+        <div key={i} className="flex gap-4 px-4">
+          {rowTemplates.map(renderTemplateCard)}
+          {/* Fill empty slots if less than 3 templates in the row */}
+          {rowTemplates.length < 3 && (
+            Array.from({ length: 3 - rowTemplates.length }).map((_, index) => (
+              <div key={`empty-${index}`} className="flex-1 min-w-0" />
+            ))
+          )}
+        </div>
+      );
+    }
+    return rows;
+  };
+
   return (
     <>
       {/* Filter Buttons */}
@@ -257,8 +276,8 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
               <h3 className="text-lg font-semibold text-gray-900">FREE Templates</h3>
               <Badge variant="outline">{filteredFree.length}</Badge>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
-              {filteredFree.map(renderTemplateCard)}
+            <div className="space-y-4">
+              {renderTemplateRows(filteredFree)}
             </div>
           </div>
         )}
@@ -273,8 +292,8 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                 {filteredPro.length}
               </Badge>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
-              {filteredPro.map(renderTemplateCard)}
+            <div className="space-y-4">
+              {renderTemplateRows(filteredPro)}
             </div>
           </div>
         )}
