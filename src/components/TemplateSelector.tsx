@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TemplateType, ColorPalette } from '@/types/template';
 import { Button } from '@/components/ui/button';
@@ -123,11 +122,11 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   colorPalette
 }) => {
   return (
-    <div className="space-y-4">
+    <>
       {templates.map((template) => (
         <div
           key={template.id}
-          className={`border rounded-lg overflow-hidden transition-all duration-200 cursor-pointer ${
+          className={`border rounded-lg overflow-hidden transition-all duration-200 cursor-pointer col-span-1 ${
             selectedTemplate === template.id 
               ? 'border-blue-500 ring-2 ring-blue-200 shadow-lg' 
               : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
@@ -136,25 +135,25 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         >
           {/* Template Preview */}
           <div className="h-32 overflow-hidden bg-white">
-            <div className="transform scale-[0.25] origin-top-left w-[400%] h-[400%] pointer-events-none">
+            <div className="transform scale-[0.2] origin-top-left w-[500%] h-[500%] pointer-events-none">
               {renderTemplatePreview(template.id, colorPalette)}
             </div>
           </div>
           
           {/* Template Info */}
-          <div className={`p-4 ${
+          <div className={`p-3 ${
             selectedTemplate === template.id 
               ? 'bg-blue-50 border-t border-blue-100' 
               : 'bg-gray-50 border-t border-gray-100'
           }`}>
             <div className="flex items-center justify-between">
               <div>
-                <h3 className={`font-medium ${
+                <h3 className={`font-medium text-sm ${
                   selectedTemplate === template.id ? 'text-blue-900' : 'text-gray-900'
                 }`}>
                   {template.name}
                 </h3>
-                <p className={`text-sm ${
+                <p className={`text-xs ${
                   selectedTemplate === template.id ? 'text-blue-600' : 'text-gray-500'
                 }`}>
                   {template.description}
@@ -170,7 +169,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 };
 

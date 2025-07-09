@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon } from 'lucide-react';
+import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -40,8 +39,21 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onModeToggle
 }) => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(100);
 
   const closeModal = () => setActiveModal(null);
+
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 25, 200));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 25, 50));
+  };
+
+  const handleZoomReset = () => {
+    setZoomLevel(100);
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-white flex flex-col">
@@ -59,7 +71,10 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
       {/* Live Preview - Full height with scroll */}
       <div className="flex-1 overflow-auto">
-        <div className="min-h-full">
+        <div 
+          className="min-h-full transition-transform duration-200 origin-top"
+          style={{ transform: `scale(${zoomLevel / 100})` }}
+        >
           <LivePreview
             template={template}
             colorPalette={colorPalette}
@@ -69,63 +84,96 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
       {/* Bottom Toolbar */}
       <div className="fixed bottom-0 left-0 right-0 z-10 bg-white/95 backdrop-blur-md border-t shadow-lg">
-        <div className="flex items-center justify-center gap-2 p-4 max-w-7xl mx-auto">
-          {/* Generate Colors Button */}
-          <Button
-            onClick={onGenerateColors}
-            disabled={isGenerating}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-          >
-            {isGenerating ? (
-              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Palette className="h-4 w-4 mr-2" />
-            )}
-            Generate
-          </Button>
+        <div className="flex items-center justify-between gap-2 p-4 max-w-7xl mx-auto">
+          <div className="flex items-center gap-2">
+            {/* Generate Colors Button */}
+            <Button
+              onClick={onGenerateColors}
+              disabled={isGenerating}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+            >
+              {isGenerating ? (
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Palette className="h-4 w-4 mr-2" />
+              )}
+              Generate
+            </Button>
 
-          {/* Template Selector */}
-          <Button
-            onClick={() => setActiveModal('template')}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Eye className="h-4 w-4" />
-            Template
-          </Button>
+            {/* Template Selector */}
+            <Button
+              onClick={() => setActiveModal('template')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Eye className="h-4 w-4" />
+              Template
+            </Button>
 
-          {/* Color Scheme */}
-          <Button
-            onClick={() => setActiveModal('scheme')}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Palette className="h-4 w-4" />
-            Scheme
-          </Button>
+            {/* Color Scheme */}
+            <Button
+              onClick={() => setActiveModal('scheme')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Palette className="h-4 w-4" />
+              Scheme
+            </Button>
 
-          {/* Light/Dark Mode Toggle */}
-          <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
-            <Sun className="h-4 w-4 text-gray-600" />
-            <Switch
-              checked={isDarkMode}
-              onCheckedChange={onModeToggle}
-            />
-            <Moon className="h-4 w-4 text-gray-600" />
+            {/* Light/Dark Mode Toggle */}
+            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
+              <Sun className="h-4 w-4 text-gray-600" />
+              <Switch
+                checked={isDarkMode}
+                onCheckedChange={onModeToggle}
+              />
+              <Moon className="h-4 w-4 text-gray-600" />
+            </div>
+
+            {/* Customize Colors */}
+            <Button
+              onClick={() => setActiveModal('colors')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Settings className="h-4 w-4" />
+              Colors
+            </Button>
           </div>
 
-          {/* Customize Colors */}
-          <Button
-            onClick={() => setActiveModal('colors')}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Settings className="h-4 w-4" />
-            Colors
-          </Button>
+          {/* Zoom Controls */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleZoomOut}
+              variant="outline"
+              size="icon"
+              disabled={zoomLevel <= 50}
+            >
+              <ZoomOut className="h-4 w-4" />
+            </Button>
+            <span className="text-sm font-medium text-gray-600 min-w-[3rem] text-center">
+              {zoomLevel}%
+            </span>
+            <Button
+              onClick={handleZoomIn}
+              variant="outline"
+              size="icon"
+              disabled={zoomLevel >= 200}
+            >
+              <ZoomIn className="h-4 w-4" />
+            </Button>
+            <Button
+              onClick={handleZoomReset}
+              variant="outline"
+              size="icon"
+              title="Reset Zoom"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          </div>
 
           {/* Template Info */}
-          <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600 ml-4">
+          <div className="hidden lg:flex items-center gap-2 text-sm text-gray-600">
             <span className="capitalize font-medium">
               {template.replace('-', ' ')}
             </span>
@@ -139,9 +187,9 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         </div>
       </div>
 
-      {/* Template Selector Modal */}
+      {/* Template Selector Modal - 3 Column Layout */}
       <Dialog open={activeModal === 'template'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh]">
+        <DialogContent className="max-w-6xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Eye className="h-5 w-5" />
@@ -149,21 +197,23 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <TemplateSelector
-              selectedTemplate={template}
-              onTemplateChange={(newTemplate) => {
-                onTemplateChange(newTemplate);
-                closeModal();
-              }}
-              colorPalette={colorPalette}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+              <TemplateSelector
+                selectedTemplate={template}
+                onTemplateChange={(newTemplate) => {
+                  onTemplateChange(newTemplate);
+                  closeModal();
+                }}
+                colorPalette={colorPalette}
+              />
+            </div>
           </ScrollArea>
         </DialogContent>
       </Dialog>
 
-      {/* Color Scheme Modal */}
+      {/* Color Scheme Modal - 2 Column Layout */}
       <Dialog open={activeModal === 'scheme'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-2xl max-h-[80vh]">
+        <DialogContent className="max-w-4xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Palette className="h-5 w-5" />
@@ -171,7 +221,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
               <ColorSchemeSelector
                 selectedScheme={selectedScheme}
                 onSchemeChange={onSchemeChange}
