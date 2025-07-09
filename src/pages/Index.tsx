@@ -83,6 +83,9 @@ const Index = () => {
         onClose={() => setIsFullscreen(false)}
         onGenerateColors={handleGenerateColors}
         onSchemeChange={handleSchemeChange}
+        onTemplateChange={setSelectedTemplate}
+        onColorChange={handleColorChange}
+        onModeToggle={handleModeToggle}
       />
     );
   }
@@ -135,7 +138,7 @@ const Index = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left Panel - Mode Selection and Template Selection */}
           <div className="lg:col-span-1 space-y-6">
             {/* Mode Selection */}
@@ -203,7 +206,7 @@ const Index = () => {
           </div>
 
           {/* Center Panel - Live Preview */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold">Live Preview</h2>
