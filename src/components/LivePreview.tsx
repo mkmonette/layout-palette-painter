@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { TemplateType, ColorPalette } from '@/types/template';
 import ModernHeroTemplate from '@/components/templates/ModernHeroTemplate';
@@ -12,6 +13,9 @@ import TechStartupTemplate from '@/components/templates/TechStartupTemplate';
 import CreativeAgencyTemplate from '@/components/templates/CreativeAgencyTemplate';
 import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
 import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
+import ProDashboardTemplate from '@/components/templates/ProDashboardTemplate';
+import ProAnalyticsTemplate from '@/components/templates/ProAnalyticsTemplate';
+import { Crown } from 'lucide-react';
 
 interface LivePreviewProps {
   template: TemplateType;
@@ -20,41 +24,57 @@ interface LivePreviewProps {
 
 const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette }) => {
   const renderTemplate = () => {
+    const templateProps = { colorPalette };
+
     switch (template) {
       case 'modern-hero':
-        return <ModernHeroTemplate colorPalette={colorPalette} />;
+        return <ModernHeroTemplate {...templateProps} />;
       case 'minimal-header':
-        return <MinimalHeaderTemplate colorPalette={colorPalette} />;
+        return <MinimalHeaderTemplate {...templateProps} />;
       case 'bold-landing':
-        return <BoldLandingTemplate colorPalette={colorPalette} />;
+        return <BoldLandingTemplate {...templateProps} />;
       case 'creative-portfolio':
-        return <CreativePortfolioTemplate colorPalette={colorPalette} />;
+        return <CreativePortfolioTemplate {...templateProps} />;
       case 'gradient-hero':
-        return <GradientHeroTemplate colorPalette={colorPalette} />;
+        return <GradientHeroTemplate {...templateProps} />;
       case 'split-screen':
-        return <SplitScreenTemplate colorPalette={colorPalette} />;
+        return <SplitScreenTemplate {...templateProps} />;
       case 'magazine-style':
-        return <MagazineStyleTemplate colorPalette={colorPalette} />;
+        return <MagazineStyleTemplate {...templateProps} />;
       case 'startup-landing':
-        return <StartupLandingTemplate colorPalette={colorPalette} />;
+        return <StartupLandingTemplate {...templateProps} />;
       case 'tech-startup':
-        return <TechStartupTemplate colorPalette={colorPalette} />;
+        return <TechStartupTemplate {...templateProps} />;
       case 'creative-agency':
-        return <CreativeAgencyTemplate colorPalette={colorPalette} />;
+        return <CreativeAgencyTemplate {...templateProps} />;
       case 'saas-product':
-        return <SaasProductTemplate colorPalette={colorPalette} />;
+        return <SaasProductTemplate {...templateProps} />;
       case 'ecommerce-landing':
-        return <EcommerceLandingTemplate colorPalette={colorPalette} />;
+        return <EcommerceLandingTemplate {...templateProps} />;
+      case 'pro-dashboard':
+        return <ProDashboardTemplate {...templateProps} />;
+      case 'pro-analytics':
+        return <ProAnalyticsTemplate {...templateProps} />;
+      // Placeholder for other PRO templates
+      case 'pro-multimedia':
+      case 'pro-interactive':
+      case 'pro-enterprise':
+      case 'pro-premium':
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
+            <div className="text-center">
+              <Crown className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-gray-800">PRO Template</h2>
+              <p className="text-gray-600">Advanced design coming soon</p>
+            </div>
+          </div>
+        );
       default:
-        return <ModernHeroTemplate colorPalette={colorPalette} />;
+        return <ModernHeroTemplate {...templateProps} />;
     }
   };
 
-  return (
-    <div className="w-full transition-all duration-300">
-      {renderTemplate()}
-    </div>
-  );
+  return <>{renderTemplate()}</>;
 };
 
 export default LivePreview;

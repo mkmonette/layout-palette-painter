@@ -1,3 +1,4 @@
+
 export type TemplateType = 
   | 'modern-hero' 
   | 'minimal-header' 
@@ -10,7 +11,13 @@ export type TemplateType =
   | 'tech-startup'
   | 'creative-agency'
   | 'saas-product'
-  | 'ecommerce-landing';
+  | 'ecommerce-landing'
+  | 'pro-dashboard'
+  | 'pro-analytics'
+  | 'pro-multimedia'
+  | 'pro-interactive'
+  | 'pro-enterprise'
+  | 'pro-premium';
 
 export interface ColorPalette {
   primary: string;
@@ -19,4 +26,11 @@ export interface ColorPalette {
   background: string;
   text: string;
   textLight: string;
+}
+
+export interface Template {
+  id: TemplateType;
+  name: string;
+  description: string;
+  isPro: boolean;
 }
