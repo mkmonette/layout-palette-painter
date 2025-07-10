@@ -246,7 +246,7 @@ const Dashboard = () => {
               </Button>
             </div>
           </div>
-          <div className="border rounded-lg overflow-auto shadow-inner bg-white max-h-[70vh]">
+          <div className="border rounded-lg overflow-auto shadow-inner bg-white h-[500px]">
             <div 
               className="min-h-full transition-transform duration-200 origin-top"
               style={{ transform: `scale(${zoomLevel / 100})` }}
