@@ -1,11 +1,12 @@
 
 import { useState, useEffect } from 'react';
-import { ColorPalette } from '@/types/template';
+import { ColorPalette, TemplateType } from '@/types/template';
 
 interface SavedPalette extends ColorPalette {
   id: string;
   name: string;
   savedAt: string;
+  template: TemplateType;
 }
 
 export const useSavedPalettes = () => {
@@ -31,11 +32,32 @@ export const useSavedPalettes = () => {
   const canSaveMore = () => savedPalettes.length < MAX_PALETTES;
   const getRemainingSlots = () => MAX_PALETTES - savedPalettes.length;
 
+  const savePalette = (palette: ColorPalette, template: TemplateType, name?: string) => {
+    if (!canSaveMore()) return false;
+
+    const paletteId = Date.now().toString();
+    const paletteName = name || `Palette ${getSavedCount() + 1}`;
+    
+    const newPalette: SavedPalette = {
+      ...palette,
+      id: paletteId,
+      name: paletteName,
+      template,
+      savedAt: new Date().toISOString()
+    };
+
+    const updatedPalettes = [...savedPalettes, newPalette];
+    setSavedPalettes(updatedPalettes);
+    localStorage.setItem('savedPalettes', JSON.stringify(updatedPalettes));
+    return true;
+  };
+
   return {
     savedPalettes,
     getSavedCount,
     canSaveMore,
     getRemainingSlots,
+    savePalette,
     MAX_PALETTES,
     loadSavedPalettes
   };

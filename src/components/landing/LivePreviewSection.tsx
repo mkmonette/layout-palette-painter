@@ -87,6 +87,7 @@ const LivePreviewSection = () => {
               <LivePreview
                 template={selectedTemplate}
                 colorPalette={colorPalette}
+                showSaveButton={true}
               />
             </div>
           </div>

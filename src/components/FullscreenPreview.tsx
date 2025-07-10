@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -13,6 +13,7 @@ import ColorMoodSelector from '@/components/ColorMoodSelector';
 import { TemplateType, ColorPalette } from '@/types/template';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
+import { useToast } from '@/hooks/use-toast';
 
 interface FullscreenPreviewProps {
   template: TemplateType;
@@ -41,7 +42,8 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onColorChange,
   onModeToggle
 }) => {
-  const { getSavedCount, loadSavedPalettes } = useSavedPalettes();
+  const { getSavedCount, loadSavedPalettes, canSaveMore, savePalette } = useSavedPalettes();
+  const { toast } = useToast();
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
@@ -58,6 +60,23 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
   const handleZoomReset = () => {
     setZoomLevel(100);
+  };
+
+  const handleSave = () => {
+    const success = savePalette(colorPalette, template);
+    if (success) {
+      setSavedPalettesCount(getSavedCount());
+      toast({
+        title: "Palette Saved",
+        description: "Your color palette has been saved successfully.",
+      });
+    } else {
+      toast({
+        title: "Save Limit Reached",
+        description: "You've reached the maximum number of saved palettes (10).",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleMoodSelect = (palette: ColorPalette) => {
@@ -175,6 +194,25 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             >
               🟡
               Saved ({savedPalettesCount}/10)
+            </Button>
+
+            {/* Save Button */}
+            <Button
+              onClick={handleSave}
+              disabled={!canSaveMore()}
+              className="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
+            >
+              {canSaveMore() ? (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save
+                </>
+              ) : (
+                <>
+                  <Check className="h-4 w-4 mr-2" />
+                  Limit Reached
+                </>
+              )}
             </Button>
 
             {/* Light/Dark Mode Toggle */}
@@ -321,7 +359,9 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         isOpen={activeModal === 'saved'}
         onClose={closeModal}
         currentPalette={colorPalette}
+        currentTemplate={template}
         onPaletteSelect={handleSavedPaletteSelect}
+        onTemplateChange={onTemplateChange}
       />
     </div>
   );

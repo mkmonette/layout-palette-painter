@@ -405,7 +405,9 @@ const Dashboard = () => {
         isOpen={activeModal === 'saved'}
         onClose={closeModal}
         currentPalette={colorPalette}
+        currentTemplate={selectedTemplate}
         onPaletteSelect={handleSavedPaletteSelect}
+        onTemplateChange={setSelectedTemplate}
       />
     </div>
   );

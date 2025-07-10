@@ -5,26 +5,32 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
-import { ColorPalette } from '@/types/template';
+import { ColorPalette, TemplateType } from '@/types/template';
+import LivePreview from '@/components/LivePreview';
 
 interface SavedPalette extends ColorPalette {
   id: string;
   name: string;
   savedAt: string;
+  template: TemplateType;
 }
 
 interface SavedPalettesModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentPalette: ColorPalette;
+  currentTemplate: TemplateType;
   onPaletteSelect: (palette: ColorPalette) => void;
+  onTemplateChange?: (template: TemplateType) => void;
 }
 
 const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
   isOpen,
   onClose,
   currentPalette,
-  onPaletteSelect
+  currentTemplate,
+  onPaletteSelect,
+  onTemplateChange
 }) => {
   const { toast } = useToast();
   const [savedPalettes, setSavedPalettes] = useState<SavedPalette[]>([]);
@@ -70,6 +76,7 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
       ...currentPalette,
       id: Date.now().toString(),
       name: paletteName.trim(),
+      template: currentTemplate,
       savedAt: new Date().toISOString()
     };
 
@@ -99,11 +106,14 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
 
   const applyPalette = (palette: SavedPalette) => {
     onPaletteSelect(palette);
+    if (onTemplateChange && palette.template) {
+      onTemplateChange(palette.template);
+    }
     onClose();
     
     toast({
       title: "Palette Applied",
-      description: `"${palette.name}" has been applied to your preview.`
+      description: `"${palette.name}" applied with ${palette.template?.replace('-', ' ')} template.`
     });
   };
 
@@ -196,47 +206,66 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
               <div className="space-y-3">
                 <h3 className="font-medium">Your Saved Palettes</h3>
                 {savedPalettes.map((palette) => (
-                  <div key={palette.id} className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-medium">{palette.name}</h4>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => applyPalette(palette)}
-                        >
-                          <Palette className="h-4 w-4 mr-1" />
-                          Apply
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => deletePalette(palette.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                  <div key={palette.id} className="border rounded-lg overflow-hidden">
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h4 className="font-medium">{palette.name}</h4>
+                          <p className="text-sm text-gray-500 capitalize">
+                            {palette.template?.replace('-', ' ') || 'Unknown Template'}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => applyPalette(palette)}
+                          >
+                            <Palette className="h-4 w-4 mr-1" />
+                            Apply
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => deletePalette(palette.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                    
-                    {/* Color Swatches */}
-                    <div className="flex items-center gap-2">
-                      {Object.entries(palette).map(([key, color]) => {
-                        if (key === 'id' || key === 'name' || key === 'savedAt') return null;
-                        return (
-                          <div key={key} className="flex items-center gap-1">
-                            <div 
-                              className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
-                              style={{ backgroundColor: color }}
+
+                      {/* Template Preview */}
+                      {palette.template && (
+                        <div className="mb-3 border rounded-lg overflow-hidden bg-gray-50">
+                          <div className="h-32 transform scale-50 origin-top-left w-[200%]">
+                            <LivePreview
+                              template={palette.template}
+                              colorPalette={palette}
                             />
-                            <span className="text-xs text-gray-500 capitalize">{key}</span>
                           </div>
-                        );
-                      })}
+                        </div>
+                      )}
+                      
+                      {/* Color Swatches */}
+                      <div className="flex items-center gap-2">
+                        {Object.entries(palette).map(([key, color]) => {
+                          if (key === 'id' || key === 'name' || key === 'savedAt' || key === 'template') return null;
+                          return (
+                            <div key={key} className="flex items-center gap-1">
+                              <div 
+                                className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
+                                style={{ backgroundColor: color }}
+                              />
+                              <span className="text-xs text-gray-500 capitalize">{key}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      
+                      <p className="text-xs text-gray-500 mt-2">
+                        Saved: {new Date(palette.savedAt).toLocaleDateString()}
+                      </p>
                     </div>
-                    
-                    <p className="text-xs text-gray-500 mt-2">
-                      Saved: {new Date(palette.savedAt).toLocaleDateString()}
-                    </p>
                   </div>
                 ))}
               </div>

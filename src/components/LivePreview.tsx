@@ -1,6 +1,10 @@
 
 import React from 'react';
 import { TemplateType, ColorPalette } from '@/types/template';
+import { Button } from '@/components/ui/button';
+import { Save, Check } from 'lucide-react';
+import { useSavedPalettes } from '@/hooks/useSavedPalettes';
+import { useToast } from '@/hooks/use-toast';
 import ModernHeroTemplate from '@/components/templates/ModernHeroTemplate';
 import MinimalHeaderTemplate from '@/components/templates/MinimalHeaderTemplate';
 import BoldLandingTemplate from '@/components/templates/BoldLandingTemplate';
@@ -20,9 +24,28 @@ import { Crown } from 'lucide-react';
 interface LivePreviewProps {
   template: TemplateType;
   colorPalette: ColorPalette;
+  showSaveButton?: boolean;
 }
 
-const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette }) => {
+const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showSaveButton = false }) => {
+  const { canSaveMore, savePalette } = useSavedPalettes();
+  const { toast } = useToast();
+  const handleSave = () => {
+    const success = savePalette(colorPalette, template);
+    if (success) {
+      toast({
+        title: "Palette Saved",
+        description: "Your color palette has been saved successfully.",
+      });
+    } else {
+      toast({
+        title: "Save Limit Reached",
+        description: "You've reached the maximum number of saved palettes (10).",
+        variant: "destructive"
+      });
+    }
+  };
+
   const renderTemplate = () => {
     const templateProps = { colorPalette };
 
@@ -74,7 +97,34 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette }) => 
     }
   };
 
-  return <>{renderTemplate()}</>;
+  return (
+    <div className="relative">
+      {renderTemplate()}
+      {showSaveButton && (
+        <div className="absolute top-4 right-4 z-10">
+          <Button
+            onClick={handleSave}
+            disabled={!canSaveMore()}
+            size="sm"
+            className="bg-white/90 text-gray-800 hover:bg-white border shadow-lg"
+            title={canSaveMore() ? "Save this palette" : "Save limit reached (10 max)"}
+          >
+            {canSaveMore() ? (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Save
+              </>
+            ) : (
+              <>
+                <Check className="h-4 w-4 mr-2" />
+                Limit Reached
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default LivePreview;
