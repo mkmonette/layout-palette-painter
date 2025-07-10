@@ -167,10 +167,31 @@ export const generateColorPalettePDF = async ({
     
     // Calculate image dimensions to fit on page
     const maxWidth = pageWidth - (margin * 2);
-    const maxHeight = pageHeight - yPosition - margin;
+    const maxHeight = pageHeight - yPosition - margin - 10; // Extra margin for text alignment
     
-    // Add screenshot to PDF
-    pdf.addImage(screenshotDataUrl, 'PNG', margin, yPosition, maxWidth, maxHeight);
+    // Create a temporary image to get actual dimensions
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = screenshotDataUrl;
+    });
+    
+    // Calculate aspect ratio and dimensions
+    const aspectRatio = img.width / img.height;
+    let imgWidth = maxWidth;
+    let imgHeight = maxWidth / aspectRatio;
+    
+    if (imgHeight > maxHeight) {
+      imgHeight = maxHeight;
+      imgWidth = maxHeight * aspectRatio;
+    }
+    
+    // Offset the image slightly upward to correct alignment issues
+    const verticalOffset = -5; // Adjust this value to fine-tune alignment
+    
+    // Add screenshot to PDF with corrected positioning
+    pdf.addImage(screenshotDataUrl, 'PNG', margin, yPosition + verticalOffset, imgWidth, imgHeight);
     
   } catch (error) {
     console.error('Failed to capture template screenshot:', error);
