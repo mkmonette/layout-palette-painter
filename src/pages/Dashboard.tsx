@@ -31,7 +31,7 @@ const Dashboard = () => {
   console.log('Dashboard: Current user:', currentUser);
 
   // Early return if no user (should be handled by ProtectedRoute but adding safety)
-  if (!currentUser) {
+  if (!currentUser?.isLoggedIn) {
     console.log('Dashboard: No current user found, redirecting to login');
     return null; // Don't navigate here as ProtectedRoute handles it
   }
