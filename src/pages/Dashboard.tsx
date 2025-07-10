@@ -67,10 +67,13 @@ const Dashboard = () => {
   };
 
   const handleGenerateColors = async () => {
+    console.log('Generate button clicked, accessibility mode:', accessibilityMode);
     setIsGenerating(true);
     setTimeout(() => {
       try {
+        console.log('Attempting to generate palette with accessibility mode:', accessibilityMode);
         const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, accessibilityMode);
+        console.log('Generated new palette:', newPalette);
         setColorPalette(newPalette);
         setIsGenerating(false);
         
@@ -79,6 +82,7 @@ const Dashboard = () => {
           setShowAccessibilityReport(true);
         }
       } catch (error) {
+        console.log('Error caught:', error);
         // If accessibility mode fails, fall back to regular generation
         if (error instanceof Error && error.message.includes('No accessible palette found')) {
           toast({
