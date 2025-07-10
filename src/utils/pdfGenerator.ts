@@ -62,7 +62,7 @@ const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> 
 
   try {
     const canvas = await html2canvas(element, {
-      scale: 1, // Fixed 1:1 resolution
+      scale: 2, // Higher resolution for better quality
       useCORS: true,
       allowTaint: false,
       backgroundColor: null,
@@ -91,10 +91,11 @@ export const generateColorPalettePDF = async ({
   previewElement,
   isDarkMode
 }: PDFGenerationOptions): Promise<void> => {
-  const pdf = new jsPDF('p', 'mm', 'a4');
-  const pageWidth = pdf.internal.pageSize.width;
-  const pageHeight = pdf.internal.pageSize.height;
-  const margin = 20;
+  // Fixed A4 dimensions in points (1 point = 1/72 inch)
+  const pdf = new jsPDF('p', 'pt', 'a4'); // 595×842 points
+  const pageWidth = 595;
+  const pageHeight = 842;
+  const margin = 40;
 
   // Title
   pdf.setFontSize(24);
@@ -165,10 +166,6 @@ export const generateColorPalettePDF = async ({
     // Capture screenshot
     const screenshotDataUrl = await captureTemplateScreenshot(previewElement);
     
-    // Calculate image dimensions to fit on page
-    const maxWidth = pageWidth - (margin * 2);
-    const maxHeight = pageHeight - yPosition - margin - 10; // Extra margin for text alignment
-    
     // Create a temporary image to get actual dimensions
     const img = new Image();
     await new Promise((resolve, reject) => {
@@ -177,21 +174,30 @@ export const generateColorPalettePDF = async ({
       img.src = screenshotDataUrl;
     });
     
-    // Calculate aspect ratio and dimensions
-    const aspectRatio = img.width / img.height;
-    let imgWidth = maxWidth;
-    let imgHeight = maxWidth / aspectRatio;
+    // Define available space for the image (with padding)
+    const availableWidth = pageWidth - (margin * 2);
+    const availableHeight = pageHeight - yPosition - margin - 20; // Extra padding
     
-    if (imgHeight > maxHeight) {
-      imgHeight = maxHeight;
-      imgWidth = maxHeight * aspectRatio;
+    // Calculate aspect ratio and scale image proportionally
+    const aspectRatio = img.width / img.height;
+    let scaledWidth = availableWidth;
+    let scaledHeight = availableWidth / aspectRatio;
+    
+    // If height exceeds available space, scale by height instead
+    if (scaledHeight > availableHeight) {
+      scaledHeight = availableHeight;
+      scaledWidth = availableHeight * aspectRatio;
     }
     
-    // Offset the image slightly upward to correct alignment issues
-    const verticalOffset = -5; // Adjust this value to fine-tune alignment
+    // Center the image horizontally and vertically within available space
+    const horizontalMargin = (availableWidth - scaledWidth) / 2;
+    const verticalMargin = (availableHeight - scaledHeight) / 2;
     
-    // Add screenshot to PDF with corrected positioning
-    pdf.addImage(screenshotDataUrl, 'PNG', margin, yPosition + verticalOffset, imgWidth, imgHeight);
+    const imageX = margin + horizontalMargin;
+    const imageY = yPosition + verticalMargin;
+    
+    // Add screenshot to PDF with proper centering and scaling
+    pdf.addImage(screenshotDataUrl, 'PNG', imageX, imageY, scaledWidth, scaledHeight);
     
   } catch (error) {
     console.error('Failed to capture template screenshot:', error);
