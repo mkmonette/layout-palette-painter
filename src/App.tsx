@@ -9,6 +9,7 @@ import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import History from "./pages/History";
+import AutoGenerate from "./pages/AutoGenerate";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
@@ -48,6 +49,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <History />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/autogenerate" 
+              element={
+                <ProtectedRoute>
+                  <AutoGenerate />
                 </ProtectedRoute>
               } 
             />

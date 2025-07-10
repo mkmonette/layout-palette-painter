@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logoutUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
-import AutoGenerator from '@/components/AutoGenerator';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 
 const Dashboard = () => {
@@ -315,12 +314,12 @@ const Dashboard = () => {
             </Button>
 
             <Button
-              onClick={() => setActiveModal('auto-generator')}
+              onClick={() => navigate('/autogenerate')}
               variant="outline"
               className="flex items-center gap-2"
             >
               🤖
-              AutoGen
+              Autogenerate Colors
             </Button>
 
             <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
@@ -428,21 +427,6 @@ const Dashboard = () => {
         onTemplateChange={setSelectedTemplate}
       />
 
-      {/* AutoGenerator Modal */}
-      <Dialog open={activeModal === 'auto-generator'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              🤖 AutoGenerator
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
-              <AutoGenerator />
-            </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
