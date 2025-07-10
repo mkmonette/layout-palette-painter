@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check } from 'lucide-react';
+import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import LivePreview from '@/components/LivePreview';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
+import AccessibilityIndicator from '@/components/AccessibilityIndicator';
 import { TemplateType, ColorPalette } from '@/types/template';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
@@ -21,12 +23,19 @@ interface FullscreenPreviewProps {
   selectedScheme: ColorSchemeType;
   isDarkMode: boolean;
   isGenerating: boolean;
+  accessibilityMode?: boolean;
+  showAccessibilityReport?: boolean;
+  autogenerateCount?: number;
   onClose: () => void;
   onGenerateColors: () => void;
   onSchemeChange: (scheme: ColorSchemeType) => void;
   onTemplateChange: (template: TemplateType) => void;
   onColorChange: (palette: ColorPalette) => void;
   onModeToggle: (checked: boolean) => void;
+  onAccessibilityModeToggle?: (checked: boolean) => void;
+  onShowAccessibilityReport?: (show: boolean) => void;
+  onDownloadPDF?: () => void;
+  onAutogenerateCountChange?: (count: number) => void;
 }
 
 const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
@@ -35,12 +44,19 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   selectedScheme,
   isDarkMode,
   isGenerating,
+  accessibilityMode = false,
+  showAccessibilityReport = false,
+  autogenerateCount = 10,
   onClose,
   onGenerateColors,
   onSchemeChange,
   onTemplateChange,
   onColorChange,
-  onModeToggle
+  onModeToggle,
+  onAccessibilityModeToggle,
+  onShowAccessibilityReport,
+  onDownloadPDF,
+  onAutogenerateCountChange
 }) => {
   const { getSavedCount, loadSavedPalettes, canSaveMore, savePalette } = useSavedPalettes();
   const { toast } = useToast();
@@ -231,6 +247,94 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               <Moon className="h-4 w-4 text-gray-600" />
             </div>
 
+            {/* Accessibility Mode Toggle */}
+            {onAccessibilityModeToggle && (
+              <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
+                <Shield className="h-4 w-4 text-gray-600" />
+                <Switch
+                  checked={accessibilityMode}
+                  onCheckedChange={onAccessibilityModeToggle}
+                />
+                <span className="text-xs text-gray-600">A11y</span>
+              </div>
+            )}
+
+            {/* Auto-generate Count */}
+            {onAutogenerateCountChange && (
+              <Dialog open={activeModal === 'autogenerate-count'} onOpenChange={() => setActiveModal(activeModal === 'autogenerate-count' ? null : 'autogenerate-count')}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 h-8 px-3"
+                  >
+                    <span className="text-xs font-medium">Sets</span>
+                    <span className="font-bold text-primary">{autogenerateCount}</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="w-80 p-6" style={{ 
+                  position: 'fixed',
+                  bottom: '120px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  margin: 0
+                }}>
+                  <DialogHeader>
+                    <DialogTitle className="text-center">Set Generation Count</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex items-center justify-center gap-4 py-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onAutogenerateCountChange(Math.max(1, autogenerateCount - 5))}
+                    >
+                      -5
+                    </Button>
+                    <Select value={autogenerateCount.toString()} onValueChange={(val) => onAutogenerateCountChange(parseInt(val))}>
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 5, 10, 15, 20, 25, 30, 40, 50].map(num => (
+                          <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onAutogenerateCountChange(Math.min(50, autogenerateCount + 5))}
+                    >
+                      +5
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
+
+            {/* Download PDF */}
+            {onDownloadPDF && (
+              <Button
+                onClick={onDownloadPDF}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                PDF
+              </Button>
+            )}
+
+            {/* Accessibility Report Toggle */}
+            {onShowAccessibilityReport && (
+              <Button
+                onClick={() => onShowAccessibilityReport(!showAccessibilityReport)}
+                variant={showAccessibilityReport ? "default" : "outline"}
+                className="flex items-center gap-2"
+              >
+                <Shield className="h-4 w-4" />
+                A11y Report
+              </Button>
+            )}
+
             {/* Customize Colors */}
             <Button
               onClick={() => setActiveModal('colors')}
@@ -374,6 +478,16 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         onPaletteSelect={handleSavedPaletteSelect}
         onTemplateChange={onTemplateChange}
       />
+
+      {/* Accessibility Report */}
+      {(showAccessibilityReport || accessibilityMode) && (
+        <div className="fixed bottom-20 left-4 right-4 z-10 bg-white/95 backdrop-blur-md border rounded-lg shadow-lg">
+          <AccessibilityIndicator
+            palette={colorPalette}
+            isVisible={showAccessibilityReport || accessibilityMode}
+          />
+        </div>
+      )}
     </div>
   );
 };

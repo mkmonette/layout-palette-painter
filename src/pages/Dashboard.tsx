@@ -253,12 +253,19 @@ const Dashboard = () => {
         selectedScheme={selectedScheme}
         isDarkMode={isDarkMode}
         isGenerating={isGenerating}
+        accessibilityMode={accessibilityMode}
+        showAccessibilityReport={showAccessibilityReport}
+        autogenerateCount={autogenerateCount}
         onClose={() => setIsFullscreen(false)}
         onGenerateColors={handleGenerateColors}
         onSchemeChange={handleSchemeChange}
         onTemplateChange={setSelectedTemplate}
         onColorChange={(palette) => setColorPalette(palette)}
         onModeToggle={handleModeToggle}
+        onAccessibilityModeToggle={setAccessibilityMode}
+        onShowAccessibilityReport={setShowAccessibilityReport}
+        onDownloadPDF={handleDownloadPDF}
+        onAutogenerateCountChange={setAutogenerateCount}
       />
     );
   }
