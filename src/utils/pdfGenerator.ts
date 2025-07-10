@@ -19,8 +19,8 @@ const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
 };
 
 const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> => {
-  // Wait for initial rendering
-  await new Promise(resolve => setTimeout(resolve, 500));
+  // Wait for fonts and images to load
+  await new Promise(resolve => setTimeout(resolve, 1000));
   
   // Ensure all images are loaded
   const images = element.querySelectorAll('img');
@@ -32,37 +32,20 @@ const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> 
     });
   }));
 
-  // Wait for fonts to load and settle
+  // Wait for fonts to load
   if (document.fonts) {
     await document.fonts.ready;
-    // Additional wait for font rendering to stabilize
-    await new Promise(resolve => setTimeout(resolve, 800));
   }
 
-  // Store original styles
+  // Remove any existing transform scaling
   const originalTransform = element.style.transform;
   const originalZoom = element.style.zoom;
-  const originalLineHeight = element.style.lineHeight;
-  
-  // Normalize styles for consistent rendering
   element.style.transform = 'none';
   element.style.zoom = '1';
-  element.style.lineHeight = 'normal';
-  
-  // Set font smoothing via setProperty for TypeScript compatibility
-  const elementStyle = element.style as any;
-  const originalWebkitFontSmoothing = elementStyle.webkitFontSmoothing;
-  elementStyle.webkitFontSmoothing = 'antialiased';
-
-  // Force a reflow to ensure styles are applied
-  element.offsetHeight;
-  
-  // Additional wait for style changes to take effect
-  await new Promise(resolve => setTimeout(resolve, 200));
 
   try {
     const canvas = await html2canvas(element, {
-      scale: 2, // Higher resolution for better quality
+      scale: 1, // Fixed 1:1 resolution
       useCORS: true,
       allowTaint: false,
       backgroundColor: null,
@@ -72,7 +55,6 @@ const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> 
       windowHeight: element.offsetHeight,
       scrollX: 0,
       scrollY: 0,
-      logging: false,
     });
 
     return canvas.toDataURL('image/png', 1.0);
@@ -80,8 +62,6 @@ const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> 
     // Restore original styles
     element.style.transform = originalTransform;
     element.style.zoom = originalZoom;
-    element.style.lineHeight = originalLineHeight;
-    elementStyle.webkitFontSmoothing = originalWebkitFontSmoothing;
   }
 };
 
@@ -91,11 +71,10 @@ export const generateColorPalettePDF = async ({
   previewElement,
   isDarkMode
 }: PDFGenerationOptions): Promise<void> => {
-  // Fixed A4 dimensions in points (1 point = 1/72 inch)
-  const pdf = new jsPDF('p', 'pt', 'a4'); // 595×842 points
-  const pageWidth = 595;
-  const pageHeight = 842;
-  const margin = 40;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.width;
+  const pageHeight = pdf.internal.pageSize.height;
+  const margin = 20;
 
   // Title
   pdf.setFontSize(24);
@@ -166,38 +145,12 @@ export const generateColorPalettePDF = async ({
     // Capture screenshot
     const screenshotDataUrl = await captureTemplateScreenshot(previewElement);
     
-    // Create a temporary image to get actual dimensions
-    const img = new Image();
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
-      img.src = screenshotDataUrl;
-    });
+    // Calculate image dimensions to fit on page
+    const maxWidth = pageWidth - (margin * 2);
+    const maxHeight = pageHeight - yPosition - margin;
     
-    // Define available space for the image (with padding)
-    const availableWidth = pageWidth - (margin * 2);
-    const availableHeight = pageHeight - yPosition - margin - 20; // Extra padding
-    
-    // Calculate aspect ratio and scale image proportionally
-    const aspectRatio = img.width / img.height;
-    let scaledWidth = availableWidth;
-    let scaledHeight = availableWidth / aspectRatio;
-    
-    // If height exceeds available space, scale by height instead
-    if (scaledHeight > availableHeight) {
-      scaledHeight = availableHeight;
-      scaledWidth = availableHeight * aspectRatio;
-    }
-    
-    // Center the image horizontally and vertically within available space
-    const horizontalMargin = (availableWidth - scaledWidth) / 2;
-    const verticalMargin = (availableHeight - scaledHeight) / 2;
-    
-    const imageX = margin + horizontalMargin;
-    const imageY = yPosition + verticalMargin;
-    
-    // Add screenshot to PDF with proper centering and scaling
-    pdf.addImage(screenshotDataUrl, 'PNG', imageX, imageY, scaledWidth, scaledHeight);
+    // Add screenshot to PDF
+    pdf.addImage(screenshotDataUrl, 'PNG', margin, yPosition, maxWidth, maxHeight);
     
   } catch (error) {
     console.error('Failed to capture template screenshot:', error);
