@@ -360,7 +360,7 @@ const Dashboard = () => {
                     </Button>
                   </div>
                   <div className="text-center text-sm text-muted-foreground">
-                    Range: 1-50 generations
+                    Range: 1-50 sets
                   </div>
                 </DialogContent>
               </Dialog>

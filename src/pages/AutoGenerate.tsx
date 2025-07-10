@@ -394,7 +394,7 @@ const AutoGenerate = () => {
 
             <div className="flex items-center gap-2">
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-600 font-medium"># of Autogenerations</label>
+                <label className="text-xs text-gray-600 font-medium">Sets</label>
                 <Select value={autogenerateCount.toString()} onValueChange={(value) => setAutogenerateCount(parseInt(value))}>
                   <SelectTrigger className="w-20 h-8">
                     <SelectValue />
