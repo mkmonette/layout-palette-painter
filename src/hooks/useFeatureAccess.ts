@@ -1,12 +1,15 @@
 import { useEnhancedSubscription } from '@/contexts/EnhancedSubscriptionContext';
 
 export const useFeatureAccess = () => {
+  console.log('useFeatureAccess: Starting hook');
+  const enhancedSubscription = useEnhancedSubscription();
+  console.log('useFeatureAccess: enhancedSubscription', enhancedSubscription);
   const { 
     currentPlan, 
     hasFeatureAccess, 
     getFeatureLimit, 
     getUsageRemaining 
-  } = useEnhancedSubscription();
+  } = enhancedSubscription;
 
   return {
     // Pro Templates

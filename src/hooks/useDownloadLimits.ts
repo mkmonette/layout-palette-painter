@@ -7,7 +7,10 @@ interface DownloadData {
 }
 
 export const useDownloadLimits = () => {
-  const { isPro } = useFeatureAccess();
+  console.log('useDownloadLimits: Starting hook');
+  const featureAccess = useFeatureAccess();
+  console.log('useDownloadLimits: featureAccess', featureAccess);
+  const { isPro } = featureAccess;
   const [downloadCount, setDownloadCount] = useState(0);
   const MAX_DOWNLOADS = isPro ? Infinity : 3; // Pro: unlimited, Free: 3 per day
 
