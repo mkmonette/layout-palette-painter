@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Crown, Lock } from 'lucide-react';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import ModernHeroTemplate from '@/components/templates/ModernHeroTemplate';
 import MinimalHeaderTemplate from '@/components/templates/MinimalHeaderTemplate';
@@ -107,7 +107,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   onTemplateChange,
   colorPalette
 }) => {
-  const { isPro } = useSubscription();
+  const { isPro } = useFeatureAccess();
   const [filter, setFilter] = useState<'all' | 'free' | 'pro'>('all');
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; templateName: string }>({
     isOpen: false,

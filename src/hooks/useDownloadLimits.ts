@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 
 interface DownloadData {
   count: number;
@@ -7,7 +7,7 @@ interface DownloadData {
 }
 
 export const useDownloadLimits = () => {
-  const { isPro } = useSubscription();
+  const { isPro } = useFeatureAccess();
   const [downloadCount, setDownloadCount] = useState(0);
   const MAX_DOWNLOADS = isPro ? Infinity : 3; // Pro: unlimited, Free: 3 per day
 

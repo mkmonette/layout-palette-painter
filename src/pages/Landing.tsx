@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Palette, Zap, Eye, Settings, Crown, Star, ArrowRight, Check } from 'lucide-react';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
+import { useEnhancedSubscription } from '@/contexts/EnhancedSubscriptionContext';
 import PlanSelector from '@/components/PlanSelector';
 import LivePreviewSection from '@/components/landing/LivePreviewSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
@@ -15,7 +16,8 @@ import Footer from '@/components/landing/Footer';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const { isPro, setIsPro } = useSubscription();
+  const { isPro } = useFeatureAccess();
+  const { setCurrentPlan, plans } = useEnhancedSubscription();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -36,7 +38,11 @@ const Landing = () => {
             <div className="flex items-center space-x-4">
               <Button 
                 variant={isPro ? "default" : "outline"}
-                onClick={() => setIsPro(!isPro)}
+                onClick={() => {
+                  const freePlan = plans.find(p => p.id === 'free');
+                  const proPlan = plans.find(p => p.id === 'pro');
+                  setCurrentPlan(isPro ? freePlan : proPlan);
+                }}
                 className={isPro ? "bg-gradient-to-r from-blue-600 to-purple-600" : ""}
               >
                 {isPro ? (
@@ -118,7 +124,7 @@ const Landing = () => {
         {/* Plan Selector for Testing */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            
+            <PlanSelector />
           </div>
         </section>
 
