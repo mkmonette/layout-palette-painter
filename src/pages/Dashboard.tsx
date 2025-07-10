@@ -33,8 +33,7 @@ const Dashboard = () => {
   // Early return if no user (should be handled by ProtectedRoute but adding safety)
   if (!currentUser) {
     console.log('Dashboard: No current user found, redirecting to login');
-    navigate('/login');
-    return null;
+    return null; // Don't navigate here as ProtectedRoute handles it
   }
 
   console.log('Dashboard: User authenticated, continuing with component setup');
@@ -164,18 +163,21 @@ const Dashboard = () => {
       
       updateCount();
       
-      // Listen for storage changes
       const handleStorageChange = () => {
-        loadSavedPalettes();
         updateCount();
       };
       
       window.addEventListener('storage', handleStorageChange);
-      return () => window.removeEventListener('storage', handleStorageChange);
+      window.addEventListener('savedPalettesUpdate', handleStorageChange);
+      
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('savedPalettesUpdate', handleStorageChange);
+      };
     } catch (error) {
       console.error('Error setting up saved palettes:', error);
     }
-  }, [getSavedCount, loadSavedPalettes]);
+  }, []); // Remove dependencies that cause re-renders
 
   console.log('Dashboard: About to render, isFullscreen:', isFullscreen);
 
