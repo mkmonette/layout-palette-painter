@@ -23,6 +23,7 @@ import ProMultimediaTemplate from '@/components/templates/ProMultimediaTemplate'
 import ProInteractiveTemplate from '@/components/templates/ProInteractiveTemplate';
 import ProEnterpriseTemplate from '@/components/templates/ProEnterpriseTemplate';
 import ProPremiumTemplate from '@/components/templates/ProPremiumTemplate';
+import ProOrganicFoodTemplate from '@/components/templates/ProOrganicFoodTemplate';
 import { Crown } from 'lucide-react';
 
 interface LivePreviewProps {
@@ -90,6 +91,8 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
         return <ProEnterpriseTemplate {...templateProps} />;
       case 'pro-premium':
         return <ProPremiumTemplate {...templateProps} />;
+      case 'pro-organic-food':
+        return <ProOrganicFoodTemplate {...templateProps} />;
       default:
         return <ModernHeroTemplate {...templateProps} />;
     }

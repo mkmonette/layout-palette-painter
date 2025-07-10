@@ -17,7 +17,8 @@ export type TemplateType =
   | 'pro-multimedia'
   | 'pro-interactive'
   | 'pro-enterprise'
-  | 'pro-premium';
+  | 'pro-premium'
+  | 'pro-organic-food';
 
 export interface ColorPalette {
   primary: string;
