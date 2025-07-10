@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
+import ColorMoodSelector from '@/components/ColorMoodSelector';
 import LivePreview from '@/components/LivePreview';
 import FullscreenPreview from '@/components/FullscreenPreview';
 import { generateColorPalette, generateColorScheme, ColorPalette } from '@/utils/colorGenerator';
@@ -75,6 +75,10 @@ const Index = () => {
 
   const handleZoomReset = () => {
     setZoomLevel(100);
+  };
+
+  const handleMoodSelect = (palette: ColorPalette) => {
+    setColorPalette(palette);
   };
 
   // Handle ESC key to exit fullscreen
@@ -238,6 +242,16 @@ const Index = () => {
               Scheme
             </Button>
 
+            {/* Color Mood */}
+            <Button
+              onClick={() => setActiveModal('mood')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              🎨
+              Color Mood
+            </Button>
+
             {/* Light/Dark Mode Toggle */}
             <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
               <Sun className="h-4 w-4 text-gray-600" />
@@ -306,6 +320,14 @@ const Index = () => {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Color Mood Modal */}
+      <ColorMoodSelector
+        isOpen={activeModal === 'mood'}
+        onClose={closeModal}
+        onMoodSelect={handleMoodSelect}
+        currentPalette={colorPalette}
+      />
 
       {/* Customize Colors Modal */}
       <Dialog open={activeModal === 'colors'} onOpenChange={closeModal}>

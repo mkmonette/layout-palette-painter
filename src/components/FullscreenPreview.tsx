@@ -9,6 +9,7 @@ import LivePreview from '@/components/LivePreview';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
+import ColorMoodSelector from '@/components/ColorMoodSelector';
 import { TemplateType, ColorPalette } from '@/types/template';
 
 interface FullscreenPreviewProps {
@@ -53,6 +54,13 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
   const handleZoomReset = () => {
     setZoomLevel(100);
+  };
+
+  const handleMoodSelect = (palette: ColorPalette) => {
+    // Apply the mood palette to all color properties
+    Object.keys(palette).forEach(key => {
+      onColorChange(key as keyof ColorPalette, palette[key as keyof ColorPalette]);
+    });
   };
 
   return (
@@ -118,6 +126,16 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             >
               <Palette className="h-4 w-4" />
               Scheme
+            </Button>
+
+            {/* Color Mood */}
+            <Button
+              onClick={() => setActiveModal('mood')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              🎨
+              Color Mood
             </Button>
 
             {/* Light/Dark Mode Toggle */}
@@ -232,6 +250,14 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Color Mood Modal */}
+      <ColorMoodSelector
+        isOpen={activeModal === 'mood'}
+        onClose={closeModal}
+        onMoodSelect={handleMoodSelect}
+        currentPalette={colorPalette}
+      />
 
       {/* Customize Colors Modal */}
       <Dialog open={activeModal === 'colors'} onOpenChange={closeModal}>
