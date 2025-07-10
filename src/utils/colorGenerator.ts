@@ -348,8 +348,13 @@ export const generateColorSchemeWithLocks = (
   scheme: ColorSchemeType, 
   isDarkMode: boolean = false, 
   currentPalette: ColorPalette,
-  lockedColors: Set<keyof ColorPalette>
+  lockedColors: Set<keyof ColorPalette>,
+  accessibilityMode: boolean = false
 ): ColorPalette => {
+  if (accessibilityMode) {
+    return generateAccessibleColorScheme(scheme, isDarkMode, currentPalette, lockedColors);
+  }
+  
   const newPalette = generateColorScheme(scheme, isDarkMode);
   
   // Preserve locked colors
@@ -359,6 +364,88 @@ export const generateColorSchemeWithLocks = (
   }
   
   return result;
+};
+
+/**
+ * Generate accessibility-compliant color schemes
+ */
+export const generateAccessibleColorScheme = (
+  scheme: ColorSchemeType,
+  isDarkMode: boolean = false,
+  currentPalette: ColorPalette,
+  lockedColors: Set<keyof ColorPalette>
+): ColorPalette => {
+  const maxAttempts = 50;
+  let attempts = 0;
+  
+  while (attempts < maxAttempts) {
+    const newPalette = generateColorScheme(scheme, isDarkMode);
+    
+    // Preserve locked colors
+    const result = { ...newPalette };
+    for (const colorKey of lockedColors) {
+      result[colorKey] = currentPalette[colorKey];
+    }
+    
+    // Check accessibility using inline contrast checking
+    if (checkPaletteAccessibility(result)) {
+      return result;
+    }
+    
+    attempts++;
+  }
+  
+  // If no accessible palette found, return current palette
+  throw new Error('No accessible palette found with current settings');
+};
+
+/**
+ * Inline accessibility checker to avoid circular imports
+ */
+const checkPaletteAccessibility = (palette: ColorPalette): boolean => {
+  const getLuminance = (hex: string): number => {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return 0;
+    
+    const { r, g, b } = rgb;
+    
+    const rsRGB = r / 255;
+    const gsRGB = g / 255;
+    const bsRGB = b / 255;
+    
+    const rLin = rsRGB <= 0.03928 ? rsRGB / 12.92 : Math.pow((rsRGB + 0.055) / 1.055, 2.4);
+    const gLin = gsRGB <= 0.03928 ? gsRGB / 12.92 : Math.pow((gsRGB + 0.055) / 1.055, 2.4);
+    const bLin = bsRGB <= 0.03928 ? bsRGB / 12.92 : Math.pow((bsRGB + 0.055) / 1.055, 2.4);
+    
+    return 0.2126 * rLin + 0.7152 * gLin + 0.0722 * bLin;
+  };
+
+  const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  };
+
+  const getContrastRatio = (color1: string, color2: string): number => {
+    const lum1 = getLuminance(color1);
+    const lum2 = getLuminance(color2);
+    
+    const brightest = Math.max(lum1, lum2);
+    const darkest = Math.min(lum1, lum2);
+    
+    return (brightest + 0.05) / (darkest + 0.05);
+  };
+
+  // Check key contrast ratios
+  const textOnBackground = getContrastRatio(palette.text, palette.background);
+  const textLightOnBackground = getContrastRatio(palette.textLight, palette.background);
+  const textOnPrimary = getContrastRatio(palette.text, palette.primary);
+
+  // WCAG AA compliance: 4.5:1 minimum ratio
+  return textOnBackground >= 4.5 && textLightOnBackground >= 4.5 && textOnPrimary >= 4.5;
 };
 
 // Export helper functions for backward compatibility

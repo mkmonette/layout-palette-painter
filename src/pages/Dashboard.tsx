@@ -24,6 +24,7 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import PlanSelector from '@/components/PlanSelector';
+import AccessibilityIndicator from '@/components/AccessibilityIndicator';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -53,6 +54,8 @@ const Dashboard = () => {
   const [autogenerateCount, setAutogenerateCount] = useState(10);
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; feature: string }>({ isOpen: false, feature: '' });
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
+  const [accessibilityMode, setAccessibilityMode] = useState(false);
+  const [showAccessibilityReport, setShowAccessibilityReport] = useState(false);
 
   const handleLogout = () => {
     logoutUser();
@@ -66,9 +69,25 @@ const Dashboard = () => {
   const handleGenerateColors = async () => {
     setIsGenerating(true);
     setTimeout(() => {
-      const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors);
-      setColorPalette(newPalette);
-      setIsGenerating(false);
+      try {
+        const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, accessibilityMode);
+        setColorPalette(newPalette);
+        setIsGenerating(false);
+        
+        // Auto-show accessibility report if accessibility mode is on
+        if (accessibilityMode) {
+          setShowAccessibilityReport(true);
+        }
+      } catch (error) {
+        setIsGenerating(false);
+        if (error instanceof Error && error.message.includes('No accessible palette found')) {
+          toast({
+            title: "⚠️ No Contrast-Safe Palettes Found",
+            description: "No contrast-safe palettes found for current settings. Try adjusting mood or scheme.",
+            variant: "destructive",
+          });
+        }
+      }
     }, 800);
   };
 
@@ -81,8 +100,18 @@ const Dashboard = () => {
 
   const handleModeToggle = (checked: boolean) => {
     setIsDarkMode(checked);
-    const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors);
-    setColorPalette(newPalette);
+    try {
+      const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, accessibilityMode);
+      setColorPalette(newPalette);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('No accessible palette found')) {
+        toast({
+          title: "⚠️ No Contrast-Safe Palettes Found",
+          description: "No contrast-safe palettes found for current settings. Try adjusting mood or scheme.",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   const handleSchemeChange = (scheme: ColorSchemeType) => {
@@ -345,6 +374,12 @@ const Dashboard = () => {
               />
             </div>
           </div>
+          
+          {/* Accessibility Report */}
+          <AccessibilityIndicator
+            palette={colorPalette}
+            isVisible={showAccessibilityReport || accessibilityMode}
+          />
         </Card>
       </div>
 
@@ -503,6 +538,29 @@ const Dashboard = () => {
               <Moon className="h-4 w-4 text-gray-600" />
               {!canAccessDarkMode && <span className="text-xs text-gray-500">🔒</span>}
             </div>
+
+            {/* Accessibility Mode Toggle */}
+            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
+              <span className="text-xs">🎯</span>
+              <Switch
+                checked={accessibilityMode}
+                onCheckedChange={setAccessibilityMode}
+              />
+              <span className="text-xs text-gray-600 whitespace-nowrap">A11y Mode</span>
+            </div>
+
+            {/* Accessibility Report Toggle */}
+            {!accessibilityMode && (
+              <Button
+                onClick={() => setShowAccessibilityReport(!showAccessibilityReport)}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 text-xs"
+              >
+                {showAccessibilityReport ? '👁️' : '👁️‍🗨️'}
+                <span>Contrast</span>
+              </Button>
+            )}
 
             <Button
               onClick={() => setActiveModal('colors')}
