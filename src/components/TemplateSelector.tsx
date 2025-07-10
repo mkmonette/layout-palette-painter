@@ -21,6 +21,7 @@ import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTem
 import ProDashboardTemplate from '@/components/templates/ProDashboardTemplate';
 import ProAnalyticsTemplate from '@/components/templates/ProAnalyticsTemplate';
 import ProOrganicFoodTemplate from '@/components/templates/ProOrganicFoodTemplate';
+import { ProCosmeticsTemplate } from '@/components/templates/ProCosmeticsTemplate';
 
 interface TemplateSelectorProps {
   selectedTemplate: TemplateType;
@@ -50,7 +51,8 @@ const proTemplates: Template[] = [
   { id: 'pro-interactive', name: 'PRO Interactive', description: 'Dynamic components with animations', isPro: true },
   { id: 'pro-enterprise', name: 'PRO Enterprise', description: 'Corporate-grade business template', isPro: true },
   { id: 'pro-premium', name: 'PRO Premium', description: 'Luxury design with premium features', isPro: true },
-  { id: 'pro-organic-food', name: 'PRO Organic Food', description: 'Healthy lifestyle and organic products showcase', isPro: true }
+  { id: 'pro-organic-food', name: 'PRO Organic Food', description: 'Healthy lifestyle and organic products showcase', isPro: true },
+  { id: 'pro-cosmetics', name: 'PRO Cosmetics', description: 'Beauty and cosmetics product showcase', isPro: true }
 ];
 
 const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPalette) => {
@@ -87,6 +89,8 @@ const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPale
       return <ProAnalyticsTemplate {...previewProps} />;
     case 'pro-organic-food':
       return <ProOrganicFoodTemplate {...previewProps} />;
+    case 'pro-cosmetics':
+      return <ProCosmeticsTemplate palette={colorPalette} />;
     // For now, PRO templates that don't have components yet will show a placeholder
     case 'pro-multimedia':
     case 'pro-interactive':
