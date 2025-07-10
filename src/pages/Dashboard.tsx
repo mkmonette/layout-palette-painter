@@ -291,9 +291,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Template Selector Modal - Single Column Layout */}
+      {/* Template Selector Modal - 3 Column Layout */}
       <Dialog open={activeModal === 'template'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-2xl max-h-[80vh]">
+        <DialogContent className="max-w-6xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Eye className="h-5 w-5" />
@@ -301,14 +301,16 @@ const Dashboard = () => {
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <TemplateSelector
-              selectedTemplate={selectedTemplate}
-              onTemplateChange={(newTemplate) => {
-                setSelectedTemplate(newTemplate);
-                closeModal();
-              }}
-              colorPalette={colorPalette}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+              <TemplateSelector
+                selectedTemplate={selectedTemplate}
+                onTemplateChange={(newTemplate) => {
+                  setSelectedTemplate(newTemplate);
+                  closeModal();
+                }}
+                colorPalette={colorPalette}
+              />
+            </div>
           </ScrollArea>
         </DialogContent>
       </Dialog>
