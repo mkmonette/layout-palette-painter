@@ -11,9 +11,9 @@ interface SavedPalette extends ColorPalette {
 }
 
 export const useSavedPalettes = () => {
-  const { isPro } = useFeatureAccess();
+  const { maxSavedPalettes } = useFeatureAccess();
   const [savedPalettes, setSavedPalettes] = useState<SavedPalette[]>([]);
-  const MAX_PALETTES = isPro ? 50 : 3; // Pro: 50 palettes, Free: 3 palettes
+  const MAX_PALETTES = maxSavedPalettes;
 
   useEffect(() => {
     loadSavedPalettes();
