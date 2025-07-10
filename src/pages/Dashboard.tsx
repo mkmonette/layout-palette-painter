@@ -23,6 +23,7 @@ import { generateColorPalettePDF } from '@/utils/pdfGenerator';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
+import PlanSelector from '@/components/PlanSelector';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -283,6 +284,9 @@ const Dashboard = () => {
 
       {/* Main Content - Live Preview */}
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Plan Selector for Testing */}
+        <PlanSelector />
+        
         <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold">Live Preview</h2>
