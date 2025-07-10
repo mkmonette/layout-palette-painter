@@ -8,13 +8,18 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  console.log('ProtectedRoute: Component initializing');
+  
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
+    console.log('ProtectedRoute: useEffect running');
+    
     try {
       const checkAuth = () => {
+        console.log('ProtectedRoute: Checking authentication');
         const authStatus = isAuthenticated();
         console.log('ProtectedRoute: Authentication status:', authStatus);
         
@@ -24,18 +29,25 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           return;
         }
         
+        console.log('ProtectedRoute: User is authenticated, setting state');
         setAuthenticated(true);
         setIsLoading(false);
       };
 
-      checkAuth();
+      // Add a small delay to ensure the component is fully mounted
+      const timeoutId = setTimeout(checkAuth, 100);
+      
+      return () => clearTimeout(timeoutId);
     } catch (error) {
       console.error('ProtectedRoute: Error checking authentication:', error);
       navigate('/login', { replace: true });
     }
   }, [navigate]);
 
+  console.log('ProtectedRoute: Render state - isLoading:', isLoading, 'authenticated:', authenticated);
+
   if (isLoading) {
+    console.log('ProtectedRoute: Showing loading state');
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -47,9 +59,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   if (!authenticated) {
+    console.log('ProtectedRoute: Not authenticated, showing null');
     return null;
   }
 
+  console.log('ProtectedRoute: Rendering children');
   return <>{children}</>;
 };
 

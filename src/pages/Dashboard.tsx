@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,16 +21,23 @@ import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import SavePaletteButton from '@/components/SavePaletteButton';
 
 const Dashboard = () => {
+  console.log('Dashboard: Component starting to render');
+  
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  console.log('Dashboard: Getting current user');
   const currentUser = getCurrentUser();
+  console.log('Dashboard: Current user:', currentUser);
 
   // Early return if no user (should be handled by ProtectedRoute but adding safety)
   if (!currentUser) {
-    console.log('No current user found, redirecting to login');
+    console.log('Dashboard: No current user found, redirecting to login');
     navigate('/login');
     return null;
   }
+
+  console.log('Dashboard: User authenticated, continuing with component setup');
 
   const { getSavedCount, loadSavedPalettes } = useSavedPalettes();
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
@@ -51,6 +57,8 @@ const Dashboard = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
+
+  console.log('Dashboard: State initialized');
 
   const handleLogout = () => {
     try {
@@ -136,6 +144,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    console.log('Dashboard: Setting up keyboard event listener');
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isFullscreen) {
         setIsFullscreen(false);
@@ -147,6 +156,7 @@ const Dashboard = () => {
   }, [isFullscreen]);
 
   useEffect(() => {
+    console.log('Dashboard: Setting up saved palettes');
     try {
       const updateCount = () => {
         setSavedPalettesCount(getSavedCount());
@@ -167,7 +177,10 @@ const Dashboard = () => {
     }
   }, [getSavedCount, loadSavedPalettes]);
 
+  console.log('Dashboard: About to render, isFullscreen:', isFullscreen);
+
   if (isFullscreen) {
+    console.log('Dashboard: Rendering fullscreen preview');
     return (
       <FullscreenPreview
         template={selectedTemplate}
@@ -184,6 +197,8 @@ const Dashboard = () => {
       />
     );
   }
+
+  console.log('Dashboard: Rendering main dashboard');
 
   try {
     return (
@@ -459,7 +474,7 @@ const Dashboard = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Something went wrong</h1>
-          <p className="text-gray-600 mb-4">Please try refreshing the page</p>
+          <p className="text-gray-600 mb-4">Please try refreshing the page or check the console for errors</p>
           <Button onClick={() => window.location.reload()}>
             Refresh Page
           </Button>
