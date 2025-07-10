@@ -19,8 +19,8 @@ const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
 };
 
 const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> => {
-  // Wait for fonts and images to load
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Wait for initial rendering
+  await new Promise(resolve => setTimeout(resolve, 500));
   
   // Ensure all images are loaded
   const images = element.querySelectorAll('img');
@@ -32,16 +32,33 @@ const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> 
     });
   }));
 
-  // Wait for fonts to load
+  // Wait for fonts to load and settle
   if (document.fonts) {
     await document.fonts.ready;
+    // Additional wait for font rendering to stabilize
+    await new Promise(resolve => setTimeout(resolve, 800));
   }
 
-  // Remove any existing transform scaling
+  // Store original styles
   const originalTransform = element.style.transform;
   const originalZoom = element.style.zoom;
+  const originalLineHeight = element.style.lineHeight;
+  
+  // Normalize styles for consistent rendering
   element.style.transform = 'none';
   element.style.zoom = '1';
+  element.style.lineHeight = 'normal';
+  
+  // Set font smoothing via setProperty for TypeScript compatibility
+  const elementStyle = element.style as any;
+  const originalWebkitFontSmoothing = elementStyle.webkitFontSmoothing;
+  elementStyle.webkitFontSmoothing = 'antialiased';
+
+  // Force a reflow to ensure styles are applied
+  element.offsetHeight;
+  
+  // Additional wait for style changes to take effect
+  await new Promise(resolve => setTimeout(resolve, 200));
 
   try {
     const canvas = await html2canvas(element, {
@@ -55,6 +72,7 @@ const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> 
       windowHeight: element.offsetHeight,
       scrollX: 0,
       scrollY: 0,
+      logging: false,
     });
 
     return canvas.toDataURL('image/png', 1.0);
@@ -62,6 +80,8 @@ const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> 
     // Restore original styles
     element.style.transform = originalTransform;
     element.style.zoom = originalZoom;
+    element.style.lineHeight = originalLineHeight;
+    elementStyle.webkitFontSmoothing = originalWebkitFontSmoothing;
   }
 };
 
