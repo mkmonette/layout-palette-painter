@@ -20,6 +20,7 @@ import AdminOverview from '@/components/admin/AdminOverview';
 import UserManagement from '@/components/admin/UserManagement';
 import SubscriptionPlans from '@/components/admin/SubscriptionPlans';
 import AdminSettings from '@/components/admin/AdminSettings';
+import AutoGenerator from '@/components/AutoGenerator';
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,6 +43,13 @@ const AdminDashboard = () => {
             <h1 className="text-xl font-bold">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-4">
+            <Button 
+              onClick={() => navigate('/history')}
+              variant="outline" 
+              size="sm"
+            >
+              History
+            </Button>
             <Button variant="outline" size="sm">
               <Bell className="h-4 w-4 mr-2" />
               Notifications
@@ -56,10 +64,11 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+            <TabsTrigger value="generator">Generator</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -73,6 +82,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="subscriptions">
             <SubscriptionPlans />
+          </TabsContent>
+
+          <TabsContent value="generator">
+            <AutoGenerator />
           </TabsContent>
 
           <TabsContent value="settings">

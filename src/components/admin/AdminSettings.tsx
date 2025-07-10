@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,12 +13,101 @@ import {
   Webhook,
   Key,
   Bell,
-  Globe
+  Globe,
+  Save,
+  Wand2,
+  Clock
 } from 'lucide-react';
+import { AdminSettings as AdminSettingsType } from '@/types/generator';
+import { getAdminSettings, saveAdminSettings } from '@/utils/autoGenerator';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminSettings = () => {
+  const { toast } = useToast();
+  
+  // AutoGenerator Settings
+  const [autoGenSettings, setAutoGenSettings] = useState<AdminSettingsType>({
+    maxPalettesPerBatch: 10,
+    retentionDays: 30,
+  });
+
+  useEffect(() => {
+    const settings = getAdminSettings();
+    setAutoGenSettings(settings);
+  }, []);
+
+  const handleSaveAutoGenSettings = () => {
+    saveAdminSettings(autoGenSettings);
+    toast({
+      title: "AutoGenerator Settings Saved",
+      description: "Settings have been updated successfully.",
+    });
+  };
+
   return (
     <div className="space-y-6">
+      {/* AutoGenerator Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wand2 className="h-5 w-5" />
+            AutoGenerator Settings
+          </CardTitle>
+          <CardDescription>
+            Configure how the AutoGenerator feature behaves
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="maxPalettes">Max Palettes per Batch</Label>
+              <Input
+                id="maxPalettes"
+                type="number"
+                min="1"
+                max="50"
+                value={autoGenSettings.maxPalettesPerBatch}
+                onChange={(e) => setAutoGenSettings(prev => ({
+                  ...prev,
+                  maxPalettesPerBatch: parseInt(e.target.value) || 10
+                }))}
+              />
+              <p className="text-xs text-muted-foreground">
+                Maximum number of palettes to generate in a single batch (1-50)
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="retentionDays" className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Retention Period (Days)
+              </Label>
+              <Input
+                id="retentionDays"
+                type="number"
+                min="1"
+                max="365"
+                value={autoGenSettings.retentionDays}
+                onChange={(e) => setAutoGenSettings(prev => ({
+                  ...prev,
+                  retentionDays: parseInt(e.target.value) || 30
+                }))}
+              />
+              <p className="text-xs text-muted-foreground">
+                How long to keep palette history (1-365 days)
+              </p>
+            </div>
+          </div>
+          
+          <Button onClick={handleSaveAutoGenSettings} className="w-full">
+            <Save className="h-4 w-4 mr-2" />
+            Save AutoGenerator Settings
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Separator />
+
       {/* System Settings */}
       <Card>
         <CardHeader>

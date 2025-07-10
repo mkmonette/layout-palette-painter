@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logoutUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
+import AutoGenerator from '@/components/AutoGenerator';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 
 const Dashboard = () => {
@@ -182,6 +183,14 @@ const Dashboard = () => {
                 </span>
               </div>
               <Button
+                onClick={() => navigate('/history')}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <span>History</span>
+              </Button>
+              <Button
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
@@ -305,6 +314,15 @@ const Dashboard = () => {
               Saved ({savedPalettesCount}/10)
             </Button>
 
+            <Button
+              onClick={() => setActiveModal('auto-generator')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              🤖
+              AutoGen
+            </Button>
+
             <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
               <Sun className="h-4 w-4 text-gray-600" />
               <Switch
@@ -409,6 +427,22 @@ const Dashboard = () => {
         onPaletteSelect={handleSavedPaletteSelect}
         onTemplateChange={setSelectedTemplate}
       />
+
+      {/* AutoGenerator Modal */}
+      <Dialog open={activeModal === 'auto-generator'} onOpenChange={closeModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              🤖 AutoGenerator
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="p-4">
+              <AutoGenerator />
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
