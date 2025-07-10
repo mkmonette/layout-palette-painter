@@ -26,6 +26,7 @@ import ProUpsellModal from '@/components/ProUpsellModal';
 import PlanSelector from '@/components/PlanSelector';
 import AccessibilityIndicator from '@/components/AccessibilityIndicator';
 import ImageColorGenerator from '@/components/ImageColorGenerator';
+import BackgroundModeSelector, { BackgroundMode } from '@/components/BackgroundModeSelector';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -57,6 +58,7 @@ const Dashboard = () => {
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
   const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [showAccessibilityReport, setShowAccessibilityReport] = useState(false);
+  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('midtone');
 
   const handleLogout = () => {
     logoutUser();
@@ -159,6 +161,22 @@ const Dashboard = () => {
       }
       return newSet;
     });
+  };
+
+  const handleBackgroundModeChange = (mode: BackgroundMode) => {
+    setBackgroundMode(mode);
+  };
+
+  const getBackgroundStyle = () => {
+    switch (backgroundMode) {
+      case 'light':
+        return 'bg-white';
+      case 'dark':
+        return 'bg-gray-900';
+      case 'midtone':
+      default:
+        return 'bg-gray-100';
+    }
   };
 
   const handleDownloadPDF = async () => {
@@ -374,7 +392,7 @@ const Dashboard = () => {
               </Button>
             </div>
           </div>
-          <div className="border rounded-lg overflow-auto shadow-inner bg-white h-[500px]">
+          <div className={`border rounded-lg overflow-auto shadow-inner h-[500px] transition-colors duration-300 ${getBackgroundStyle()}`}>
             <div 
               className="min-h-full transition-transform duration-200 origin-top"
               style={{ transform: `scale(${zoomLevel / 100})` }}
@@ -608,6 +626,8 @@ const Dashboard = () => {
               <Download className="h-4 w-4" />
               {isPro ? 'PDF' : `PDF (${getRemainingDownloads()}/3)`}
             </Button>
+
+            <BackgroundModeSelector onModeChange={handleBackgroundModeChange} />
           </div>
         </div>
       </div>
