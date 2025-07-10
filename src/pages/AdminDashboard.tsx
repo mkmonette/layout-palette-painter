@@ -19,6 +19,7 @@ import {
 import AdminOverview from '@/components/admin/AdminOverview';
 import UserManagement from '@/components/admin/UserManagement';
 import SubscriptionPlans from '@/components/admin/SubscriptionPlans';
+import FeatureManagement from '@/components/admin/FeatureManagement';
 import AdminSettings from '@/components/admin/AdminSettings';
 import AutoGenerator from '@/components/AutoGenerator';
 import { logoutUser } from '@/utils/auth';
@@ -64,10 +65,11 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+            <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="generator">Generator</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
@@ -82,6 +84,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="subscriptions">
             <SubscriptionPlans />
+          </TabsContent>
+
+          <TabsContent value="features">
+            <FeatureManagement />
           </TabsContent>
 
           <TabsContent value="generator">

@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Palette, Zap, Eye, Settings, Crown, Star, ArrowRight, Check } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import PlanSelector from '@/components/PlanSelector';
 import LivePreviewSection from '@/components/landing/LivePreviewSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
 import PricingSection from '@/components/landing/PricingSection';
@@ -114,8 +115,15 @@ const Landing = () => {
       {/* Live Preview Section */}
       <LivePreviewSection />
 
-      {/* Features Section */}
-      <FeaturesSection />
+        {/* Plan Selector for Testing */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <PlanSelector />
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <FeaturesSection />
 
       {/* Pricing Section */}
       <PricingSection />
