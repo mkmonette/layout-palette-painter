@@ -322,7 +322,7 @@ const Dashboard = () => {
                     variant="outline"
                     className="flex items-center gap-2 h-8 px-3"
                   >
-                    <span className="text-xs font-medium"># of Generations:</span>
+                    <span className="text-xs font-medium">Sets</span>
                     <span className="font-bold text-primary">{autogenerateCount}</span>
                   </Button>
                 </DialogTrigger>
