@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield } from 'lucide-react';
+import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -16,6 +16,9 @@ import { TemplateType, ColorPalette } from '@/types/template';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { useToast } from '@/hooks/use-toast';
+import ImageColorGenerator from '@/components/ImageColorGenerator';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
+import ProUpsellModal from '@/components/ProUpsellModal';
 
 interface FullscreenPreviewProps {
   template: TemplateType;
@@ -60,10 +63,12 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 }) => {
   const { getSavedCount, loadSavedPalettes, canSaveMore, savePalette } = useSavedPalettes();
   const { toast } = useToast();
+  const { isPro } = useFeatureAccess();
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
+  const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; templateName: string }>({ isOpen: false, templateName: '' });
 
   const closeModal = () => setActiveModal(null);
 
@@ -216,6 +221,22 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             >
               🟡
               Saved ({savedPalettesCount}/10)
+            </Button>
+
+            {/* Pro Image/URL Color Generator Button */}
+            <Button
+              onClick={() => {
+                if (!isPro) {
+                  setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
+                  return;
+                }
+                setActiveModal('image-generator');
+              }}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              From Image {!isPro && '🔒'}
             </Button>
 
             {/* Save Button */}
@@ -488,6 +509,37 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           />
         </div>
       )}
+
+      {/* Image Color Generator Modal */}
+      <Dialog open={activeModal === 'image-generator'} onOpenChange={closeModal}>
+        <DialogContent className="max-w-lg max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5" />
+              Generate from Image or Website
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="p-4">
+              <ImageColorGenerator
+                onPaletteGenerated={(palette) => {
+                  onColorChange(palette);
+                  closeModal();
+                }}
+                isGenerating={isGenerating}
+                setIsGenerating={() => {}} // Read-only in fullscreen
+              />
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Pro Upsell Modal */}
+      <ProUpsellModal
+        isOpen={upsellModal.isOpen}
+        onClose={() => setUpsellModal({ isOpen: false, templateName: '' })}
+        templateName={upsellModal.templateName}
+      />
     </div>
   );
 };

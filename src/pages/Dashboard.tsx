@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw, Download } from 'lucide-react';
+import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw, Download, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -25,6 +25,7 @@ import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import PlanSelector from '@/components/PlanSelector';
 import AccessibilityIndicator from '@/components/AccessibilityIndicator';
+import ImageColorGenerator from '@/components/ImageColorGenerator';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const Dashboard = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [autogenerateCount, setAutogenerateCount] = useState(10);
-  const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; feature: string }>({ isOpen: false, feature: '' });
+  const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; templateName: string }>({ isOpen: false, templateName: '' });
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
   const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [showAccessibilityReport, setShowAccessibilityReport] = useState(false);
@@ -67,13 +68,10 @@ const Dashboard = () => {
   };
 
   const handleGenerateColors = async () => {
-    console.log('Generate button clicked, accessibility mode:', accessibilityMode);
     setIsGenerating(true);
     setTimeout(() => {
       try {
-        console.log('Attempting to generate palette with accessibility mode:', accessibilityMode);
         const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, accessibilityMode);
-        console.log('Generated new palette:', newPalette);
         setColorPalette(newPalette);
         setIsGenerating(false);
         
@@ -82,7 +80,6 @@ const Dashboard = () => {
           setShowAccessibilityReport(true);
         }
       } catch (error) {
-        console.log('Error caught:', error);
         // If accessibility mode fails, fall back to regular generation
         if (error instanceof Error && error.message.includes('No accessible palette found')) {
           toast({
@@ -166,7 +163,7 @@ const Dashboard = () => {
 
   const handleDownloadPDF = async () => {
     if (!canDownload()) {
-      setUpsellModal({ isOpen: true, feature: 'PDF downloads' });
+      setUpsellModal({ isOpen: true, templateName: 'PDF downloads' });
       return;
     }
 
@@ -427,7 +424,7 @@ const Dashboard = () => {
             <Button
               onClick={() => {
                 if (!canAccessColorSchemes) {
-                  setUpsellModal({ isOpen: true, feature: 'Color schemes' });
+                  setUpsellModal({ isOpen: true, templateName: 'Color schemes' });
                   return;
                 }
                 setActiveModal('scheme');
@@ -442,7 +439,7 @@ const Dashboard = () => {
             <Button
               onClick={() => {
                 if (!canAccessColorMood) {
-                  setUpsellModal({ isOpen: true, feature: 'Color moods' });
+                  setUpsellModal({ isOpen: true, templateName: 'Color moods' });
                   return;
                 }
                 setActiveModal('mood');
@@ -516,7 +513,7 @@ const Dashboard = () => {
               <Button
                 onClick={() => {
                   if (!canAccessAutoGenerator) {
-                    setUpsellModal({ isOpen: true, feature: 'Autogenerate' });
+                    setUpsellModal({ isOpen: true, templateName: 'Autogenerate' });
                     return;
                   }
                   // Store global settings in localStorage
@@ -537,13 +534,29 @@ const Dashboard = () => {
               </Button>
             </div>
 
+            {/* Pro Image/URL Color Generator Button */}
+            <Button
+              onClick={() => {
+                if (!isPro) {
+                  setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
+                  return;
+                }
+                setActiveModal('image-generator');
+              }}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              From Image {!isPro && '🔒'}
+            </Button>
+
             <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
               <Sun className="h-4 w-4 text-gray-600" />
               <Switch
                 checked={isDarkMode}
                 onCheckedChange={(checked) => {
                   if (!canAccessDarkMode) {
-                    setUpsellModal({ isOpen: true, feature: 'Dark mode' });
+                    setUpsellModal({ isOpen: true, templateName: 'Dark mode' });
                     return;
                   }
                   handleModeToggle(checked);
@@ -685,11 +698,35 @@ const Dashboard = () => {
         onTemplateChange={setSelectedTemplate}
       />
 
+      {/* Image Color Generator Modal */}
+      <Dialog open={activeModal === 'image-generator'} onOpenChange={closeModal}>
+        <DialogContent className="max-w-lg max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5" />
+              Generate from Image or Website
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="p-4">
+              <ImageColorGenerator
+                onPaletteGenerated={(palette) => {
+                  setColorPalette(palette);
+                  closeModal();
+                }}
+                isGenerating={isGenerating}
+                setIsGenerating={setIsGenerating}
+              />
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
       {/* Pro Upsell Modal */}
       <ProUpsellModal
         isOpen={upsellModal.isOpen}
-        onClose={() => setUpsellModal({ isOpen: false, feature: '' })}
-        templateName={upsellModal.feature}
+        onClose={() => setUpsellModal({ isOpen: false, templateName: '' })}
+        templateName={upsellModal.templateName}
       />
 
     </div>
