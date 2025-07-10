@@ -152,41 +152,83 @@ const AutoGenerate = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Panel - Controls */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Template Selection */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Eye className="h-5 w-5" />
-                Select Template
-              </h2>
-              
-              <div className="grid grid-cols-1 gap-3 max-h-96 overflow-y-auto">
-                {allTemplates.map((template) => (
-                  <div
-                    key={template.id}
-                    className={`p-3 border rounded-lg cursor-pointer transition-all ${
-                      selectedTemplate === template.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                    onClick={() => setSelectedTemplate(template.id)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium text-sm">{template.name}</h3>
-                        <p className="text-xs text-gray-500">{template.description}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Panel - Generated Results */}
+          <div>
+            <h2 className="text-lg font-semibold mb-4">Generated Palettes</h2>
+            {generatedPalettes.length > 0 ? (
+              <ScrollArea className="h-[75vh]">
+                <div className="grid grid-cols-3 gap-3 pr-4">
+                  {generatedPalettes.map((palette, index) => (
+                    <Card
+                      key={palette.id}
+                      className={`cursor-pointer transition-all ${
+                        selectedPaletteIndex === index
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'hover:border-gray-300'
+                      }`}
+                      onClick={() => setSelectedPaletteIndex(index)}
+                    >
+                      <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+                        <div className="scale-[0.25] origin-top-left w-[400px] h-[300px]">
+                          <LivePreview
+                            template={palette.templateId as TemplateType}
+                            colorPalette={convertToColorPalette(palette)}
+                          />
+                        </div>
                       </div>
-                      {selectedTemplate === template.id && (
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
+                      
+                      <div className="p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-xs">Palette #{index + 1}</h3>
+                          <Badge variant="outline" className="text-xs">
+                            <Calendar className="h-2 w-2 mr-1" />
+                            {getDaysRemaining(palette.timestamp)}d
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex gap-1 mb-2">
+                          {palette.colors.map((color, colorIndex) => (
+                            <div
+                              key={colorIndex}
+                              className="flex-1 h-3 rounded"
+                              style={{ backgroundColor: color }}
+                              title={color}
+                            />
+                          ))}
+                        </div>
+                        
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSavePalette(palette);
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="w-full h-7 text-xs"
+                          disabled={!canSaveMore()}
+                        >
+                          <Save className="h-2 w-2 mr-1" />
+                          Save
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
+            ) : (
+              <Card className="p-8 text-center h-[75vh] flex flex-col justify-center">
+                <Palette className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                <h2 className="text-lg font-semibold text-gray-700 mb-2">No Palettes Generated Yet</h2>
+                <p className="text-gray-500 text-sm">
+                  Select a template and choose how many palettes to generate, then click Generate.
+                </p>
+              </Card>
+            )}
+          </div>
 
+          {/* Right Panel - Controls & Template Selection */}
+          <div className="space-y-6">
             {/* Amount Selection */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold mb-4">Number of Palettes</h2>
@@ -210,6 +252,51 @@ const AutoGenerate = () => {
                   <span>1</span>
                   <span>Max: {adminSettings.maxPalettesPerBatch}</span>
                 </div>
+              </div>
+            </Card>
+
+            {/* Template Selection */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Eye className="h-5 w-5" />
+                Select Template
+              </h2>
+              
+              <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+                {allTemplates.map((template) => (
+                  <div
+                    key={template.id}
+                    className={`cursor-pointer transition-all rounded-lg overflow-hidden ${
+                      selectedTemplate === template.id
+                        ? 'ring-2 ring-blue-500'
+                        : 'hover:ring-1 hover:ring-gray-300'
+                    }`}
+                    onClick={() => setSelectedTemplate(template.id)}
+                  >
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <div className="scale-[0.2] origin-top-left w-[500px] h-[375px]">
+                        <LivePreview
+                          template={template.id}
+                          colorPalette={{
+                            primary: '#3B82F6',
+                            secondary: '#8B5CF6',
+                            accent: '#10B981',
+                            background: '#F8FAFC',
+                            text: '#1E293B',
+                            textLight: '#6B7280'
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className={`p-2 text-center ${
+                      selectedTemplate === template.id
+                        ? 'bg-blue-50 border-t border-blue-200'
+                        : 'bg-gray-50 border-t border-gray-200'
+                    }`}>
+                      <h3 className="font-medium text-xs">{template.name}</h3>
+                    </div>
+                  </div>
+                ))}
               </div>
             </Card>
 
@@ -242,97 +329,6 @@ const AutoGenerate = () => {
                 <li>• Each generation creates unique color combinations</li>
               </ul>
             </Card>
-          </div>
-
-          {/* Right Panel - Results */}
-          <div className="lg:col-span-2">
-            {generatedPalettes.length > 0 ? (
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                {/* Results List */}
-                <div>
-                  <h2 className="text-lg font-semibold mb-4">Generated Palettes</h2>
-                  <ScrollArea className="h-[70vh]">
-                    <div className="space-y-3 pr-4">
-                      {generatedPalettes.map((palette, index) => (
-                        <Card
-                          key={palette.id}
-                          className={`p-4 cursor-pointer transition-all ${
-                            selectedPaletteIndex === index
-                              ? 'border-blue-500 bg-blue-50'
-                              : 'hover:border-gray-300'
-                          }`}
-                          onClick={() => setSelectedPaletteIndex(index)}
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <h3 className="font-medium text-sm">Palette #{index + 1}</h3>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
-                                <Calendar className="h-3 w-3 mr-1" />
-                                {getDaysRemaining(palette.timestamp)}d left
-                              </Badge>
-                              <Button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleSavePalette(palette);
-                                }}
-                                variant="outline"
-                                size="sm"
-                                disabled={!canSaveMore()}
-                              >
-                                <Save className="h-3 w-3 mr-1" />
-                                Save
-                              </Button>
-                            </div>
-                          </div>
-                          
-                          <div className="flex gap-1 mb-2">
-                            {palette.colors.map((color, colorIndex) => (
-                              <div
-                                key={colorIndex}
-                                className="flex-1 h-6 rounded"
-                                style={{ backgroundColor: color }}
-                                title={color}
-                              />
-                            ))}
-                          </div>
-                          
-                          <div className="flex justify-between text-xs text-gray-500">
-                            <span>{palette.templateName}</span>
-                            <span>{new Date(palette.timestamp).toLocaleDateString()}</span>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </div>
-
-                {/* Live Preview */}
-                <div>
-                  <h2 className="text-lg font-semibold mb-4">Live Preview</h2>
-                  {selectedPalette && (
-                    <Card className="overflow-hidden">
-                      <div className="h-[70vh] overflow-auto">
-                        <LivePreview
-                          template={selectedPalette.templateId as TemplateType}
-                          colorPalette={convertToColorPalette(selectedPalette)}
-                        />
-                      </div>
-                    </Card>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <Card className="p-12 text-center">
-                <Palette className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h2 className="text-xl font-semibold text-gray-700 mb-2">No Palettes Generated Yet</h2>
-                <p className="text-gray-500 mb-6">
-                  Select a template and choose how many palettes to generate, then click the Generate button.
-                </p>
-                <div className="text-sm text-gray-400">
-                  Ready to create {paletteCount} palette{paletteCount !== 1 ? 's' : ''} for {allTemplates.find(t => t.id === selectedTemplate)?.name}
-                </div>
-              </Card>
-            )}
           </div>
         </div>
       </div>
