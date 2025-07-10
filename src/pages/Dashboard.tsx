@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -19,6 +19,7 @@ import { getCurrentUser, logoutUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
+import { generateColorPalettePDF } from '@/utils/pdfGenerator';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -104,6 +105,49 @@ const Dashboard = () => {
 
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
     setColorPalette(palette);
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      const previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
+      if (!previewElement) {
+        // Fallback to finding the live preview container
+        const livePreviewContainer = document.querySelector('.min-h-full.transition-transform') as HTMLElement;
+        if (!livePreviewContainer) {
+          toast({
+            title: "Error",
+            description: "Could not find template preview to capture.",
+            variant: "destructive",
+          });
+          return;
+        }
+        await generateColorPalettePDF({
+          colorPalette,
+          templateName: selectedTemplate.replace('-', ' '),
+          previewElement: livePreviewContainer,
+          isDarkMode,
+        });
+      } else {
+        await generateColorPalettePDF({
+          colorPalette,
+          templateName: selectedTemplate.replace('-', ' '),
+          previewElement,
+          isDarkMode,
+        });
+      }
+      
+      toast({
+        title: "PDF Downloaded",
+        description: "Color palette PDF has been downloaded successfully.",
+      });
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      toast({
+        title: "Download Failed",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   useEffect(() => {
@@ -252,6 +296,7 @@ const Dashboard = () => {
             <div 
               className="min-h-full transition-transform duration-200 origin-top"
               style={{ transform: `scale(${zoomLevel / 100})` }}
+              data-preview-element
             >
               <LivePreview
                 template={selectedTemplate}
@@ -401,6 +446,15 @@ const Dashboard = () => {
             >
               <Settings className="h-4 w-4" />
               Colors
+            </Button>
+
+            <Button
+              onClick={handleDownloadPDF}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              PDF
             </Button>
           </div>
         </div>

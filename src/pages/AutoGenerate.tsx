@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Palette, Clock, Save, Calendar, RefreshCw, Settings, Eye, Moon, Sun, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Palette, Clock, Save, Calendar, RefreshCw, Settings, Eye, Moon, Sun, ZoomIn, ZoomOut, RotateCcw, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +20,7 @@ import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSe
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { generateColorScheme } from '@/utils/colorGenerator';
+import { generateColorPalettePDF } from '@/utils/pdfGenerator';
 
 // Template definitions (reusing from TemplateSelector)
 const allTemplates: Template[] = [
@@ -200,6 +201,53 @@ const AutoGenerate = () => {
     setColorPalette(palette);
   };
 
+  const handleDownloadPDF = async () => {
+    const currentPalette = selectedPaletteIndex !== null ? convertToColorPalette(generatedPalettes[selectedPaletteIndex]) : colorPalette;
+    const templateName = allTemplates.find(t => t.id === selectedTemplate)?.name || selectedTemplate;
+    
+    try {
+      // Find the preview element for the selected palette or use the current template
+      let previewElement: HTMLElement;
+      
+      if (selectedPaletteIndex !== null) {
+        // Find the specific palette card preview
+        const paletteCards = document.querySelectorAll('[data-palette-preview]');
+        previewElement = paletteCards[selectedPaletteIndex] as HTMLElement;
+      } else {
+        // Fallback to any preview element
+        previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
+      }
+      
+      if (!previewElement) {
+        toast({
+          title: "Error",
+          description: "Could not find template preview to capture.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      await generateColorPalettePDF({
+        colorPalette: currentPalette,
+        templateName,
+        previewElement,
+        isDarkMode,
+      });
+      
+      toast({
+        title: "PDF Downloaded",
+        description: "Color palette PDF has been downloaded successfully.",
+      });
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      toast({
+        title: "Download Failed",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const closeModal = () => setActiveModal(null);
 
   const getDaysRemaining = (timestamp: string) => {
@@ -274,7 +322,11 @@ const AutoGenerate = () => {
                   onClick={() => setSelectedPaletteIndex(index)}
                 >
                   <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white relative">
-                    <div className="absolute inset-0 scale-[0.25] origin-top-left" style={{ width: '400%', height: '400%' }}>
+                    <div 
+                      className="absolute inset-0 scale-[0.25] origin-top-left" 
+                      style={{ width: '400%', height: '400%' }}
+                      data-palette-preview
+                    >
                       <LivePreview
                         template={palette.templateId as TemplateType}
                         colorPalette={convertToColorPalette(palette)}
@@ -469,6 +521,15 @@ const AutoGenerate = () => {
             >
               <Settings className="h-4 w-4" />
               Colors
+            </Button>
+
+            <Button
+              onClick={handleDownloadPDF}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              PDF
             </Button>
           </div>
         </div>
