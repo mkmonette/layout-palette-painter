@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { generateColorPalettePDF } from '@/utils/pdfGenerator';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import PlanSelector from '@/components/PlanSelector';
@@ -29,7 +29,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const currentUser = getCurrentUser();
-  const { isPro } = useSubscription();
+  const { isPro, canAccessDarkMode, canAccessColorSchemes, canAccessColorMood, canAccessAutoGenerator } = useFeatureAccess();
   const { canDownload, getRemainingDownloads, incrementDownload } = useDownloadLimits();
 
   const { getSavedCount, loadSavedPalettes, MAX_PALETTES } = useSavedPalettes();
@@ -363,7 +363,7 @@ const Dashboard = () => {
 
             <Button
               onClick={() => {
-                if (!isPro) {
+                if (!canAccessColorSchemes) {
                   setUpsellModal({ isOpen: true, feature: 'Color schemes' });
                   return;
                 }
@@ -373,12 +373,12 @@ const Dashboard = () => {
               className="flex items-center gap-2"
             >
               <Palette className="h-4 w-4" />
-              Scheme {!isPro && '🔒'}
+              Scheme {!canAccessColorSchemes && '🔒'}
             </Button>
 
             <Button
               onClick={() => {
-                if (!isPro) {
+                if (!canAccessColorMood) {
                   setUpsellModal({ isOpen: true, feature: 'Color moods' });
                   return;
                 }
@@ -388,7 +388,7 @@ const Dashboard = () => {
               className="flex items-center gap-2"
             >
               🎨
-              Color Mood {!isPro && '🔒'}
+              Color Mood {!canAccessColorMood && '🔒'}
             </Button>
 
             <Button
@@ -452,7 +452,7 @@ const Dashboard = () => {
               
               <Button
                 onClick={() => {
-                  if (!isPro) {
+                  if (!canAccessAutoGenerator) {
                     setUpsellModal({ isOpen: true, feature: 'Autogenerate' });
                     return;
                   }
@@ -470,7 +470,7 @@ const Dashboard = () => {
                 className="flex items-center gap-2"
               >
                 🤖
-                Autogenerate Colors {!isPro && '🔒'}
+                Autogenerate Colors {!canAccessAutoGenerator && '🔒'}
               </Button>
             </div>
 
@@ -479,16 +479,16 @@ const Dashboard = () => {
               <Switch
                 checked={isDarkMode}
                 onCheckedChange={(checked) => {
-                  if (!isPro) {
+                  if (!canAccessDarkMode) {
                     setUpsellModal({ isOpen: true, feature: 'Dark mode' });
                     return;
                   }
                   handleModeToggle(checked);
                 }}
-                disabled={!isPro}
+                disabled={!canAccessDarkMode}
               />
               <Moon className="h-4 w-4 text-gray-600" />
-              {!isPro && <span className="text-xs text-gray-500">🔒</span>}
+              {!canAccessDarkMode && <span className="text-xs text-gray-500">🔒</span>}
             </div>
 
             <Button
