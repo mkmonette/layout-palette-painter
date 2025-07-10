@@ -19,6 +19,10 @@ import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
 import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
 import ProDashboardTemplate from '@/components/templates/ProDashboardTemplate';
 import ProAnalyticsTemplate from '@/components/templates/ProAnalyticsTemplate';
+import ProMultimediaTemplate from '@/components/templates/ProMultimediaTemplate';
+import ProInteractiveTemplate from '@/components/templates/ProInteractiveTemplate';
+import ProEnterpriseTemplate from '@/components/templates/ProEnterpriseTemplate';
+import ProPremiumTemplate from '@/components/templates/ProPremiumTemplate';
 import { Crown } from 'lucide-react';
 
 interface LivePreviewProps {
@@ -78,20 +82,14 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
         return <ProDashboardTemplate {...templateProps} />;
       case 'pro-analytics':
         return <ProAnalyticsTemplate {...templateProps} />;
-      // Placeholder for other PRO templates
       case 'pro-multimedia':
+        return <ProMultimediaTemplate {...templateProps} />;
       case 'pro-interactive':
+        return <ProInteractiveTemplate {...templateProps} />;
       case 'pro-enterprise':
+        return <ProEnterpriseTemplate {...templateProps} />;
       case 'pro-premium':
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
-            <div className="text-center">
-              <Crown className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-800">PRO Template</h2>
-              <p className="text-gray-600">Advanced design coming soon</p>
-            </div>
-          </div>
-        );
+        return <ProPremiumTemplate {...templateProps} />;
       default:
         return <ModernHeroTemplate {...templateProps} />;
     }
