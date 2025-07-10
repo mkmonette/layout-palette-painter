@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Palette, Zap, Eye, Settings, Crown, Star, ArrowRight, Check } from 'lucide-react';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
+
 import PlanSelector from '@/components/PlanSelector';
 import LivePreviewSection from '@/components/landing/LivePreviewSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
@@ -15,7 +16,7 @@ import Footer from '@/components/landing/Footer';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const { isPro, setIsPro } = useSubscription();
+  const { isPro } = useFeatureAccess();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -34,20 +35,11 @@ const Landing = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button 
-                variant={isPro ? "default" : "outline"}
-                onClick={() => setIsPro(!isPro)}
-                className={isPro ? "bg-gradient-to-r from-blue-600 to-purple-600" : ""}
-              >
-                {isPro ? (
-                  <>
-                    <Crown className="h-4 w-4 mr-2" />
-                    Pro Mode
-                  </>
-                ) : (
-                  'Free Mode'
-                )}
-              </Button>
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <Badge variant={isPro ? "default" : "outline"}>
+                  {isPro ? 'Pro Mode' : 'Free Mode'}
+                </Badge>
+              </div>
               <Button variant="ghost">Features</Button>
               <Button variant="ghost">Pricing</Button>
               <Button variant="outline" onClick={() => navigate('/login')}>

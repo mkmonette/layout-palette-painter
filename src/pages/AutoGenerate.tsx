@@ -21,7 +21,7 @@ import ColorMoodSelector from '@/components/ColorMoodSelector';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { generateColorScheme } from '@/utils/colorGenerator';
 import { generateColorPalettePDF } from '@/utils/pdfGenerator';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
 
@@ -44,7 +44,7 @@ const allTemplates: Template[] = [
 const AutoGenerate = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isPro } = useSubscription();
+  const { isPro } = useFeatureAccess();
   const { canDownload, getRemainingDownloads, incrementDownload } = useDownloadLimits();
   const { savePalette, canSaveMore, getSavedCount, loadSavedPalettes, MAX_PALETTES } = useSavedPalettes();
 
