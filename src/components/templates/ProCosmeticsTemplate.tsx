@@ -54,12 +54,12 @@ export const ProCosmeticsTemplate: React.FC<ProCosmeticsTemplateProps> = ({ pale
             <div className="space-y-8">
               <div className="space-y-4">
                 <h2 className="text-5xl lg:text-6xl font-bold leading-tight" style={{ color: colors.textPrimary }}>
-                  High Cosmetics
+                  Discover Your
                   <br />
-                  <span style={{ color: colors.brandPrimary }}>Product For You</span>
+                  <span style={{ color: colors.brandPrimary }}>Natural Glow</span>
                 </h2>
                 <p className="text-lg opacity-80 max-w-md" style={{ color: colors.textSecondary }}>
-                  Shop Beauty Find the best in make beauty hair care, and all new brands Stores you can trust with our
+                  Premium skincare and beauty products crafted with natural ingredients for radiant, healthy skin that glows from within.
                 </p>
               </div>
 
@@ -143,21 +143,21 @@ export const ProCosmeticsTemplate: React.FC<ProCosmeticsTemplateProps> = ({ pale
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              {
-                icon: '🚚',
-                title: 'FREE SHIPPING OVER PURCHASE',
-                description: 'Lorem ipsum dolor sit amet consectetur adipiscing'
-              },
-              {
-                icon: '✨',
-                title: 'NATURAL AND ORGANIC',
-                description: 'Lorem ipsum dolor sit amet consectetur adipiscing'
-              },
-              {
-                icon: '💳',
-                title: 'SECURED PAYMENT METHOD',
-                description: 'Lorem ipsum dolor sit amet consectetur adipiscing'
-              }
+               {
+                 icon: '🚚',
+                 title: 'FREE SHIPPING WORLDWIDE',
+                 description: 'Complimentary shipping on all orders over $75. Fast, secure delivery to your doorstep.'
+               },
+               {
+                 icon: '✨',
+                 title: 'CLEAN & SUSTAINABLE',
+                 description: 'Ethically sourced, cruelty-free formulations with natural and organic ingredients.'
+               },
+               {
+                 icon: '💳',
+                 title: 'SECURE CHECKOUT',
+                 description: 'Safe and encrypted payment processing with multiple payment options available.'
+               }
             ].map((feature, index) => (
               <div key={index} className="text-center p-6 rounded-xl" style={{ backgroundColor: colors.surfaceCard }}>
                 <div className="text-4xl mb-4">{feature.icon}</div>
@@ -178,30 +178,30 @@ export const ProCosmeticsTemplate: React.FC<ProCosmeticsTemplateProps> = ({ pale
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4" style={{ color: colors.textPrimary }}>
-              Featured Products
+              Bestselling Essentials
             </h2>
             <p className="text-lg opacity-80" style={{ color: colors.textSecondary }}>
-              Discover our best-selling beauty essentials
+              Customer favorites that deliver visible results and luxurious experiences
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              {
-                name: 'Hydrating Face Cream',
-                price: '$39.99',
-                image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
-              },
-              {
-                name: 'Vitamin C Serum',
-                price: '$49.99',
-                image: 'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
-              },
-              {
-                name: 'Nourishing Lip Balm',
-                price: '$19.99',
-                image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
-              }
+               {
+                 name: 'Radiance Renewal Moisturizer',
+                 price: '$68.00',
+                 image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
+               },
+               {
+                 name: 'Brightening Vitamin C Serum',
+                 price: '$85.00',
+                 image: 'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
+               },
+               {
+                 name: 'Silk Repair Lip Treatment',
+                 price: '$32.00',
+                 image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
+               }
             ].map((product, index) => (
               <div key={index} className="group cursor-pointer">
                 <div className="rounded-2xl overflow-hidden mb-4 group-hover:scale-105 transition-transform duration-300">
@@ -240,10 +240,10 @@ export const ProCosmeticsTemplate: React.FC<ProCosmeticsTemplateProps> = ({ pale
       <section className="py-16 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: colors.backgroundAccent }}>
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4" style={{ color: colors.textPrimary }}>
-            Stay Beautiful with Our Newsletter
+            Join Our Beauty Community
           </h2>
           <p className="text-lg mb-8 opacity-80" style={{ color: colors.textSecondary }}>
-            Get the latest beauty tips, product launches, and exclusive offers
+            Unlock exclusive skincare secrets, early access to new products, and personalized beauty tips
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
@@ -275,7 +275,7 @@ export const ProCosmeticsTemplate: React.FC<ProCosmeticsTemplateProps> = ({ pale
                 blushé
               </h3>
               <p className="opacity-70 mb-4" style={{ color: colors.textSecondary }}>
-                Premium beauty products for your everyday routine
+                Elevate your skincare ritual with luxurious, science-backed formulations
               </p>
             </div>
             
