@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
@@ -42,6 +43,7 @@ const Dashboard = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
+  const [autogenerateCount, setAutogenerateCount] = useState(10);
 
   const handleLogout = () => {
     logoutUser();
@@ -313,14 +315,42 @@ const Dashboard = () => {
               Saved ({savedPalettesCount}/10)
             </Button>
 
-            <Button
-              onClick={() => navigate('/autogenerate')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🤖
-              Autogenerate Colors
-            </Button>
+            <div className="flex items-center gap-2">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-600 font-medium"># of Autogenerations</label>
+                <Select value={autogenerateCount.toString()} onValueChange={(value) => setAutogenerateCount(parseInt(value))}>
+                  <SelectTrigger className="w-20 h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <Button
+                onClick={() => {
+                  // Store global settings in localStorage
+                  localStorage.setItem('autogenerate-global-settings', JSON.stringify({
+                    template: selectedTemplate,
+                    scheme: selectedScheme,
+                    isDarkMode,
+                    count: autogenerateCount,
+                    palette: colorPalette
+                  }));
+                  navigate('/autogenerate');
+                }}
+                variant="outline"
+                className="flex items-center gap-2 mt-5"
+              >
+                🤖
+                Autogenerate Colors
+              </Button>
+            </div>
 
             <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
               <Sun className="h-4 w-4 text-gray-600" />

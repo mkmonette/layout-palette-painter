@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Palette, Clock, Save, Eye, Calendar, RefreshCw, Settings, Moon, Sun, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Palette, Clock, Save, Calendar, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Slider } from '@/components/ui/slider';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNavigate } from 'react-router-dom';
 import { TemplateType, ColorPalette, Template } from '@/types/template';
 import { GeneratedPalette } from '@/types/generator';
@@ -14,12 +10,6 @@ import { generatePaletteBatch, getAdminSettings } from '@/utils/autoGenerator';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { useToast } from '@/hooks/use-toast';
 import LivePreview from '@/components/LivePreview';
-import TemplateSelector from '@/components/TemplateSelector';
-import ColorControls from '@/components/ColorControls';
-import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
-import ColorMoodSelector from '@/components/ColorMoodSelector';
-import SavedPalettesModal from '@/components/SavedPalettesModal';
-import { generateColorScheme } from '@/utils/colorGenerator';
 
 // Template definitions (reusing from TemplateSelector)
 const allTemplates: Template[] = [
@@ -40,60 +30,48 @@ const allTemplates: Template[] = [
 const AutoGenerate = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { savePalette, canSaveMore, getSavedCount, loadSavedPalettes } = useSavedPalettes();
+  const { savePalette, canSaveMore } = useSavedPalettes();
 
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
-  const [paletteCount, setPaletteCount] = useState(5);
+  // Global settings from Dashboard
+  const [globalSettings] = useState(() => {
+    const stored = localStorage.getItem('autogenerate-global-settings');
+    return stored ? JSON.parse(stored) : {
+      template: 'modern-hero',
+      scheme: 'random',
+      isDarkMode: false,
+      count: 10,
+      palette: {
+        primary: '#3B82F6',
+        secondary: '#10B981',
+        accent: '#F59E0B',
+        background: '#FFFFFF',
+        text: '#1F2937',
+        textLight: '#6B7280'
+      }
+    };
+  });
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
   const [selectedPaletteIndex, setSelectedPaletteIndex] = useState<number | null>(null);
-  const [adminSettings, setAdminSettings] = useState(getAdminSettings());
-  
-  // Normal mode states
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
-  const [colorPalette, setColorPalette] = useState<ColorPalette>({
-    primary: '#3B82F6',
-    secondary: '#10B981',
-    accent: '#F59E0B',
-    background: '#FFFFFF',
-    text: '#1F2937',
-    textLight: '#6B7280'
-  });
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [zoomLevel, setZoomLevel] = useState(100);
-  const [savedPalettesCount, setSavedPalettesCount] = useState(0);
+  const [adminSettings] = useState(getAdminSettings());
 
   useEffect(() => {
-    setAdminSettings(getAdminSettings());
+    // Auto-generate when component mounts with global settings
+    if (globalSettings.count > 0) {
+      handleGenerate();
+    }
   }, []);
-
-  useEffect(() => {
-    const updateCount = () => {
-      setSavedPalettesCount(getSavedCount());
-    };
-    
-    updateCount();
-    
-    // Listen for storage changes
-    const handleStorageChange = () => {
-      loadSavedPalettes();
-      updateCount();
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [getSavedCount, loadSavedPalettes]);
 
   const handleGenerate = async () => {
     setIsGenerating(true);
     
     // Simulate generation delay for better UX
     setTimeout(() => {
-      const newPalettes = generatePaletteBatch(paletteCount).map(palette => ({
+      const newPalettes = generatePaletteBatch(globalSettings.count).map(palette => ({
         ...palette,
-        templateId: selectedTemplate,
-        templateName: allTemplates.find(t => t.id === selectedTemplate)?.name || selectedTemplate
+        templateId: globalSettings.template,
+        templateName: allTemplates.find(t => t.id === globalSettings.template)?.name || globalSettings.template
       }));
       
       setGeneratedPalettes(newPalettes);
@@ -102,18 +80,9 @@ const AutoGenerate = () => {
       
       toast({
         title: "Palettes Generated!",
-        description: `Generated ${paletteCount} color palettes for ${allTemplates.find(t => t.id === selectedTemplate)?.name}`,
+        description: `Generated ${globalSettings.count} color palettes for ${allTemplates.find(t => t.id === globalSettings.template)?.name}`,
       });
     }, 1500);
-  };
-
-  const handleGenerateColors = async () => {
-    setIsGenerating(true);
-    setTimeout(() => {
-      const newPalette = generateColorScheme(selectedScheme, isDarkMode);
-      setColorPalette(newPalette);
-      setIsGenerating(false);
-    }, 800);
   };
 
   const handleSavePalette = (palette: GeneratedPalette) => {
@@ -162,48 +131,6 @@ const AutoGenerate = () => {
     text: palette.colors[4],
     textLight: '#6B7280'
   });
-
-  const handleColorChange = (colorKey: keyof ColorPalette, color: string) => {
-    setColorPalette(prev => ({
-      ...prev,
-      [colorKey]: color
-    }));
-  };
-
-  const handleModeToggle = (checked: boolean) => {
-    setIsDarkMode(checked);
-    const newPalette = generateColorScheme(selectedScheme, checked);
-    setColorPalette(newPalette);
-  };
-
-  const handleSchemeChange = (scheme: ColorSchemeType) => {
-    setSelectedScheme(scheme);
-  };
-
-  const handleZoomIn = () => {
-    setZoomLevel(prev => Math.min(prev + 25, 200));
-  };
-
-  const handleZoomOut = () => {
-    setZoomLevel(prev => Math.max(prev - 25, 50));
-  };
-
-  const handleZoomReset = () => {
-    setZoomLevel(100);
-  };
-
-  const handleMoodSelect = (palette: ColorPalette) => {
-    setColorPalette(palette);
-  };
-
-  const handleSavedPaletteSelect = (palette: ColorPalette) => {
-    setColorPalette(palette);
-  };
-
-  const closeModal = () => setActiveModal(null);
-
-  const selectedPalette = selectedPaletteIndex !== null ? generatedPalettes[selectedPaletteIndex] : null;
-  const displayPalette = selectedPalette ? convertToColorPalette(selectedPalette) : colorPalette;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-20">
@@ -310,277 +237,63 @@ const AutoGenerate = () => {
         ) : (
           <Card className="p-12 text-center bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <Palette className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-700 mb-2">No Palettes Generated Yet</h2>
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">Generating Palettes...</h2>
             <p className="text-gray-500 mb-6">
-              Use the AutoGenerate Settings in the bottom toolbar to select a template and generate color palettes.
+              Creating {globalSettings.count} color palettes for {allTemplates.find(t => t.id === globalSettings.template)?.name}
             </p>
             <div className="text-sm text-gray-400">
-              Ready to create amazing color combinations for your templates
+              Using global settings from Dashboard
             </div>
           </Card>
         )}
       </div>
 
-      {/* Bottom Toolbar */}
+      {/* Bottom Info Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t shadow-lg">
-        <div className="flex items-center justify-between gap-2 p-4 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between gap-4 p-4 max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Template:</span>
+              <Badge variant="outline" className="capitalize">
+                {globalSettings.template.replace('-', ' ')}
+              </Badge>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Scheme:</span>
+              <Badge variant="outline" className="capitalize">
+                {globalSettings.scheme}
+              </Badge>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Mode:</span>
+              <Badge variant="outline">
+                {globalSettings.isDarkMode ? 'Dark' : 'Light'}
+              </Badge>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Count:</span>
+              <Badge variant="outline">
+                {globalSettings.count} palettes
+              </Badge>
+            </div>
+          </div>
+          
           <div className="flex items-center gap-2">
             <Button
-              onClick={handleGenerateColors}
+              onClick={handleGenerate}
               disabled={isGenerating}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
             >
               {isGenerating ? (
                 <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
               ) : (
-                <Palette className="h-4 w-4 mr-2" />
+                <RefreshCw className="h-4 w-4 mr-2" />
               )}
-              Generate
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('template')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Eye className="h-4 w-4" />
-              Template
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('scheme')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Palette className="h-4 w-4" />
-              Scheme
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('mood')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🎨
-              Color Mood
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('saved')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🟡
-              Saved ({savedPalettesCount}/10)
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('autogenerate')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🤖
-              AutoGenerate Settings
-            </Button>
-
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
-              <Sun className="h-4 w-4 text-gray-600" />
-              <Switch
-                checked={isDarkMode}
-                onCheckedChange={handleModeToggle}
-              />
-              <Moon className="h-4 w-4 text-gray-600" />
-            </div>
-
-            <Button
-              onClick={() => setActiveModal('colors')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Settings className="h-4 w-4" />
-              Colors
+              Regenerate
             </Button>
           </div>
         </div>
       </div>
-
-      {/* Template Selector Modal */}
-      <Dialog open={activeModal === 'template'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-6xl max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Eye className="h-5 w-5" />
-              Choose Template
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
-              <TemplateSelector
-                selectedTemplate={selectedTemplate}
-                onTemplateChange={(newTemplate) => {
-                  setSelectedTemplate(newTemplate);
-                  closeModal();
-                }}
-                colorPalette={colorPalette}
-              />
-            </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
-
-      {/* Color Scheme Modal */}
-      <Dialog open={activeModal === 'scheme'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5" />
-              Color Scheme
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-              <ColorSchemeSelector
-                selectedScheme={selectedScheme}
-                onSchemeChange={handleSchemeChange}
-                onGenerateScheme={handleGenerateColors}
-                isGenerating={isGenerating}
-              />
-            </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
-
-      {/* Color Mood Modal */}
-      <ColorMoodSelector
-        isOpen={activeModal === 'mood'}
-        onClose={closeModal}
-        onMoodSelect={handleMoodSelect}
-        currentPalette={colorPalette}
-      />
-
-      {/* Customize Colors Modal */}
-      <Dialog open={activeModal === 'colors'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-lg max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Customize Colors
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
-              <ColorControls
-                colorPalette={colorPalette}
-                onColorChange={handleColorChange}
-              />
-            </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
-
-      {/* Saved Palettes Modal */}
-      <SavedPalettesModal
-        isOpen={activeModal === 'saved'}
-        onClose={closeModal}
-        currentPalette={colorPalette}
-        currentTemplate={selectedTemplate}
-        onPaletteSelect={handleSavedPaletteSelect}
-        onTemplateChange={setSelectedTemplate}
-      />
-
-      {/* AutoGenerate Settings Modal */}
-      <Dialog open={activeModal === 'autogenerate'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              🤖
-              AutoGenerate Settings
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6 p-4">
-            {/* Template Selection */}
-            <div>
-              <h3 className="text-sm font-medium mb-2">Select Template</h3>
-              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                {allTemplates.map((template) => (
-                  <div
-                    key={template.id}
-                    className={`p-2 border rounded cursor-pointer text-xs transition-all ${
-                      selectedTemplate === template.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                    onClick={() => setSelectedTemplate(template.id)}
-                  >
-                    <div className="font-medium">{template.name}</div>
-                    <div className="text-gray-500 text-xs">{template.description}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Amount Selection */}
-            <div>
-              <h3 className="text-sm font-medium mb-2">Number of Palettes</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Count:</span>
-                  <span className="font-medium">{paletteCount}</span>
-                </div>
-                
-                <Slider
-                  value={[paletteCount]}
-                  onValueChange={(value) => setPaletteCount(value[0])}
-                  max={adminSettings.maxPalettesPerBatch}
-                  min={1}
-                  step={1}
-                  className="w-full"
-                />
-                
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>1</span>
-                  <span>Max: {adminSettings.maxPalettesPerBatch}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Generate Button */}
-            <Button
-              onClick={() => {
-                handleGenerate();
-                closeModal();
-              }}
-              disabled={isGenerating}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-              size="lg"
-            >
-              {isGenerating ? (
-                <>
-                  <Clock className="h-4 w-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Palette className="h-4 w-4 mr-2" />
-                  Generate {paletteCount} Palette{paletteCount !== 1 ? 's' : ''}
-                </>
-              )}
-            </Button>
-
-            {/* Info */}
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-              <div className="text-sm text-blue-700">
-                <div className="font-medium mb-1">Important Notes</div>
-                <ul className="space-y-1 text-xs">
-                  <li>• History retained for {adminSettings.retentionDays} days only</li>
-                  <li>• Save palettes to library for long-term access</li>
-                  <li>• Each generation creates unique color combinations</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
