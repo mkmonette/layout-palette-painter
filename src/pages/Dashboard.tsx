@@ -13,8 +13,15 @@ import LivePreview from '@/components/LivePreview';
 import FullscreenPreview from '@/components/FullscreenPreview';
 import { generateColorPalette, generateColorScheme, ColorPalette } from '@/utils/colorGenerator';
 import { TemplateType } from '@/types/template';
+import { useNavigate } from 'react-router-dom';
+import { getCurrentUser, logoutUser } from '@/utils/auth';
+import { useToast } from '@/hooks/use-toast';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const currentUser = getCurrentUser();
+
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
@@ -30,6 +37,15 @@ const Dashboard = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
+
+  const handleLogout = () => {
+    logoutUser();
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out.",
+    });
+    navigate('/login');
+  };
 
   const handleGenerateColors = async () => {
     setIsGenerating(true);
@@ -122,7 +138,9 @@ const Dashboard = () => {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Palette Painter
                 </h1>
-                <p className="text-sm text-gray-600">Dashboard</p>
+                <p className="text-sm text-gray-600">
+                  Welcome, {currentUser?.username}!
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -137,6 +155,14 @@ const Dashboard = () => {
                   {selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)}
                 </span>
               </div>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <span>Logout</span>
+              </Button>
               <Button
                 onClick={handleFullscreenToggle}
                 variant="outline"

@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,8 @@ import TestimonialsSection from '@/components/landing/TestimonialsSection';
 import Footer from '@/components/landing/Footer';
 
 const Landing = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Navigation */}
@@ -30,8 +32,13 @@ const Landing = () => {
             <div className="flex items-center space-x-4">
               <Button variant="ghost">Features</Button>
               <Button variant="ghost">Pricing</Button>
-              <Button variant="outline">Sign In</Button>
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button variant="outline" onClick={() => navigate('/login')}>
+                Sign In
+              </Button>
+              <Button 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                onClick={() => navigate('/login')}
+              >
                 Get Started
               </Button>
             </div>
