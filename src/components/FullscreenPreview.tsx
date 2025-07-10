@@ -205,9 +205,9 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         </div>
       </div>
 
-      {/* Template Selector Modal - Single Column Layout */}
+      {/* Template Selector Modal - Single Column Layout with 4-Column Grid */}
       <Dialog open={activeModal === 'template'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-2xl max-h-[80vh]">
+        <DialogContent className="max-w-6xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Eye className="h-5 w-5" />
