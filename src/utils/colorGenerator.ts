@@ -344,5 +344,22 @@ export const generateColorScheme = (scheme: ColorSchemeType, isDarkMode: boolean
   }
 };
 
+export const generateColorSchemeWithLocks = (
+  scheme: ColorSchemeType, 
+  isDarkMode: boolean = false, 
+  currentPalette: ColorPalette,
+  lockedColors: Set<keyof ColorPalette>
+): ColorPalette => {
+  const newPalette = generateColorScheme(scheme, isDarkMode);
+  
+  // Preserve locked colors
+  const result = { ...newPalette };
+  for (const colorKey of lockedColors) {
+    result[colorKey] = currentPalette[colorKey];
+  }
+  
+  return result;
+};
+
 // Export helper functions for backward compatibility
 export { hexToHsl, hslToHex };

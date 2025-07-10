@@ -12,7 +12,7 @@ import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSe
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import LivePreview from '@/components/LivePreview';
 import FullscreenPreview from '@/components/FullscreenPreview';
-import { generateColorPalette, generateColorScheme, ColorPalette } from '@/utils/colorGenerator';
+import { generateColorPalette, generateColorScheme, generateColorSchemeWithLocks, ColorPalette } from '@/utils/colorGenerator';
 import { TemplateType } from '@/types/template';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logoutUser } from '@/utils/auth';
@@ -52,6 +52,7 @@ const Dashboard = () => {
   const [zoomLevel, setZoomLevel] = useState(100);
   const [autogenerateCount, setAutogenerateCount] = useState(10);
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; feature: string }>({ isOpen: false, feature: '' });
+  const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
 
   const handleLogout = () => {
     logoutUser();
@@ -65,7 +66,7 @@ const Dashboard = () => {
   const handleGenerateColors = async () => {
     setIsGenerating(true);
     setTimeout(() => {
-      const newPalette = generateColorScheme(selectedScheme, isDarkMode);
+      const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors);
       setColorPalette(newPalette);
       setIsGenerating(false);
     }, 800);
@@ -80,7 +81,7 @@ const Dashboard = () => {
 
   const handleModeToggle = (checked: boolean) => {
     setIsDarkMode(checked);
-    const newPalette = generateColorScheme(selectedScheme, checked);
+    const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors);
     setColorPalette(newPalette);
   };
 
@@ -112,6 +113,18 @@ const Dashboard = () => {
 
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
     setColorPalette(palette);
+  };
+
+  const handleToggleLock = (colorKey: keyof ColorPalette) => {
+    setLockedColors(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(colorKey)) {
+        newSet.delete(colorKey);
+      } else {
+        newSet.add(colorKey);
+      }
+      return newSet;
+    });
   };
 
   const handleDownloadPDF = async () => {
@@ -215,7 +228,7 @@ const Dashboard = () => {
         onGenerateColors={handleGenerateColors}
         onSchemeChange={handleSchemeChange}
         onTemplateChange={setSelectedTemplate}
-        onColorChange={handleColorChange}
+        onColorChange={(palette) => setColorPalette(palette)}
         onModeToggle={handleModeToggle}
       />
     );
@@ -581,6 +594,8 @@ const Dashboard = () => {
               <ColorControls
                 colorPalette={colorPalette}
                 onColorChange={handleColorChange}
+                lockedColors={lockedColors}
+                onToggleLock={handleToggleLock}
               />
             </div>
           </ScrollArea>

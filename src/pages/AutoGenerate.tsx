@@ -19,7 +19,7 @@ import ColorControls from '@/components/ColorControls';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
-import { generateColorScheme } from '@/utils/colorGenerator';
+import { generateColorScheme, generateColorSchemeWithLocks } from '@/utils/colorGenerator';
 import { generateColorPalettePDF } from '@/utils/pdfGenerator';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
@@ -76,6 +76,7 @@ const AutoGenerate = () => {
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
+  const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
@@ -164,7 +165,7 @@ const AutoGenerate = () => {
   const handleGenerateColors = async () => {
     setIsGenerating(true);
     setTimeout(() => {
-      const newPalette = generateColorScheme(selectedScheme, isDarkMode);
+      const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors);
       setColorPalette(newPalette);
       setIsGenerating(false);
     }, 800);
@@ -179,7 +180,7 @@ const AutoGenerate = () => {
 
   const handleModeToggle = (checked: boolean) => {
     setIsDarkMode(checked);
-    const newPalette = generateColorScheme(selectedScheme, checked);
+    const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors);
     setColorPalette(newPalette);
   };
 
@@ -205,6 +206,18 @@ const AutoGenerate = () => {
 
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
     setColorPalette(palette);
+  };
+
+  const handleToggleLock = (colorKey: keyof ColorPalette) => {
+    setLockedColors(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(colorKey)) {
+        newSet.delete(colorKey);
+      } else {
+        newSet.add(colorKey);
+      }
+      return newSet;
+    });
   };
 
   const handleDownloadPDF = async () => {
@@ -626,6 +639,8 @@ const AutoGenerate = () => {
               <ColorControls
                 colorPalette={colorPalette}
                 onColorChange={handleColorChange}
+                lockedColors={lockedColors}
+                onToggleLock={handleToggleLock}
               />
             </div>
           </ScrollArea>

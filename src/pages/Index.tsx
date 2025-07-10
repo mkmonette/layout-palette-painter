@@ -12,7 +12,7 @@ import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSe
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import LivePreview from '@/components/LivePreview';
 import FullscreenPreview from '@/components/FullscreenPreview';
-import { generateColorPalette, generateColorScheme, ColorPalette } from '@/utils/colorGenerator';
+import { generateColorPalette, generateColorScheme, generateColorSchemeWithLocks, ColorPalette } from '@/utils/colorGenerator';
 import { TemplateType } from '@/types/template';
 
 const Index = () => {
@@ -31,11 +31,12 @@ const Index = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
+  const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
 
   const handleGenerateColors = async () => {
     setIsGenerating(true);
     setTimeout(() => {
-      const newPalette = generateColorScheme(selectedScheme, isDarkMode);
+      const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors);
       setColorPalette(newPalette);
       setIsGenerating(false);
     }, 800);
@@ -50,8 +51,7 @@ const Index = () => {
 
   const handleModeToggle = (checked: boolean) => {
     setIsDarkMode(checked);
-    // Automatically generate a new palette when switching modes
-    const newPalette = generateColorScheme(selectedScheme, checked);
+    const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors);
     setColorPalette(newPalette);
   };
 
@@ -81,6 +81,18 @@ const Index = () => {
     setColorPalette(palette);
   };
 
+  const handleToggleLock = (colorKey: keyof ColorPalette) => {
+    setLockedColors(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(colorKey)) {
+        newSet.delete(colorKey);
+      } else {
+        newSet.add(colorKey);
+      }
+      return newSet;
+    });
+  };
+
   // Handle ESC key to exit fullscreen
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -106,7 +118,7 @@ const Index = () => {
         onGenerateColors={handleGenerateColors}
         onSchemeChange={handleSchemeChange}
         onTemplateChange={setSelectedTemplate}
-        onColorChange={handleColorChange}
+        onColorChange={(palette) => setColorPalette(palette)}
         onModeToggle={handleModeToggle}
       />
     );
@@ -343,6 +355,8 @@ const Index = () => {
               <ColorControls
                 colorPalette={colorPalette}
                 onColorChange={handleColorChange}
+                lockedColors={lockedColors}
+                onToggleLock={handleToggleLock}
               />
             </div>
           </ScrollArea>

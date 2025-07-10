@@ -25,7 +25,7 @@ interface FullscreenPreviewProps {
   onGenerateColors: () => void;
   onSchemeChange: (scheme: ColorSchemeType) => void;
   onTemplateChange: (template: TemplateType) => void;
-  onColorChange: (colorKey: keyof ColorPalette, color: string) => void;
+  onColorChange: (palette: ColorPalette) => void;
   onModeToggle: (checked: boolean) => void;
 }
 
@@ -47,6 +47,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
+  const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
 
   const closeModal = () => setActiveModal(null);
 
@@ -80,17 +81,22 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   };
 
   const handleMoodSelect = (palette: ColorPalette) => {
-    // Apply the mood palette to all color properties
-    Object.keys(palette).forEach(key => {
-      onColorChange(key as keyof ColorPalette, palette[key as keyof ColorPalette]);
-    });
+    onColorChange(palette);
   };
 
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
-    Object.keys(palette).forEach(key => {
-      if (key !== 'id' && key !== 'name' && key !== 'savedAt') {
-        onColorChange(key as keyof ColorPalette, palette[key as keyof ColorPalette]);
+    onColorChange(palette);
+  };
+
+  const handleToggleLock = (colorKey: keyof ColorPalette) => {
+    setLockedColors(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(colorKey)) {
+        newSet.delete(colorKey);
+      } else {
+        newSet.add(colorKey);
       }
+      return newSet;
     });
   };
 
@@ -347,7 +353,12 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             <div className="p-4">
               <ColorControls
                 colorPalette={colorPalette}
-                onColorChange={onColorChange}
+                onColorChange={(colorKey, color) => {
+                  const newPalette = { ...colorPalette, [colorKey]: color };
+                  onColorChange(newPalette);
+                }}
+                lockedColors={lockedColors}
+                onToggleLock={handleToggleLock}
               />
             </div>
           </ScrollArea>
