@@ -18,6 +18,7 @@ import { getCurrentUser, logoutUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
+import SavePaletteButton from '@/components/SavePaletteButton';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -102,6 +103,10 @@ const Dashboard = () => {
 
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
     setColorPalette(palette);
+  };
+
+  const handleSavedTemplateSelect = (template: TemplateType) => {
+    setSelectedTemplate(template);
   };
 
   useEffect(() => {
@@ -209,6 +214,12 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold">Live Preview</h2>
             <div className="flex items-center space-x-2">
+              <SavePaletteButton
+                colorPalette={colorPalette}
+                template={selectedTemplate}
+                onSave={() => setSavedPalettesCount(getSavedCount())}
+                size="sm"
+              />
               <Button
                 onClick={handleZoomOut}
                 variant="outline"
@@ -405,7 +416,9 @@ const Dashboard = () => {
         isOpen={activeModal === 'saved'}
         onClose={closeModal}
         currentPalette={colorPalette}
+        currentTemplate={selectedTemplate}
         onPaletteSelect={handleSavedPaletteSelect}
+        onTemplateSelect={handleSavedTemplateSelect}
       />
     </div>
   );

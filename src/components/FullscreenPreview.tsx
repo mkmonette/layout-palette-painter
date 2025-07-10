@@ -12,6 +12,7 @@ import ColorControls from '@/components/ColorControls';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import { TemplateType, ColorPalette } from '@/types/template';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
+import SavePaletteButton from '@/components/SavePaletteButton';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 
 interface FullscreenPreviewProps {
@@ -69,10 +70,14 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
     Object.keys(palette).forEach(key => {
-      if (key !== 'id' && key !== 'name' && key !== 'savedAt') {
+      if (key !== 'id' && key !== 'name' && key !== 'template' && key !== 'savedAt') {
         onColorChange(key as keyof ColorPalette, palette[key as keyof ColorPalette]);
       }
     });
+  };
+
+  const handleSavedTemplateSelect = (newTemplate: TemplateType) => {
+    onTemplateChange(newTemplate);
   };
 
   useEffect(() => {
@@ -94,8 +99,15 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-white flex flex-col">
-      {/* Close button - top right */}
-      <div className="absolute top-4 right-4 z-20">
+      {/* Close button and Save button - top right */}
+      <div className="absolute top-4 right-4 z-20 flex gap-2">
+        <SavePaletteButton
+          colorPalette={colorPalette}
+          template={template}
+          onSave={() => setSavedPalettesCount(getSavedCount())}
+          size="sm"
+          className="bg-white/95 backdrop-blur-sm border shadow-lg"
+        />
         <Button
           onClick={onClose}
           variant="outline"
@@ -321,7 +333,9 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         isOpen={activeModal === 'saved'}
         onClose={closeModal}
         currentPalette={colorPalette}
+        currentTemplate={template}
         onPaletteSelect={handleSavedPaletteSelect}
+        onTemplateSelect={handleSavedTemplateSelect}
       />
     </div>
   );
