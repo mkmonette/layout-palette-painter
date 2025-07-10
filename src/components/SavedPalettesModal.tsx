@@ -5,13 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
-import { ColorPalette, TemplateType } from '@/types/template';
-import LivePreview from '@/components/LivePreview';
+import { ColorPalette } from '@/types/template';
 
 interface SavedPalette extends ColorPalette {
   id: string;
   name: string;
-  template: TemplateType;
   savedAt: string;
 }
 
@@ -19,18 +17,14 @@ interface SavedPalettesModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentPalette: ColorPalette;
-  currentTemplate: TemplateType;
   onPaletteSelect: (palette: ColorPalette) => void;
-  onTemplateSelect: (template: TemplateType) => void;
 }
 
 const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
   isOpen,
   onClose,
   currentPalette,
-  currentTemplate,
-  onPaletteSelect,
-  onTemplateSelect
+  onPaletteSelect
 }) => {
   const { toast } = useToast();
   const [savedPalettes, setSavedPalettes] = useState<SavedPalette[]>([]);
@@ -76,7 +70,6 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
       ...currentPalette,
       id: Date.now().toString(),
       name: paletteName.trim(),
-      template: currentTemplate,
       savedAt: new Date().toISOString()
     };
 
@@ -106,7 +99,6 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
 
   const applyPalette = (palette: SavedPalette) => {
     onPaletteSelect(palette);
-    onTemplateSelect(palette.template);
     onClose();
     
     toast({
@@ -120,7 +112,7 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh]">
+      <DialogContent className="max-w-2xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             🟡 Saved Palettes
@@ -146,18 +138,16 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
             <div className="border rounded-lg p-4">
               <h3 className="font-medium mb-3">Save Current Palette</h3>
               
-              {/* Current Template Preview */}
-              <div className="mb-4 border rounded-lg overflow-hidden bg-white">
-                <div className="transform scale-50 origin-top-left w-[200%] h-[200px] overflow-hidden">
-                  <LivePreview
-                    template={currentTemplate}
-                    colorPalette={currentPalette}
-                  />
-                </div>
-              </div>
-
-              <div className="text-sm text-gray-600 mb-3">
-                Template: <span className="font-medium capitalize">{currentTemplate.replace('-', ' ')}</span>
+              {/* Current Palette Preview */}
+              <div className="flex items-center gap-3 mb-3">
+                {Object.entries(currentPalette).map(([key, color]) => (
+                  <div key={key} className="flex items-center gap-1">
+                    <div 
+                      className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
+                      style={{ backgroundColor: color }}
+                    />
+                  </div>
+                ))}
               </div>
 
               {showSaveForm ? (
@@ -203,17 +193,12 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
 
             {/* Saved Palettes List */}
             {savedPalettes.length > 0 && (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <h3 className="font-medium">Your Saved Palettes</h3>
                 {savedPalettes.map((palette) => (
                   <div key={palette.id} className="border rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h4 className="font-medium">{palette.name}</h4>
-                        <p className="text-sm text-gray-600 capitalize">
-                          Template: {palette.template.replace('-', ' ')}
-                        </p>
-                      </div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-medium">{palette.name}</h4>
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
@@ -233,24 +218,14 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
                       </div>
                     </div>
                     
-                    {/* Template Preview */}
-                    <div className="mb-3 border rounded-lg overflow-hidden bg-white">
-                      <div className="transform scale-50 origin-top-left w-[200%] h-[200px] overflow-hidden">
-                        <LivePreview
-                          template={palette.template}
-                          colorPalette={palette}
-                        />
-                      </div>
-                    </div>
-
                     {/* Color Swatches */}
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2">
                       {Object.entries(palette).map(([key, color]) => {
-                        if (key === 'id' || key === 'name' || key === 'template' || key === 'savedAt') return null;
+                        if (key === 'id' || key === 'name' || key === 'savedAt') return null;
                         return (
                           <div key={key} className="flex items-center gap-1">
                             <div 
-                              className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
+                              className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
                               style={{ backgroundColor: color }}
                             />
                             <span className="text-xs text-gray-500 capitalize">{key}</span>
@@ -259,7 +234,7 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
                       })}
                     </div>
                     
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 mt-2">
                       Saved: {new Date(palette.savedAt).toLocaleDateString()}
                     </p>
                   </div>
