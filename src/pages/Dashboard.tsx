@@ -1,489 +1,237 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { Palette, RefreshCw, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import TemplateSelector from '@/components/TemplateSelector';
-import ColorControls from '@/components/ColorControls';
-import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
-import ColorMoodSelector from '@/components/ColorMoodSelector';
-import LivePreview from '@/components/LivePreview';
-import FullscreenPreview from '@/components/FullscreenPreview';
-import { generateColorScheme, ColorPalette } from '@/utils/colorGenerator';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 import { TemplateType } from '@/types/template';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logoutUser } from '@/utils/auth';
-import { useToast } from '@/hooks/use-toast';
-import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
-import SavePaletteButton from '@/components/SavePaletteButton';
 
 const Dashboard = () => {
-  console.log('Dashboard: Component starting to render');
-  
   const navigate = useNavigate();
   const { toast } = useToast();
-  
-  console.log('Dashboard: Getting current user');
   const currentUser = getCurrentUser();
-  console.log('Dashboard: Current user:', currentUser);
 
-  // Early return if no user (should be handled by ProtectedRoute but adding safety)
+  // Early return if no user
   if (!currentUser?.isLoggedIn) {
-    console.log('Dashboard: No current user found, redirecting to login');
-    return null; // Don't navigate here as ProtectedRoute handles it
+    return null;
   }
 
-  console.log('Dashboard: User authenticated, continuing with component setup');
-
-  const { getSavedCount, loadSavedPalettes } = useSavedPalettes();
+  const { getSavedCount } = useSavedPalettes();
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
-
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
-  const [colorPalette, setColorPalette] = useState<ColorPalette>({
-    primary: '#3B82F6',
-    secondary: '#10B981',
-    accent: '#F59E0B',
-    background: '#FFFFFF',
-    text: '#1F2937',
-    textLight: '#6B7280'
-  });
-  const [isGenerating, setIsGenerating] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
-
-  console.log('Dashboard: State initialized');
 
   const handleLogout = () => {
     try {
       logoutUser();
+      navigate('/login');
+    } catch (error) {
       toast({
-        title: "Logged Out",
-        description: "You have been successfully logged out.",
+        title: "Error",
+        description: "There was an error logging out. Please try again.",
+        variant: "destructive",
       });
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout error:', error);
-      navigate('/login');
     }
   };
 
-  const handleGenerateColors = async () => {
-    setIsGenerating(true);
-    setTimeout(() => {
-      try {
-        const newPalette = generateColorScheme(selectedScheme, isDarkMode);
-        setColorPalette(newPalette);
-      } catch (error) {
-        console.error('Error generating colors:', error);
-        toast({
-          title: "Error",
-          description: "Failed to generate colors. Please try again.",
-          variant: "destructive"
-        });
-      }
-      setIsGenerating(false);
-    }, 800);
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
-  const handleColorChange = (colorKey: keyof ColorPalette, color: string) => {
-    setColorPalette(prev => ({
-      ...prev,
-      [colorKey]: color
-    }));
+  const adjustZoom = (delta: number) => {
+    setZoomLevel(prev => Math.max(50, Math.min(200, prev + delta)));
   };
 
-  const handleModeToggle = (checked: boolean) => {
-    setIsDarkMode(checked);
-    try {
-      const newPalette = generateColorScheme(selectedScheme, checked);
-      setColorPalette(newPalette);
-    } catch (error) {
-      console.error('Error toggling mode:', error);
-    }
-  };
-
-  const handleSchemeChange = (scheme: ColorSchemeType) => {
-    setSelectedScheme(scheme);
-  };
-
-  const handleFullscreenToggle = () => {
-    setIsFullscreen(!isFullscreen);
-  };
-
-  const closeModal = () => setActiveModal(null);
-
-  const handleZoomIn = () => {
-    setZoomLevel(prev => Math.min(prev + 25, 200));
-  };
-
-  const handleZoomOut = () => {
-    setZoomLevel(prev => Math.max(prev - 25, 50));
-  };
-
-  const handleZoomReset = () => {
-    setZoomLevel(100);
-  };
-
-  const handleMoodSelect = (palette: ColorPalette) => {
-    setColorPalette(palette);
-  };
-
-  const handleSavedPaletteSelect = (palette: ColorPalette) => {
-    setColorPalette(palette);
-  };
-
-  const handleSavedTemplateSelect = (template: TemplateType) => {
-    setSelectedTemplate(template);
+  const enterFullscreen = () => {
+    setIsFullscreen(true);
   };
 
   useEffect(() => {
-    console.log('Dashboard: Setting up keyboard event listener');
+    try {
+      setSavedPalettesCount(getSavedCount());
+    } catch (error) {
+      console.error('Error setting up saved palettes:', error);
+    }
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isFullscreen) {
         setIsFullscreen(false);
       }
     };
-
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isFullscreen]);
 
-  useEffect(() => {
-    console.log('Dashboard: Setting up saved palettes');
-    try {
-      const updateCount = () => {
-        setSavedPalettesCount(getSavedCount());
-      };
-      
-      updateCount();
-      
-      const handleStorageChange = () => {
-        updateCount();
-      };
-      
-      window.addEventListener('storage', handleStorageChange);
-      window.addEventListener('savedPalettesUpdate', handleStorageChange);
-      
-      return () => {
-        window.removeEventListener('storage', handleStorageChange);
-        window.removeEventListener('savedPalettesUpdate', handleStorageChange);
-      };
-    } catch (error) {
-      console.error('Error setting up saved palettes:', error);
-    }
-  }, []); // Remove dependencies that cause re-renders
-
-  console.log('Dashboard: About to render, isFullscreen:', isFullscreen);
-
   if (isFullscreen) {
-    console.log('Dashboard: Rendering fullscreen preview');
     return (
-      <FullscreenPreview
-        template={selectedTemplate}
-        colorPalette={colorPalette}
-        selectedScheme={selectedScheme}
-        isDarkMode={isDarkMode}
-        isGenerating={isGenerating}
-        onClose={() => setIsFullscreen(false)}
-        onGenerateColors={handleGenerateColors}
-        onSchemeChange={handleSchemeChange}
-        onTemplateChange={setSelectedTemplate}
-        onColorChange={handleColorChange}
-        onModeToggle={handleModeToggle}
-      />
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-xl font-bold">Fullscreen Preview</h1>
+          <Button onClick={() => setIsFullscreen(false)}>Exit Fullscreen</Button>
+        </div>
+        <div className="bg-white rounded-lg p-8">
+          <h2 className="text-2xl font-bold mb-4">Template Preview</h2>
+          <p>Selected template: {selectedTemplate}</p>
+          <p>Zoom level: {zoomLevel}%</p>
+        </div>
+      </div>
     );
   }
 
-  console.log('Dashboard: Rendering main dashboard');
-
-  try {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-20">
-        {/* Header */}
-        <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-                  <Palette className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Palette Painter
-                  </h1>
-                  <p className="text-sm text-gray-600">
-                    Welcome, {currentUser?.username || 'User'}!
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <span className="capitalize font-medium">
-                    {selectedTemplate.replace('-', ' ')}
-                  </span>
-                  <span className="px-2 py-1 rounded-full bg-gray-100 text-xs">
-                    {isDarkMode ? 'Dark' : 'Light'}
-                  </span>
-                  <span className="px-2 py-1 rounded-full bg-purple-100 text-xs text-purple-700">
-                    {selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)}
-                  </span>
-                </div>
-                <Button
-                  onClick={handleLogout}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center space-x-2"
-                >
-                  <span>Logout</span>
-                </Button>
-                <Button
-                  onClick={handleFullscreenToggle}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center space-x-2"
-                >
-                  <Maximize className="h-4 w-4" />
-                  <span>Fullscreen</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content - Live Preview */}
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold">Live Preview</h2>
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <SavePaletteButton
-                  colorPalette={colorPalette}
-                  template={selectedTemplate}
-                  onSave={() => setSavedPalettesCount(getSavedCount())}
-                  size="sm"
-                />
-                <Button
-                  onClick={handleZoomOut}
-                  variant="outline"
-                  size="icon"
-                  disabled={zoomLevel <= 50}
-                >
-                  <ZoomOut className="h-4 w-4" />
-                </Button>
-                <span className="text-sm font-medium text-gray-600 min-w-[3rem] text-center">
-                  {zoomLevel}%
-                </span>
-                <Button
-                  onClick={handleZoomIn}
-                  variant="outline"
-                  size="icon"
-                  disabled={zoomLevel >= 200}
-                >
-                  <ZoomIn className="h-4 w-4" />
-                </Button>
-                <Button
-                  onClick={handleZoomReset}
-                  variant="outline"
-                  size="icon"
-                  title="Reset Zoom"
-                >
-                  <RotateCcw className="h-4 w-4" />
-                </Button>
+                <Palette className="h-8 w-8 text-blue-600" />
+                <h1 className="text-xl font-bold text-gray-900">Color Palette Generator</h1>
               </div>
             </div>
-            <div className="border rounded-lg overflow-auto shadow-inner bg-white max-h-[70vh]">
-              <div 
-                className="min-h-full transition-transform duration-200 origin-top"
-                style={{ transform: `scale(${zoomLevel / 100})` }}
-              >
-                <LivePreview
-                  template={selectedTemplate}
-                  colorPalette={colorPalette}
-                />
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Bottom Toolbar */}
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t shadow-lg">
-          <div className="flex items-center justify-between gap-2 p-4 max-w-7xl mx-auto">
-            <div className="flex items-center gap-2">
+            
+            <div className="flex items-center space-x-4">
               <Button
-                onClick={handleGenerateColors}
-                disabled={isGenerating}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                variant="ghost"
+                size="sm"
+                className="relative"
               >
-                {isGenerating ? (
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Palette className="h-4 w-4 mr-2" />
+                <Eye className="h-4 w-4 mr-2" />
+                Saved Palettes
+                {savedPalettesCount > 0 && (
+                  <Badge variant="secondary" className="ml-2 text-xs">
+                    {savedPalettesCount}
+                  </Badge>
                 )}
-                Generate
               </Button>
-
-              <Button
-                onClick={() => setActiveModal('template')}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Eye className="h-4 w-4" />
-                Template
+              
+              <Button variant="ghost" size="sm" onClick={toggleDarkMode}>
+                {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
-
-              <Button
-                onClick={() => setActiveModal('scheme')}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Palette className="h-4 w-4" />
-                Scheme
-              </Button>
-
-              <Button
-                onClick={() => setActiveModal('mood')}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                🎨
-                Color Mood
-              </Button>
-
-              <Button
-                onClick={() => setActiveModal('saved')}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                🟡
-                Saved ({savedPalettesCount}/10)
-              </Button>
-
-              <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
-                <Sun className="h-4 w-4 text-gray-600" />
-                <Switch
-                  checked={isDarkMode}
-                  onCheckedChange={handleModeToggle}
-                />
-                <Moon className="h-4 w-4 text-gray-600" />
-              </div>
-
-              <Button
-                onClick={() => setActiveModal('colors')}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Settings className="h-4 w-4" />
-                Colors
+              
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                Logout
               </Button>
             </div>
           </div>
         </div>
+      </header>
 
-        {/* Template Selector Modal */}
-        <Dialog open={activeModal === 'template'} onOpenChange={closeModal}>
-          <DialogContent className="max-w-6xl max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Eye className="h-5 w-5" />
-                Choose Template
-              </DialogTitle>
-            </DialogHeader>
-            <ScrollArea className="max-h-[60vh]">
-              <div className="p-4">
-                <TemplateSelector
-                  selectedTemplate={selectedTemplate}
-                  onTemplateChange={(newTemplate) => {
-                    setSelectedTemplate(newTemplate);
-                    closeModal();
-                  }}
-                  colorPalette={colorPalette}
-                />
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Controls Panel */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Controls</h2>
+                <div className="flex space-x-2">
+                  <Button size="sm">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Generate
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    Reset
+                  </Button>
+                </div>
               </div>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
-
-        {/* Color Scheme Modal */}
-        <Dialog open={activeModal === 'scheme'} onOpenChange={closeModal}>
-          <DialogContent className="max-w-4xl max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Palette className="h-5 w-5" />
-                Color Scheme
-              </DialogTitle>
-            </DialogHeader>
-            <ScrollArea className="max-h-[60vh]">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                <ColorSchemeSelector
-                  selectedScheme={selectedScheme}
-                  onSchemeChange={handleSchemeChange}
-                  onGenerateScheme={handleGenerateColors}
-                  isGenerating={isGenerating}
-                />
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">Color Mood</h3>
+                  <p className="text-sm text-gray-600">Professional</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">Color Scheme</h3>
+                  <p className="text-sm text-gray-600">Monochromatic</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">Color Controls</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="h-8 bg-blue-500 rounded"></div>
+                    <div className="h-8 bg-green-500 rounded"></div>
+                    <div className="h-8 bg-yellow-500 rounded"></div>
+                    <div className="h-8 bg-white border rounded"></div>
+                  </div>
+                </div>
               </div>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
+            </div>
 
-        {/* Color Mood Modal */}
-        <ColorMoodSelector
-          isOpen={activeModal === 'mood'}
-          onClose={closeModal}
-          onMoodSelect={handleMoodSelect}
-          currentPalette={colorPalette}
-        />
-
-        {/* Customize Colors Modal */}
-        <Dialog open={activeModal === 'colors'} onOpenChange={closeModal}>
-          <DialogContent className="max-w-lg max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Customize Colors
-              </DialogTitle>
-            </DialogHeader>
-            <ScrollArea className="max-h-[60vh]">
-              <div className="p-4">
-                <ColorControls
-                  colorPalette={colorPalette}
-                  onColorChange={handleColorChange}
-                />
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Templates</h2>
+              <div className="space-y-2">
+                <Button 
+                  variant={selectedTemplate === 'modern-hero' ? 'default' : 'outline'}
+                  className="w-full justify-start"
+                  onClick={() => setSelectedTemplate('modern-hero')}
+                >
+                  Modern Hero
+                </Button>
+                <Button 
+                  variant={selectedTemplate === 'minimal-header' ? 'default' : 'outline'}
+                  className="w-full justify-start"
+                  onClick={() => setSelectedTemplate('minimal-header')}
+                >
+                  Minimal Header
+                </Button>
               </div>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
+            </div>
+          </div>
 
-        {/* Saved Palettes Modal */}
-        <SavedPalettesModal
-          isOpen={activeModal === 'saved'}
-          onClose={closeModal}
-          currentPalette={colorPalette}
-          currentTemplate={selectedTemplate}
-          onPaletteSelect={handleSavedPaletteSelect}
-          onTemplateSelect={handleSavedTemplateSelect}
-        />
-      </div>
-    );
-  } catch (error) {
-    console.error('Dashboard render error:', error);
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Something went wrong</h1>
-          <p className="text-gray-600 mb-4">Please try refreshing the page or check the console for errors</p>
-          <Button onClick={() => window.location.reload()}>
-            Refresh Page
-          </Button>
+          {/* Preview Panel */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Live Preview</h2>
+                <div className="flex items-center space-x-2">
+                  <Button size="sm" variant="outline">
+                    Save Palette
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => adjustZoom(-10)} disabled={zoomLevel <= 50}>
+                    <ZoomOut className="h-4 w-4" />
+                  </Button>
+                  <span className="text-sm text-gray-600 min-w-[3rem] text-center">{zoomLevel}%</span>
+                  <Button size="sm" variant="outline" onClick={() => adjustZoom(10)} disabled={zoomLevel >= 200}>
+                    <ZoomIn className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" onClick={enterFullscreen}>
+                    <Maximize className="h-4 w-4 mr-2" />
+                    Fullscreen
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="border rounded-lg p-8 bg-gray-50" style={{ zoom: `${zoomLevel}%` }}>
+                <div className="bg-white p-6 rounded-lg shadow-sm">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    {selectedTemplate === 'modern-hero' ? 'Modern Hero Template' : 'Minimal Header Template'}
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    This is a preview of your selected template with the current color palette applied.
+                  </p>
+                  <div className="flex space-x-2">
+                    <div className="h-10 w-20 bg-blue-500 rounded"></div>
+                    <div className="h-10 w-20 bg-green-500 rounded"></div>
+                    <div className="h-10 w-20 bg-yellow-500 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 };
 
 export default Dashboard;
