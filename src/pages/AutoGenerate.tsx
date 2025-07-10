@@ -255,8 +255,8 @@ const AutoGenerate = () => {
                   }`}
                   onClick={() => setSelectedPaletteIndex(index)}
                 >
-                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white">
-                    <div className="scale-[0.3] origin-top-left w-[333px] h-[250px]">
+                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white relative">
+                    <div className="absolute inset-0 scale-[0.25] origin-top-left" style={{ width: '400%', height: '400%' }}>
                       <LivePreview
                         template={palette.templateId as TemplateType}
                         colorPalette={convertToColorPalette(palette)}
