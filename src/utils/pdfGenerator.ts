@@ -7,6 +7,7 @@ export interface PDFGenerationOptions {
   templateName: string;
   previewElement: HTMLElement;
   isDarkMode: boolean;
+  isPro?: boolean;
 }
 
 const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
@@ -69,17 +70,30 @@ export const generateColorPalettePDF = async ({
   colorPalette,
   templateName,
   previewElement,
-  isDarkMode
+  isDarkMode,
+  isPro = false
 }: PDFGenerationOptions): Promise<void> => {
   const pdf = new jsPDF('p', 'mm', 'a4');
   const pageWidth = pdf.internal.pageSize.width;
   const pageHeight = pdf.internal.pageSize.height;
   const margin = 20;
 
-  // Title
+  // Title and branding
   pdf.setFontSize(24);
   pdf.setTextColor(40, 40, 40);
-  pdf.text('Color Palette Report', margin, margin + 10);
+  const title = isPro ? 'Professional Color Palette Report' : 'Color Palette Report';
+  pdf.text(title, margin, margin + 10);
+
+  // Branding
+  if (isPro) {
+    pdf.setFontSize(10);
+    pdf.setTextColor(59, 130, 246); // Blue color
+    pdf.text('Generated with Palette Painter Pro', pageWidth - margin - 50, margin + 10);
+  } else {
+    pdf.setFontSize(8);
+    pdf.setTextColor(150, 150, 150);
+    pdf.text('Generated with Palette Painter - Upgrade to Pro for professional reports', margin, pageHeight - 10);
+  }
 
   // Template info
   pdf.setFontSize(12);

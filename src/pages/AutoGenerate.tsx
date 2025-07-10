@@ -21,6 +21,9 @@ import ColorMoodSelector from '@/components/ColorMoodSelector';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { generateColorScheme } from '@/utils/colorGenerator';
 import { generateColorPalettePDF } from '@/utils/pdfGenerator';
+import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useDownloadLimits } from '@/hooks/useDownloadLimits';
+import ProUpsellModal from '@/components/ProUpsellModal';
 
 // Template definitions (reusing from TemplateSelector)
 const allTemplates: Template[] = [
@@ -41,7 +44,9 @@ const allTemplates: Template[] = [
 const AutoGenerate = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { savePalette, canSaveMore, getSavedCount, loadSavedPalettes } = useSavedPalettes();
+  const { isPro } = useSubscription();
+  const { canDownload, getRemainingDownloads, incrementDownload } = useDownloadLimits();
+  const { savePalette, canSaveMore, getSavedCount, loadSavedPalettes, MAX_PALETTES } = useSavedPalettes();
 
   // Global settings from Dashboard
   const [globalSettings, setGlobalSettings] = useState(() => {
@@ -76,6 +81,7 @@ const AutoGenerate = () => {
   const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
   const [selectedPaletteIndex, setSelectedPaletteIndex] = useState<number | null>(null);
   const [adminSettings] = useState(getAdminSettings());
+  const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; feature: string }>({ isOpen: false, feature: '' });
 
   // Removed auto-generation on mount to allow users to adjust settings first
 
@@ -149,7 +155,7 @@ const AutoGenerate = () => {
     } else {
       toast({
         title: "Save Failed",
-        description: "You've reached the maximum number of saved palettes (10)",
+        description: `You've reached the maximum number of saved palettes (${MAX_PALETTES})`,
         variant: "destructive"
       });
     }
@@ -202,6 +208,20 @@ const AutoGenerate = () => {
   };
 
   const handleDownloadPDF = async () => {
+    if (!canDownload()) {
+      setUpsellModal({ isOpen: true, feature: 'PDF downloads' });
+      return;
+    }
+
+    if (!incrementDownload()) {
+      toast({
+        title: "Download Limit Reached",
+        description: "You've reached your daily download limit. Upgrade to Pro for unlimited downloads.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const currentPalette = selectedPaletteIndex !== null ? convertToColorPalette(generatedPalettes[selectedPaletteIndex]) : colorPalette;
     const templateName = allTemplates.find(t => t.id === selectedTemplate)?.name || selectedTemplate;
     
@@ -232,11 +252,14 @@ const AutoGenerate = () => {
         templateName,
         previewElement,
         isDarkMode,
+        isPro,
       });
       
+      const remaining = getRemainingDownloads();
       toast({
         title: "PDF Downloaded",
-        description: "Color palette PDF has been downloaded successfully.",
+        description: isPro ? "Professional color palette PDF has been downloaded." : 
+          `PDF downloaded. ${remaining === Infinity ? 'Unlimited' : remaining} downloads remaining today.`,
       });
     } catch (error) {
       console.error('PDF generation failed:', error);
@@ -441,7 +464,7 @@ const AutoGenerate = () => {
               className="flex items-center gap-2"
             >
               🟡
-              Saved ({savedPalettesCount}/10)
+              Saved ({savedPalettesCount}/{MAX_PALETTES})
             </Button>
 
             <div className="flex items-center gap-2">
@@ -617,6 +640,13 @@ const AutoGenerate = () => {
         currentTemplate={selectedTemplate}
         onPaletteSelect={handleSavedPaletteSelect}
         onTemplateChange={setSelectedTemplate}
+      />
+
+      {/* Pro Upsell Modal */}
+      <ProUpsellModal
+        isOpen={upsellModal.isOpen}
+        onClose={() => setUpsellModal({ isOpen: false, feature: '' })}
+        templateName={upsellModal.feature}
       />
     </div>
   );

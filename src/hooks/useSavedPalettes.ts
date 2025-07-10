@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { ColorPalette, TemplateType } from '@/types/template';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 
 interface SavedPalette extends ColorPalette {
   id: string;
@@ -10,8 +11,9 @@ interface SavedPalette extends ColorPalette {
 }
 
 export const useSavedPalettes = () => {
+  const { isPro } = useSubscription();
   const [savedPalettes, setSavedPalettes] = useState<SavedPalette[]>([]);
-  const MAX_PALETTES = 10;
+  const MAX_PALETTES = isPro ? 50 : 3; // Pro: 50 palettes, Free: 3 palettes
 
   useEffect(() => {
     loadSavedPalettes();

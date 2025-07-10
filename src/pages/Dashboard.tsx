@@ -20,13 +20,18 @@ import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { generateColorPalettePDF } from '@/utils/pdfGenerator';
+import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useDownloadLimits } from '@/hooks/useDownloadLimits';
+import ProUpsellModal from '@/components/ProUpsellModal';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const currentUser = getCurrentUser();
+  const { isPro } = useSubscription();
+  const { canDownload, getRemainingDownloads, incrementDownload } = useDownloadLimits();
 
-  const { getSavedCount, loadSavedPalettes } = useSavedPalettes();
+  const { getSavedCount, loadSavedPalettes, MAX_PALETTES } = useSavedPalettes();
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
 
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
@@ -45,6 +50,7 @@ const Dashboard = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [autogenerateCount, setAutogenerateCount] = useState(10);
+  const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; feature: string }>({ isOpen: false, feature: '' });
 
   const handleLogout = () => {
     logoutUser();
@@ -108,6 +114,20 @@ const Dashboard = () => {
   };
 
   const handleDownloadPDF = async () => {
+    if (!canDownload()) {
+      setUpsellModal({ isOpen: true, feature: 'PDF downloads' });
+      return;
+    }
+
+    if (!incrementDownload()) {
+      toast({
+        title: "Download Limit Reached",
+        description: "You've reached your daily download limit. Upgrade to Pro for unlimited downloads.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
       if (!previewElement) {
@@ -126,6 +146,7 @@ const Dashboard = () => {
           templateName: selectedTemplate.replace('-', ' '),
           previewElement: livePreviewContainer,
           isDarkMode,
+          isPro,
         });
       } else {
         await generateColorPalettePDF({
@@ -133,12 +154,15 @@ const Dashboard = () => {
           templateName: selectedTemplate.replace('-', ' '),
           previewElement,
           isDarkMode,
+          isPro,
         });
       }
       
+      const remaining = getRemainingDownloads();
       toast({
         title: "PDF Downloaded",
-        description: "Color palette PDF has been downloaded successfully.",
+        description: isPro ? "Professional color palette PDF has been downloaded." : 
+          `PDF downloaded. ${remaining === Infinity ? 'Unlimited' : remaining} downloads remaining today.`,
       });
     } catch (error) {
       console.error('PDF generation failed:', error);
@@ -334,21 +358,33 @@ const Dashboard = () => {
             </Button>
 
             <Button
-              onClick={() => setActiveModal('scheme')}
+              onClick={() => {
+                if (!isPro) {
+                  setUpsellModal({ isOpen: true, feature: 'Color schemes' });
+                  return;
+                }
+                setActiveModal('scheme');
+              }}
               variant="outline"
               className="flex items-center gap-2"
             >
               <Palette className="h-4 w-4" />
-              Scheme
+              Scheme {!isPro && '🔒'}
             </Button>
 
             <Button
-              onClick={() => setActiveModal('mood')}
+              onClick={() => {
+                if (!isPro) {
+                  setUpsellModal({ isOpen: true, feature: 'Color moods' });
+                  return;
+                }
+                setActiveModal('mood');
+              }}
               variant="outline"
               className="flex items-center gap-2"
             >
               🎨
-              Color Mood
+              Color Mood {!isPro && '🔒'}
             </Button>
 
             <Button
@@ -357,7 +393,7 @@ const Dashboard = () => {
               className="flex items-center gap-2"
             >
               🟡
-              Saved ({savedPalettesCount}/10)
+              Saved ({savedPalettesCount}/{MAX_PALETTES})
             </Button>
 
             <div className="flex items-center gap-2">
@@ -412,6 +448,10 @@ const Dashboard = () => {
               
               <Button
                 onClick={() => {
+                  if (!isPro) {
+                    setUpsellModal({ isOpen: true, feature: 'Autogenerate' });
+                    return;
+                  }
                   // Store global settings in localStorage
                   localStorage.setItem('autogenerate-global-settings', JSON.stringify({
                     template: selectedTemplate,
@@ -426,7 +466,7 @@ const Dashboard = () => {
                 className="flex items-center gap-2"
               >
                 🤖
-                Autogenerate Colors
+                Autogenerate Colors {!isPro && '🔒'}
               </Button>
             </div>
 
@@ -434,9 +474,17 @@ const Dashboard = () => {
               <Sun className="h-4 w-4 text-gray-600" />
               <Switch
                 checked={isDarkMode}
-                onCheckedChange={handleModeToggle}
+                onCheckedChange={(checked) => {
+                  if (!isPro) {
+                    setUpsellModal({ isOpen: true, feature: 'Dark mode' });
+                    return;
+                  }
+                  handleModeToggle(checked);
+                }}
+                disabled={!isPro}
               />
               <Moon className="h-4 w-4 text-gray-600" />
+              {!isPro && <span className="text-xs text-gray-500">🔒</span>}
             </div>
 
             <Button
@@ -452,9 +500,10 @@ const Dashboard = () => {
               onClick={handleDownloadPDF}
               variant="outline"
               className="flex items-center gap-2"
+              disabled={!canDownload()}
             >
               <Download className="h-4 w-4" />
-              PDF
+              {isPro ? 'PDF' : `PDF (${getRemainingDownloads()}/3)`}
             </Button>
           </div>
         </div>
@@ -542,6 +591,13 @@ const Dashboard = () => {
         currentTemplate={selectedTemplate}
         onPaletteSelect={handleSavedPaletteSelect}
         onTemplateChange={setSelectedTemplate}
+      />
+
+      {/* Pro Upsell Modal */}
+      <ProUpsellModal
+        isOpen={upsellModal.isOpen}
+        onClose={() => setUpsellModal({ isOpen: false, feature: '' })}
+        templateName={upsellModal.feature}
       />
 
     </div>
