@@ -79,14 +79,18 @@ const Dashboard = () => {
           setShowAccessibilityReport(true);
         }
       } catch (error) {
-        setIsGenerating(false);
+        // If accessibility mode fails, fall back to regular generation
         if (error instanceof Error && error.message.includes('No accessible palette found')) {
           toast({
             title: "⚠️ No Contrast-Safe Palettes Found",
-            description: "No contrast-safe palettes found for current settings. Try adjusting mood or scheme.",
+            description: "Generating regular palette instead. Try adjusting mood or scheme for accessible colors.",
             variant: "destructive",
           });
+          // Generate regular palette as fallback
+          const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, false);
+          setColorPalette(fallbackPalette);
         }
+        setIsGenerating(false);
       }
     }, 800);
   };
