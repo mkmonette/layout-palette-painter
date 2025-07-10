@@ -16,11 +16,16 @@ import { TemplateType } from '@/types/template';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logoutUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
+import SavedPalettesModal from '@/components/SavedPalettesModal';
+import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const currentUser = getCurrentUser();
+
+  const { getSavedCount, loadSavedPalettes } = useSavedPalettes();
+  const [savedPalettesCount, setSavedPalettesCount] = useState(0);
 
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -95,6 +100,10 @@ const Dashboard = () => {
     setColorPalette(palette);
   };
 
+  const handleSavedPaletteSelect = (palette: ColorPalette) => {
+    setColorPalette(palette);
+  };
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isFullscreen) {
@@ -105,6 +114,23 @@ const Dashboard = () => {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isFullscreen]);
+
+  useEffect(() => {
+    const updateCount = () => {
+      setSavedPalettesCount(getSavedCount());
+    };
+    
+    updateCount();
+    
+    // Listen for storage changes
+    const handleStorageChange = () => {
+      loadSavedPalettes();
+      updateCount();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [getSavedCount, loadSavedPalettes]);
 
   if (isFullscreen) {
     return (
@@ -270,6 +296,15 @@ const Dashboard = () => {
               Color Mood
             </Button>
 
+            <Button
+              onClick={() => setActiveModal('saved')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              🟡
+              Saved ({savedPalettesCount}/10)
+            </Button>
+
             <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
               <Sun className="h-4 w-4 text-gray-600" />
               <Switch
@@ -364,6 +399,14 @@ const Dashboard = () => {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Saved Palettes Modal */}
+      <SavedPalettesModal
+        isOpen={activeModal === 'saved'}
+        onClose={closeModal}
+        currentPalette={colorPalette}
+        onPaletteSelect={handleSavedPaletteSelect}
+      />
     </div>
   );
 };

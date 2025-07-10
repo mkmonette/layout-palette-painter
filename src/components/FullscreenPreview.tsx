@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,6 +11,8 @@ import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import { TemplateType, ColorPalette } from '@/types/template';
+import SavedPalettesModal from '@/components/SavedPalettesModal';
+import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 
 interface FullscreenPreviewProps {
   template: TemplateType;
@@ -39,6 +41,8 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onColorChange,
   onModeToggle
 }) => {
+  const { getSavedCount, loadSavedPalettes } = useSavedPalettes();
+  const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
 
@@ -62,6 +66,31 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       onColorChange(key as keyof ColorPalette, palette[key as keyof ColorPalette]);
     });
   };
+
+  const handleSavedPaletteSelect = (palette: ColorPalette) => {
+    Object.keys(palette).forEach(key => {
+      if (key !== 'id' && key !== 'name' && key !== 'savedAt') {
+        onColorChange(key as keyof ColorPalette, palette[key as keyof ColorPalette]);
+      }
+    });
+  };
+
+  useEffect(() => {
+    const updateCount = () => {
+      setSavedPalettesCount(getSavedCount());
+    };
+    
+    updateCount();
+    
+    // Listen for storage changes
+    const handleStorageChange = () => {
+      loadSavedPalettes();
+      updateCount();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [getSavedCount, loadSavedPalettes]);
 
   return (
     <div className="fixed inset-0 z-50 bg-white flex flex-col">
@@ -136,6 +165,16 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             >
               🎨
               Color Mood
+            </Button>
+
+            {/* Saved Palettes */}
+            <Button
+              onClick={() => setActiveModal('saved')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              🟡
+              Saved ({savedPalettesCount}/10)
             </Button>
 
             {/* Light/Dark Mode Toggle */}
@@ -276,6 +315,14 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Saved Palettes Modal */}
+      <SavedPalettesModal
+        isOpen={activeModal === 'saved'}
+        onClose={closeModal}
+        currentPalette={colorPalette}
+        onPaletteSelect={handleSavedPaletteSelect}
+      />
     </div>
   );
 };
