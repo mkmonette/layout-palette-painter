@@ -7,12 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Palette } from 'lucide-react';
-import { loginUser } from '@/utils/auth';
+import { registerUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
 
-const Login = () => {
+const Register = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -21,10 +23,28 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!username.trim() || !password.trim()) {
+    if (!username.trim() || !email.trim() || !password.trim()) {
       toast({
         title: "Error",
-        description: "Please enter both username and password.",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long.",
         variant: "destructive",
       });
       return;
@@ -32,12 +52,12 @@ const Login = () => {
 
     setIsLoading(true);
 
-    // Simulate login process
+    // Simulate registration process
     setTimeout(() => {
-      loginUser(username, rememberMe);
+      registerUser(username, email, password, rememberMe);
       toast({
-        title: "Login Successful",
-        description: `Welcome back, ${username}!`,
+        title: "Registration Successful",
+        description: `Welcome to Palette Painter, ${username}!`,
       });
       navigate('/dashboard');
       setIsLoading(false);
@@ -54,10 +74,10 @@ const Login = () => {
             </div>
           </div>
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Welcome Back
+            Create Account
           </CardTitle>
           <CardDescription>
-            Sign in to your Palette Painter account
+            Join Palette Painter and start creating amazing color palettes
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -67,9 +87,21 @@ const Login = () => {
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your username"
+                placeholder="Choose a username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
               />
             </div>
@@ -79,9 +111,21 @@ const Login = () => {
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 disabled={isLoading}
               />
             </div>
@@ -103,18 +147,18 @@ const Login = () => {
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Already have an account?{' '}
               <button 
-                onClick={() => navigate('/register')}
+                onClick={() => navigate('/login')}
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
-                Create Account
+                Sign In
               </button>
             </p>
           </div>
@@ -124,4 +168,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
