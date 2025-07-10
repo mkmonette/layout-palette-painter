@@ -221,7 +221,7 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
                   <div key={palette.id} className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
                     {/* Template Preview */}
                     <div className="border-b bg-gray-50">
-                      <div className="h-24 relative overflow-hidden">
+                      <div className="h-72 relative overflow-hidden">
                         <div className="absolute inset-0 transform scale-50 origin-top-left w-[200%] h-[200%]">
                           <LivePreview
                             template={palette.template || 'modern-hero'}
