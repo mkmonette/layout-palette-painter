@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
@@ -393,27 +393,60 @@ const AutoGenerate = () => {
             </Button>
 
             <div className="flex items-center gap-2">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-600 font-medium">Sets</label>
-                <Select value={autogenerateCount.toString()} onValueChange={(value) => setAutogenerateCount(parseInt(value))}>
-                  <SelectTrigger className="w-20 h-8">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
-                      <SelectItem key={num} value={num.toString()}>
-                        {num}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <Dialog open={activeModal === 'autogenerate-count'} onOpenChange={() => setActiveModal(activeModal === 'autogenerate-count' ? null : 'autogenerate-count')}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 h-8 px-3"
+                  >
+                    <span className="text-xs font-medium">Sets</span>
+                    <span className="font-bold text-primary">{autogenerateCount}</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="w-80 p-6" style={{ 
+                  position: 'fixed',
+                  bottom: '120px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  margin: 0
+                }}>
+                  <DialogHeader>
+                    <DialogTitle className="text-center">Set Generation Count</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex items-center justify-center gap-4 py-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setAutogenerateCount(Math.max(1, autogenerateCount - 1))}
+                      disabled={autogenerateCount <= 1}
+                      className="h-10 w-10 p-0"
+                    >
+                      -
+                    </Button>
+                    <div className="flex items-center justify-center min-w-[60px]">
+                      <span className="text-2xl font-bold text-primary">{autogenerateCount}</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setAutogenerateCount(Math.min(50, autogenerateCount + 1))}
+                      disabled={autogenerateCount >= 50}
+                      className="h-10 w-10 p-0"
+                    >
+                      +
+                    </Button>
+                  </div>
+                  <div className="text-center text-sm text-muted-foreground">
+                    Range: 1-50 sets
+                  </div>
+                </DialogContent>
+              </Dialog>
               
               <Button
                 onClick={handleGenerate}
                 disabled={isGenerating}
                 variant="outline"
-                className="flex items-center gap-2 mt-5"
+                className="flex items-center gap-2"
               >
                 🤖
                 {isGenerating ? 'Generating...' : 'Autogenerate Colors'}
