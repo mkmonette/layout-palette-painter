@@ -133,14 +133,14 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh]">
+      <DialogContent className="max-w-6xl max-h-[85vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             🟡 Saved Palettes
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="max-h-[60vh]">
+        <ScrollArea className="max-h-[70vh]">
           <div className="p-4 space-y-4">
             {/* Status Indicator */}
             <div className="p-3 bg-gray-50 rounded-lg text-center">
@@ -214,71 +214,76 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
 
             {/* Saved Palettes List */}
             {savedPalettes.length > 0 && (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="font-medium">Your Saved Palettes</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {savedPalettes.map((palette) => (
-                  <div key={palette.id} className="border rounded-lg overflow-hidden">
-                    <div className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h4 className="font-medium">{palette.name}</h4>
-                          <p className="text-sm text-gray-500 capitalize">
-                            {(palette.template || 'modern-hero').replace('-', ' ')} Template
-                          </p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => applyPalette(palette)}
-                          >
-                            <Palette className="h-4 w-4 mr-1" />
-                            Apply
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => deletePalette(palette.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                  <div key={palette.id} className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                    {/* Template Preview */}
+                    <div className="border-b bg-gray-50">
+                      <div className="h-24 relative overflow-hidden">
+                        <div className="absolute inset-0 transform scale-50 origin-top-left w-[200%] h-[200%]">
+                          <LivePreview
+                            template={palette.template || 'modern-hero'}
+                            colorPalette={palette}
+                          />
                         </div>
                       </div>
+                    </div>
 
-                      {/* Template Preview */}
-                      <div className="mb-3 border rounded-lg overflow-hidden bg-gray-50">
-                        <div className="h-32 relative">
-                          <div className="absolute inset-0 transform scale-50 origin-top-left w-[200%] h-[200%]">
-                            <LivePreview
-                              template={palette.template || 'modern-hero'}
-                              colorPalette={palette}
-                            />
-                          </div>
+                    <div className="p-3">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-medium text-sm truncate">{palette.name}</h4>
+                          <p className="text-xs text-gray-500 capitalize">
+                            {(palette.template || 'modern-hero').replace('-', ' ')} Template
+                          </p>
                         </div>
                       </div>
                       
                       {/* Color Swatches */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 mb-2">
                         {Object.entries(palette).map(([key, color]) => {
                           if (key === 'id' || key === 'name' || key === 'savedAt' || key === 'template') return null;
                           return (
-                            <div key={key} className="flex items-center gap-1">
-                              <div 
-                                className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
-                                style={{ backgroundColor: color }}
-                              />
-                              <span className="text-xs text-gray-500 capitalize">{key}</span>
-                            </div>
+                            <div 
+                              key={key}
+                              className="w-4 h-4 rounded-full border border-white shadow-sm"
+                              style={{ backgroundColor: color }}
+                              title={`${key}: ${color}`}
+                            />
                           );
                         })}
                       </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => applyPalette(palette)}
+                          className="flex-1 text-xs"
+                        >
+                          <Palette className="h-3 w-3 mr-1" />
+                          Apply
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => deletePalette(palette.id)}
+                          className="px-2"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
                       
-                      <p className="text-xs text-gray-500 mt-2">
-                        Saved: {new Date(palette.savedAt).toLocaleDateString()}
+                      <p className="text-xs text-gray-400 mt-2">
+                        {new Date(palette.savedAt).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
                 ))}
+                </div>
               </div>
             )}
           </div>
