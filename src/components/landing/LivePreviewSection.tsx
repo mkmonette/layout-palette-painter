@@ -82,7 +82,7 @@ const LivePreviewSection = () => {
           </div>
 
           {/* Live Preview */}
-          <div className="border rounded-lg overflow-hidden shadow-inner bg-white max-h-[1200px]">
+          <div className="border rounded-lg overflow-hidden shadow-inner bg-white">
             <div className="transform scale-75 origin-top w-[133.33%] h-[133.33%]">
               <LivePreview
                 template={selectedTemplate}
