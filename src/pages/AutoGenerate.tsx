@@ -242,164 +242,80 @@ const AutoGenerate = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {generatedPalettes.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Panel - Generated Results */}
-            <div>
-              <h2 className="text-lg font-semibold mb-4">Generated Palettes</h2>
-              <ScrollArea className="h-[70vh]">
-                <div className="grid grid-cols-3 gap-3 pr-4">
-                  {generatedPalettes.map((palette, index) => (
-                    <Card
-                      key={palette.id}
-                      className={`cursor-pointer transition-all ${
-                        selectedPaletteIndex === index
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'hover:border-gray-300'
-                      }`}
-                      onClick={() => setSelectedPaletteIndex(index)}
-                    >
-                      <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
-                        <div className="scale-[0.25] origin-top-left w-[400px] h-[300px]">
-                          <LivePreview
-                            template={palette.templateId as TemplateType}
-                            colorPalette={convertToColorPalette(palette)}
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-xs">Palette #{index + 1}</h3>
-                          <Badge variant="outline" className="text-xs">
-                            <Calendar className="h-2 w-2 mr-1" />
-                            {getDaysRemaining(palette.timestamp)}d
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex gap-1 mb-2">
-                          {palette.colors.map((color, colorIndex) => (
-                            <div
-                              key={colorIndex}
-                              className="flex-1 h-3 rounded"
-                              style={{ backgroundColor: color }}
-                              title={color}
-                            />
-                          ))}
-                        </div>
-                        
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSavePalette(palette);
-                          }}
-                          variant="outline"
-                          size="sm"
-                          className="w-full h-7 text-xs"
-                          disabled={!canSaveMore()}
-                        >
-                          <Save className="h-2 w-2 mr-1" />
-                          Save
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-
-            {/* Right Panel - Live Preview */}
-            <div>
-              <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold">Live Preview</h2>
-                  <div className="flex items-center space-x-2">
+          <div>
+            <h2 className="text-lg font-semibold mb-6">Generated Palettes</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {generatedPalettes.map((palette, index) => (
+                <Card
+                  key={palette.id}
+                  className={`cursor-pointer transition-all hover:shadow-lg ${
+                    selectedPaletteIndex === index
+                      ? 'border-blue-500 bg-blue-50 shadow-lg'
+                      : 'hover:border-gray-300'
+                  }`}
+                  onClick={() => setSelectedPaletteIndex(index)}
+                >
+                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white">
+                    <div className="scale-[0.3] origin-top-left w-[333px] h-[250px]">
+                      <LivePreview
+                        template={palette.templateId as TemplateType}
+                        colorPalette={convertToColorPalette(palette)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-medium text-sm">Palette #{index + 1}</h3>
+                      <Badge variant="outline" className="text-xs">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        {getDaysRemaining(palette.timestamp)}d left
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex gap-1 mb-3">
+                      {palette.colors.map((color, colorIndex) => (
+                        <div
+                          key={colorIndex}
+                          className="flex-1 h-4 rounded"
+                          style={{ backgroundColor: color }}
+                          title={color}
+                        />
+                      ))}
+                    </div>
+                    
+                    <div className="flex justify-between text-xs text-gray-500 mb-3">
+                      <span>{palette.templateName}</span>
+                      <span>{new Date(palette.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    
                     <Button
-                      onClick={handleZoomOut}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSavePalette(palette);
+                      }}
                       variant="outline"
-                      size="icon"
-                      disabled={zoomLevel <= 50}
+                      size="sm"
+                      className="w-full"
+                      disabled={!canSaveMore()}
                     >
-                      <ZoomOut className="h-4 w-4" />
-                    </Button>
-                    <span className="text-sm font-medium text-gray-600 min-w-[3rem] text-center">
-                      {zoomLevel}%
-                    </span>
-                    <Button
-                      onClick={handleZoomIn}
-                      variant="outline"
-                      size="icon"
-                      disabled={zoomLevel >= 200}
-                    >
-                      <ZoomIn className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      onClick={handleZoomReset}
-                      variant="outline"
-                      size="icon"
-                      title="Reset Zoom"
-                    >
-                      <RotateCcw className="h-4 w-4" />
+                      <Save className="h-3 w-3 mr-2" />
+                      Save to Library
                     </Button>
                   </div>
-                </div>
-                <div className="border rounded-lg overflow-auto shadow-inner bg-white max-h-[60vh]">
-                  <div 
-                    className="min-h-full transition-transform duration-200 origin-top"
-                    style={{ transform: `scale(${zoomLevel / 100})` }}
-                  >
-                    <LivePreview
-                      template={selectedTemplate}
-                      colorPalette={displayPalette}
-                    />
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              ))}
             </div>
           </div>
         ) : (
-          <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold">Live Preview</h2>
-              <div className="flex items-center space-x-2">
-                <Button
-                  onClick={handleZoomOut}
-                  variant="outline"
-                  size="icon"
-                  disabled={zoomLevel <= 50}
-                >
-                  <ZoomOut className="h-4 w-4" />
-                </Button>
-                <span className="text-sm font-medium text-gray-600 min-w-[3rem] text-center">
-                  {zoomLevel}%
-                </span>
-                <Button
-                  onClick={handleZoomIn}
-                  variant="outline"
-                  size="icon"
-                  disabled={zoomLevel >= 200}
-                >
-                  <ZoomIn className="h-4 w-4" />
-                </Button>
-                <Button
-                  onClick={handleZoomReset}
-                  variant="outline"
-                  size="icon"
-                  title="Reset Zoom"
-                >
-                  <RotateCcw className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="border rounded-lg overflow-auto shadow-inner bg-white max-h-[70vh]">
-              <div 
-                className="min-h-full transition-transform duration-200 origin-top"
-                style={{ transform: `scale(${zoomLevel / 100})` }}
-              >
-                <LivePreview
-                  template={selectedTemplate}
-                  colorPalette={displayPalette}
-                />
-              </div>
+          <Card className="p-12 text-center bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <Palette className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">No Palettes Generated Yet</h2>
+            <p className="text-gray-500 mb-6">
+              Use the AutoGenerate Settings in the bottom toolbar to select a template and generate color palettes.
+            </p>
+            <div className="text-sm text-gray-400">
+              Ready to create amazing color combinations for your templates
             </div>
           </Card>
         )}
