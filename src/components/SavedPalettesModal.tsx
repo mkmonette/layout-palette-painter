@@ -46,7 +46,18 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
     try {
       const saved = localStorage.getItem('savedPalettes');
       if (saved) {
-        setSavedPalettes(JSON.parse(saved));
+        const palettes = JSON.parse(saved);
+        // Migrate old palettes that don't have template field
+        const migratedPalettes = palettes.map((palette: any) => ({
+          ...palette,
+          template: palette.template || 'modern-hero' // Default template for old palettes
+        }));
+        setSavedPalettes(migratedPalettes);
+        
+        // Save migrated data back to localStorage
+        if (migratedPalettes.some((p: any) => !palettes.find((orig: any) => orig.id === p.id && orig.template))) {
+          localStorage.setItem('savedPalettes', JSON.stringify(migratedPalettes));
+        }
       }
     } catch (error) {
       console.error('Error loading saved palettes:', error);
@@ -212,7 +223,7 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
                         <div>
                           <h4 className="font-medium">{palette.name}</h4>
                           <p className="text-sm text-gray-500 capitalize">
-                            {palette.template?.replace('-', ' ') || 'Unknown Template'}
+                            {(palette.template || 'modern-hero').replace('-', ' ')} Template
                           </p>
                         </div>
                         <div className="flex gap-2">
@@ -235,16 +246,16 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
                       </div>
 
                       {/* Template Preview */}
-                      {palette.template && (
-                        <div className="mb-3 border rounded-lg overflow-hidden bg-gray-50">
-                          <div className="h-32 transform scale-50 origin-top-left w-[200%]">
+                      <div className="mb-3 border rounded-lg overflow-hidden bg-gray-50">
+                        <div className="h-32 relative">
+                          <div className="absolute inset-0 transform scale-50 origin-top-left w-[200%] h-[200%]">
                             <LivePreview
-                              template={palette.template}
+                              template={palette.template || 'modern-hero'}
                               colorPalette={palette}
                             />
                           </div>
                         </div>
-                      )}
+                      </div>
                       
                       {/* Color Swatches */}
                       <div className="flex items-center gap-2">
