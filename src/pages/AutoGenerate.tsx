@@ -76,12 +76,7 @@ const AutoGenerate = () => {
   const [selectedPaletteIndex, setSelectedPaletteIndex] = useState<number | null>(null);
   const [adminSettings] = useState(getAdminSettings());
 
-  useEffect(() => {
-    // Auto-generate when component mounts with global settings
-    if (globalSettings.count > 0) {
-      handleGenerate();
-    }
-  }, []);
+  // Removed auto-generation on mount to allow users to adjust settings first
 
   useEffect(() => {
     const updateCount = () => {
@@ -333,12 +328,12 @@ const AutoGenerate = () => {
         ) : (
           <Card className="p-12 text-center bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <Palette className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-700 mb-2">Generating Palettes...</h2>
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">Ready to Generate Palettes</h2>
             <p className="text-gray-500 mb-6">
-              Creating {autogenerateCount} color palettes for {allTemplates.find(t => t.id === selectedTemplate)?.name}
+              Adjust your settings below and click "Autogenerate Colors" to create {autogenerateCount} color palettes for {allTemplates.find(t => t.id === selectedTemplate)?.name}
             </p>
             <div className="text-sm text-gray-400">
-              Using global settings from Dashboard
+              Use the controls at the bottom to customize your generation settings
             </div>
           </Card>
         )}
