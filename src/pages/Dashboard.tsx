@@ -173,6 +173,7 @@ const Dashboard = () => {
 
   const handleBackgroundModeChange = (mode: BackgroundMode) => {
     setBackgroundMode(mode);
+    localStorage.setItem('background-mode', mode);
   };
 
   const getBackgroundStyle = () => {
