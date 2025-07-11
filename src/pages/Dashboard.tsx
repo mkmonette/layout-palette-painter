@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw, Download, Sparkles } from 'lucide-react';
+import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw, Download, Sparkles, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -27,6 +27,8 @@ import PlanSelector from '@/components/PlanSelector';
 import AccessibilityIndicator from '@/components/AccessibilityIndicator';
 import ImageColorGenerator from '@/components/ImageColorGenerator';
 import BackgroundModeSelector, { BackgroundMode } from '@/components/BackgroundModeSelector';
+import ColorThemeDropdown from '@/components/ColorThemeDropdown';
+import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -59,6 +61,7 @@ const Dashboard = () => {
   const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [showAccessibilityReport, setShowAccessibilityReport] = useState(false);
   const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('midtone');
+  const [autoGenerate, setAutoGenerate] = useState(false);
 
   const handleLogout = () => {
     logoutUser();
@@ -413,128 +416,105 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Bottom Toolbar */}
+      {/* Optimized Bottom Toolbar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t shadow-lg">
-        <div className="flex items-center justify-between gap-2 p-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleGenerateColors}
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-            >
-              {isGenerating ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Palette className="h-4 w-4 mr-2" />
-              )}
-              Generate
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('template')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Eye className="h-4 w-4" />
-              Template
-            </Button>
-
-            <Button
-              onClick={() => {
-                if (!canAccessColorSchemes) {
-                  setUpsellModal({ isOpen: true, templateName: 'Color schemes' });
-                  return;
-                }
-                setActiveModal('scheme');
-              }}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Palette className="h-4 w-4" />
-              Scheme {!canAccessColorSchemes && '🔒'}
-            </Button>
-
-            <Button
-              onClick={() => {
-                if (!canAccessColorMood) {
-                  setUpsellModal({ isOpen: true, templateName: 'Color moods' });
-                  return;
-                }
-                setActiveModal('mood');
-              }}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🎨
-              Color Mood {!canAccessColorMood && '🔒'}
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('saved')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🟡
-              Saved ({savedPalettesCount}/{MAX_PALETTES})
-            </Button>
-
+        <div className="p-3 max-w-7xl mx-auto">
+          {/* Desktop Layout: Always visible controls in specified order */}
+          <div className="hidden md:flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <Dialog open={activeModal === 'autogenerate-count'} onOpenChange={() => setActiveModal(activeModal === 'autogenerate-count' ? null : 'autogenerate-count')}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2 h-8 px-3"
-                  >
-                    <span className="text-xs font-medium">Sets</span>
-                    <span className="font-bold text-primary">{autogenerateCount}</span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="w-80 p-6" style={{ 
-                  position: 'fixed',
-                  bottom: '120px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  margin: 0
-                }}>
-                  <DialogHeader>
-                    <DialogTitle className="text-center">Set Generation Count</DialogTitle>
-                  </DialogHeader>
-                  <div className="flex items-center justify-center gap-4 py-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setAutogenerateCount(Math.max(1, autogenerateCount - 1))}
-                      disabled={autogenerateCount <= 1}
-                      className="h-10 w-10 p-0"
-                    >
-                      -
-                    </Button>
-                    <div className="flex items-center justify-center min-w-[60px]">
-                      <span className="text-2xl font-bold text-primary">{autogenerateCount}</span>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setAutogenerateCount(Math.min(50, autogenerateCount + 1))}
-                      disabled={autogenerateCount >= 50}
-                      className="h-10 w-10 p-0"
-                    >
-                      +
-                    </Button>
-                  </div>
-                  <div className="text-center text-sm text-muted-foreground">
-                    Range: 1-50 sets
-                  </div>
-                </DialogContent>
-              </Dialog>
-              
+              {/* Template */}
               <Button
-                onClick={() => {
+                onClick={() => setActiveModal('template')}
+                variant="outline"
+                className="flex items-center gap-2 h-9"
+              >
+                <Eye className="h-4 w-4" />
+                <span className="text-sm">Template</span>
+              </Button>
+
+              {/* Color Theme Dropdown */}
+              <ColorThemeDropdown
+                onSchemeClick={() => {
+                  if (!canAccessColorSchemes) {
+                    setUpsellModal({ isOpen: true, templateName: 'Color schemes' });
+                    return;
+                  }
+                  setActiveModal('scheme');
+                }}
+                onMoodClick={() => {
+                  if (!canAccessColorMood) {
+                    setUpsellModal({ isOpen: true, templateName: 'Color moods' });
+                    return;
+                  }
+                  setActiveModal('mood');
+                }}
+                onBackgroundModeChange={handleBackgroundModeChange}
+                backgroundMode={backgroundMode}
+              />
+
+              {/* Light/Dark Mode Toggle */}
+              <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9">
+                <Sun className="h-3 w-3 text-yellow-500" />
+                <Switch
+                  checked={isDarkMode}
+                  onCheckedChange={(checked) => {
+                    if (!canAccessDarkMode) {
+                      setUpsellModal({ isOpen: true, templateName: 'Dark mode' });
+                      return;
+                    }
+                    handleModeToggle(checked);
+                  }}
+                  disabled={!canAccessDarkMode}
+                />
+                <Moon className="h-3 w-3 text-gray-600" />
+                {!canAccessDarkMode && <span className="text-xs text-gray-500">🔒</span>}
+              </div>
+
+              {/* PDF Download */}
+              <Button
+                onClick={handleDownloadPDF}
+                variant="outline"
+                className="flex items-center gap-2 h-9"
+                disabled={!canDownload()}
+              >
+                <Download className="h-4 w-4" />
+                <span className="text-sm">{isPro ? 'PDF' : `PDF (${getRemainingDownloads()}/3)`}</span>
+              </Button>
+
+              {/* Save Sets */}
+              <Button
+                onClick={() => setActiveModal('saved')}
+                variant="outline"
+                className="flex items-center gap-2 h-9"
+              >
+                <BookOpen className="h-4 w-4" />
+                <span className="text-sm">Save ({savedPalettesCount}/{MAX_PALETTES})</span>
+              </Button>
+
+              {/* More Options Dropdown */}
+              <MoreOptionsDropdown
+                autoGenerate={autoGenerate}
+                onAutoGenerateChange={(checked) => {
+                  setAutoGenerate(checked);
+                  if (checked) handleGenerateColors();
+                }}
+                onImageGeneratorClick={() => {
+                  if (!isPro) {
+                    setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
+                    return;
+                  }
+                  setActiveModal('image-generator');
+                }}
+                accessibilityMode={accessibilityMode}
+                onAccessibilityModeChange={setAccessibilityMode}
+                showAccessibilityReport={showAccessibilityReport}
+                onAccessibilityReportToggle={() => setShowAccessibilityReport(!showAccessibilityReport)}
+                onColorsClick={() => setActiveModal('colors')}
+                onSetsClick={() => {
                   if (!canAccessAutoGenerator) {
                     setUpsellModal({ isOpen: true, templateName: 'Autogenerate' });
                     return;
                   }
-                  // Store global settings in localStorage
                   localStorage.setItem('autogenerate-global-settings', JSON.stringify({
                     template: selectedTemplate,
                     scheme: selectedScheme,
@@ -544,90 +524,160 @@ const Dashboard = () => {
                   }));
                   navigate('/autogenerate');
                 }}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                🤖
-                Autogenerate Colors {!canAccessAutoGenerator && '🔒'}
-              </Button>
+              />
             </div>
 
-            {/* Pro Image/URL Color Generator Button */}
-            <Button
-              onClick={() => {
-                if (!isPro) {
-                  setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
-                  return;
-                }
-                setActiveModal('image-generator');
-              }}
-              variant="outline"
-              className="flex items-center gap-2"
+            {/* Generate Button - Far Right */}
+            <Button 
+              onClick={handleGenerateColors}
+              disabled={isGenerating}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-10 font-medium"
             >
-              <Sparkles className="h-4 w-4" />
-              From Image {!isPro && '🔒'}
+              {isGenerating ? (
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Palette className="h-4 w-4 mr-2" />
+              )}
+              Generate
             </Button>
+          </div>
 
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
-              <Sun className="h-4 w-4 text-gray-600" />
-              <Switch
-                checked={isDarkMode}
-                onCheckedChange={(checked) => {
-                  if (!canAccessDarkMode) {
-                    setUpsellModal({ isOpen: true, templateName: 'Dark mode' });
-                    return;
-                  }
-                  handleModeToggle(checked);
-                }}
-                disabled={!canAccessDarkMode}
-              />
-              <Moon className="h-4 w-4 text-gray-600" />
-              {!canAccessDarkMode && <span className="text-xs text-gray-500">🔒</span>}
-            </div>
-
-            {/* Accessibility Mode Toggle */}
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
-              <span className="text-xs">🎯</span>
-              <Switch
-                checked={accessibilityMode}
-                onCheckedChange={setAccessibilityMode}
-              />
-              <span className="text-xs text-gray-600 whitespace-nowrap">A11y Mode</span>
-            </div>
-
-            {/* Accessibility Report Toggle */}
-            {!accessibilityMode && (
+          {/* Mobile Layout: Horizontally scrollable container */}
+          <div className="md:hidden relative">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2" style={{
+              scrollSnapType: 'x mandatory',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
+            }}>
+              {/* Template */}
               <Button
-                onClick={() => setShowAccessibilityReport(!showAccessibilityReport)}
+                onClick={() => setActiveModal('template')}
                 variant="outline"
-                size="sm"
-                className="flex items-center gap-1 text-xs"
+                className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
+                style={{ scrollSnapAlign: 'start' }}
               >
-                {showAccessibilityReport ? '👁️' : '👁️‍🗨️'}
-                <span>Contrast</span>
+                <Eye className="h-4 w-4" />
+                <span className="text-sm">Template</span>
               </Button>
-            )}
 
-            <Button
-              onClick={() => setActiveModal('colors')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Settings className="h-4 w-4" />
-              Colors
-            </Button>
+              {/* Color Theme Dropdown */}
+              <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+                <ColorThemeDropdown
+                  onSchemeClick={() => {
+                    if (!canAccessColorSchemes) {
+                      setUpsellModal({ isOpen: true, templateName: 'Color schemes' });
+                      return;
+                    }
+                    setActiveModal('scheme');
+                  }}
+                  onMoodClick={() => {
+                    if (!canAccessColorMood) {
+                      setUpsellModal({ isOpen: true, templateName: 'Color moods' });
+                      return;
+                    }
+                    setActiveModal('mood');
+                  }}
+                  onBackgroundModeChange={handleBackgroundModeChange}
+                  backgroundMode={backgroundMode}
+                />
+              </div>
 
-            <Button
-              onClick={handleDownloadPDF}
-              variant="outline"
-              className="flex items-center gap-2"
-              disabled={!canDownload()}
-            >
-              <Download className="h-4 w-4" />
-              {isPro ? 'PDF' : `PDF (${getRemainingDownloads()}/3)`}
-            </Button>
+              {/* Light/Dark Mode Toggle */}
+              <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+                <Sun className="h-3 w-3 text-yellow-500" />
+                <Switch
+                  checked={isDarkMode}
+                  onCheckedChange={(checked) => {
+                    if (!canAccessDarkMode) {
+                      setUpsellModal({ isOpen: true, templateName: 'Dark mode' });
+                      return;
+                    }
+                    handleModeToggle(checked);
+                  }}
+                  disabled={!canAccessDarkMode}
+                />
+                <Moon className="h-3 w-3 text-gray-600" />
+                {!canAccessDarkMode && <span className="text-xs">🔒</span>}
+              </div>
 
-            <BackgroundModeSelector onModeChange={handleBackgroundModeChange} />
+              {/* PDF Download */}
+              <Button
+                onClick={handleDownloadPDF}
+                variant="outline"
+                className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
+                disabled={!canDownload()}
+                style={{ scrollSnapAlign: 'start' }}
+              >
+                <Download className="h-4 w-4" />
+                <span className="text-sm whitespace-nowrap">{isPro ? 'PDF' : `PDF (${getRemainingDownloads()}/3)`}</span>
+              </Button>
+
+              {/* Save Sets */}
+              <Button
+                onClick={() => setActiveModal('saved')}
+                variant="outline"
+                className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
+                style={{ scrollSnapAlign: 'start' }}
+              >
+                <BookOpen className="h-4 w-4" />
+                <span className="text-sm whitespace-nowrap">Save ({savedPalettesCount}/{MAX_PALETTES})</span>
+              </Button>
+
+              {/* More Options Dropdown */}
+              <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+                <MoreOptionsDropdown
+                  autoGenerate={autoGenerate}
+                  onAutoGenerateChange={(checked) => {
+                    setAutoGenerate(checked);
+                    if (checked) handleGenerateColors();
+                  }}
+                  onImageGeneratorClick={() => {
+                    if (!isPro) {
+                      setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
+                      return;
+                    }
+                    setActiveModal('image-generator');
+                  }}
+                  accessibilityMode={accessibilityMode}
+                  onAccessibilityModeChange={setAccessibilityMode}
+                  showAccessibilityReport={showAccessibilityReport}
+                  onAccessibilityReportToggle={() => setShowAccessibilityReport(!showAccessibilityReport)}
+                  onColorsClick={() => setActiveModal('colors')}
+                  onSetsClick={() => {
+                    if (!canAccessAutoGenerator) {
+                      setUpsellModal({ isOpen: true, templateName: 'Autogenerate' });
+                      return;
+                    }
+                    localStorage.setItem('autogenerate-global-settings', JSON.stringify({
+                      template: selectedTemplate,
+                      scheme: selectedScheme,
+                      isDarkMode,
+                      count: autogenerateCount,
+                      palette: colorPalette
+                    }));
+                    navigate('/autogenerate');
+                  }}
+                />
+              </div>
+
+              {/* Generate Button - Last item */}
+              <Button 
+                onClick={handleGenerateColors}
+                disabled={isGenerating}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-10 font-medium flex-shrink-0"
+                style={{ scrollSnapAlign: 'start' }}
+              >
+                {isGenerating ? (
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Palette className="h-4 w-4 mr-2" />
+                )}
+                Generate
+              </Button>
+            </div>
+
+            {/* Scroll indicator gradient */}
+            <div className="absolute right-0 top-0 bottom-2 w-6 bg-gradient-to-l from-white/95 to-transparent pointer-events-none" />
           </div>
         </div>
       </div>
