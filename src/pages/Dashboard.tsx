@@ -24,7 +24,7 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import PlanSelector from '@/components/PlanSelector';
-import AccessibilityIndicator from '@/components/AccessibilityIndicator';
+
 import ImageColorGenerator from '@/components/ImageColorGenerator';
 
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
@@ -67,8 +67,6 @@ const Dashboard = () => {
   const [autogenerateCount, setAutogenerateCount] = useState(10);
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; templateName: string }>({ isOpen: false, templateName: '' });
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
-  const [accessibilityMode, setAccessibilityMode] = useState(false);
-  const [showAccessibilityReport, setShowAccessibilityReport] = useState(false);
   const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
 
   const handleLogout = () => {
@@ -84,14 +82,9 @@ const Dashboard = () => {
     setIsGenerating(true);
     setTimeout(() => {
       try {
-        const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, accessibilityMode, selectedMoodId);
+        const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, false, selectedMoodId);
         setColorPalette(newPalette);
         setIsGenerating(false);
-        
-        // Auto-show accessibility report if accessibility mode is on
-        if (accessibilityMode) {
-          setShowAccessibilityReport(true);
-        }
       } catch (error) {
         // If accessibility mode fails, fall back to regular generation
         if (error instanceof Error && error.message.includes('No accessible palette found')) {
@@ -119,7 +112,7 @@ const Dashboard = () => {
   const handleModeToggle = (checked: boolean) => {
     setIsDarkMode(checked);
     try {
-      const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, accessibilityMode);
+      const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, false);
       setColorPalette(newPalette);
     } catch (error) {
       if (error instanceof Error && error.message.includes('No accessible palette found')) {
@@ -277,8 +270,6 @@ const Dashboard = () => {
         selectedScheme={selectedScheme}
         isDarkMode={isDarkMode}
         isGenerating={isGenerating}
-        accessibilityMode={accessibilityMode}
-        showAccessibilityReport={showAccessibilityReport}
         autogenerateCount={autogenerateCount}
         onClose={() => setIsFullscreen(false)}
         onGenerateColors={handleGenerateColors}
@@ -289,8 +280,6 @@ const Dashboard = () => {
           if (moodId !== undefined) setSelectedMoodId(moodId);
         }}
         onModeToggle={handleModeToggle}
-        onAccessibilityModeToggle={setAccessibilityMode}
-        onShowAccessibilityReport={setShowAccessibilityReport}
         onDownloadPDF={handleDownloadPDF}
         onAutogenerateCountChange={setAutogenerateCount}
       />
@@ -409,11 +398,6 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {/* Accessibility Report */}
-          <AccessibilityIndicator
-            palette={colorPalette}
-            isVisible={showAccessibilityReport || accessibilityMode}
-          />
         </Card>
       </div>
 
@@ -499,10 +483,6 @@ const Dashboard = () => {
                   }
                   setActiveModal('image-generator');
                 }}
-                accessibilityMode={accessibilityMode}
-                onAccessibilityModeChange={setAccessibilityMode}
-                showAccessibilityReport={showAccessibilityReport}
-                onAccessibilityReportToggle={() => setShowAccessibilityReport(!showAccessibilityReport)}
                 onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => setActiveModal('saved-palettes')}
               />
@@ -612,10 +592,6 @@ const Dashboard = () => {
                     }
                     setActiveModal('image-generator');
                   }}
-                  accessibilityMode={accessibilityMode}
-                  onAccessibilityModeChange={setAccessibilityMode}
-                  showAccessibilityReport={showAccessibilityReport}
-                  onAccessibilityReportToggle={() => setShowAccessibilityReport(!showAccessibilityReport)}
                   onColorsClick={() => setActiveModal('colors')}
                   onSetsClick={() => setActiveModal('saved-palettes')}
                 />

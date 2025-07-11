@@ -554,10 +554,6 @@ const AutoGenerate = () => {
               {/* More Options Dropdown */}
               <MoreOptionsDropdown
                 onImageGeneratorClick={() => setActiveModal('image-generator')}
-                accessibilityMode={false}
-                onAccessibilityModeChange={() => {}}
-                showAccessibilityReport={false}
-                onAccessibilityReportToggle={() => {}}
                 onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => setActiveModal('saved')}
               />

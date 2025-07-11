@@ -11,7 +11,7 @@ import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSe
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
-import AccessibilityIndicator from '@/components/AccessibilityIndicator';
+
 import { TemplateType, ColorPalette } from '@/types/template';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
@@ -29,8 +29,6 @@ interface FullscreenPreviewProps {
   selectedScheme: ColorSchemeType;
   isDarkMode: boolean;
   isGenerating: boolean;
-  accessibilityMode?: boolean;
-  showAccessibilityReport?: boolean;
   autogenerateCount?: number;
   
   autoGenerate?: boolean;
@@ -40,8 +38,6 @@ interface FullscreenPreviewProps {
   onTemplateChange: (template: TemplateType) => void;
   onColorChange: (palette: ColorPalette, moodId?: string | null) => void;
   onModeToggle: (checked: boolean) => void;
-  onAccessibilityModeToggle?: (checked: boolean) => void;
-  onShowAccessibilityReport?: (show: boolean) => void;
   onDownloadPDF?: () => void;
   onAutogenerateCountChange?: (count: number) => void;
   
@@ -54,8 +50,6 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   selectedScheme,
   isDarkMode,
   isGenerating,
-  accessibilityMode = false,
-  showAccessibilityReport = false,
   autogenerateCount = 10,
   
   autoGenerate = false,
@@ -65,8 +59,6 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onTemplateChange,
   onColorChange,
   onModeToggle,
-  onAccessibilityModeToggle,
-  onShowAccessibilityReport,
   onDownloadPDF,
   onAutogenerateCountChange,
   
@@ -243,10 +235,6 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                   }
                   setActiveModal('image-generator');
                 }}
-                accessibilityMode={accessibilityMode}
-                onAccessibilityModeChange={onAccessibilityModeToggle || (() => {})}
-                showAccessibilityReport={showAccessibilityReport}
-                onAccessibilityReportToggle={() => onShowAccessibilityReport && onShowAccessibilityReport(!showAccessibilityReport)}
                 onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => {}}
               />
@@ -394,15 +382,6 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         onTemplateChange={onTemplateChange}
       />
 
-      {/* Accessibility Report */}
-      {(showAccessibilityReport || accessibilityMode) && (
-        <div className="fixed bottom-20 left-4 right-4 z-10 bg-white/95 backdrop-blur-md border rounded-lg shadow-lg">
-          <AccessibilityIndicator
-            palette={colorPalette}
-            isVisible={showAccessibilityReport || accessibilityMode}
-          />
-        </div>
-      )}
 
       {/* Image Color Generator Modal */}
       <Dialog open={activeModal === 'image-generator'} onOpenChange={closeModal}>
