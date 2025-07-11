@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles } from 'lucide-react';
+import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -19,6 +19,9 @@ import { useToast } from '@/hooks/use-toast';
 import ImageColorGenerator from '@/components/ImageColorGenerator';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import ProUpsellModal from '@/components/ProUpsellModal';
+import ColorThemeDropdown from '@/components/ColorThemeDropdown';
+import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
+import { BackgroundMode } from '@/components/BackgroundModeSelector';
 
 interface FullscreenPreviewProps {
   template: TemplateType;
@@ -29,6 +32,8 @@ interface FullscreenPreviewProps {
   accessibilityMode?: boolean;
   showAccessibilityReport?: boolean;
   autogenerateCount?: number;
+  backgroundMode?: BackgroundMode;
+  autoGenerate?: boolean;
   onClose: () => void;
   onGenerateColors: () => void;
   onSchemeChange: (scheme: ColorSchemeType) => void;
@@ -39,6 +44,8 @@ interface FullscreenPreviewProps {
   onShowAccessibilityReport?: (show: boolean) => void;
   onDownloadPDF?: () => void;
   onAutogenerateCountChange?: (count: number) => void;
+  onBackgroundModeChange?: (mode: BackgroundMode) => void;
+  onAutoGenerateChange?: (checked: boolean) => void;
 }
 
 const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
@@ -50,6 +57,8 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   accessibilityMode = false,
   showAccessibilityReport = false,
   autogenerateCount = 10,
+  backgroundMode = 'midtone',
+  autoGenerate = false,
   onClose,
   onGenerateColors,
   onSchemeChange,
@@ -59,7 +68,9 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onAccessibilityModeToggle,
   onShowAccessibilityReport,
   onDownloadPDF,
-  onAutogenerateCountChange
+  onAutogenerateCountChange,
+  onBackgroundModeChange,
+  onAutoGenerateChange
 }) => {
   const { getSavedCount, loadSavedPalettes, canSaveMore, savePalette } = useSavedPalettes();
   const { toast } = useToast();
@@ -167,13 +178,90 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
       {/* Bottom Toolbar */}
       <div className="fixed bottom-0 left-0 right-0 z-10 bg-white/95 backdrop-blur-md border-t shadow-lg">
-        <div className="flex items-center justify-between gap-2 p-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2">
-            {/* Generate Colors Button */}
+        <div className="px-4 py-3 relative">
+          <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap">
+            {/* Template Selector */}
             <Button
+              onClick={() => setActiveModal('template')}
+              variant="outline"
+              className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
+              style={{ scrollSnapAlign: 'start' }}
+            >
+              <Eye className="h-4 w-4" />
+              <span className="text-sm">Template</span>
+            </Button>
+
+            {/* Color Theme Dropdown */}
+            <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+              <ColorThemeDropdown
+                onSchemeClick={() => setActiveModal('scheme')}
+                onMoodClick={() => setActiveModal('mood')}
+                onBackgroundModeChange={onBackgroundModeChange || (() => {})}
+                backgroundMode={backgroundMode}
+              />
+            </div>
+
+            {/* Light/Dark Mode Toggle */}
+            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+              <Sun className="h-3 w-3 text-yellow-500" />
+              <Switch
+                checked={isDarkMode}
+                onCheckedChange={onModeToggle}
+              />
+              <Moon className="h-3 w-3 text-gray-600" />
+            </div>
+
+            {/* PDF Download */}
+            {onDownloadPDF && (
+              <Button
+                onClick={onDownloadPDF}
+                variant="outline"
+                className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
+                style={{ scrollSnapAlign: 'start' }}
+              >
+                <Download className="h-4 w-4" />
+                <span className="text-sm whitespace-nowrap">PDF</span>
+              </Button>
+            )}
+
+            {/* Save Sets */}
+            <Button
+              onClick={() => setActiveModal('saved')}
+              variant="outline"
+              className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
+              style={{ scrollSnapAlign: 'start' }}
+            >
+              <BookOpen className="h-4 w-4" />
+              <span className="text-sm whitespace-nowrap">Save ({savedPalettesCount}/10)</span>
+            </Button>
+
+            {/* More Options Dropdown */}
+            <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+              <MoreOptionsDropdown
+                autoGenerate={autoGenerate || false}
+                onAutoGenerateChange={onAutoGenerateChange || (() => {})}
+                onImageGeneratorClick={() => {
+                  if (!isPro) {
+                    setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
+                    return;
+                  }
+                  setActiveModal('image-generator');
+                }}
+                accessibilityMode={accessibilityMode}
+                onAccessibilityModeChange={onAccessibilityModeToggle || (() => {})}
+                showAccessibilityReport={showAccessibilityReport}
+                onAccessibilityReportToggle={() => onShowAccessibilityReport && onShowAccessibilityReport(!showAccessibilityReport)}
+                onColorsClick={() => setActiveModal('colors')}
+                onSetsClick={() => {}}
+              />
+            </div>
+
+            {/* Generate Button - Last item */}
+            <Button 
               onClick={onGenerateColors}
               disabled={isGenerating}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-9 font-medium flex-shrink-0"
+              style={{ scrollSnapAlign: 'start' }}
             >
               {isGenerating ? (
                 <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -183,233 +271,43 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               Generate
             </Button>
 
-            {/* Template Selector */}
-            <Button
-              onClick={() => setActiveModal('template')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Eye className="h-4 w-4" />
-              Template
-            </Button>
-
-            {/* Color Scheme */}
-            <Button
-              onClick={() => setActiveModal('scheme')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Palette className="h-4 w-4" />
-              Scheme
-            </Button>
-
-            {/* Color Mood */}
-            <Button
-              onClick={() => setActiveModal('mood')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🎨
-              Color Mood
-            </Button>
-
-            {/* Saved Palettes */}
-            <Button
-              onClick={() => setActiveModal('saved')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🟡
-              Saved ({savedPalettesCount}/10)
-            </Button>
-
-            {/* Pro Image/URL Color Generator Button */}
-            <Button
-              onClick={() => {
-                if (!isPro) {
-                  setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
-                  return;
-                }
-                setActiveModal('image-generator');
-              }}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Sparkles className="h-4 w-4" />
-              From Image {!isPro && '🔒'}
-            </Button>
-
-            {/* Save Button */}
-            <Button
-              onClick={handleSave}
-              disabled={!canSaveMore()}
-              className="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
-            >
-              {canSaveMore() ? (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
-                </>
-              ) : (
-                <>
-                  <Check className="h-4 w-4 mr-2" />
-                  Limit Reached
-                </>
-              )}
-            </Button>
-
-            {/* Light/Dark Mode Toggle */}
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
-              <Sun className="h-4 w-4 text-gray-600" />
-              <Switch
-                checked={isDarkMode}
-                onCheckedChange={onModeToggle}
-              />
-              <Moon className="h-4 w-4 text-gray-600" />
+            {/* Zoom Controls */}
+            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+              <Button
+                onClick={handleZoomOut}
+                variant="ghost"
+                size="sm"
+                disabled={zoomLevel <= 50}
+                className="h-6 w-6 p-0"
+              >
+                <ZoomOut className="h-3 w-3" />
+              </Button>
+              <span className="text-xs font-medium text-gray-600 min-w-[2.5rem] text-center">
+                {zoomLevel}%
+              </span>
+              <Button
+                onClick={handleZoomIn}
+                variant="ghost"
+                size="sm"
+                disabled={zoomLevel >= 200}
+                className="h-6 w-6 p-0"
+              >
+                <ZoomIn className="h-3 w-3" />
+              </Button>
+              <Button
+                onClick={handleZoomReset}
+                variant="ghost"
+                size="sm"
+                title="Reset Zoom"
+                className="h-6 w-6 p-0"
+              >
+                <RotateCcw className="h-3 w-3" />
+              </Button>
             </div>
-
-            {/* Accessibility Mode Toggle */}
-            {onAccessibilityModeToggle && (
-              <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
-                <Shield className="h-4 w-4 text-gray-600" />
-                <Switch
-                  checked={accessibilityMode}
-                  onCheckedChange={onAccessibilityModeToggle}
-                />
-                <span className="text-xs text-gray-600">A11y</span>
-              </div>
-            )}
-
-            {/* Auto-generate Count */}
-            {onAutogenerateCountChange && (
-              <Dialog open={activeModal === 'autogenerate-count'} onOpenChange={() => setActiveModal(activeModal === 'autogenerate-count' ? null : 'autogenerate-count')}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2 h-8 px-3"
-                  >
-                    <span className="text-xs font-medium">Sets</span>
-                    <span className="font-bold text-primary">{autogenerateCount}</span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="w-80 p-6" style={{ 
-                  position: 'fixed',
-                  bottom: '120px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  margin: 0
-                }}>
-                  <DialogHeader>
-                    <DialogTitle className="text-center">Set Generation Count</DialogTitle>
-                  </DialogHeader>
-                  <div className="flex items-center justify-center gap-4 py-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onAutogenerateCountChange(Math.max(1, autogenerateCount - 5))}
-                    >
-                      -5
-                    </Button>
-                    <Select value={autogenerateCount.toString()} onValueChange={(val) => onAutogenerateCountChange(parseInt(val))}>
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1, 5, 10, 15, 20, 25, 30, 40, 50].map(num => (
-                          <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onAutogenerateCountChange(Math.min(50, autogenerateCount + 5))}
-                    >
-                      +5
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
-
-            {/* Download PDF */}
-            {onDownloadPDF && (
-              <Button
-                onClick={onDownloadPDF}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                PDF
-              </Button>
-            )}
-
-            {/* Accessibility Report Toggle */}
-            {onShowAccessibilityReport && (
-              <Button
-                onClick={() => onShowAccessibilityReport(!showAccessibilityReport)}
-                variant={showAccessibilityReport ? "default" : "outline"}
-                className="flex items-center gap-2"
-              >
-                <Shield className="h-4 w-4" />
-                A11y Report
-              </Button>
-            )}
-
-            {/* Customize Colors */}
-            <Button
-              onClick={() => setActiveModal('colors')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Settings className="h-4 w-4" />
-              Colors
-            </Button>
           </div>
 
-          {/* Zoom Controls */}
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleZoomOut}
-              variant="outline"
-              size="icon"
-              disabled={zoomLevel <= 50}
-            >
-              <ZoomOut className="h-4 w-4" />
-            </Button>
-            <span className="text-sm font-medium text-gray-600 min-w-[3rem] text-center">
-              {zoomLevel}%
-            </span>
-            <Button
-              onClick={handleZoomIn}
-              variant="outline"
-              size="icon"
-              disabled={zoomLevel >= 200}
-            >
-              <ZoomIn className="h-4 w-4" />
-            </Button>
-            <Button
-              onClick={handleZoomReset}
-              variant="outline"
-              size="icon"
-              title="Reset Zoom"
-            >
-              <RotateCcw className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Template Info */}
-          <div className="hidden lg:flex items-center gap-2 text-sm text-gray-600">
-            <span className="capitalize font-medium">
-              {template.replace('-', ' ')}
-            </span>
-            <span className="px-2 py-1 rounded-full bg-gray-100 text-xs">
-              {isDarkMode ? 'Dark' : 'Light'}
-            </span>
-            <span className="px-2 py-1 rounded-full bg-purple-100 text-xs text-purple-700">
-              {selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)}
-            </span>
-          </div>
+          {/* Scroll indicator gradient */}
+          <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white/95 to-transparent pointer-events-none" />
         </div>
       </div>
 
