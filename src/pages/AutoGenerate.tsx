@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Palette, Clock, Save, Calendar, RefreshCw, Settings, Eye, Moon, Sun, ZoomIn, ZoomOut, RotateCcw, Download } from 'lucide-react';
+import { ArrowLeft, Palette, Clock, Save, Calendar, RefreshCw, Settings, Eye, Moon, Sun, ZoomIn, ZoomOut, RotateCcw, Download, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +24,7 @@ import { generateColorPalettePDF } from '@/utils/pdfGenerator';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
+import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 
 // Template definitions (reusing from TemplateSelector)
 const allTemplates: Template[] = [
@@ -427,77 +428,79 @@ const AutoGenerate = () => {
         )}
       </div>
 
-      {/* Bottom Toolbar */}
+      {/* Bottom Toolbar - Optimized to match Dashboard */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t shadow-lg">
-        <div className="flex items-center justify-between gap-2 p-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleGenerateColors}
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-            >
-              {isGenerating ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Palette className="h-4 w-4 mr-2" />
-              )}
-              Generate
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('template')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Eye className="h-4 w-4" />
-              Template
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('scheme')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Palette className="h-4 w-4" />
-              Scheme
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('mood')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🎨
-              Color Mood
-            </Button>
-
-            <Button
-              onClick={() => setActiveModal('saved')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              🟡
-              Saved ({savedPalettesCount}/{MAX_PALETTES})
-            </Button>
-
+        <div className="p-3 max-w-7xl mx-auto">
+          {/* Desktop Layout: Always visible controls in specified order */}
+          <div className="hidden md:flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
+              {/* Template */}
+              <Button
+                onClick={() => setActiveModal('template')}
+                variant="outline"
+                className="flex items-center gap-2 h-9"
+              >
+                <Eye className="h-4 w-4" />
+                <span className="text-sm">Template</span>
+              </Button>
+
+              {/* Color Theme Dropdown */}
+              <Button
+                onClick={() => setActiveModal('scheme')}
+                variant="outline"
+                className="flex items-center gap-2 h-9"
+              >
+                <Palette className="h-4 w-4" />
+                <span className="text-sm">Scheme</span>
+              </Button>
+
+              {/* Light/Dark Mode Toggle */}
+              <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9">
+                <Sun className="h-3 w-3 text-yellow-500" />
+                <Switch
+                  checked={isDarkMode}
+                  onCheckedChange={handleModeToggle}
+                />
+                <Moon className="h-3 w-3 text-gray-600" />
+              </div>
+
+              {/* Generate Colors */}
+              <Button
+                onClick={handleGenerateColors}
+                disabled={isGenerating}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white flex items-center gap-2 h-9"
+              >
+                {isGenerating ? (
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Palette className="h-4 w-4" />
+                )}
+                <span className="text-sm">Generate</span>
+              </Button>
+
+              {/* Autogenerate Colors */}
+              <Button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                variant="default"
+                className="flex items-center gap-2 h-9 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span className="text-sm">{isGenerating ? 'Generating...' : 'Autogenerate'}</span>
+              </Button>
+
+              {/* Sets Count */}
               <Dialog open={activeModal === 'autogenerate-count'} onOpenChange={() => setActiveModal(activeModal === 'autogenerate-count' ? null : 'autogenerate-count')}>
                 <DialogTrigger asChild>
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 h-8 px-3"
+                    className="flex items-center gap-2 h-9 px-3"
                   >
-                    <span className="text-xs font-medium">Sets</span>
+                    <span className="text-sm">Sets</span>
                     <span className="font-bold text-primary">{autogenerateCount}</span>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="w-80 p-6" style={{ 
-                  position: 'fixed',
-                  bottom: '120px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  margin: 0
-                }}>
+                <DialogContent className="w-80 p-6">
                   <DialogHeader>
                     <DialogTitle className="text-center">Set Generation Count</DialogTitle>
                   </DialogHeader>
@@ -529,43 +532,72 @@ const AutoGenerate = () => {
                   </div>
                 </DialogContent>
               </Dialog>
-              
+
+              {/* More Options Dropdown */}
+              <MoreOptionsDropdown
+                onImageGeneratorClick={() => setActiveModal('image-generator')}
+                accessibilityMode={false}
+                onAccessibilityModeChange={() => {}}
+                showAccessibilityReport={false}
+                onAccessibilityReportToggle={() => {}}
+                onColorsClick={() => setActiveModal('colors')}
+                onSetsClick={() => setActiveModal('saved')}
+              />
+
+              {/* Download PDF */}
               <Button
-                onClick={handleGenerate}
-                disabled={isGenerating}
+                onClick={handleDownloadPDF}
                 variant="outline"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 h-9"
               >
-                🤖
-                {isGenerating ? 'Generating...' : 'Autogenerate Colors'}
+                <Download className="h-4 w-4" />
+                <span className="text-sm">PDF</span>
               </Button>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white">
-              <Sun className="h-4 w-4 text-gray-600" />
+          {/* Mobile Layout */}
+          <div className="md:hidden flex items-center gap-2 overflow-x-auto">
+            <Button
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white flex items-center gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span>{isGenerating ? 'Generating...' : 'Autogenerate'}</span>
+            </Button>
+            
+            <Button
+              onClick={() => setActiveModal('template')}
+              variant="outline"
+              size="sm"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            
+            <Button
+              onClick={() => setActiveModal('scheme')}
+              variant="outline"
+              size="sm"
+            >
+              <Palette className="h-4 w-4" />
+            </Button>
+            
+            <div className="flex items-center gap-1 px-2 py-1 border rounded bg-white">
+              <Sun className="h-3 w-3" />
               <Switch
                 checked={isDarkMode}
                 onCheckedChange={handleModeToggle}
               />
-              <Moon className="h-4 w-4 text-gray-600" />
+              <Moon className="h-3 w-3" />
             </div>
-
+            
             <Button
               onClick={() => setActiveModal('colors')}
               variant="outline"
-              className="flex items-center gap-2"
+              size="sm"
             >
               <Settings className="h-4 w-4" />
-              Colors
-            </Button>
-
-            <Button
-              onClick={handleDownloadPDF}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Download className="h-4 w-4" />
-              PDF
             </Button>
           </div>
         </div>

@@ -60,7 +60,6 @@ const Dashboard = () => {
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
   const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [showAccessibilityReport, setShowAccessibilityReport] = useState(false);
-  const [autoGenerate, setAutoGenerate] = useState(false);
   const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
 
   const handleLogout = () => {
@@ -484,11 +483,6 @@ const Dashboard = () => {
 
               {/* More Options Dropdown */}
               <MoreOptionsDropdown
-                autoGenerate={autoGenerate}
-                onAutoGenerateChange={(checked) => {
-                  setAutoGenerate(checked);
-                  if (checked) handleGenerateColors();
-                }}
                 onImageGeneratorClick={() => {
                   if (!isPro) {
                     setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
@@ -501,20 +495,7 @@ const Dashboard = () => {
                 showAccessibilityReport={showAccessibilityReport}
                 onAccessibilityReportToggle={() => setShowAccessibilityReport(!showAccessibilityReport)}
                 onColorsClick={() => setActiveModal('colors')}
-                onSetsClick={() => {
-                  if (!canAccessAutoGenerator) {
-                    setUpsellModal({ isOpen: true, templateName: 'Autogenerate' });
-                    return;
-                  }
-                  localStorage.setItem('autogenerate-global-settings', JSON.stringify({
-                    template: selectedTemplate,
-                    scheme: selectedScheme,
-                    isDarkMode,
-                    count: autogenerateCount,
-                    palette: colorPalette
-                  }));
-                  navigate('/autogenerate');
-                }}
+                onSetsClick={() => setActiveModal('saved-palettes')}
               />
             </div>
 
@@ -615,11 +596,6 @@ const Dashboard = () => {
               {/* More Options Dropdown */}
               <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
                 <MoreOptionsDropdown
-                  autoGenerate={autoGenerate}
-                  onAutoGenerateChange={(checked) => {
-                    setAutoGenerate(checked);
-                    if (checked) handleGenerateColors();
-                  }}
                   onImageGeneratorClick={() => {
                     if (!isPro) {
                       setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
@@ -632,20 +608,7 @@ const Dashboard = () => {
                   showAccessibilityReport={showAccessibilityReport}
                   onAccessibilityReportToggle={() => setShowAccessibilityReport(!showAccessibilityReport)}
                   onColorsClick={() => setActiveModal('colors')}
-                  onSetsClick={() => {
-                    if (!canAccessAutoGenerator) {
-                      setUpsellModal({ isOpen: true, templateName: 'Autogenerate' });
-                      return;
-                    }
-                    localStorage.setItem('autogenerate-global-settings', JSON.stringify({
-                      template: selectedTemplate,
-                      scheme: selectedScheme,
-                      isDarkMode,
-                      count: autogenerateCount,
-                      palette: colorPalette
-                    }));
-                    navigate('/autogenerate');
-                  }}
+                  onSetsClick={() => setActiveModal('saved-palettes')}
                 />
               </div>
 

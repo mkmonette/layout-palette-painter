@@ -6,8 +6,6 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 
 interface MoreOptionsDropdownProps {
-  autoGenerate: boolean;
-  onAutoGenerateChange: (checked: boolean) => void;
   onImageGeneratorClick: () => void;
   accessibilityMode: boolean;
   onAccessibilityModeChange: (checked: boolean) => void;
@@ -18,8 +16,6 @@ interface MoreOptionsDropdownProps {
 }
 
 const MoreOptionsDropdown: React.FC<MoreOptionsDropdownProps> = ({
-  autoGenerate,
-  onAutoGenerateChange,
   onImageGeneratorClick,
   accessibilityMode,
   onAccessibilityModeChange,
@@ -49,17 +45,14 @@ const MoreOptionsDropdown: React.FC<MoreOptionsDropdownProps> = ({
       </PopoverTrigger>
       <PopoverContent className="w-56 p-2" align="end" side="top">
         <div className="space-y-1">
-          {/* Auto Generate Toggle */}
-          <div className="flex items-center justify-between px-3 py-2">
-            <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4" />
-              <span className="text-sm">Auto Generate</span>
-            </div>
-            <Switch
-              checked={autoGenerate}
-              onCheckedChange={onAutoGenerateChange}
-            />
-          </div>
+          {/* Auto Generate Link */}
+          <button
+            onClick={() => handleItemClick(() => window.location.href = '/autogenerate')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <Zap className="h-4 w-4" />
+            <span>Auto Generate</span>
+          </button>
           
           <Separator />
           

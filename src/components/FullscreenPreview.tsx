@@ -236,8 +236,6 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             {/* More Options Dropdown */}
             <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
               <MoreOptionsDropdown
-                autoGenerate={autoGenerate || false}
-                onAutoGenerateChange={onAutoGenerateChange || (() => {})}
                 onImageGeneratorClick={() => {
                   if (!isPro) {
                     setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
