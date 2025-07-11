@@ -210,7 +210,7 @@ const colorMoods: ColorMood[] = [
 interface ColorMoodSelectorProps {
   isOpen: boolean;
   onClose: () => void;
-  onMoodSelect: (palette: ColorPalette) => void;
+  onMoodSelect: (palette: ColorPalette, moodId?: string) => void;
   currentPalette: ColorPalette;
 }
 
@@ -235,7 +235,7 @@ const ColorMoodSelector: React.FC<ColorMoodSelectorProps> = ({
   });
 
   const handleMoodSelect = (mood: ColorMood) => {
-    onMoodSelect(mood.palette);
+    onMoodSelect(mood.palette, mood.id);
     onClose();
   };
 

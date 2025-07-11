@@ -349,10 +349,16 @@ export const generateColorSchemeWithLocks = (
   isDarkMode: boolean = false, 
   currentPalette: ColorPalette,
   lockedColors: Set<keyof ColorPalette>,
-  accessibilityMode: boolean = false
+  accessibilityMode: boolean = false,
+  preserveMoodId?: string | null
 ): ColorPalette => {
   if (accessibilityMode) {
-    return generateAccessibleColorScheme(scheme, isDarkMode, currentPalette, lockedColors);
+    return generateAccessibleColorScheme(scheme, isDarkMode, currentPalette, lockedColors, preserveMoodId);
+  }
+  
+  // If preserving a mood, generate variations based on current palette
+  if (preserveMoodId) {
+    return generateMoodVariation(currentPalette, lockedColors, isDarkMode);
   }
   
   const newPalette = generateColorScheme(scheme, isDarkMode);
@@ -367,19 +373,56 @@ export const generateColorSchemeWithLocks = (
 };
 
 /**
+ * Generate variations while preserving mood characteristics
+ */
+const generateMoodVariation = (
+  currentPalette: ColorPalette,
+  lockedColors: Set<keyof ColorPalette>,
+  isDarkMode: boolean = false
+): ColorPalette => {
+  const result = { ...currentPalette };
+  
+  // For unlocked colors, generate subtle variations that maintain the mood
+  const keys = Object.keys(currentPalette) as (keyof ColorPalette)[];
+  
+  keys.forEach(key => {
+    if (!lockedColors.has(key) && key !== 'background' && key !== 'text' && key !== 'textLight') {
+      const originalHsl = hexToHsl(currentPalette[key]);
+      
+      // Create subtle variations: small hue shifts and saturation/lightness adjustments
+      const hueShift = (Math.random() - 0.5) * 30; // ±15 degree shift
+      const saturationShift = (Math.random() - 0.5) * 20; // ±10% shift
+      const lightnessShift = (Math.random() - 0.5) * 20; // ±10% shift
+      
+      const newHue = (originalHsl.h + hueShift + 360) % 360;
+      const newSaturation = Math.max(0, Math.min(100, originalHsl.s + saturationShift));
+      const newLightness = Math.max(10, Math.min(90, originalHsl.l + lightnessShift));
+      
+      result[key] = hslToHex(newHue, newSaturation, newLightness);
+    }
+  });
+  
+  return result;
+};
+
+/**
  * Generate accessibility-compliant color schemes
  */
 export const generateAccessibleColorScheme = (
   scheme: ColorSchemeType,
   isDarkMode: boolean = false,
   currentPalette: ColorPalette,
-  lockedColors: Set<keyof ColorPalette>
+  lockedColors: Set<keyof ColorPalette>,
+  preserveMoodId?: string | null
 ): ColorPalette => {
   const maxAttempts = 50;
   let attempts = 0;
   
   while (attempts < maxAttempts) {
-    const newPalette = generateColorScheme(scheme, isDarkMode);
+    // If preserving mood, generate variations; otherwise use scheme
+    const newPalette = preserveMoodId 
+      ? generateMoodVariation(currentPalette, new Set(), isDarkMode)
+      : generateColorScheme(scheme, isDarkMode);
     
     // Preserve locked colors
     const result = { ...newPalette };

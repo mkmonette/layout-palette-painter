@@ -65,6 +65,7 @@ const Dashboard = () => {
     return saved && ['light', 'midtone', 'dark'].includes(saved) ? saved : 'midtone';
   });
   const [autoGenerate, setAutoGenerate] = useState(false);
+  const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
 
   const handleLogout = () => {
     logoutUser();
@@ -79,7 +80,7 @@ const Dashboard = () => {
     setIsGenerating(true);
     setTimeout(() => {
       try {
-        const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, accessibilityMode);
+        const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, accessibilityMode, selectedMoodId);
         setColorPalette(newPalette);
         setIsGenerating(false);
         
@@ -96,7 +97,7 @@ const Dashboard = () => {
             variant: "destructive",
           });
           // Generate regular palette as fallback
-          const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, false);
+          const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, false, selectedMoodId);
           setColorPalette(fallbackPalette);
         }
         setIsGenerating(false);
@@ -149,8 +150,9 @@ const Dashboard = () => {
     setZoomLevel(100);
   };
 
-  const handleMoodSelect = (palette: ColorPalette) => {
+  const handleMoodSelect = (palette: ColorPalette, moodId?: string) => {
     setColorPalette(palette);
+    setSelectedMoodId(moodId || null);
   };
 
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
@@ -289,7 +291,10 @@ const Dashboard = () => {
         onGenerateColors={handleGenerateColors}
         onSchemeChange={handleSchemeChange}
         onTemplateChange={setSelectedTemplate}
-        onColorChange={(palette) => setColorPalette(palette)}
+        onColorChange={(palette, moodId) => {
+          setColorPalette(palette);
+          if (moodId !== undefined) setSelectedMoodId(moodId);
+        }}
         onModeToggle={handleModeToggle}
         onAccessibilityModeToggle={setAccessibilityMode}
         onShowAccessibilityReport={setShowAccessibilityReport}

@@ -38,7 +38,7 @@ interface FullscreenPreviewProps {
   onGenerateColors: () => void;
   onSchemeChange: (scheme: ColorSchemeType) => void;
   onTemplateChange: (template: TemplateType) => void;
-  onColorChange: (palette: ColorPalette) => void;
+  onColorChange: (palette: ColorPalette, moodId?: string | null) => void;
   onModeToggle: (checked: boolean) => void;
   onAccessibilityModeToggle?: (checked: boolean) => void;
   onShowAccessibilityReport?: (show: boolean) => void;
@@ -112,8 +112,8 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     }
   };
 
-  const handleMoodSelect = (palette: ColorPalette) => {
-    onColorChange(palette);
+  const handleMoodSelect = (palette: ColorPalette, moodId?: string) => {
+    onColorChange(palette, moodId);
   };
 
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
