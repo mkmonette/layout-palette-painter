@@ -3,23 +3,84 @@
  */
 
 /**
- * Determines if a text color provides good contrast against a background color
- * using YIQ brightness calculation
+ * Calculate relative luminance of a color according to WCAG guidelines
  */
-export function getContrastText(bgColorHex: string): string {
-  // Remove # if present
-  const hex = bgColorHex.replace('#', '');
+function getLuminance(hex: string): number {
+  const cleanHex = hex.replace('#', '');
+  const r = parseInt(cleanHex.substr(0, 2), 16) / 255;
+  const g = parseInt(cleanHex.substr(2, 2), 16) / 255;
+  const b = parseInt(cleanHex.substr(4, 2), 16) / 255;
+
+  const sRGB = [r, g, b].map(c => 
+    c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+  );
+
+  return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
+}
+
+/**
+ * Calculate contrast ratio between two colors according to WCAG guidelines
+ */
+function getContrastRatio(hex1: string, hex2: string): number {
+  const L1 = getLuminance(hex1);
+  const L2 = getLuminance(hex2);
+  const lighter = Math.max(L1, L2);
+  const darker = Math.min(L1, L2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+/**
+ * Check if contrast ratio meets WCAG AA standards
+ */
+function meetsWCAGAA(bgHex: string, textHex: string, isLargeText = false): boolean {
+  const ratio = getContrastRatio(bgHex, textHex);
+  const minRatio = isLargeText ? 3.0 : 4.5;
+  return ratio >= minRatio;
+}
+
+/**
+ * Get WCAG AA compliant text color for a given background
+ */
+export function getContrastText(bgColorHex: string, isLargeText = false): string {
+  const cleanBg = bgColorHex.replace('#', '').padStart(6, '0');
+  const bgHex = `#${cleanBg}`;
   
-  // Parse RGB values
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
+  // Try white first
+  if (meetsWCAGAA(bgHex, '#FFFFFF', isLargeText)) {
+    return '#FFFFFF';
+  }
   
-  // Calculate brightness using YIQ formula
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  // Try black
+  if (meetsWCAGAA(bgHex, '#000000', isLargeText)) {
+    return '#000000';
+  }
   
-  // Return dark text for light backgrounds, light text for dark backgrounds
-  return brightness > 128 ? '#000000' : '#FFFFFF';
+  // If neither works, adjust brightness to find compliant color
+  const bgLuminance = getLuminance(bgHex);
+  const minRatio = isLargeText ? 3.0 : 4.5;
+  
+  // Calculate required luminance for contrast
+  let targetLuminance: number;
+  if (bgLuminance > 0.5) {
+    // Background is light, we need dark text
+    targetLuminance = (bgLuminance + 0.05) / minRatio - 0.05;
+  } else {
+    // Background is dark, we need light text
+    targetLuminance = (bgLuminance + 0.05) * minRatio - 0.05;
+  }
+  
+  // Clamp luminance and convert back to hex
+  targetLuminance = Math.max(0, Math.min(1, targetLuminance));
+  
+  // Convert luminance to RGB (simplified grayscale approach)
+  const gamma = targetLuminance <= 0.03928 
+    ? targetLuminance * 12.92 
+    : Math.pow((targetLuminance + 0.055) / 1.055, 1 / 2.4);
+  
+  const value = Math.round(gamma * 255);
+  const hex = value.toString(16).padStart(2, '0');
+  
+  return `#${hex}${hex}${hex}`;
 }
 
 /**
