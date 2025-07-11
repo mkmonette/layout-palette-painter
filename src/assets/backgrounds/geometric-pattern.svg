@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <pattern id="hexPattern" x="0" y="0" width="60" height="52" patternUnits="userSpaceOnUse">
+      <polygon points="30,0 52,15 52,37 30,52 8,37 8,15" fill="none" stroke="var(--border)" stroke-width="0.5" opacity="0.1"/>
+    </pattern>
+    <linearGradient id="geoGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:var(--section-bg-2);stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:var(--section-bg-3);stop-opacity:0.05" />
+    </linearGradient>
+    <radialGradient id="geoAccent" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:var(--highlight);stop-opacity:0.08" />
+      <stop offset="100%" style="stop-color:var(--accent);stop-opacity:0.02" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Base -->
+  <rect width="100%" height="100%" fill="var(--section-bg-1)" opacity="0.03"/>
+  
+  <!-- Hexagonal pattern -->
+  <rect width="100%" height="100%" fill="url(#hexPattern)"/>
+  
+  <!-- Large geometric shapes -->
+  <polygon points="100,100 300,50 500,150 400,350 200,300" fill="url(#geoGrad1)"/>
+  <polygon points="700,200 900,150 1100,250 1000,450 800,400" fill="var(--section-bg-2)" opacity="0.08"/>
+  <polygon points="200,500 450,450 400,650 150,700" fill="var(--accent)" opacity="0.06"/>
+  
+  <!-- Accent circle -->
+  <circle cx="900" cy="600" r="120" fill="url(#geoAccent)"/>
+  
+  <!-- Subtle lines -->
+  <line x1="0" y1="400" x2="1200" y2="350" stroke="var(--highlight)" stroke-width="1" opacity="0.05"/>
+  <line x1="300" y1="0" x2="250" y2="800" stroke="var(--border)" stroke-width="0.5" opacity="0.08"/>
+</svg>

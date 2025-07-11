@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="wavyGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:var(--section-bg-1);stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:var(--section-bg-2);stop-opacity:0.1" />
+    </linearGradient>
+    <linearGradient id="wavyGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:var(--section-bg-2);stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:var(--section-bg-3);stop-opacity:0.2" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Base layer -->
+  <rect width="100%" height="100%" fill="var(--section-bg-1)" opacity="0.05"/>
+  
+  <!-- Wave layer 1 -->
+  <path d="M0,400 Q300,300 600,350 T1200,400 L1200,800 L0,800 Z" fill="url(#wavyGrad1)"/>
+  
+  <!-- Wave layer 2 -->
+  <path d="M0,500 Q400,420 800,460 T1200,500 L1200,800 L0,800 Z" fill="url(#wavyGrad2)"/>
+  
+  <!-- Accent wave -->
+  <path d="M0,600 Q200,550 400,580 T800,600 T1200,620 L1200,800 L0,800 Z" fill="var(--highlight)" opacity="0.1"/>
+  
+  <!-- Subtle top accent -->
+  <path d="M0,0 Q300,80 600,60 T1200,40 L1200,0 Z" fill="var(--accent)" opacity="0.05"/>
+</svg>

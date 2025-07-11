@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="blobGrad1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:var(--section-bg-2);stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:var(--section-bg-1);stop-opacity:0.05" />
+    </radialGradient>
+    <radialGradient id="blobGrad2" cx="30%" cy="70%" r="40%">
+      <stop offset="0%" style="stop-color:var(--highlight);stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:var(--section-bg-3);stop-opacity:0.02" />
+    </radialGradient>
+    <radialGradient id="blobGrad3" cx="70%" cy="30%" r="35%">
+      <stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:var(--section-bg-2);stop-opacity:0.03" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Base -->
+  <rect width="100%" height="100%" fill="var(--section-bg-1)" opacity="0.02"/>
+  
+  <!-- Large blob -->
+  <path d="M200,300 Q400,200 600,280 Q800,360 750,500 Q700,640 500,620 Q300,600 250,480 Q200,360 200,300 Z" fill="url(#blobGrad1)"/>
+  
+  <!-- Medium blob -->
+  <path d="M700,150 Q900,100 1000,200 Q1100,300 1050,400 Q1000,500 850,480 Q700,460 680,350 Q660,240 700,150 Z" fill="url(#blobGrad2)"/>
+  
+  <!-- Small accent blob -->
+  <path d="M100,600 Q200,550 300,600 Q400,650 350,720 Q300,790 200,780 Q100,770 80,700 Q60,630 100,600 Z" fill="url(#blobGrad3)"/>
+  
+  <!-- Tiny floating elements -->
+  <circle cx="900" cy="600" r="40" fill="var(--highlight)" opacity="0.08"/>
+  <circle cx="150" cy="150" r="25" fill="var(--accent)" opacity="0.06"/>
+  <circle cx="1000" cy="700" r="30" fill="var(--section-bg-3)" opacity="0.1"/>
+</svg>
