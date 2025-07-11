@@ -3,23 +3,28 @@ import React from 'react';
 import { ColorPalette } from '@/types/template';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Rocket, Users } from 'lucide-react';
+import { getContrastTextForHSL } from '@/utils/contrastUtils';
 
 interface SplitScreenTemplateProps {
   colorPalette: ColorPalette;
 }
 
 const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette }) => {
+  // Calculate contrast-safe text colors for each section
+  const headerTextColor = getContrastTextForHSL(colorPalette["section-bg-1"]);
+  const contentTextColor = getContrastTextForHSL(colorPalette["section-bg-1"]);
+  
   return (
     <div className="w-full">
       {/* Header */}
-      <header className="px-6 py-4 border-b" style={{ backgroundColor: colorPalette["section-bg-1"], borderColor: colorPalette["text-secondary"] + '20' }}>
+      <header className="px-6 py-4 border-b" style={{ backgroundColor: colorPalette["section-bg-1"], borderColor: headerTextColor + '20' }}>
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold" style={{ color: colorPalette.brand }}>
             Velocity
           </div>
           <nav className="hidden md:flex space-x-6">
             {['Product', 'Solutions', 'Resources', 'Company'].map((item) => (
-              <a key={item} href="#" className="hover:opacity-70 transition-opacity" style={{ color: colorPalette["text-primary"] }}>
+              <a key={item} href="#" className="hover:opacity-70 transition-opacity" style={{ color: headerTextColor }}>
                 {item}
               </a>
             ))}
@@ -35,11 +40,11 @@ const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette 
         {/* Left Side - Content */}
         <div className="px-6 py-16 flex items-center" style={{ backgroundColor: colorPalette["section-bg-1"] }}>
           <div className="max-w-lg">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight" style={{ color: colorPalette["text-primary"] }}>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight" style={{ color: contentTextColor }}>
               Ship faster with
               <span className="block" style={{ color: colorPalette.brand }}>modern tools</span>
             </h1>
-            <p className="text-lg mb-8 leading-relaxed" style={{ color: colorPalette["text-secondary"] }}>
+            <p className="text-lg mb-8 leading-relaxed" style={{ color: contentTextColor + '80' }}>
               Build, deploy, and scale your applications with confidence. Our platform provides everything you need to go from idea to production.
             </p>
             
@@ -51,7 +56,7 @@ const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette 
               ].map((feature, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <feature.icon className="w-5 h-5" style={{ color: colorPalette.accent }} />
-                  <span style={{ color: colorPalette["text-primary"] }}>{feature.text}</span>
+                  <span style={{ color: contentTextColor }}>{feature.text}</span>
                 </div>
               ))}
             </div>

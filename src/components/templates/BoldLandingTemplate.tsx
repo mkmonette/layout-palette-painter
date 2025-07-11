@@ -1,12 +1,18 @@
 import React from 'react';
 import { ColorPalette } from '@/types/template';
 import { Button } from '@/components/ui/button';
+import { getContrastTextForHSL } from '@/utils/contrastUtils';
 
 interface BoldLandingTemplateProps {
   colorPalette: ColorPalette;
 }
 
 const BoldLandingTemplate: React.FC<BoldLandingTemplateProps> = ({ colorPalette }) => {
+  // Calculate contrast-safe text colors for each section
+  const headerTextColor = getContrastTextForHSL(colorPalette.brand);
+  const heroTextColor = getContrastTextForHSL(colorPalette["section-bg-1"]);
+  const accentTextColor = getContrastTextForHSL(colorPalette.accent);
+  
   return (
     <div className="w-full">
       {/* Bold Header */}
@@ -17,7 +23,7 @@ const BoldLandingTemplate: React.FC<BoldLandingTemplateProps> = ({ colorPalette 
         <div className="flex items-center justify-between">
           <div 
             className="text-2xl font-black uppercase transition-colors duration-300"
-            style={{ color: colorPalette["button-text"] }}
+            style={{ color: headerTextColor }}
           >
             BOLD
           </div>
@@ -27,7 +33,7 @@ const BoldLandingTemplate: React.FC<BoldLandingTemplateProps> = ({ colorPalette 
                 key={item}
                 href="#" 
                 className="font-bold text-sm hover:opacity-80 transition-opacity"
-                style={{ color: colorPalette["button-text"] }}
+                style={{ color: headerTextColor }}
               >
                 {item}
               </a>
@@ -46,14 +52,14 @@ const BoldLandingTemplate: React.FC<BoldLandingTemplateProps> = ({ colorPalette 
             className="inline-block px-4 py-2 rounded-full text-sm font-bold mb-6 transition-colors duration-300"
             style={{ 
               backgroundColor: colorPalette.accent,
-              color: colorPalette["button-text"]
+              color: accentTextColor
             }}
           >
             🚀 LAUNCHING SOON
           </div>
           <h1 
             className="text-5xl md:text-7xl font-black mb-6 leading-tight transition-colors duration-300"
-            style={{ color: colorPalette["text-primary"] }}
+            style={{ color: heroTextColor }}
           >
             MAKE IT
             <br />
@@ -61,7 +67,7 @@ const BoldLandingTemplate: React.FC<BoldLandingTemplateProps> = ({ colorPalette 
           </h1>
           <p 
             className="text-xl font-medium mb-10 max-w-2xl mx-auto transition-colors duration-300"
-            style={{ color: colorPalette["text-secondary"] }}
+            style={{ color: heroTextColor + '80' }}
           >
             Don't wait for the perfect moment. Take action now and build something extraordinary.
           </p>

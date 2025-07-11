@@ -1,5 +1,6 @@
 import { ColorPalette } from '@/types/template';
 import { ColorRoles } from '@/types/colorRoles';
+import { getContrastTextForHSL } from './contrastUtils';
 
 /**
  * Maps a ColorPalette to extended ColorRoles for modern website templates
@@ -51,29 +52,34 @@ function addOpacity(color: string, opacity: number): string {
 }
 
 /**
- * Hook for using color roles in components with legacy aliases
+ * Hook for using color roles in components with legacy aliases and automatic contrast
  */
 export const useColorRoles = (palette: ColorPalette) => {
   const roles = mapPaletteToRoles(palette);
   
+  // Calculate contrast-safe text colors for each section
+  const sectionBg1TextColor = getContrastTextForHSL(palette["section-bg-1"]);
+  const sectionBg2TextColor = getContrastTextForHSL(palette["section-bg-2"]);
+  const sectionBg3TextColor = palette["section-bg-3"] ? getContrastTextForHSL(palette["section-bg-3"]) : sectionBg2TextColor;
+  
   // Add legacy aliases for templates that haven't been migrated yet
   return {
     ...roles,
-    // Core legacy aliases
+    // Core legacy aliases with contrast-safe text
     primary: palette.brand,
     secondary: palette.highlight, 
     background: palette["section-bg-1"],
-    text: palette["text-primary"],
-    textLight: palette["text-secondary"],
+    text: sectionBg1TextColor,
+    textLight: sectionBg1TextColor + '80', // Add transparency
     
-    // Pro template aliases
+    // Pro template aliases with contrast-safe text
     backgroundPrimary: palette["section-bg-1"],
     backgroundSecondary: palette["section-bg-2"], 
     backgroundAccent: palette["section-bg-3"],
-    textPrimary: palette["text-primary"],
-    textSecondary: palette["text-secondary"],
-    textInverse: palette["button-text"],
-    textMuted: palette["text-secondary"],
+    textPrimary: sectionBg1TextColor,
+    textSecondary: sectionBg1TextColor + '80', // Add transparency for secondary text
+    textInverse: getContrastTextForHSL(palette["button-primary"]),
+    textMuted: sectionBg1TextColor + '60', // More transparency for muted text
     brandPrimary: palette.brand,
     brandAccent: palette.accent,
     buttonPrimary: palette["button-primary"],
