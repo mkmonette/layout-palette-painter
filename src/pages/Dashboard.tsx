@@ -60,7 +60,10 @@ const Dashboard = () => {
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
   const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [showAccessibilityReport, setShowAccessibilityReport] = useState(false);
-  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('midtone');
+  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>(() => {
+    const saved = localStorage.getItem('background-mode') as BackgroundMode;
+    return saved && ['light', 'midtone', 'dark'].includes(saved) ? saved : 'midtone';
+  });
   const [autoGenerate, setAutoGenerate] = useState(false);
 
   const handleLogout = () => {
