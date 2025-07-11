@@ -3,20 +3,16 @@ import { ChevronDown, Palette, Contrast, Paintbrush } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
-import { BackgroundMode } from './BackgroundModeSelector';
+
 
 interface ColorThemeDropdownProps {
   onSchemeClick: () => void;
   onMoodClick: () => void;
-  onBackgroundModeChange: (mode: BackgroundMode) => void;
-  backgroundMode: BackgroundMode;
 }
 
 const ColorThemeDropdown: React.FC<ColorThemeDropdownProps> = ({
   onSchemeClick,
-  onMoodClick,
-  onBackgroundModeChange,
-  backgroundMode
+  onMoodClick
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,11 +21,6 @@ const ColorThemeDropdown: React.FC<ColorThemeDropdownProps> = ({
     setIsOpen(false);
   };
 
-  const backgroundModes = [
-    { value: 'light' as const, label: 'Light', icon: '☀️' },
-    { value: 'midtone' as const, label: 'Midtone', icon: '🌤️' },
-    { value: 'dark' as const, label: 'Dark', icon: '🌙' }
-  ];
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -61,32 +52,6 @@ const ColorThemeDropdown: React.FC<ColorThemeDropdownProps> = ({
             <Paintbrush className="h-4 w-4" />
             <span>Color Mood</span>
           </button>
-          
-          <Separator />
-          
-          <div className="px-2 py-1">
-            <span className="text-xs font-medium text-muted-foreground">Background Mode</span>
-          </div>
-          
-          {backgroundModes.map((mode) => (
-            <button
-              key={mode.value}
-              onClick={() => {
-                onBackgroundModeChange(mode.value);
-                setIsOpen(false);
-              }}
-              className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors ${
-                backgroundMode === mode.value
-                  ? 'bg-primary text-primary-foreground'
-                  : 'hover:bg-accent hover:text-accent-foreground'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span>{mode.icon}</span>
-                <span>{mode.label}</span>
-              </div>
-            </button>
-          ))}
         </div>
       </PopoverContent>
     </Popover>

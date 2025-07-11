@@ -21,7 +21,7 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
-import { BackgroundMode } from '@/components/BackgroundModeSelector';
+
 
 interface FullscreenPreviewProps {
   template: TemplateType;
@@ -32,7 +32,7 @@ interface FullscreenPreviewProps {
   accessibilityMode?: boolean;
   showAccessibilityReport?: boolean;
   autogenerateCount?: number;
-  backgroundMode?: BackgroundMode;
+  
   autoGenerate?: boolean;
   onClose: () => void;
   onGenerateColors: () => void;
@@ -44,7 +44,7 @@ interface FullscreenPreviewProps {
   onShowAccessibilityReport?: (show: boolean) => void;
   onDownloadPDF?: () => void;
   onAutogenerateCountChange?: (count: number) => void;
-  onBackgroundModeChange?: (mode: BackgroundMode) => void;
+  
   onAutoGenerateChange?: (checked: boolean) => void;
 }
 
@@ -57,7 +57,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   accessibilityMode = false,
   showAccessibilityReport = false,
   autogenerateCount = 10,
-  backgroundMode = 'midtone',
+  
   autoGenerate = false,
   onClose,
   onGenerateColors,
@@ -69,7 +69,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onShowAccessibilityReport,
   onDownloadPDF,
   onAutogenerateCountChange,
-  onBackgroundModeChange,
+  
   onAutoGenerateChange
 }) => {
   const { getSavedCount, loadSavedPalettes, canSaveMore, savePalette } = useSavedPalettes();
@@ -196,8 +196,6 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               <ColorThemeDropdown
                 onSchemeClick={() => setActiveModal('scheme')}
                 onMoodClick={() => setActiveModal('mood')}
-                onBackgroundModeChange={onBackgroundModeChange || (() => {})}
-                backgroundMode={backgroundMode}
               />
             </div>
 

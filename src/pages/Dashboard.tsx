@@ -26,7 +26,7 @@ import ProUpsellModal from '@/components/ProUpsellModal';
 import PlanSelector from '@/components/PlanSelector';
 import AccessibilityIndicator from '@/components/AccessibilityIndicator';
 import ImageColorGenerator from '@/components/ImageColorGenerator';
-import BackgroundModeSelector, { BackgroundMode } from '@/components/BackgroundModeSelector';
+
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 
@@ -60,10 +60,6 @@ const Dashboard = () => {
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
   const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [showAccessibilityReport, setShowAccessibilityReport] = useState(false);
-  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>(() => {
-    const saved = localStorage.getItem('background-mode') as BackgroundMode;
-    return saved && ['light', 'midtone', 'dark'].includes(saved) ? saved : 'midtone';
-  });
   const [autoGenerate, setAutoGenerate] = useState(false);
   const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
 
@@ -174,22 +170,7 @@ const Dashboard = () => {
     });
   };
 
-  const handleBackgroundModeChange = (mode: BackgroundMode) => {
-    setBackgroundMode(mode);
-    localStorage.setItem('background-mode', mode);
-  };
 
-  const getBackgroundStyle = () => {
-    switch (backgroundMode) {
-      case 'light':
-        return 'bg-white';
-      case 'dark':
-        return 'bg-gray-900';
-      case 'midtone':
-      default:
-        return 'bg-gray-100';
-    }
-  };
 
   const handleDownloadPDF = async () => {
     if (!canDownload()) {
@@ -407,7 +388,7 @@ const Dashboard = () => {
               </Button>
             </div>
           </div>
-          <div className={`border rounded-lg overflow-auto shadow-inner h-[500px] transition-colors duration-300 ${getBackgroundStyle()}`}>
+          <div className="border rounded-lg overflow-auto shadow-inner h-[500px] bg-gray-100">
             <div 
               className="min-h-full transition-transform duration-200 origin-top"
               style={{ transform: `scale(${zoomLevel / 100})` }}
@@ -460,8 +441,6 @@ const Dashboard = () => {
                   }
                   setActiveModal('mood');
                 }}
-                onBackgroundModeChange={handleBackgroundModeChange}
-                backgroundMode={backgroundMode}
               />
 
               {/* Light/Dark Mode Toggle */}
@@ -589,8 +568,6 @@ const Dashboard = () => {
                     }
                     setActiveModal('mood');
                   }}
-                  onBackgroundModeChange={handleBackgroundModeChange}
-                  backgroundMode={backgroundMode}
                 />
               </div>
 
