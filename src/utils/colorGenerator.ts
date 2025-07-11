@@ -1,10 +1,19 @@
 export interface ColorPalette {
-  primary: string;
-  secondary: string;
+  brand: string;
   accent: string;
-  background: string;
-  text: string;
-  textLight: string;
+  "button-primary": string;
+  "button-text": string;
+  "button-secondary": string;
+  "button-secondary-text": string;
+  "text-primary": string;
+  "text-secondary": string;
+  "section-bg-1": string;
+  "section-bg-2": string;
+  "section-bg-3": string;
+  border: string;
+  highlight: string;
+  "input-bg": string;
+  "input-text": string;
 }
 
 export type ColorSchemeType = 
@@ -19,66 +28,57 @@ export type ColorSchemeType =
 const lightColorPalettes: ColorPalette[] = [
   // Modern Blue
   {
-    primary: '#3B82F6',
-    secondary: '#10B981',
+    brand: '#3B82F6',
     accent: '#F59E0B',
-    background: '#FFFFFF',
-    text: '#1F2937',
-    textLight: '#6B7280'
+    "button-primary": '#3B82F6',
+    "button-text": '#FFFFFF',
+    "button-secondary": '#F3F4F6',
+    "button-secondary-text": '#3B82F6',
+    "text-primary": '#1F2937',
+    "text-secondary": '#6B7280',
+    "section-bg-1": '#FFFFFF',
+    "section-bg-2": '#F9FAFB',
+    "section-bg-3": '#F3F4F6',
+    border: '#E5E7EB',
+    highlight: '#10B981',
+    "input-bg": '#FFFFFF',
+    "input-text": '#1F2937'
   },
   // Purple Gradient
   {
-    primary: '#8B5CF6',
-    secondary: '#EC4899',
+    brand: '#8B5CF6',
     accent: '#F97316',
-    background: '#FEFEFE',
-    text: '#374151',
-    textLight: '#9CA3AF'
+    "button-primary": '#8B5CF6',
+    "button-text": '#FFFFFF',
+    "button-secondary": '#F3F4F6',
+    "button-secondary-text": '#8B5CF6',
+    "text-primary": '#374151',
+    "text-secondary": '#9CA3AF',
+    "section-bg-1": '#FEFEFE',
+    "section-bg-2": '#FAF5FF',
+    "section-bg-3": '#F3F4F6',
+    border: '#E5E7EB',
+    highlight: '#EC4899',
+    "input-bg": '#FFFFFF',
+    "input-text": '#374151'
   },
   // Green Nature
   {
-    primary: '#059669',
-    secondary: '#0D9488',
+    brand: '#059669',
     accent: '#FBBF24',
-    background: '#F9FAFB',
-    text: '#111827',
-    textLight: '#6B7280'
-  },
-  // Warm Sunset
-  {
-    primary: '#DC2626',
-    secondary: '#EA580C',
-    accent: '#FBBF24',
-    background: '#FFFBEB',
-    text: '#92400E',
-    textLight: '#A16207'
-  },
-  // Ocean Breeze
-  {
-    primary: '#0EA5E9',
-    secondary: '#06B6D4',
-    accent: '#10B981',
-    background: '#F0F9FF',
-    text: '#0C4A6E',
-    textLight: '#0369A1'
-  },
-  // Monochrome
-  {
-    primary: '#374151',
-    secondary: '#6B7280',
-    accent: '#F59E0B',
-    background: '#FFFFFF',
-    text: '#111827',
-    textLight: '#9CA3AF'
-  },
-  // Vibrant Pink
-  {
-    primary: '#EC4899',
-    secondary: '#8B5CF6',
-    accent: '#06B6D4',
-    background: '#FDF2F8',
-    text: '#831843',
-    textLight: '#BE185D'
+    "button-primary": '#059669',
+    "button-text": '#FFFFFF',
+    "button-secondary": '#F3F4F6',
+    "button-secondary-text": '#059669',
+    "text-primary": '#111827',
+    "text-secondary": '#6B7280',
+    "section-bg-1": '#F9FAFB',
+    "section-bg-2": '#ECFDF5',
+    "section-bg-3": '#F3F4F6',
+    border: '#D1D5DB',
+    highlight: '#0D9488',
+    "input-bg": '#FFFFFF',
+    "input-text": '#111827'
   }
 ];
 
@@ -86,66 +86,57 @@ const lightColorPalettes: ColorPalette[] = [
 const darkColorPalettes: ColorPalette[] = [
   // Dark Blue
   {
-    primary: '#60A5FA',
-    secondary: '#34D399',
+    brand: '#60A5FA',
     accent: '#FBBF24',
-    background: '#111827',
-    text: '#F9FAFB',
-    textLight: '#D1D5DB'
+    "button-primary": '#60A5FA',
+    "button-text": '#111827',
+    "button-secondary": '#374151',
+    "button-secondary-text": '#60A5FA',
+    "text-primary": '#F9FAFB',
+    "text-secondary": '#D1D5DB',
+    "section-bg-1": '#111827',
+    "section-bg-2": '#1F2937',
+    "section-bg-3": '#374151',
+    border: '#4B5563',
+    highlight: '#34D399',
+    "input-bg": '#1F2937',
+    "input-text": '#F9FAFB'
   },
   // Dark Purple
   {
-    primary: '#A78BFA',
-    secondary: '#F472B6',
+    brand: '#A78BFA',
     accent: '#FB923C',
-    background: '#0F0F23',
-    text: '#F8FAFC',
-    textLight: '#CBD5E1'
+    "button-primary": '#A78BFA',
+    "button-text": '#0F0F23',
+    "button-secondary": '#374151',
+    "button-secondary-text": '#A78BFA',
+    "text-primary": '#F8FAFC',
+    "text-secondary": '#CBD5E1',
+    "section-bg-1": '#0F0F23',
+    "section-bg-2": '#1E1B3A',
+    "section-bg-3": '#2D2A4A',
+    border: '#4B5563',
+    highlight: '#F472B6',
+    "input-bg": '#1E1B3A',
+    "input-text": '#F8FAFC'
   },
   // Dark Green
   {
-    primary: '#6EE7B7',
-    secondary: '#5EEAD4',
+    brand: '#6EE7B7',
     accent: '#FCD34D',
-    background: '#064E3B',
-    text: '#ECFDF5',
-    textLight: '#A7F3D0'
-  },
-  // Dark Sunset
-  {
-    primary: '#FCA5A5',
-    secondary: '#FDBA74',
-    accent: '#FDE047',
-    background: '#451A03',
-    text: '#FEF3C7',
-    textLight: '#FED7AA'
-  },
-  // Dark Ocean
-  {
-    primary: '#7DD3FC',
-    secondary: '#67E8F9',
-    accent: '#6EE7B7',
-    background: '#0C4A6E',
-    text: '#F0F9FF',
-    textLight: '#BAE6FD'
-  },
-  // Dark Monochrome
-  {
-    primary: '#E5E7EB',
-    secondary: '#9CA3AF',
-    accent: '#FBBF24',
-    background: '#1F2937',
-    text: '#F9FAFB',
-    textLight: '#D1D5DB'
-  },
-  // Dark Pink
-  {
-    primary: '#F9A8D4',
-    secondary: '#C084FC',
-    accent: '#67E8F9',
-    background: '#701A75',
-    text: '#FAE8FF',
-    textLight: '#E879F9'
+    "button-primary": '#6EE7B7',
+    "button-text": '#064E3B',
+    "button-secondary": '#374151',
+    "button-secondary-text": '#6EE7B7',
+    "text-primary": '#ECFDF5',
+    "text-secondary": '#A7F3D0',
+    "section-bg-1": '#064E3B',
+    "section-bg-2": '#0D7377',
+    "section-bg-3": '#134E4A',
+    border: '#4B5563',
+    highlight: '#5EEAD4',
+    "input-bg": '#0D7377',
+    "input-text": '#ECFDF5'
   }
 ];
 
@@ -194,21 +185,39 @@ const generateMonochromaticScheme = (baseHue: number, isDarkMode: boolean): Colo
   
   if (isDarkMode) {
     return {
-      primary: hslToHex(baseHue, baseSaturation, 60),
-      secondary: hslToHex(baseHue, baseSaturation - 10, 50),
+      brand: hslToHex(baseHue, baseSaturation, 60),
       accent: hslToHex(baseHue, baseSaturation + 15, 70),
-      background: hslToHex(baseHue, 20, 8),
-      text: hslToHex(baseHue, 10, 95),
-      textLight: hslToHex(baseHue, 15, 75)
+      "button-primary": hslToHex(baseHue, baseSaturation, 60),
+      "button-text": hslToHex(baseHue, 20, 8),
+      "button-secondary": hslToHex(baseHue, 30, 20),
+      "button-secondary-text": hslToHex(baseHue, baseSaturation, 60),
+      "text-primary": hslToHex(baseHue, 10, 95),
+      "text-secondary": hslToHex(baseHue, 15, 75),
+      "section-bg-1": hslToHex(baseHue, 20, 8),
+      "section-bg-2": hslToHex(baseHue, 25, 12),
+      "section-bg-3": hslToHex(baseHue, 30, 16),
+      border: hslToHex(baseHue, 20, 25),
+      highlight: hslToHex(baseHue, baseSaturation + 10, 65),
+      "input-bg": hslToHex(baseHue, 25, 12),
+      "input-text": hslToHex(baseHue, 10, 95)
     };
   } else {
     return {
-      primary: hslToHex(baseHue, baseSaturation, 50),
-      secondary: hslToHex(baseHue, baseSaturation - 15, 40),
+      brand: hslToHex(baseHue, baseSaturation, 50),
       accent: hslToHex(baseHue, baseSaturation + 10, 60),
-      background: hslToHex(baseHue, 15, 98),
-      text: hslToHex(baseHue, 30, 15),
-      textLight: hslToHex(baseHue, 20, 45)
+      "button-primary": hslToHex(baseHue, baseSaturation, 50),
+      "button-text": '#FFFFFF',
+      "button-secondary": hslToHex(baseHue, 15, 95),
+      "button-secondary-text": hslToHex(baseHue, baseSaturation, 50),
+      "text-primary": hslToHex(baseHue, 30, 15),
+      "text-secondary": hslToHex(baseHue, 20, 45),
+      "section-bg-1": hslToHex(baseHue, 15, 98),
+      "section-bg-2": hslToHex(baseHue, 20, 96),
+      "section-bg-3": hslToHex(baseHue, 25, 94),
+      border: hslToHex(baseHue, 15, 85),
+      highlight: hslToHex(baseHue, baseSaturation - 10, 55),
+      "input-bg": '#FFFFFF',
+      "input-text": hslToHex(baseHue, 30, 15)
     };
   }
 };
@@ -220,21 +229,39 @@ const generateAnalogousScheme = (baseHue: number, isDarkMode: boolean): ColorPal
   
   if (isDarkMode) {
     return {
-      primary: hslToHex(hue1, 70, 60),
-      secondary: hslToHex(hue2, 65, 55),
+      brand: hslToHex(hue1, 70, 60),
       accent: hslToHex(hue3, 80, 65),
-      background: hslToHex(hue1, 25, 8),
-      text: hslToHex(0, 0, 95),
-      textLight: hslToHex(hue1, 20, 75)
+      "button-primary": hslToHex(hue1, 70, 60),
+      "button-text": hslToHex(hue1, 25, 8),
+      "button-secondary": hslToHex(hue1, 30, 20),
+      "button-secondary-text": hslToHex(hue1, 70, 60),
+      "text-primary": hslToHex(0, 0, 95),
+      "text-secondary": hslToHex(hue1, 20, 75),
+      "section-bg-1": hslToHex(hue1, 25, 8),
+      "section-bg-2": hslToHex(hue2, 25, 12),
+      "section-bg-3": hslToHex(hue3, 25, 16),
+      border: hslToHex(hue1, 20, 25),
+      highlight: hslToHex(hue2, 65, 55),
+      "input-bg": hslToHex(hue1, 25, 12),
+      "input-text": hslToHex(0, 0, 95)
     };
   } else {
     return {
-      primary: hslToHex(hue1, 75, 50),
-      secondary: hslToHex(hue2, 70, 45),
+      brand: hslToHex(hue1, 75, 50),
       accent: hslToHex(hue3, 80, 55),
-      background: '#FFFFFF',
-      text: hslToHex(hue1, 40, 15),
-      textLight: hslToHex(hue1, 30, 45)
+      "button-primary": hslToHex(hue1, 75, 50),
+      "button-text": '#FFFFFF',
+      "button-secondary": hslToHex(hue1, 15, 95),
+      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "text-primary": hslToHex(hue1, 40, 15),
+      "text-secondary": hslToHex(hue1, 30, 45),
+      "section-bg-1": '#FFFFFF',
+      "section-bg-2": hslToHex(hue2, 20, 97),
+      "section-bg-3": hslToHex(hue3, 20, 94),
+      border: hslToHex(hue1, 15, 85),
+      highlight: hslToHex(hue2, 70, 45),
+      "input-bg": '#FFFFFF',
+      "input-text": hslToHex(hue1, 40, 15)
     };
   }
 };
@@ -244,21 +271,39 @@ const generateComplementaryScheme = (baseHue: number, isDarkMode: boolean): Colo
   
   if (isDarkMode) {
     return {
-      primary: hslToHex(baseHue, 75, 60),
-      secondary: hslToHex(complementaryHue, 70, 55),
+      brand: hslToHex(baseHue, 75, 60),
       accent: hslToHex(complementaryHue, 85, 65),
-      background: hslToHex(baseHue, 30, 8),
-      text: '#F9FAFB',
-      textLight: hslToHex(baseHue, 25, 75)
+      "button-primary": hslToHex(baseHue, 75, 60),
+      "button-text": hslToHex(baseHue, 30, 8),
+      "button-secondary": hslToHex(baseHue, 30, 20),
+      "button-secondary-text": hslToHex(baseHue, 75, 60),
+      "text-primary": '#F9FAFB',
+      "text-secondary": hslToHex(baseHue, 25, 75),
+      "section-bg-1": hslToHex(baseHue, 30, 8),
+      "section-bg-2": hslToHex(complementaryHue, 25, 12),
+      "section-bg-3": hslToHex(baseHue, 35, 16),
+      border: hslToHex(baseHue, 20, 25),
+      highlight: hslToHex(complementaryHue, 70, 55),
+      "input-bg": hslToHex(baseHue, 30, 12),
+      "input-text": '#F9FAFB'
     };
   } else {
     return {
-      primary: hslToHex(baseHue, 80, 50),
-      secondary: hslToHex(complementaryHue, 75, 45),
+      brand: hslToHex(baseHue, 80, 50),
       accent: hslToHex(complementaryHue, 85, 55),
-      background: '#FFFFFF',
-      text: hslToHex(baseHue, 50, 15),
-      textLight: hslToHex(baseHue, 35, 45)
+      "button-primary": hslToHex(baseHue, 80, 50),
+      "button-text": '#FFFFFF',
+      "button-secondary": hslToHex(baseHue, 15, 95),
+      "button-secondary-text": hslToHex(baseHue, 80, 50),
+      "text-primary": hslToHex(baseHue, 50, 15),
+      "text-secondary": hslToHex(baseHue, 35, 45),
+      "section-bg-1": '#FFFFFF',
+      "section-bg-2": hslToHex(complementaryHue, 20, 97),
+      "section-bg-3": hslToHex(baseHue, 20, 94),
+      border: hslToHex(baseHue, 15, 85),
+      highlight: hslToHex(complementaryHue, 75, 45),
+      "input-bg": '#FFFFFF',
+      "input-text": hslToHex(baseHue, 50, 15)
     };
   }
 };
@@ -270,21 +315,39 @@ const generateTriadicScheme = (baseHue: number, isDarkMode: boolean): ColorPalet
   
   if (isDarkMode) {
     return {
-      primary: hslToHex(hue1, 70, 60),
-      secondary: hslToHex(hue2, 65, 55),
+      brand: hslToHex(hue1, 70, 60),
       accent: hslToHex(hue3, 75, 65),
-      background: hslToHex(hue1, 25, 8),
-      text: '#F9FAFB',
-      textLight: hslToHex(hue1, 20, 75)
+      "button-primary": hslToHex(hue1, 70, 60),
+      "button-text": hslToHex(hue1, 25, 8),
+      "button-secondary": hslToHex(hue1, 30, 20),
+      "button-secondary-text": hslToHex(hue1, 70, 60),
+      "text-primary": '#F9FAFB',
+      "text-secondary": hslToHex(hue1, 20, 75),
+      "section-bg-1": hslToHex(hue1, 25, 8),
+      "section-bg-2": hslToHex(hue2, 25, 12),
+      "section-bg-3": hslToHex(hue3, 25, 16),
+      border: hslToHex(hue1, 20, 25),
+      highlight: hslToHex(hue2, 65, 55),
+      "input-bg": hslToHex(hue1, 25, 12),
+      "input-text": '#F9FAFB'
     };
   } else {
     return {
-      primary: hslToHex(hue1, 75, 50),
-      secondary: hslToHex(hue2, 70, 45),
+      brand: hslToHex(hue1, 75, 50),
       accent: hslToHex(hue3, 80, 55),
-      background: '#FFFFFF',
-      text: hslToHex(hue1, 40, 15),
-      textLight: hslToHex(hue1, 30, 45)
+      "button-primary": hslToHex(hue1, 75, 50),
+      "button-text": '#FFFFFF',
+      "button-secondary": hslToHex(hue1, 15, 95),
+      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "text-primary": hslToHex(hue1, 40, 15),
+      "text-secondary": hslToHex(hue1, 30, 45),
+      "section-bg-1": '#FFFFFF',
+      "section-bg-2": hslToHex(hue2, 20, 97),
+      "section-bg-3": hslToHex(hue3, 20, 94),
+      border: hslToHex(hue1, 15, 85),
+      highlight: hslToHex(hue2, 70, 45),
+      "input-bg": '#FFFFFF',
+      "input-text": hslToHex(hue1, 40, 15)
     };
   }
 };
@@ -296,21 +359,39 @@ const generateTetradicScheme = (baseHue: number, isDarkMode: boolean): ColorPale
   
   if (isDarkMode) {
     return {
-      primary: hslToHex(hue1, 70, 60),
-      secondary: hslToHex(hue2, 65, 55),
+      brand: hslToHex(hue1, 70, 60),
       accent: hslToHex(hue3, 75, 65),
-      background: hslToHex(hue1, 25, 8),
-      text: '#F9FAFB',
-      textLight: hslToHex(hue1, 20, 75)
+      "button-primary": hslToHex(hue1, 70, 60),
+      "button-text": hslToHex(hue1, 25, 8),
+      "button-secondary": hslToHex(hue1, 30, 20),
+      "button-secondary-text": hslToHex(hue1, 70, 60),
+      "text-primary": '#F9FAFB',
+      "text-secondary": hslToHex(hue1, 20, 75),
+      "section-bg-1": hslToHex(hue1, 25, 8),
+      "section-bg-2": hslToHex(hue2, 25, 12),
+      "section-bg-3": hslToHex(hue3, 25, 16),
+      border: hslToHex(hue1, 20, 25),
+      highlight: hslToHex(hue2, 65, 55),
+      "input-bg": hslToHex(hue1, 25, 12),
+      "input-text": '#F9FAFB'
     };
   } else {
     return {
-      primary: hslToHex(hue1, 75, 50),
-      secondary: hslToHex(hue2, 70, 45),
+      brand: hslToHex(hue1, 75, 50),
       accent: hslToHex(hue3, 80, 55),
-      background: '#FFFFFF',
-      text: hslToHex(hue1, 40, 15),
-      textLight: hslToHex(hue1, 30, 45)
+      "button-primary": hslToHex(hue1, 75, 50),
+      "button-text": '#FFFFFF',
+      "button-secondary": hslToHex(hue1, 15, 95),
+      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "text-primary": hslToHex(hue1, 40, 15),
+      "text-secondary": hslToHex(hue1, 30, 45),
+      "section-bg-1": '#FFFFFF',
+      "section-bg-2": hslToHex(hue2, 20, 97),
+      "section-bg-3": hslToHex(hue3, 20, 94),
+      border: hslToHex(hue1, 15, 85),
+      highlight: hslToHex(hue2, 70, 45),
+      "input-bg": '#FFFFFF',
+      "input-text": hslToHex(hue1, 40, 15)
     };
   }
 };
@@ -391,7 +472,7 @@ const generateMoodVariation = (
   const keys = Object.keys(currentPalette) as (keyof ColorPalette)[];
   
   keys.forEach(key => {
-    if (!lockedColors.has(key) && key !== 'background' && key !== 'text' && key !== 'textLight') {
+    if (!lockedColors.has(key) && key !== 'section-bg-1' && key !== 'text-primary' && key !== 'text-secondary') {
       const originalHsl = hexToHsl(currentPalette[key]);
       
       // Create subtle variations: small hue shifts and saturation/lightness adjustments
@@ -487,13 +568,13 @@ const checkPaletteAccessibility = (palette: ColorPalette): boolean => {
     return (brightest + 0.05) / (darkest + 0.05);
   };
 
-  // Check key contrast ratios
-  const textOnBackground = getContrastRatio(palette.text, palette.background);
-  const textLightOnBackground = getContrastRatio(palette.textLight, palette.background);
-  const textOnPrimary = getContrastRatio(palette.text, palette.primary);
+  // Check key contrast ratios with new color roles
+  const textOnSection1 = getContrastRatio(palette["text-primary"], palette["section-bg-1"]);
+  const textSecondaryOnSection1 = getContrastRatio(palette["text-secondary"], palette["section-bg-1"]);
+  const buttonTextOnButton = getContrastRatio(palette["button-text"], palette["button-primary"]);
 
   // WCAG AA compliance: 4.5:1 minimum ratio
-  return textOnBackground >= 4.5 && textLightOnBackground >= 4.5 && textOnPrimary >= 4.5;
+  return textOnSection1 >= 4.5 && textSecondaryOnSection1 >= 4.5 && buttonTextOnButton >= 4.5;
 };
 
 // Export helper functions for backward compatibility

@@ -22,12 +22,21 @@ export type TemplateType =
   | 'pro-cosmetics';
 
 export interface ColorPalette {
-  primary: string;
-  secondary: string;
+  brand: string;
   accent: string;
-  background: string;
-  text: string;
-  textLight: string;
+  "button-primary": string;
+  "button-text": string;
+  "button-secondary": string;
+  "button-secondary-text": string;
+  "text-primary": string;
+  "text-secondary": string;
+  "section-bg-1": string;
+  "section-bg-2": string;
+  "section-bg-3": string;
+  border: string;
+  highlight: string;
+  "input-bg": string;
+  "input-text": string;
 }
 
 export interface Template {

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -28,12 +27,21 @@ const colorMoods: ColorMood[] = [
     icon: '🌿',
     description: 'Clean and refreshing colors',
     palette: {
-      primary: '#00C896',
-      secondary: '#4ECDC4',
+      brand: '#00C896',
       accent: '#44A08D',
-      background: '#F8FFFD',
-      text: '#2C3E50',
-      textLight: '#7F8C8D'
+      "button-primary": '#00C896',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#F3F4F6',
+      "button-secondary-text": '#00C896',
+      "text-primary": '#2C3E50',
+      "text-secondary": '#7F8C8D',
+      "section-bg-1": '#F8FFFD',
+      "section-bg-2": '#ECFDF5',
+      "section-bg-3": '#F3F4F6',
+      border: '#E5E7EB',
+      highlight: '#4ECDC4',
+      "input-bg": '#FFFFFF',
+      "input-text": '#2C3E50'
     }
   },
   {
@@ -43,12 +51,21 @@ const colorMoods: ColorMood[] = [
     icon: '😊',
     description: 'Cheerful and uplifting vibes',
     palette: {
-      primary: '#FFD93D',
-      secondary: '#6BCF7F',
+      brand: '#FFD93D',
       accent: '#4D96FF',
-      background: '#FFFEF7',
-      text: '#2C3E50',
-      textLight: '#7F8C8D'
+      "button-primary": '#FFD93D',
+      "button-text": '#2C3E50',
+      "button-secondary": '#F3F4F6',
+      "button-secondary-text": '#FFD93D',
+      "text-primary": '#2C3E50',
+      "text-secondary": '#7F8C8D',
+      "section-bg-1": '#FFFEF7',
+      "section-bg-2": '#FEF3C7',
+      "section-bg-3": '#F3F4F6',
+      border: '#E5E7EB',
+      highlight: '#6BCF7F',
+      "input-bg": '#FFFFFF',
+      "input-text": '#2C3E50'
     }
   },
   {
@@ -58,12 +75,21 @@ const colorMoods: ColorMood[] = [
     icon: '🎨',
     description: 'Fun and vibrant colors',
     palette: {
-      primary: '#FF6B6B',
-      secondary: '#4ECDC4',
+      brand: '#FF6B6B',
       accent: '#45B7D1',
-      background: '#FFF8F8',
-      text: '#2C3E50',
-      textLight: '#7F8C8D'
+      "button-primary": '#FF6B6B',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#F3F4F6',
+      "button-secondary-text": '#FF6B6B',
+      "text-primary": '#2C3E50',
+      "text-secondary": '#7F8C8D',
+      "section-bg-1": '#FFF8F8',
+      "section-bg-2": '#FEF2F2',
+      "section-bg-3": '#F3F4F6',
+      border: '#E5E7EB',
+      highlight: '#4ECDC4',
+      "input-bg": '#FFFFFF',
+      "input-text": '#2C3E50'
     }
   },
   // Dark & Moody
@@ -74,12 +100,21 @@ const colorMoods: ColorMood[] = [
     icon: '🖤',
     description: 'Sophisticated dark tones',
     palette: {
-      primary: '#D4AF37',
-      secondary: '#E5E5E5',
+      brand: '#D4AF37',
       accent: '#C0C0C0',
-      background: '#1A1A1A',
-      text: '#FFFFFF',
-      textLight: '#CCCCCC'
+      "button-primary": '#D4AF37',
+      "button-text": '#1A1A1A',
+      "button-secondary": '#374151',
+      "button-secondary-text": '#D4AF37',
+      "text-primary": '#FFFFFF',
+      "text-secondary": '#CCCCCC',
+      "section-bg-1": '#1A1A1A',
+      "section-bg-2": '#2D2D2D',
+      "section-bg-3": '#404040',
+      border: '#4B5563',
+      highlight: '#E5E5E5',
+      "input-bg": '#2D2D2D',
+      "input-text": '#FFFFFF'
     }
   },
   {
@@ -89,12 +124,21 @@ const colorMoods: ColorMood[] = [
     icon: '🔮',
     description: 'Mysterious and enchanting',
     palette: {
-      primary: '#9B59B6',
-      secondary: '#8E44AD',
+      brand: '#9B59B6',
       accent: '#E74C3C',
-      background: '#2C3E50',
-      text: '#ECF0F1',
-      textLight: '#BDC3C7'
+      "button-primary": '#9B59B6',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#4B5563',
+      "button-secondary-text": '#9B59B6',
+      "text-primary": '#ECF0F1',
+      "text-secondary": '#BDC3C7',
+      "section-bg-1": '#2C3E50',
+      "section-bg-2": '#34495E',
+      "section-bg-3": '#4B6584',
+      border: '#5D6D7E',
+      highlight: '#8E44AD',
+      "input-bg": '#34495E',
+      "input-text": '#ECF0F1'
     }
   },
   {
@@ -104,12 +148,21 @@ const colorMoods: ColorMood[] = [
     icon: '🏰',
     description: 'Dark and dramatic atmosphere',
     palette: {
-      primary: '#8B0000',
-      secondary: '#4B0000',
+      brand: '#8B0000',
       accent: '#DC143C',
-      background: '#0D0D0D',
-      text: '#F5F5F5',
-      textLight: '#A9A9A9'
+      "button-primary": '#8B0000',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#374151',
+      "button-secondary-text": '#8B0000',
+      "text-primary": '#F5F5F5',
+      "text-secondary": '#A9A9A9',
+      "section-bg-1": '#0D0D0D',
+      "section-bg-2": '#1A1A1A',
+      "section-bg-3": '#2D2D2D',
+      border: '#4B5563',
+      highlight: '#4B0000',
+      "input-bg": '#1A1A1A',
+      "input-text": '#F5F5F5'
     }
   },
   // Natural & Organic
@@ -120,12 +173,21 @@ const colorMoods: ColorMood[] = [
     icon: '🌍',
     description: 'Warm earth tones',
     palette: {
-      primary: '#8B4513',
-      secondary: '#A0522D',
+      brand: '#8B4513',
       accent: '#CD853F',
-      background: '#F5F5DC',
-      text: '#2F4F4F',
-      textLight: '#696969'
+      "button-primary": '#8B4513',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#F3F4F6',
+      "button-secondary-text": '#8B4513',
+      "text-primary": '#2F4F4F',
+      "text-secondary": '#696969',
+      "section-bg-1": '#F5F5DC',
+      "section-bg-2": '#FAF0E6',
+      "section-bg-3": '#F0E68C',
+      border: '#D2B48C',
+      highlight: '#A0522D',
+      "input-bg": '#FFFFFF',
+      "input-text": '#2F4F4F'
     }
   },
   {
@@ -135,12 +197,21 @@ const colorMoods: ColorMood[] = [
     icon: '🌺',
     description: 'Vibrant tropical paradise',
     palette: {
-      primary: '#FF6347',
-      secondary: '#32CD32',
+      brand: '#FF6347',
       accent: '#FFD700',
-      background: '#F0FFFF',
-      text: '#2F4F4F',
-      textLight: '#708090'
+      "button-primary": '#FF6347',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#F3F4F6',
+      "button-secondary-text": '#FF6347',
+      "text-primary": '#2F4F4F',
+      "text-secondary": '#708090',
+      "section-bg-1": '#F0FFFF',
+      "section-bg-2": '#E0FFFF',
+      "section-bg-3": '#F0F8FF',
+      border: '#87CEEB',
+      highlight: '#32CD32',
+      "input-bg": '#FFFFFF',
+      "input-text": '#2F4F4F'
     }
   },
   {
@@ -150,12 +221,21 @@ const colorMoods: ColorMood[] = [
     icon: '🌊',
     description: 'Ocean-inspired blues',
     palette: {
-      primary: '#006994',
-      secondary: '#4682B4',
+      brand: '#006994',
       accent: '#20B2AA',
-      background: '#F0F8FF',
-      text: '#2F4F4F',
-      textLight: '#708090'
+      "button-primary": '#006994',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#F3F4F6',
+      "button-secondary-text": '#006994',
+      "text-primary": '#2F4F4F',
+      "text-secondary": '#708090',
+      "section-bg-1": '#F0F8FF',
+      "section-bg-2": '#E6F3FF',
+      "section-bg-3": '#B0E0E6',
+      border: '#87CEEB',
+      highlight: '#4682B4',
+      "input-bg": '#FFFFFF',
+      "input-text": '#2F4F4F'
     }
   },
   // Minimal & Professional
@@ -166,12 +246,21 @@ const colorMoods: ColorMood[] = [
     icon: '⚪',
     description: 'Clean neutral palette',
     palette: {
-      primary: '#6C757D',
-      secondary: '#ADB5BD',
+      brand: '#6C757D',
       accent: '#495057',
-      background: '#FFFFFF',
-      text: '#212529',
-      textLight: '#6C757D'
+      "button-primary": '#6C757D',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#F8F9FA',
+      "button-secondary-text": '#6C757D',
+      "text-primary": '#212529',
+      "text-secondary": '#6C757D',
+      "section-bg-1": '#FFFFFF',
+      "section-bg-2": '#F8F9FA',
+      "section-bg-3": '#E9ECEF',
+      border: '#DEE2E6',
+      highlight: '#ADB5BD',
+      "input-bg": '#FFFFFF',
+      "input-text": '#212529'
     }
   },
   {
@@ -181,12 +270,21 @@ const colorMoods: ColorMood[] = [
     icon: '🏢',
     description: 'Professional business colors',
     palette: {
-      primary: '#0056B3',
-      secondary: '#6C757D',
+      brand: '#0056B3',
       accent: '#17A2B8',
-      background: '#FFFFFF',
-      text: '#212529',
-      textLight: '#6C757D'
+      "button-primary": '#0056B3',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#F8F9FA',
+      "button-secondary-text": '#0056B3',
+      "text-primary": '#212529',
+      "text-secondary": '#6C757D',
+      "section-bg-1": '#FFFFFF',
+      "section-bg-2": '#F8F9FA',
+      "section-bg-3": '#E9ECEF',
+      border: '#DEE2E6',
+      highlight: '#6C757D',
+      "input-bg": '#FFFFFF',
+      "input-text": '#212529'
     }
   },
   {
@@ -196,12 +294,21 @@ const colorMoods: ColorMood[] = [
     icon: '💻',
     description: 'Modern tech-inspired',
     palette: {
-      primary: '#007BFF',
-      secondary: '#6C757D',
+      brand: '#007BFF',
       accent: '#28A745',
-      background: '#F8F9FA',
-      text: '#212529',
-      textLight: '#6C757D'
+      "button-primary": '#007BFF',
+      "button-text": '#FFFFFF',
+      "button-secondary": '#F8F9FA',
+      "button-secondary-text": '#007BFF',
+      "text-primary": '#212529',
+      "text-secondary": '#6C757D',
+      "section-bg-1": '#F8F9FA',
+      "section-bg-2": '#E9ECEF',
+      "section-bg-3": '#DEE2E6',
+      border: '#CED4DA',
+      highlight: '#6C757D',
+      "input-bg": '#FFFFFF',
+      "input-text": '#212529'
     }
   }
   // Add more moods for other categories...
@@ -255,7 +362,7 @@ const ColorMoodSelector: React.FC<ColorMoodSelectorProps> = ({
   };
 
   const renderColorSwatches = (palette: ColorPalette) => {
-    const colors = [palette.primary, palette.secondary, palette.accent, palette.background, palette.text];
+    const colors = [palette.brand, palette["button-primary"], palette.accent, palette["section-bg-1"], palette["text-primary"]];
     return (
       <div className="flex gap-1 mt-2">
         {colors.map((color, index) => (
