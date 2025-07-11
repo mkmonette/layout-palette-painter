@@ -365,10 +365,15 @@ export const generateColorSchemeWithLocks = (
   
   // Preserve locked colors
   const result = { ...newPalette };
+  console.log('Before locking - new palette:', newPalette);
+  console.log('Locked colors to preserve:', Array.from(lockedColors));
+  
   for (const colorKey of lockedColors) {
+    console.log(`Preserving locked color ${colorKey}: ${currentPalette[colorKey]} -> ${result[colorKey]}`);
     result[colorKey] = currentPalette[colorKey];
   }
   
+  console.log('After locking - final palette:', result);
   return result;
 };
 

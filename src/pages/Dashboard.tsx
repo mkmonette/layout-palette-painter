@@ -164,9 +164,12 @@ const Dashboard = () => {
       const newSet = new Set(prev);
       if (newSet.has(colorKey)) {
         newSet.delete(colorKey);
+        console.log(`Unlocked color: ${colorKey}`);
       } else {
         newSet.add(colorKey);
+        console.log(`Locked color: ${colorKey}`);
       }
+      console.log('All locked colors:', Array.from(newSet));
       return newSet;
     });
   };
