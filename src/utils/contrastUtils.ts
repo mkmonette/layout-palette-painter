@@ -26,9 +26,18 @@ export function getContrastText(bgColorHex: string): string {
  * Converts HSL color string to hex format for contrast calculation
  */
 export function hslToHex(hsl: string): string {
-  // Extract H, S, L values from hsl string like "220 13% 18%"
-  const match = hsl.match(/(\d+)\s+(\d+)%\s+(\d+)%/);
-  if (!match) return '#000000';
+  // Handle different HSL formats: "220 13% 18%" or "hsl(220, 13%, 18%)" or just hex
+  if (hsl.startsWith('#')) return hsl;
+  
+  let match = hsl.match(/(\d+)\s+(\d+)%\s+(\d+)%/);
+  if (!match) {
+    // Try hsl() format
+    match = hsl.match(/hsl\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)/);
+  }
+  if (!match) {
+    console.warn('Could not parse HSL color:', hsl);
+    return '#000000';
+  }
   
   const h = parseInt(match[1]) / 360;
   const s = parseInt(match[2]) / 100;
