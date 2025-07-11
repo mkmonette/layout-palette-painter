@@ -51,8 +51,51 @@ function addOpacity(color: string, opacity: number): string {
 }
 
 /**
- * Hook for using color roles in components
+ * Hook for using color roles in components with legacy aliases
  */
 export const useColorRoles = (palette: ColorPalette) => {
-  return mapPaletteToRoles(palette);
+  const roles = mapPaletteToRoles(palette);
+  
+  // Add legacy aliases for templates that haven't been migrated yet
+  return {
+    ...roles,
+    // Core legacy aliases
+    primary: palette.brand,
+    secondary: palette.highlight, 
+    background: palette["section-bg-1"],
+    text: palette["text-primary"],
+    textLight: palette["text-secondary"],
+    
+    // Pro template aliases
+    backgroundPrimary: palette["section-bg-1"],
+    backgroundSecondary: palette["section-bg-2"], 
+    backgroundAccent: palette["section-bg-3"],
+    textPrimary: palette["text-primary"],
+    textSecondary: palette["text-secondary"],
+    textInverse: palette["button-text"],
+    textMuted: palette["text-secondary"],
+    brandPrimary: palette.brand,
+    brandAccent: palette.accent,
+    buttonPrimary: palette["button-primary"],
+    buttonText: palette["button-text"],
+    buttonSecondary: palette["button-secondary"],
+    borderMuted: palette.border,
+    borderPrimary: palette.border,
+    borderSecondary: palette.border,
+    borderAccent: palette.accent,
+    surfaceCard: palette["section-bg-2"],
+    surfaceInput: palette["input-bg"],
+    navBackground: palette["section-bg-1"],
+    navText: palette["text-primary"],
+    navTextActive: palette.brand,
+    dataPoint1: palette.brand,
+    dataPoint2: palette.accent, 
+    dataPoint3: palette.highlight,
+    dataPoint4: palette["button-secondary"],
+    brandSecondary: palette.highlight,
+    stateSuccess: '#10B981',
+    stateWarning: '#F59E0B',
+    stateError: '#EF4444',
+    stateInfo: palette.accent
+  };
 };

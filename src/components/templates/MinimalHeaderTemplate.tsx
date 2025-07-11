@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ColorPalette } from '@/types/template';
 import { Button } from '@/components/ui/button';
@@ -13,13 +12,13 @@ const MinimalHeaderTemplate: React.FC<MinimalHeaderTemplateProps> = ({ colorPale
       {/* Minimal Header */}
       <header 
         className="px-6 py-6 transition-colors duration-300"
-        style={{ backgroundColor: colorPalette.text }}
+        style={{ backgroundColor: colorPalette["text-primary"] }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">
             <div 
               className="text-2xl font-light transition-colors duration-300"
-              style={{ color: colorPalette.background }}
+              style={{ color: colorPalette["section-bg-1"] }}
             >
               Minimal
             </div>
@@ -29,7 +28,7 @@ const MinimalHeaderTemplate: React.FC<MinimalHeaderTemplateProps> = ({ colorPale
                   key={item}
                   href="#" 
                   className="text-sm uppercase tracking-wider hover:opacity-70 transition-opacity"
-                  style={{ color: colorPalette.textLight }}
+                  style={{ color: colorPalette["text-secondary"] }}
                 >
                   {item}
                 </a>
@@ -38,56 +37,57 @@ const MinimalHeaderTemplate: React.FC<MinimalHeaderTemplateProps> = ({ colorPale
           </div>
           <Button 
             size="sm"
-            className="transition-all duration-300"
-            style={{ 
-              backgroundColor: colorPalette.accent,
-              color: colorPalette.text,
-              border: 'none'
-            }}
+            className="px-6 py-2 text-sm font-medium rounded-full"
+            style={{ backgroundColor: colorPalette.accent, color: colorPalette["button-text"] }}
           >
             Hire Me
           </Button>
         </div>
       </header>
 
-      {/* Content Area */}
+      {/* Content Section */}
       <section 
-        className="px-6 py-16 transition-colors duration-300"
-        style={{ backgroundColor: colorPalette.background }}
+        className="px-6 py-24 transition-colors duration-300"
+        style={{ backgroundColor: colorPalette["section-bg-1"] }}
       >
-        <div className="max-w-3xl">
+        <div className="max-w-4xl mx-auto text-center">
           <h1 
-            className="text-3xl md:text-5xl font-light mb-6 leading-tight transition-colors duration-300"
-            style={{ color: colorPalette.text }}
+            className="text-5xl md:text-7xl font-light mb-8 leading-tight transition-colors duration-300"
+            style={{ color: colorPalette["text-primary"] }}
           >
-            Clean design speaks 
-            <span style={{ color: colorPalette.primary }}> louder</span> than words
+            Clean Design, 
+            <span 
+              className="italic transition-colors duration-300"
+              style={{ color: colorPalette.brand }}
+            >
+              Bold Impact
+            </span>
           </h1>
+          
           <p 
-            className="text-lg mb-8 max-w-xl transition-colors duration-300"
-            style={{ color: colorPalette.textLight }}
+            className="text-lg mb-12 leading-relaxed max-w-2xl mx-auto transition-colors duration-300"
+            style={{ color: colorPalette["text-secondary"] }}
           >
-            Minimalist approach to web design. Less clutter, more focus on what truly matters.
+            Minimalist design philosophy meets powerful functionality. 
+            Every element serves a purpose, every detail matters.
           </p>
-          <div className="flex items-center space-x-6">
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button 
-              variant="outline"
-              className="transition-all duration-300"
-              style={{ 
-                borderColor: colorPalette.primary,
-                color: colorPalette.primary,
-                backgroundColor: 'transparent'
-              }}
+              size="lg"
+              className="px-8 py-3 text-lg font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+              style={{ backgroundColor: colorPalette["button-primary"], color: colorPalette["button-text"] }}
             >
               View Portfolio
             </Button>
-            <a 
-              href="#" 
-              className="text-sm uppercase tracking-wider underline hover:no-underline transition-all duration-300"
-              style={{ color: colorPalette.secondary }}
+            <Button 
+              size="lg"
+              variant="ghost"
+              className="px-8 py-3 text-lg font-medium rounded-full transition-all duration-300"
+              style={{ color: colorPalette.highlight }}
             >
-              Read More
-            </a>
+              Get In Touch
+            </Button>
           </div>
         </div>
       </section>

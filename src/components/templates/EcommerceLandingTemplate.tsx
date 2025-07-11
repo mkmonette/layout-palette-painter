@@ -12,28 +12,28 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
   return (
     <div className="w-full">
       {/* Header */}
-      <header className="px-6 py-4 border-b" style={{ backgroundColor: colorPalette.background, borderColor: colorPalette.textLight + '20' }}>
+      <header className="px-6 py-4 border-b" style={{ backgroundColor: colorPalette["section-bg-1"], borderColor: colorPalette.border }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg" style={{ backgroundColor: colorPalette.primary }}>
-              <ShoppingBag className="w-6 h-6" style={{ color: colorPalette.background }} />
+            <div className="p-2 rounded-lg" style={{ backgroundColor: colorPalette.brand }}>
+              <ShoppingBag className="w-6 h-6" style={{ color: colorPalette["button-text"] }} />
             </div>
-            <span className="text-2xl font-bold" style={{ color: colorPalette.text }}>
+            <span className="text-2xl font-bold" style={{ color: colorPalette["text-primary"] }}>
               StyleHub
             </span>
           </div>
           <nav className="hidden md:flex space-x-6">
             {['Shop', 'Collections', 'Sale', 'About'].map((item) => (
-              <a key={item} href="#" className="font-medium hover:opacity-70 transition-opacity" style={{ color: colorPalette.text }}>
+              <a key={item} href="#" className="font-medium hover:opacity-70 transition-opacity" style={{ color: colorPalette["text-primary"] }}>
                 {item}
               </a>
             ))}
           </nav>
           <div className="flex items-center space-x-4">
-            <Heart className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" style={{ color: colorPalette.textLight }} />
+            <Heart className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" style={{ color: colorPalette["text-secondary"] }} />
             <div className="relative">
-              <ShoppingBag className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" style={{ color: colorPalette.text }} />
-              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold" style={{ backgroundColor: colorPalette.accent, color: colorPalette.background }}>
+              <ShoppingBag className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" style={{ color: colorPalette["text-primary"] }} />
+              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold" style={{ backgroundColor: colorPalette.accent, color: colorPalette["button-text"] }}>
                 2
               </span>
             </div>
@@ -42,7 +42,7 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
       </header>
 
       {/* Hero Section */}
-      <section className="px-6 py-16" style={{ backgroundColor: colorPalette.background }}>
+      <section className="px-6 py-16" style={{ backgroundColor: colorPalette["section-bg-1"] }}>
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -52,18 +52,18 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
                     <Star key={i} className="w-5 h-5 fill-current" style={{ color: colorPalette.accent }} />
                   ))}
                 </div>
-                <span className="text-sm font-semibold" style={{ color: colorPalette.textLight }}>
+                <span className="text-sm font-semibold" style={{ color: colorPalette["text-secondary"] }}>
                   4.9/5 from 2,000+ reviews
                 </span>
               </div>
               
               <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                <span style={{ color: colorPalette.text }}>Discover your</span>
+                <span style={{ color: colorPalette["text-primary"] }}>Discover your</span>
                 <br />
-                <span style={{ color: colorPalette.primary }}>perfect style</span>
+                <span style={{ color: colorPalette.brand }}>perfect style</span>
               </h1>
               
-              <p className="text-xl mb-8 leading-relaxed" style={{ color: colorPalette.textLight }}>
+              <p className="text-xl mb-8 leading-relaxed" style={{ color: colorPalette["text-secondary"] }}>
                 Curated fashion for the modern lifestyle. Premium quality, sustainable materials, 
                 and timeless designs that make you look and feel amazing.
               </p>
@@ -72,7 +72,7 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
                 <Button 
                   size="lg"
                   className="px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-                  style={{ backgroundColor: colorPalette.primary, color: colorPalette.background }}
+                  style={{ backgroundColor: colorPalette["button-primary"], color: colorPalette["button-text"] }}
                 >
                   Shop New Collection
                 </Button>
@@ -80,7 +80,7 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
                   size="lg"
                   variant="outline"
                   className="px-8 py-4 text-lg font-semibold rounded-full border-2"
-                  style={{ borderColor: colorPalette.secondary, color: colorPalette.secondary }}
+                  style={{ borderColor: colorPalette["button-secondary-text"], color: colorPalette["button-secondary-text"] }}
                 >
                   View Lookbook
                 </Button>
@@ -97,7 +97,7 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
                     <div className="p-2 rounded-lg" style={{ backgroundColor: colorPalette.accent + '20' }}>
                       <feature.icon className="w-5 h-5" style={{ color: colorPalette.accent }} />
                     </div>
-                    <span className="font-medium" style={{ color: colorPalette.text }}>
+                    <span className="font-medium" style={{ color: colorPalette["text-primary"] }}>
                       {feature.text}
                     </span>
                   </div>
@@ -108,9 +108,9 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
             <div className="relative">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
-                  <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300" style={{ backgroundColor: colorPalette.primary + '20' }}>
+                  <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300" style={{ backgroundColor: colorPalette.brand + '20' }}>
                     <div className="w-full h-full flex items-center justify-center">
-                      <ShoppingBag className="w-16 h-16" style={{ color: colorPalette.primary }} />
+                      <ShoppingBag className="w-16 h-16" style={{ color: colorPalette.brand }} />
                     </div>
                   </div>
                   <div className="aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300" style={{ backgroundColor: colorPalette.accent + '20' }}>
@@ -120,14 +120,14 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
                   </div>
                 </div>
                 <div className="space-y-4 mt-8">
-                  <div className="aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300" style={{ backgroundColor: colorPalette.secondary + '20' }}>
+                  <div className="aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300" style={{ backgroundColor: colorPalette.highlight + '20' }}>
                     <div className="w-full h-full flex items-center justify-center">
-                      <Star className="w-12 h-12" style={{ color: colorPalette.secondary }} />
+                      <Star className="w-12 h-12" style={{ color: colorPalette.highlight }} />
                     </div>
                   </div>
-                  <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300" style={{ backgroundColor: colorPalette.primary + '30' }}>
+                  <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300" style={{ backgroundColor: colorPalette.brand + '30' }}>
                     <div className="w-full h-full flex items-center justify-center">
-                      <Gift className="w-16 h-16" style={{ color: colorPalette.primary }} />
+                      <Gift className="w-16 h-16" style={{ color: colorPalette.brand }} />
                     </div>
                   </div>
                 </div>
@@ -136,8 +136,8 @@ const EcommerceLandingTemplate: React.FC<EcommerceLandingTemplateProps> = ({ col
               {/* Sale badge */}
               <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full flex items-center justify-center shadow-lg animate-pulse" style={{ backgroundColor: colorPalette.accent }}>
                 <div className="text-center">
-                  <div className="text-sm font-bold" style={{ color: colorPalette.background }}>SALE</div>
-                  <div className="text-xs font-semibold" style={{ color: colorPalette.background }}>30% OFF</div>
+                  <div className="text-sm font-bold" style={{ color: colorPalette["button-text"] }}>SALE</div>
+                  <div className="text-xs font-semibold" style={{ color: colorPalette["button-text"] }}>30% OFF</div>
                 </div>
               </div>
             </div>
