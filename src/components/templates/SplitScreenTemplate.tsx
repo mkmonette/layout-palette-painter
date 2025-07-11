@@ -12,19 +12,19 @@ const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette 
   return (
     <div className="w-full">
       {/* Header */}
-      <header className="px-6 py-4 border-b" style={{ backgroundColor: colorPalette.background, borderColor: colorPalette.textLight + '20' }}>
+      <header className="px-6 py-4 border-b" style={{ backgroundColor: colorPalette["section-bg-1"], borderColor: colorPalette["text-secondary"] + '20' }}>
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold" style={{ color: colorPalette.primary }}>
+          <div className="text-2xl font-bold" style={{ color: colorPalette.brand }}>
             Velocity
           </div>
           <nav className="hidden md:flex space-x-6">
             {['Product', 'Solutions', 'Resources', 'Company'].map((item) => (
-              <a key={item} href="#" className="hover:opacity-70 transition-opacity" style={{ color: colorPalette.text }}>
+              <a key={item} href="#" className="hover:opacity-70 transition-opacity" style={{ color: colorPalette["text-primary"] }}>
                 {item}
               </a>
             ))}
           </nav>
-          <Button size="sm" style={{ backgroundColor: colorPalette.secondary, color: colorPalette.background }}>
+          <Button size="sm" style={{ backgroundColor: colorPalette["button-secondary"], color: colorPalette["button-secondary-text"] }}>
             Get Started
           </Button>
         </div>
@@ -33,13 +33,13 @@ const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette 
       {/* Split Screen Content */}
       <div className="grid md:grid-cols-2 min-h-[500px]">
         {/* Left Side - Content */}
-        <div className="px-6 py-16 flex items-center" style={{ backgroundColor: colorPalette.background }}>
+        <div className="px-6 py-16 flex items-center" style={{ backgroundColor: colorPalette["section-bg-1"] }}>
           <div className="max-w-lg">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight" style={{ color: colorPalette.text }}>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight" style={{ color: colorPalette["text-primary"] }}>
               Ship faster with
-              <span className="block" style={{ color: colorPalette.primary }}>modern tools</span>
+              <span className="block" style={{ color: colorPalette.brand }}>modern tools</span>
             </h1>
-            <p className="text-lg mb-8 leading-relaxed" style={{ color: colorPalette.textLight }}>
+            <p className="text-lg mb-8 leading-relaxed" style={{ color: colorPalette["text-secondary"] }}>
               Build, deploy, and scale your applications with confidence. Our platform provides everything you need to go from idea to production.
             </p>
             
@@ -51,7 +51,7 @@ const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette 
               ].map((feature, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <feature.icon className="w-5 h-5" style={{ color: colorPalette.accent }} />
-                  <span style={{ color: colorPalette.text }}>{feature.text}</span>
+                  <span style={{ color: colorPalette["text-primary"] }}>{feature.text}</span>
                 </div>
               ))}
             </div>
@@ -59,7 +59,7 @@ const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 className="px-6 py-3 rounded-lg font-medium flex items-center space-x-2 hover:scale-105 transition-transform"
-                style={{ backgroundColor: colorPalette.primary, color: colorPalette.background }}
+                style={{ backgroundColor: colorPalette["button-primary"], color: colorPalette["button-text"] }}
               >
                 <span>Start Building</span>
                 <ArrowRight className="w-4 h-4" />
@@ -67,7 +67,7 @@ const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette 
               <Button 
                 variant="outline"
                 className="px-6 py-3 rounded-lg font-medium"
-                style={{ borderColor: colorPalette.secondary, color: colorPalette.secondary }}
+                style={{ borderColor: colorPalette["button-secondary-text"], color: colorPalette["button-secondary-text"] }}
               >
                 View Documentation
               </Button>
@@ -78,16 +78,16 @@ const SplitScreenTemplate: React.FC<SplitScreenTemplateProps> = ({ colorPalette 
         {/* Right Side - Visual */}
         <div 
           className="relative flex items-center justify-center"
-          style={{ backgroundColor: colorPalette.primary + '10' }}
+          style={{ backgroundColor: colorPalette.brand + '10' }}
         >
           <div className="relative">
             <div 
               className="w-64 h-64 rounded-2xl shadow-2xl transform rotate-6"
-              style={{ backgroundColor: colorPalette.primary }}
+              style={{ backgroundColor: colorPalette.brand }}
             />
             <div 
               className="absolute -top-8 -right-8 w-32 h-32 rounded-xl shadow-lg transform -rotate-12"
-              style={{ backgroundColor: colorPalette.secondary }}
+              style={{ backgroundColor: colorPalette.highlight }}
             />
             <div 
               className="absolute -bottom-6 -left-6 w-24 h-24 rounded-lg shadow-lg transform rotate-12"

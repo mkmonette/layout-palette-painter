@@ -112,12 +112,12 @@ export const generateColorPalettePDF = async ({
 
   // Color swatches and details
   const colors = [
-    { name: 'Primary', value: colorPalette.primary },
-    { name: 'Secondary', value: colorPalette.secondary },
+    { name: 'Brand', value: colorPalette.brand },
+    { name: 'Highlight', value: colorPalette.highlight },
     { name: 'Accent', value: colorPalette.accent },
-    { name: 'Background', value: colorPalette.background },
-    { name: 'Text', value: colorPalette.text },
-    { name: 'Text Light', value: colorPalette.textLight },
+    { name: 'Background', value: colorPalette["section-bg-1"] },
+    { name: 'Text Primary', value: colorPalette["text-primary"] },
+    { name: 'Text Secondary', value: colorPalette["text-secondary"] },
   ];
 
   colors.forEach((color, index) => {

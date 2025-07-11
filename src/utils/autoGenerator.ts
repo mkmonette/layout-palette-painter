@@ -28,11 +28,11 @@ export const generatePaletteBatch = (count: number): GeneratedPalette[] => {
     const template = getRandomTemplate();
     const colorPalette = generateColorScheme('random', false);
     const colors = [
-      colorPalette.primary,
-      colorPalette.secondary,
+      colorPalette.brand,
+      colorPalette.highlight,
       colorPalette.accent,
-      colorPalette.background,
-      colorPalette.text,
+      colorPalette["section-bg-1"],
+      colorPalette["text-primary"],
     ];
     
     palettes.push({

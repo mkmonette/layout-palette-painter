@@ -7,11 +7,11 @@ export interface ContrastResult {
 }
 
 export interface AccessibilityReport {
-  primaryOnBackground: ContrastResult;
+  brandOnBackground: ContrastResult;
   textOnBackground: ContrastResult;
-  textLightOnBackground: ContrastResult;
-  textOnPrimary: ContrastResult;
-  textOnSecondary: ContrastResult;
+  textSecondaryOnBackground: ContrastResult;
+  textOnBrand: ContrastResult;
+  textOnHighlight: ContrastResult;
   textOnAccent: ContrastResult;
   overallAccessible: boolean;
 }
@@ -95,25 +95,25 @@ export const evaluateContrast = (ratio: number, isLargeText: boolean = false): C
  * Generate accessibility report for a color palette
  */
 export const generateAccessibilityReport = (palette: ColorPalette): AccessibilityReport => {
-  const primaryOnBackground = evaluateContrast(getContrastRatio(palette.primary, palette.background));
-  const textOnBackground = evaluateContrast(getContrastRatio(palette.text, palette.background));
-  const textLightOnBackground = evaluateContrast(getContrastRatio(palette.textLight, palette.background));
-  const textOnPrimary = evaluateContrast(getContrastRatio(palette.text, palette.primary));
-  const textOnSecondary = evaluateContrast(getContrastRatio(palette.text, palette.secondary));
-  const textOnAccent = evaluateContrast(getContrastRatio(palette.text, palette.accent));
+  const brandOnBackground = evaluateContrast(getContrastRatio(palette.brand, palette["section-bg-1"]));
+  const textOnBackground = evaluateContrast(getContrastRatio(palette["text-primary"], palette["section-bg-1"]));
+  const textSecondaryOnBackground = evaluateContrast(getContrastRatio(palette["text-secondary"], palette["section-bg-1"]));
+  const textOnBrand = evaluateContrast(getContrastRatio(palette["text-primary"], palette.brand));
+  const textOnHighlight = evaluateContrast(getContrastRatio(palette["text-primary"], palette.highlight));
+  const textOnAccent = evaluateContrast(getContrastRatio(palette["text-primary"], palette.accent));
   
   // Check if all critical pairings are accessible
   const overallAccessible = 
     textOnBackground.isAccessible &&
-    textLightOnBackground.isAccessible &&
-    textOnPrimary.isAccessible;
+    textSecondaryOnBackground.isAccessible &&
+    textOnBrand.isAccessible;
   
   return {
-    primaryOnBackground,
+    brandOnBackground,
     textOnBackground,
-    textLightOnBackground,
-    textOnPrimary,
-    textOnSecondary,
+    textSecondaryOnBackground,
+    textOnBrand,
+    textOnHighlight,
     textOnAccent,
     overallAccessible
   };

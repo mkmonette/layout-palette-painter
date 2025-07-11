@@ -39,9 +39,9 @@ const AccessibilityIndicator: React.FC<AccessibilityIndicatorProps> = ({ palette
 
   const contrastPairs = [
     { name: 'Text on Background', result: report.textOnBackground },
-    { name: 'Light Text on Background', result: report.textLightOnBackground },
-    { name: 'Text on Primary', result: report.textOnPrimary },
-    { name: 'Text on Secondary', result: report.textOnSecondary },
+    { name: 'Secondary Text on Background', result: report.textSecondaryOnBackground },
+    { name: 'Text on Brand', result: report.textOnBrand },
+    { name: 'Text on Highlight', result: report.textOnHighlight },
     { name: 'Text on Accent', result: report.textOnAccent }
   ];
 

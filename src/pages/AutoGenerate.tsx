@@ -139,12 +139,21 @@ const AutoGenerate = () => {
 
   const handleSavePalette = (palette: GeneratedPalette) => {
     const colorPalette: ColorPalette = {
-      primary: palette.colors[0],
-      secondary: palette.colors[1],
+      brand: palette.colors[0],
       accent: palette.colors[2],
-      background: palette.colors[3],
-      text: palette.colors[4],
-      textLight: '#6B7280'
+      "button-primary": palette.colors[0],
+      "button-text": palette.colors[3],
+      "button-secondary": palette.colors[3],
+      "button-secondary-text": palette.colors[1],
+      "text-primary": palette.colors[4],
+      "text-secondary": '#6B7280',
+      "section-bg-1": palette.colors[3],
+      "section-bg-2": '#F9FAFB',
+      "section-bg-3": '#F3F4F6',
+      border: '#E5E7EB',
+      highlight: palette.colors[1],
+      "input-bg": palette.colors[3],
+      "input-text": palette.colors[4]
     };
 
     const success = savePalette(colorPalette, palette.templateId as TemplateType, `AutoGen ${palette.templateName}`);
@@ -300,12 +309,21 @@ const AutoGenerate = () => {
   };
 
   const convertToColorPalette = (palette: GeneratedPalette): ColorPalette => ({
-    primary: palette.colors[0],
-    secondary: palette.colors[1],
+    brand: palette.colors[0],
     accent: palette.colors[2],
-    background: palette.colors[3],
-    text: palette.colors[4],
-    textLight: '#6B7280'
+    "button-primary": palette.colors[0],
+    "button-text": palette.colors[3],
+    "button-secondary": palette.colors[3],
+    "button-secondary-text": palette.colors[1],
+    "text-primary": palette.colors[4],
+    "text-secondary": '#6B7280',
+    "section-bg-1": palette.colors[3],
+    "section-bg-2": '#F9FAFB',
+    "section-bg-3": '#F3F4F6',
+    border: '#E5E7EB',
+    highlight: palette.colors[1],
+    "input-bg": palette.colors[3],
+    "input-text": palette.colors[4]
   });
 
   return (

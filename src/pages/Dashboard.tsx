@@ -44,12 +44,21 @@ const Dashboard = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
   const [colorPalette, setColorPalette] = useState<ColorPalette>({
-    primary: '#3B82F6',
-    secondary: '#10B981',
+    brand: '#3B82F6',
     accent: '#F59E0B',
-    background: '#FFFFFF',
-    text: '#1F2937',
-    textLight: '#6B7280'
+    "button-primary": '#3B82F6',
+    "button-text": '#FFFFFF',
+    "button-secondary": '#FFFFFF',
+    "button-secondary-text": '#10B981',
+    "text-primary": '#1F2937',
+    "text-secondary": '#6B7280',
+    "section-bg-1": '#FFFFFF',
+    "section-bg-2": '#F9FAFB',
+    "section-bg-3": '#F3F4F6',
+    border: '#E5E7EB',
+    highlight: '#10B981',
+    "input-bg": '#FFFFFF',
+    "input-text": '#1F2937'
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
