@@ -47,12 +47,21 @@ const ImageColorGenerator: React.FC<ImageColorGeneratorProps> = ({
       const [primary, secondary, accent, background, text, textLight] = colors;
       
       return {
-        primary: primary || '#3B82F6',
-        secondary: secondary || '#10B981',
+        brand: primary || '#3B82F6',
         accent: accent || '#F59E0B',
-        background: background || '#FFFFFF',
-        text: text || '#1F2937',
-        textLight: textLight || '#6B7280'
+        "button-primary": primary || '#3B82F6',
+        "button-text": '#FFFFFF',
+        "button-secondary": background || '#FFFFFF',
+        "button-secondary-text": primary || '#3B82F6',
+        "text-primary": text || '#1F2937',
+        "text-secondary": textLight || '#6B7280',
+        "section-bg-1": background || '#FFFFFF',
+        "section-bg-2": '#F9FAFB',
+        "section-bg-3": '#F3F4F6',
+        border: '#E5E7EB',
+        highlight: secondary || '#10B981',
+        "input-bg": background || '#FFFFFF',
+        "input-text": text || '#1F2937'
       };
     } catch (error) {
       console.error('Error extracting colors:', error);
