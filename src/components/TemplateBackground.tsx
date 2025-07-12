@@ -10,8 +10,37 @@ interface TemplateBackgroundProps {
 
 const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, children, colorPalette }) => {
   // Debug logging
+  console.log('TemplateBackground component mounting...');
   console.log('TemplateBackground received settings:', settings);
   console.log('TemplateBackground received colorPalette:', colorPalette);
+  
+  // Return simple test element first
+  return (
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      background: 'blue',
+      zIndex: 5,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <div style={{
+        background: 'yellow',
+        color: 'black',
+        padding: '30px',
+        fontSize: '30px',
+        fontWeight: 'bold',
+        border: '5px solid black',
+        zIndex: 10
+      }}>
+        SIMPLE TEST - CAN YOU SEE THIS?
+      </div>
+    </div>
+  );
 
   const getSvgBackground = () => {
     if (!settings.enabled) {
