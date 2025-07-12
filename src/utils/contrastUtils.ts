@@ -45,28 +45,40 @@ export function getContrastText(bgColorHex: string, isLargeText = false): string
   const cleanBg = bgColorHex.replace('#', '').padStart(6, '0');
   const bgHex = `#${cleanBg}`;
   
-  // Try white first
-  if (meetsWCAGAA(bgHex, '#FFFFFF', isLargeText)) {
-    return '#FFFFFF';
-  }
-  
-  // Try black
-  if (meetsWCAGAA(bgHex, '#000000', isLargeText)) {
-    return '#000000';
-  }
-  
-  // If neither works, adjust brightness to find compliant color
   const bgLuminance = getLuminance(bgHex);
   const minRatio = isLargeText ? 3.0 : 4.5;
   
-  // Calculate required luminance for contrast
+  // For light backgrounds (luminance > 0.5), prefer strong dark colors
+  if (bgLuminance > 0.5) {
+    // Try progressively darker colors for better readability on light backgrounds
+    const darkColors = ['#1a1a1a', '#2d2d2d', '#404040', '#000000'];
+    for (const darkColor of darkColors) {
+      if (meetsWCAGAA(bgHex, darkColor, isLargeText)) {
+        return darkColor;
+      }
+    }
+  } else {
+    // For dark backgrounds, try white first, then lighter colors
+    const lightColors = ['#ffffff', '#f5f5f5', '#e5e5e5', '#d4d4d4'];
+    for (const lightColor of lightColors) {
+      if (meetsWCAGAA(bgHex, lightColor, isLargeText)) {
+        return lightColor;
+      }
+    }
+  }
+  
+  // Fallback: calculate exact luminance needed
   let targetLuminance: number;
   if (bgLuminance > 0.5) {
     // Background is light, we need dark text
     targetLuminance = (bgLuminance + 0.05) / minRatio - 0.05;
+    // Ensure we get a dark enough color for light backgrounds
+    targetLuminance = Math.min(targetLuminance, 0.15);
   } else {
     // Background is dark, we need light text
     targetLuminance = (bgLuminance + 0.05) * minRatio - 0.05;
+    // Ensure we get a light enough color for dark backgrounds
+    targetLuminance = Math.max(targetLuminance, 0.85);
   }
   
   // Clamp luminance and convert back to hex

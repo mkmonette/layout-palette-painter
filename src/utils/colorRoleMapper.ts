@@ -57,14 +57,28 @@ function addOpacity(color: string, opacity: number): string {
 export const useColorRoles = (palette: ColorPalette) => {
   const roles = mapPaletteToRoles(palette);
   
-  // Calculate contrast-safe text colors for each section
+  // Calculate high-contrast text colors for each section background
   const sectionBg1TextColor = getContrastTextForHSL(palette["section-bg-1"]);
   const sectionBg2TextColor = getContrastTextForHSL(palette["section-bg-2"]);
   const sectionBg3TextColor = palette["section-bg-3"] ? getContrastTextForHSL(palette["section-bg-3"]) : sectionBg2TextColor;
+  const buttonPrimaryTextColor = getContrastTextForHSL(palette["button-primary"]);
+  const cardBackgroundTextColor = getContrastTextForHSL(palette["section-bg-2"]);
+  
+  // Override palette text roles with properly calculated contrast colors
+  const enhancedRoles = {
+    ...roles,
+    // Override text roles with high-contrast colors
+    "text-primary": sectionBg1TextColor,
+    "text-secondary": sectionBg1TextColor,
+    "text-onBackground": sectionBg1TextColor,
+    "text-onSurface": cardBackgroundTextColor,
+    "button-text": buttonPrimaryTextColor,
+    "input-text": getContrastTextForHSL(palette["input-bg"]),
+  };
   
   // Add legacy aliases for templates that haven't been migrated yet
   return {
-    ...roles,
+    ...enhancedRoles,
     // Core legacy aliases with contrast-safe text
     primary: palette.brand,
     secondary: palette.highlight, 
@@ -72,19 +86,22 @@ export const useColorRoles = (palette: ColorPalette) => {
     text: sectionBg1TextColor,
     textLight: sectionBg1TextColor + '80', // Add transparency
     
-    // Pro template aliases with contrast-safe text
+    // Pro template aliases with high-contrast text colors
     backgroundPrimary: palette["section-bg-1"],
     backgroundSecondary: palette["section-bg-2"], 
     backgroundAccent: palette["section-bg-3"],
     textPrimary: sectionBg1TextColor,
-    textSecondary: sectionBg1TextColor + '80', // Add transparency for secondary text
-    textInverse: getContrastTextForHSL(palette["button-primary"]),
-    textMuted: sectionBg1TextColor + '60', // More transparency for muted text
+    textSecondary: sectionBg1TextColor + '90', // Less transparency for better readability
+    textInverse: buttonPrimaryTextColor,
+    textMuted: sectionBg1TextColor + '75', // Less transparency for better readability
+    textOnBackground: sectionBg1TextColor,
+    textOnSurface: cardBackgroundTextColor,
     brandPrimary: palette.brand,
     brandAccent: palette.accent,
     buttonPrimary: palette["button-primary"],
-    buttonText: palette["button-text"],
+    buttonText: buttonPrimaryTextColor,
     buttonSecondary: palette["button-secondary"],
+    buttonSecondaryText: getContrastTextForHSL(palette["button-secondary"]),
     borderMuted: palette.border,
     borderPrimary: palette.border,
     borderSecondary: palette.border,
@@ -92,8 +109,18 @@ export const useColorRoles = (palette: ColorPalette) => {
     surfaceCard: palette["section-bg-2"],
     surfaceInput: palette["input-bg"],
     navBackground: palette["section-bg-1"],
-    navText: palette["text-primary"],
+    navText: sectionBg1TextColor,
     navTextActive: palette.brand,
+    // Heading colors - ensure high contrast
+    headingPrimary: sectionBg1TextColor,
+    headingSecondary: sectionBg2TextColor,
+    headingTertiary: sectionBg3TextColor,
+    // Label colors - ensure high contrast
+    labelPrimary: sectionBg1TextColor,
+    labelSecondary: sectionBg1TextColor + '90',
+    // Paragraph colors - ensure high contrast
+    paragraphPrimary: sectionBg1TextColor,
+    paragraphSecondary: sectionBg1TextColor + '85',
     dataPoint1: palette.brand,
     dataPoint2: palette.accent, 
     dataPoint3: palette.highlight,
