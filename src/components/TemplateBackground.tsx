@@ -33,12 +33,12 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
           >
             <defs>
               <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={colorPalette['section-bg-2']} stopOpacity={baseOpacity * 0.8} />
-                <stop offset="100%" stopColor={colorPalette['section-bg-3']} stopOpacity={baseOpacity * 0.6} />
+                <stop offset="0%" stopColor="#FF0000" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#0000FF" stopOpacity="0.3" />
               </linearGradient>
               <linearGradient id="wave-gradient-2" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={colorPalette.highlight} stopOpacity={baseOpacity * 0.4} />
-                <stop offset="100%" stopColor={colorPalette.accent} stopOpacity={baseOpacity * 0.3} />
+                <stop offset="0%" stopColor="#00FF00" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#FFFF00" stopOpacity="0.3" />
               </linearGradient>
             </defs>
             
@@ -76,8 +76,8 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
               cy="200"
               rx={120 + settings.blobSize * 2}
               ry={80 + settings.blobSize * 1.5}
-              fill={colorPalette['section-bg-2']}
-              opacity={baseOpacity * 0.6}
+              fill="#FF6B6B"
+              opacity="0.6"
               filter="url(#blob-blur)"
             />
             
@@ -87,8 +87,8 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
               cy="400"
               rx={90 + settings.blobSize * 1.5}
               ry={110 + settings.blobSize * 1.8}
-              fill={colorPalette['section-bg-3']}
-              opacity={baseOpacity * 0.5}
+              fill="#4ECDC4"
+              opacity="0.5"
               filter="url(#blob-blur)"
             />
             
