@@ -30,14 +30,13 @@ import { SubscriptionPlan, AVAILABLE_FEATURES, FeatureLimit } from '@/types/subs
 
 interface FeatureListProps {
   features: FeatureLimit[];
-  currentFeatures: Record<string, number | boolean>;
   onUpdateFeature: (featureId: string, value: number | boolean) => void;
   onNumberInputChange: (featureId: string, inputValue: string) => void;
 }
 
 interface FeatureItemProps {
   feature: FeatureLimit;
-  value: number | boolean;
+  initialValue: number | boolean;
   onUpdateFeature: (featureId: string, value: number | boolean) => void;
   onNumberInputChange: (featureId: string, inputValue: string) => void;
 }
@@ -135,16 +134,16 @@ const FeatureManagement = () => {
     }
   }, [updateFeature]);
 
-  // Prevent any visual flashing by maintaining stable refs
+  // Completely stable features reference - no dependencies
   const stableFeatures = React.useMemo(() => AVAILABLE_FEATURES, []);
-  const stableCurrentFeatures = React.useMemo(() => editingFeatures, [editingFeatures]);
+  
+  // Create a ref to hold current feature values without triggering re-renders
+  const featuresRef = React.useRef<Record<string, boolean | number>>(editingFeatures);
+  React.useEffect(() => {
+    featuresRef.current = editingFeatures;
+  }, [editingFeatures]);
 
   console.log('🎭 Main component render - isEditModalOpen:', isEditModalOpen, 'editingPlan.name:', editingPlan.name);
-
-  // Check if there are any unexpected state changes
-  React.useEffect(() => {
-    console.log('🔍 editingFeatures effect triggered:', editingFeatures);
-  }, [editingFeatures]);
 
   const getFeatureDisplayValue = (plan: SubscriptionPlan, featureId: string) => {
     const value = plan.features[featureId];
@@ -157,8 +156,8 @@ const FeatureManagement = () => {
     }
   };
 
-  // Memoized feature list component to prevent re-renders
-  const FeatureList = React.memo<FeatureListProps>(({ features, currentFeatures, onUpdateFeature, onNumberInputChange }) => {
+  // Memoized feature list component - NO dependencies on feature values
+  const FeatureList = React.memo<FeatureListProps>(({ features, onUpdateFeature, onNumberInputChange }) => {
     console.log('📋 FeatureList render');
     return (
       <div className="space-y-4">
@@ -166,7 +165,7 @@ const FeatureManagement = () => {
           <FeatureItem 
             key={feature.id}
             feature={feature}
-            value={currentFeatures[feature.id]}
+            initialValue={featuresRef.current[feature.id]}
             onUpdateFeature={onUpdateFeature}
             onNumberInputChange={onNumberInputChange}
           />
@@ -175,33 +174,54 @@ const FeatureManagement = () => {
     );
   });
 
-  // Individual feature item component with focus preservation
-  const FeatureItem = React.memo<FeatureItemProps>(({ feature, value, onUpdateFeature, onNumberInputChange }) => {
-    const inputRef = React.useRef<HTMLInputElement>(null);
-    const [localValue, setLocalValue] = React.useState(value === -1 ? '' : String(value || 0));
+  // Individual feature item with completely isolated state
+  const FeatureItem = React.memo<FeatureItemProps>(({ feature, initialValue, onUpdateFeature, onNumberInputChange }) => {
+    // Internal state that's completely isolated
+    const [currentValue, setCurrentValue] = React.useState(initialValue);
+    const [localInputValue, setLocalInputValue] = React.useState(
+      initialValue === -1 ? '' : String(initialValue || 0)
+    );
     
-    // Sync local value with prop value only when prop actually changes
+    // Only sync from parent on initial mount or when explicitly needed
     React.useEffect(() => {
-      const newValue = value === -1 ? '' : String(value || 0);
-      if (newValue !== localValue) {
-        setLocalValue(newValue);
-      }
-    }, [value]);
+      setCurrentValue(initialValue);
+      setLocalInputValue(initialValue === -1 ? '' : String(initialValue || 0));
+    }, [feature.id]); // Only depend on feature.id, not initialValue
     
     const handleInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value;
-      setLocalValue(inputValue); // Update local state immediately for smooth typing
-      onNumberInputChange(feature.id, inputValue); // Update parent state
-    }, [feature.id, onNumberInputChange]);
+      setLocalInputValue(inputValue); // Update local state immediately
+      
+      // Parse and update internal value
+      if (inputValue === '') {
+        setCurrentValue(0);
+      } else {
+        const numValue = parseInt(inputValue);
+        if (!isNaN(numValue) && numValue >= 0) {
+          setCurrentValue(numValue);
+        }
+      }
+    }, []);
     
     const handleInputBlur = React.useCallback(() => {
-      if (localValue === '') {
+      // Only update parent state on blur
+      if (localInputValue === '') {
         onUpdateFeature(feature.id, 0);
-        setLocalValue('0');
+        setLocalInputValue('0');
+        setCurrentValue(0);
+      } else {
+        onUpdateFeature(feature.id, currentValue);
       }
-    }, [localValue, feature.id, onUpdateFeature]);
+    }, [localInputValue, currentValue, feature.id, onUpdateFeature]);
     
-    console.log('🎯 FeatureItem render:', feature.id, value, 'localValue:', localValue);
+    const handleToggleInfinite = React.useCallback(() => {
+      const newValue = currentValue === -1 ? 0 : -1;
+      setCurrentValue(newValue);
+      setLocalInputValue(newValue === -1 ? '' : String(newValue));
+      onUpdateFeature(feature.id, newValue);
+    }, [currentValue, feature.id, onUpdateFeature]);
+    
+    console.log('🎯 FeatureItem render:', feature.id, currentValue, 'localValue:', localInputValue);
     
     return (
       <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -215,16 +235,18 @@ const FeatureManagement = () => {
         <div className="flex items-center gap-2">
           {feature.type === 'boolean' ? (
             <Switch
-              checked={value === true}
-              onCheckedChange={(checked) => onUpdateFeature(feature.id, checked)}
+              checked={currentValue === true}
+              onCheckedChange={(checked) => {
+                setCurrentValue(checked);
+                onUpdateFeature(feature.id, checked);
+              }}
             />
           ) : (
             <div className="flex items-center gap-2">
               <Input
-                ref={inputRef}
                 type="number"
                 min="0"
-                value={localValue}
+                value={localInputValue}
                 onChange={handleInputChange}
                 onBlur={handleInputBlur}
                 placeholder="0"
@@ -233,8 +255,8 @@ const FeatureManagement = () => {
               <Button
                 type="button"
                 size="sm"
-                variant={value === -1 ? "default" : "outline"}
-                onClick={() => onUpdateFeature(feature.id, value === -1 ? 0 : -1)}
+                variant={currentValue === -1 ? "default" : "outline"}
+                onClick={handleToggleInfinite}
               >
                 <Infinity className="h-4 w-4" />
               </Button>
@@ -344,7 +366,6 @@ const FeatureManagement = () => {
               <h3 className="text-lg font-semibold mb-4">Feature Configuration</h3>
               <FeatureList 
                 features={stableFeatures}
-                currentFeatures={stableCurrentFeatures}
                 onUpdateFeature={updateFeature}
                 onNumberInputChange={handleNumberInputChange}
               />
