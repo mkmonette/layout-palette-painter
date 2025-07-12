@@ -25,6 +25,7 @@ import AIGenerationSettings from '@/components/admin/AIGenerationSettings';
 import OpenAIUsageLogs from '@/components/admin/OpenAIUsageLogs';
 import ColorRolePreview from '@/components/admin/ColorRolePreview';
 import MiniTemplatePreview from '@/components/admin/MiniTemplatePreview';
+import PresetManager from '@/components/admin/PresetManager';
 import AutoGenerator from '@/components/AutoGenerator';
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -32,10 +33,33 @@ import { useNavigate } from 'react-router-dom';
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  
+  // Mock current palette - in real implementation this would come from state management
+  const [currentPalette, setCurrentPalette] = useState({
+    brand: '#3366FF',
+    accent: '#FF6B35',
+    highlight: '#4ECDC4',
+    'button-primary': '#3366FF',
+    'button-secondary': '#6C757D',
+    'button-text': '#FFFFFF',
+    'button-secondary-text': '#FFFFFF',
+    'text-primary': '#000000',
+    'text-secondary': '#6C757D',
+    'section-bg-1': '#FFFFFF',
+    'section-bg-2': '#F8F9FA',
+    'section-bg-3': '#E9ECEF',
+    border: '#DEE2E6',
+    'input-bg': '#FFFFFF',
+    'input-text': '#000000'
+  });
 
   const handleLogout = () => {
     logoutUser();
     navigate('/login');
+  };
+
+  const handleApplyPreset = (palette: any) => {
+    setCurrentPalette(palette);
   };
 
   return (
@@ -69,7 +93,7 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-10">
+          <TabsList className="grid w-full grid-cols-11">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="subscriptions">Plans</TabsTrigger>
@@ -79,6 +103,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="usage-logs">Usage Logs</TabsTrigger>
             <TabsTrigger value="color-preview">Colors</TabsTrigger>
             <TabsTrigger value="template-preview">Template</TabsTrigger>
+            <TabsTrigger value="presets">Presets</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -116,6 +141,13 @@ const AdminDashboard = () => {
 
           <TabsContent value="template-preview">
             <MiniTemplatePreview />
+          </TabsContent>
+
+          <TabsContent value="presets">
+            <PresetManager 
+              currentPalette={currentPalette}
+              onApplyPreset={handleApplyPreset}
+            />
           </TabsContent>
 
           <TabsContent value="settings">
