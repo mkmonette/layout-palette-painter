@@ -112,9 +112,22 @@ const buildColorPrompt = (request: OpenAIColorRequest): string => {
 - Text colors have WCAG AA contrast ratio (4.5:1) against their backgrounds
 - Colors work well together and create visual hierarchy
 - ${isDarkMode ? 'Dark backgrounds with light text' : 'Light backgrounds with dark text'}
-- Professional and accessible design
+- Professional and accessible design`;
 
-Return the palette as JSON with hex color values only.`;
+  // Check if high contrast enforcement is enabled in admin settings
+  const adminSettings = localStorage.getItem('openai_admin_settings');
+  if (adminSettings) {
+    try {
+      const settings = JSON.parse(adminSettings);
+      if (settings.enforceHighContrast) {
+        prompt += `\n- Ensure text colors have high contrast against their background colors for readability.`;
+      }
+    } catch (error) {
+      console.warn('Error parsing admin settings for high contrast enforcement:', error);
+    }
+  }
+
+  prompt += `\n\nReturn the palette as JSON with hex color values only.`;
 
   return prompt;
 };

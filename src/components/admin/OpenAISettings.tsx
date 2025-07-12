@@ -10,6 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Trash2, Plus, Eye, EyeOff, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { initializeOpenAI, isOpenAIInitialized } from '@/utils/openaiService';
@@ -49,6 +50,7 @@ const OpenAISettings: React.FC = () => {
   const [showApiKey, setShowApiKey] = useState(false);
   const [environment, setEnvironment] = useState('production');
   const [isEnabled, setIsEnabled] = useState(false);
+  const [enforceHighContrast, setEnforceHighContrast] = useState(false);
   const [defaultPrompt, setDefaultPrompt] = useState(
     'Generate a balanced color palette with good contrast ratios. Ensure text colors are readable against their backgrounds and follow WCAG AA guidelines.'
   );
@@ -79,6 +81,7 @@ const OpenAISettings: React.FC = () => {
         setMaxTokens([settings.maxTokens || 500]);
         setTemperature([settings.temperature || 0.7]);
         setIsEnabled(settings.isEnabled || false);
+        setEnforceHighContrast(settings.enforceHighContrast || false);
       } catch (error) {
         console.error('Error loading OpenAI settings:', error);
       }
@@ -92,7 +95,8 @@ const OpenAISettings: React.FC = () => {
       promptTemplates,
       maxTokens: maxTokens[0],
       temperature: temperature[0],
-      isEnabled
+      isEnabled,
+      enforceHighContrast
     };
 
     localStorage.setItem('openai_admin_settings', JSON.stringify(settings));
@@ -303,6 +307,25 @@ const OpenAISettings: React.FC = () => {
                     onChange={(e) => setDefaultPrompt(e.target.value)}
                     rows={3}
                   />
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="enforce-high-contrast"
+                    checked={enforceHighContrast}
+                    onCheckedChange={(checked) => setEnforceHighContrast(checked === true)}
+                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <Label 
+                      htmlFor="enforce-high-contrast"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Enforce high contrast between text and background colors
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      When checked, automatically adds a high contrast instruction to the AI prompt
+                    </p>
+                  </div>
                 </div>
 
                 <Separator />
