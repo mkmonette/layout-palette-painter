@@ -48,26 +48,32 @@ const FeatureManagement = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Partial<SubscriptionPlan>>({});
+  
+  // Separate state for features to prevent modal re-renders
+  const [editingFeatures, setEditingFeatures] = useState<Record<string, boolean | number>>({});
 
   const handleEditPlan = (plan: SubscriptionPlan) => {
     setEditingPlan({...plan});
+    setEditingFeatures(plan.features || {});
     setIsEditModalOpen(true);
   };
 
   const handleCreatePlan = () => {
+    const initialFeatures = Object.fromEntries(
+      AVAILABLE_FEATURES.map(feature => [
+        feature.id, 
+        feature.type === 'boolean' ? false : 0
+      ])
+    );
+    
     setEditingPlan({
       name: '',
       price: 0,
       interval: 'month',
       description: '',
-      features: Object.fromEntries(
-        AVAILABLE_FEATURES.map(feature => [
-          feature.id, 
-          feature.type === 'boolean' ? false : 0
-        ])
-      ),
       status: 'draft'
     });
+    setEditingFeatures(initialFeatures);
     setIsCreateModalOpen(true);
   };
 
@@ -80,7 +86,7 @@ const FeatureManagement = () => {
       price: editingPlan.price || 0,
       interval: editingPlan.interval || 'month',
       description: editingPlan.description || '',
-      features: editingPlan.features || {},
+      features: editingFeatures, // Use separate features state
       status: editingPlan.status || 'draft',
       subscribers: editingPlan.subscribers || 0,
       revenue: editingPlan.revenue || 0
@@ -94,6 +100,7 @@ const FeatureManagement = () => {
     setIsEditModalOpen(false);
     setIsCreateModalOpen(false);
     setEditingPlan({});
+    setEditingFeatures({});
   };
 
   const deletePlan = (planId: string) => {
@@ -103,17 +110,14 @@ const FeatureManagement = () => {
 
   const updateFeature = React.useCallback((featureId: string, value: boolean | number) => {
     console.log('🔄 updateFeature called:', featureId, value);
-    setEditingPlan(prev => {
-      console.log('📝 setEditingPlan - prev:', prev.name, prev.features);
-      const newPlan = {
+    setEditingFeatures(prev => {
+      console.log('📝 setEditingFeatures - prev:', prev);
+      const newFeatures = {
         ...prev,
-        features: {
-          ...prev.features,
-          [featureId]: value
-        }
+        [featureId]: value
       };
-      console.log('📝 setEditingPlan - new:', newPlan.name, newPlan.features);
-      return newPlan;
+      console.log('📝 setEditingFeatures - new:', newFeatures);
+      return newFeatures;
     });
   }, []);
 
@@ -133,18 +137,14 @@ const FeatureManagement = () => {
 
   // Prevent any visual flashing by maintaining stable refs
   const stableFeatures = React.useMemo(() => AVAILABLE_FEATURES, []);
-  const stableCurrentFeatures = React.useMemo(() => editingPlan.features || {}, [editingPlan.features]);
+  const stableCurrentFeatures = React.useMemo(() => editingFeatures, [editingFeatures]);
 
   console.log('🎭 Main component render - isEditModalOpen:', isEditModalOpen, 'editingPlan.name:', editingPlan.name);
 
   // Check if there are any unexpected state changes
   React.useEffect(() => {
-    console.log('🔍 editingPlan effect triggered:', editingPlan);
-  }, [editingPlan]);
-
-  React.useEffect(() => {
-    console.log('🔍 isEditModalOpen effect triggered:', isEditModalOpen);
-  }, [isEditModalOpen]);
+    console.log('🔍 editingFeatures effect triggered:', editingFeatures);
+  }, [editingFeatures]);
 
   const getFeatureDisplayValue = (plan: SubscriptionPlan, featureId: string) => {
     const value = plan.features[featureId];
@@ -355,6 +355,7 @@ const FeatureManagement = () => {
             <Button type="button" variant="outline" onClick={() => {
               setIsEditModalOpen(false);
               setEditingPlan({});
+              setEditingFeatures({});
             }}>
               Cancel
             </Button>
@@ -517,6 +518,7 @@ const FeatureManagement = () => {
             <Button type="button" variant="outline" onClick={() => {
               setIsCreateModalOpen(false);
               setEditingPlan({});
+              setEditingFeatures({});
             }}>
               Cancel
             </Button>
