@@ -87,13 +87,14 @@ const FeatureManagement = () => {
     console.log('💾 savePlan - editingPlan:', editingPlan);
     console.log('💾 savePlan - editingFeatures:', editingFeatures);
     
+    // Create the new plan object first
     const newPlan: SubscriptionPlan = {
       id: editingPlan.id || `plan_${Date.now()}`,
       name: editingPlan.name,
       price: editingPlan.price || 0,
       interval: editingPlan.interval || 'month',
       description: editingPlan.description || '',
-      features: editingFeatures, // Use separate features state
+      features: { ...editingFeatures }, // Clone to avoid reference issues
       status: editingPlan.status || 'draft',
       subscribers: editingPlan.subscribers || 0,
       revenue: editingPlan.revenue || 0
@@ -105,18 +106,21 @@ const FeatureManagement = () => {
       ? plans.map(p => p.id === editingPlan.id ? newPlan : p)
       : [...plans, newPlan];
     
-    console.log('💾 savePlan - about to update plans');
+    console.log('💾 savePlan - about to update plans and close modal');
     
-    // Batch all state updates together to prevent intermediate renders
-    React.startTransition(() => {
+    // Close modal immediately to prevent re-renders
+    setIsEditModalOpen(false);
+    setIsCreateModalOpen(false);
+    
+    // Then update the data in the background
+    setTimeout(() => {
       updatePlans(updatedPlans);
-      setIsEditModalOpen(false);
-      setIsCreateModalOpen(false);
       setEditingPlan({});
       setEditingFeatures({});
-    });
+      console.log('💾 savePlan - background updates completed');
+    }, 0);
     
-    console.log('💾 savePlan - all updates queued');
+    console.log('💾 savePlan - modal closed, background updates queued');
   }, [editingPlan, editingFeatures, plans, updatePlans]);
 
   const deletePlan = (planId: string) => {
