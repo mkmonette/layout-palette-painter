@@ -217,7 +217,7 @@ const OpenAISettings: React.FC = () => {
         </Badge>
       </div>
 
-      <Accordion type="multiple" defaultValue={["key-management", "prompt-control"]} className="space-y-4">
+      <Accordion type="multiple" defaultValue={["key-management"]} className="space-y-4">
         {/* OpenAI Key Management */}
         <AccordionItem value="key-management">
           <AccordionTrigger>OpenAI Key Management</AccordionTrigger>
@@ -302,107 +302,6 @@ const OpenAISettings: React.FC = () => {
                     )}
                     {isTestingConnection ? 'Testing...' : 'Test Connection'}
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Prompt Control Panel */}
-        <AccordionItem value="prompt-control">
-          <AccordionTrigger>Prompt Control Panel</AccordionTrigger>
-          <AccordionContent>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Default Prompt Configuration</CardTitle>
-                <CardDescription>
-                  Set the default prompt used for AI color generation
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="default-prompt">Default Prompt</Label>
-                  <Textarea
-                    id="default-prompt"
-                    placeholder="Enter the default prompt for AI color generation..."
-                    value={defaultPrompt}
-                    onChange={(e) => setDefaultPrompt(e.target.value)}
-                    rows={3}
-                  />
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="enforce-high-contrast"
-                    checked={enforceHighContrast}
-                    onCheckedChange={(checked) => setEnforceHighContrast(checked === true)}
-                  />
-                  <div className="grid gap-1.5 leading-none">
-                    <Label 
-                      htmlFor="enforce-high-contrast"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Enforce high contrast between text and background colors
-                    </Label>
-                    <p className="text-xs text-muted-foreground">
-                      When checked, automatically adds a high contrast instruction to the AI prompt
-                    </p>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Prompt Templates</h4>
-                  </div>
-
-                  <div className="space-y-3">
-                    {promptTemplates.map((template) => (
-                      <div key={template.id} className="p-3 border rounded-lg space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Input
-                            value={template.label}
-                            onChange={(e) => updatePromptTemplate(template.id, 'label', e.target.value)}
-                            className="font-medium"
-                            placeholder="Template label"
-                          />
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removePromptTemplate(template.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <Textarea
-                          value={template.prompt}
-                          onChange={(e) => updatePromptTemplate(template.id, 'prompt', e.target.value)}
-                          placeholder="Prompt text"
-                          rows={2}
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="space-y-3 p-3 border rounded-lg bg-muted/50">
-                    <h5 className="font-medium">Add New Template</h5>
-                    <Input
-                      placeholder="Template label (e.g., 'Dark Mode')"
-                      value={newPromptLabel}
-                      onChange={(e) => setNewPromptLabel(e.target.value)}
-                    />
-                    <Textarea
-                      placeholder="Prompt text..."
-                      value={newPromptText}
-                      onChange={(e) => setNewPromptText(e.target.value)}
-                      rows={2}
-                    />
-                    <Button onClick={addPromptTemplate} size="sm">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Template
-                    </Button>
-                  </div>
                 </div>
               </CardContent>
             </Card>
