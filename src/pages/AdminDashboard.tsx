@@ -93,16 +93,13 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-11">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="subscriptions">Plans</TabsTrigger>
             <TabsTrigger value="generator">Generator</TabsTrigger>
-            <TabsTrigger value="ai-limits">AI Limits</TabsTrigger>
-            <TabsTrigger value="openai">OpenAI</TabsTrigger>
-            <TabsTrigger value="usage-logs">Usage Logs</TabsTrigger>
+            <TabsTrigger value="ai-settings">AI Settings</TabsTrigger>
             <TabsTrigger value="color-preview">Colors</TabsTrigger>
-            <TabsTrigger value="template-preview">Template</TabsTrigger>
             <TabsTrigger value="presets">Presets</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
@@ -123,24 +120,30 @@ const AdminDashboard = () => {
             <AutoGenerator />
           </TabsContent>
 
-          <TabsContent value="ai-limits">
-            <AIGenerationSettings />
-          </TabsContent>
-
-          <TabsContent value="openai">
-            <OpenAISettings />
-          </TabsContent>
-
-          <TabsContent value="usage-logs">
-            <OpenAIUsageLogs />
+          <TabsContent value="ai-settings">
+            <Tabs defaultValue="openai" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="openai">OpenAI</TabsTrigger>
+                <TabsTrigger value="ai-limits">AI Limits</TabsTrigger>
+                <TabsTrigger value="usage-logs">Usage Logs</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="openai">
+                <OpenAISettings />
+              </TabsContent>
+              
+              <TabsContent value="ai-limits">
+                <AIGenerationSettings />
+              </TabsContent>
+              
+              <TabsContent value="usage-logs">
+                <OpenAIUsageLogs />
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="color-preview">
             <ColorRolePreview />
-          </TabsContent>
-
-          <TabsContent value="template-preview">
-            <MiniTemplatePreview />
           </TabsContent>
 
           <TabsContent value="presets">
