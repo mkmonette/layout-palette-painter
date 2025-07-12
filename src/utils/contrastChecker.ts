@@ -1,4 +1,5 @@
 import { ColorPalette } from './colorGenerator';
+import chroma from 'chroma-js';
 
 /**
  * Convert hex color to RGB
@@ -63,14 +64,17 @@ export const meetsContrastRequirement = (
 };
 
 /**
- * Suggest an accessible text color for a given background
+ * Suggest an accessible text color for a given background using chroma-js
  */
 export const getAccessibleTextColor = (backgroundColor: string): string => {
-  const backgroundLuminance = getLuminance(backgroundColor);
-  
-  // If background is light (luminance > 0.5), use dark text
-  // If background is dark (luminance <= 0.5), use light text
-  return backgroundLuminance > 0.5 ? '#000000' : '#FFFFFF';
+  try {
+    const backgroundLuminance = chroma(backgroundColor).luminance();
+    // Use 0.6 threshold for better contrast (matching the colorRoleMapper)
+    return backgroundLuminance > 0.6 ? '#000000' : '#FFFFFF';
+  } catch (error) {
+    console.warn('Error calculating luminance for color:', backgroundColor);
+    return '#000000';
+  }
 };
 
 /**
@@ -93,36 +97,26 @@ export const adjustColorBrightness = (hex: string, percent: number): string => {
 };
 
 /**
- * Get an accessible version of a text color against a background
+ * Get an accessible version of a text color against a background using chroma-js
  */
 export const getAccessibleVersion = (
   textColor: string, 
   backgroundColor: string
 ): string => {
-  let currentColor = textColor;
-  let attempts = 0;
-  const maxAttempts = 20;
-
-  while (!meetsContrastRequirement(currentColor, backgroundColor) && attempts < maxAttempts) {
-    const backgroundLuminance = getLuminance(backgroundColor);
+  try {
+    const contrast = chroma.contrast(textColor, backgroundColor);
     
-    if (backgroundLuminance > 0.5) {
-      // Light background, darken text
-      currentColor = adjustColorBrightness(currentColor, -15);
-    } else {
-      // Dark background, lighten text
-      currentColor = adjustColorBrightness(currentColor, 15);
+    // If contrast is already good, return original color
+    if (contrast >= 4.5) {
+      return textColor;
     }
     
-    attempts++;
+    // If contrast is poor, return high-contrast color
+    return getAccessibleTextColor(backgroundColor);
+  } catch (error) {
+    console.warn('Error calculating contrast:', error);
+    return getAccessibleTextColor(backgroundColor);
   }
-
-  // If we still don't have good contrast, use black or white
-  if (!meetsContrastRequirement(currentColor, backgroundColor)) {
-    currentColor = getAccessibleTextColor(backgroundColor);
-  }
-
-  return currentColor;
 };
 
 /**
@@ -150,16 +144,27 @@ export const validatePaletteContrast = (palette: ColorPalette): ContrastIssue[] 
 
   contrastPairs.forEach(({ text, background }) => {
     if (palette[text] && palette[background]) {
-      const ratio = getContrastRatio(palette[text], palette[background]);
-      const isValid = ratio >= 4.5;
-      
-      issues.push({
-        textRole: text,
-        backgroundRole: background,
-        ratio: Math.round(ratio * 100) / 100,
-        isValid,
-        suggestedColor: isValid ? undefined : getAccessibleVersion(palette[text], palette[background])
-      });
+      try {
+        const ratio = chroma.contrast(palette[text], palette[background]);
+        const isValid = ratio >= 4.5;
+        
+        issues.push({
+          textRole: text,
+          backgroundRole: background,
+          ratio: Math.round(ratio * 100) / 100,
+          isValid,
+          suggestedColor: isValid ? undefined : getAccessibleVersion(palette[text], palette[background])
+        });
+      } catch (error) {
+        console.warn('Error validating contrast for', text, 'on', background, error);
+        issues.push({
+          textRole: text,
+          backgroundRole: background,
+          ratio: 0,
+          isValid: false,
+          suggestedColor: getAccessibleTextColor(palette[background])
+        });
+      }
     }
   });
 

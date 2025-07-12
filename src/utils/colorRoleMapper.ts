@@ -1,13 +1,58 @@
 import { ColorPalette } from '@/types/template';
 import { ColorRoles } from '@/types/colorRoles';
 import { getContrastTextForHSL } from './contrastUtils';
+import chroma from 'chroma-js';
 
 /**
- * Maps a ColorPalette to extended ColorRoles for modern website templates
+ * Check contrast ratio and automatically fix text colors if needed
+ */
+function getContrastFixedTextColor(bgColor: string, textColor: string): string {
+  try {
+    const contrast = chroma.contrast(bgColor, textColor);
+    
+    // If contrast is below 4.5:1, automatically override with high-contrast color
+    if (contrast < 4.5) {
+      const bgLuminance = chroma(bgColor).luminance();
+      return bgLuminance > 0.6 ? '#000000' : '#FFFFFF';
+    }
+    
+    return textColor;
+  } catch (error) {
+    // Fallback if color parsing fails
+    console.warn('Color parsing error:', error);
+    const bgLuminance = chroma(bgColor).luminance();
+    return bgLuminance > 0.6 ? '#000000' : '#FFFFFF';
+  }
+}
+
+/**
+ * Maps a ColorPalette to extended ColorRoles with automatic contrast fixing
  */
 export const mapPaletteToRoles = (palette: ColorPalette): ColorRoles => {
-  // Since the new ColorPalette already contains the role keys, we can return it directly
-  return palette;
+  // Create a copy of the palette with contrast-fixed text colors
+  const fixedPalette = { ...palette };
+  
+  // Apply contrast fixes to all text-related roles
+  const textBgPairs = [
+    { textKey: 'text-primary', bgKey: 'section-bg-1' },
+    { textKey: 'text-secondary', bgKey: 'section-bg-1' },
+    { textKey: 'text-onBackground', bgKey: 'section-bg-1' },
+    { textKey: 'text-onSurface', bgKey: 'section-bg-2' },
+    { textKey: 'button-text', bgKey: 'button-primary' },
+    { textKey: 'button-secondary-text', bgKey: 'button-secondary' },
+    { textKey: 'input-text', bgKey: 'input-bg' },
+  ];
+  
+  textBgPairs.forEach(({ textKey, bgKey }) => {
+    if (fixedPalette[textKey] && fixedPalette[bgKey]) {
+      fixedPalette[textKey] = getContrastFixedTextColor(
+        fixedPalette[bgKey], 
+        fixedPalette[textKey]
+      );
+    }
+  });
+  
+  return fixedPalette;
 };
 
 /**
@@ -57,23 +102,33 @@ function addOpacity(color: string, opacity: number): string {
 export const useColorRoles = (palette: ColorPalette) => {
   const roles = mapPaletteToRoles(palette);
   
-  // Calculate high-contrast text colors for each section background
-  const sectionBg1TextColor = getContrastTextForHSL(palette["section-bg-1"]);
-  const sectionBg2TextColor = getContrastTextForHSL(palette["section-bg-2"]);
-  const sectionBg3TextColor = palette["section-bg-3"] ? getContrastTextForHSL(palette["section-bg-3"]) : sectionBg2TextColor;
-  const buttonPrimaryTextColor = getContrastTextForHSL(palette["button-primary"]);
-  const cardBackgroundTextColor = getContrastTextForHSL(palette["section-bg-2"]);
+  // Calculate high-contrast text colors for each section background using chroma-js
+  const getContrastTextChroma = (bgColor: string): string => {
+    try {
+      const bgLuminance = chroma(bgColor).luminance();
+      return bgLuminance > 0.6 ? '#000000' : '#FFFFFF';
+    } catch (error) {
+      console.warn('Error calculating contrast for color:', bgColor);
+      return '#000000';
+    }
+  };
   
-  // Override palette text roles with properly calculated contrast colors
+  const sectionBg1TextColor = getContrastTextChroma(palette["section-bg-1"]);
+  const sectionBg2TextColor = getContrastTextChroma(palette["section-bg-2"]);
+  const sectionBg3TextColor = palette["section-bg-3"] ? getContrastTextChroma(palette["section-bg-3"]) : sectionBg2TextColor;
+  const buttonPrimaryTextColor = getContrastTextChroma(palette["button-primary"]);
+  const cardBackgroundTextColor = getContrastTextChroma(palette["section-bg-2"]);
+  
+  // The roles already have contrast-fixed colors from mapPaletteToRoles
   const enhancedRoles = {
     ...roles,
-    // Override text roles with high-contrast colors
-    "text-primary": sectionBg1TextColor,
-    "text-secondary": sectionBg1TextColor,
-    "text-onBackground": sectionBg1TextColor,
-    "text-onSurface": cardBackgroundTextColor,
-    "button-text": buttonPrimaryTextColor,
-    "input-text": getContrastTextForHSL(palette["input-bg"]),
+    // Additional overrides for legacy compatibility
+    "text-primary": roles["text-primary"] || sectionBg1TextColor,
+    "text-secondary": roles["text-secondary"] || sectionBg1TextColor,
+    "text-onBackground": roles["text-onBackground"] || sectionBg1TextColor,
+    "text-onSurface": roles["text-onSurface"] || cardBackgroundTextColor,
+    "button-text": roles["button-text"] || buttonPrimaryTextColor,
+    "input-text": roles["input-text"] || getContrastTextChroma(palette["input-bg"]),
   };
   
   // Add legacy aliases for templates that haven't been migrated yet
@@ -101,7 +156,7 @@ export const useColorRoles = (palette: ColorPalette) => {
     buttonPrimary: palette["button-primary"],
     buttonText: buttonPrimaryTextColor,
     buttonSecondary: palette["button-secondary"],
-    buttonSecondaryText: getContrastTextForHSL(palette["button-secondary"]),
+    buttonSecondaryText: getContrastTextChroma(palette["button-secondary"]),
     borderMuted: palette.border,
     borderPrimary: palette.border,
     borderSecondary: palette.border,
