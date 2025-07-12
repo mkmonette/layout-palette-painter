@@ -43,43 +43,25 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
         </div>
       )}
       
-      {/* SVG Background */}
+      {/* Direct test - bypassing background container */}
       {backgroundSettings?.enabled && (
-        <div className="template-background" style={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 1, // Changed from 0 to 1
-          border: '2px solid red', // Debug border
-          background: 'rgba(255,0,0,0.1)', // Debug background
-          overflow: 'visible' // Ensure content isn't clipped
+        <div style={{
+          position: 'fixed',
+          top: '100px',
+          left: '100px',
+          width: '300px',
+          height: '200px',
+          background: 'red',
+          color: 'white',
+          fontSize: '24px',
+          fontWeight: 'bold',
+          zIndex: 9999,
+          border: '5px solid yellow',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}>
-          {/* Test if removing TemplateBackground component shows anything */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'purple',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 5
-          }}>
-            <div style={{
-              background: 'white',
-              color: 'black',
-              padding: '40px',
-              fontSize: '32px',
-              fontWeight: 'bold',
-              border: '5px solid green'
-            }}>
-              DIRECT RENDER TEST - DO YOU SEE THIS?
-            </div>
-          </div>
+          BYPASS TEST - DO YOU SEE THIS?
         </div>
       )}
       
