@@ -10,44 +10,47 @@ interface TemplateBackgroundProps {
 
 const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, children, colorPalette }) => {
   console.log('TemplateBackground rendering with settings:', settings);
+  console.log('TemplateBackground DOM element should be visible now');
 
   if (!settings.enabled) {
+    console.log('TemplateBackground DISABLED - returning null');
     return null;
   }
 
-  // Super simple SVG test
+  console.log('TemplateBackground ENABLED - rendering visible element');
+
+  // Super prominent test element
   return (
-    <div style={{ 
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      zIndex: 999,
-      pointerEvents: 'none',
-      background: 'rgba(255,0,255,0.1)' // Debug background
-    }}>
-      {/* Bright overlay div instead of SVG to test */}
-      <div style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '400px',
-        height: '200px',
-        backgroundColor: 'red',
-        border: '5px solid yellow',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        color: 'white',
-        zIndex: 1000
-      }}>
-        BACKGROUND WORKS!
+    <>
+      <div 
+        id="template-background-test"
+        style={{ 
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          backgroundColor: 'rgba(255, 0, 0, 0.8)',
+          pointerEvents: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+        onClick={() => console.log('Background clicked!')}
+      >
+        <div style={{
+          backgroundColor: 'yellow',
+          padding: '20px',
+          border: '5px solid blue',
+          fontSize: '32px',
+          fontWeight: 'bold',
+          color: 'black'
+        }}>
+          BACKGROUND WORKS! CHECK CONSOLE
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
