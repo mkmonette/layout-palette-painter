@@ -22,6 +22,7 @@ import FeatureManagement from '@/components/admin/FeatureManagement';
 import AdminSettings from '@/components/admin/AdminSettings';
 import OpenAISettings from '@/components/admin/OpenAISettings';
 import AIGenerationSettings from '@/components/admin/AIGenerationSettings';
+import OpenAIUsageLogs from '@/components/admin/OpenAIUsageLogs';
 import AutoGenerator from '@/components/AutoGenerator';
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -66,13 +67,14 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="subscriptions">Plans</TabsTrigger>
             <TabsTrigger value="generator">Generator</TabsTrigger>
             <TabsTrigger value="ai-limits">AI Limits</TabsTrigger>
             <TabsTrigger value="openai">OpenAI</TabsTrigger>
+            <TabsTrigger value="usage-logs">Usage Logs</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -98,6 +100,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="openai">
             <OpenAISettings />
+          </TabsContent>
+
+          <TabsContent value="usage-logs">
+            <OpenAIUsageLogs />
           </TabsContent>
 
           <TabsContent value="settings">

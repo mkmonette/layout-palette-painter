@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { ColorPalette } from './colorGenerator';
+import { logTokenUsage } from './tokenUsageLogger';
 
 interface OpenAIColorRequest {
   mood?: string;
@@ -63,6 +64,12 @@ Return ONLY valid JSON with hex color values. Ensure text colors have sufficient
     const response = completion.choices[0]?.message?.content;
     if (!response) {
       throw new Error('No response from OpenAI');
+    }
+
+    // Log token usage
+    if (completion.usage) {
+      const userId = localStorage.getItem('currentUserId') || 'unknown';
+      logTokenUsage(userId, 'ai-color-generation', completion.usage, "gpt-4.1-2025-04-14");
     }
 
     // Parse the JSON response
