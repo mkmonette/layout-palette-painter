@@ -26,7 +26,21 @@ import {
   Infinity
 } from 'lucide-react';
 import { useEnhancedSubscription } from '@/contexts/EnhancedSubscriptionContext';
-import { SubscriptionPlan, AVAILABLE_FEATURES } from '@/types/subscription';
+import { SubscriptionPlan, AVAILABLE_FEATURES, FeatureLimit } from '@/types/subscription';
+
+interface FeatureListProps {
+  features: FeatureLimit[];
+  currentFeatures: Record<string, number | boolean>;
+  onUpdateFeature: (featureId: string, value: number | boolean) => void;
+  onNumberInputChange: (featureId: string, inputValue: string) => void;
+}
+
+interface FeatureItemProps {
+  feature: FeatureLimit;
+  value: number | boolean;
+  onUpdateFeature: (featureId: string, value: number | boolean) => void;
+  onNumberInputChange: (featureId: string, inputValue: string) => void;
+}
 
 const FeatureManagement = () => {
   const { plans, updatePlans } = useEnhancedSubscription();
@@ -110,6 +124,13 @@ const FeatureManagement = () => {
     }
   }, [updateFeature]);
 
+  // Create a stable key for the modal to prevent re-mounting
+  const modalKey = React.useMemo(() => 
+    isEditModalOpen ? `edit-${editingPlan.id || 'new'}` : 'closed'
+  , [isEditModalOpen, editingPlan.id]);
+
+  console.log('Component render - modalKey:', modalKey, 'editingPlan:', editingPlan.name);
+
   const getFeatureDisplayValue = (plan: SubscriptionPlan, featureId: string) => {
     const value = plan.features[featureId];
     const feature = AVAILABLE_FEATURES.find(f => f.id === featureId);
@@ -121,13 +142,87 @@ const FeatureManagement = () => {
     }
   };
 
+  // Memoized feature list component to prevent re-renders
+  const FeatureList = React.memo<FeatureListProps>(({ features, currentFeatures, onUpdateFeature, onNumberInputChange }) => {
+    console.log('FeatureList render');
+    return (
+      <div className="space-y-4">
+        {features.map((feature) => (
+          <FeatureItem 
+            key={feature.id}
+            feature={feature}
+            value={currentFeatures[feature.id]}
+            onUpdateFeature={onUpdateFeature}
+            onNumberInputChange={onNumberInputChange}
+          />
+        ))}
+      </div>
+    );
+  });
+
+  // Individual feature item component
+  const FeatureItem = React.memo<FeatureItemProps>(({ feature, value, onUpdateFeature, onNumberInputChange }) => {
+    console.log('FeatureItem render:', feature.id, value);
+    
+    return (
+      <div className="flex items-center justify-between p-4 border rounded-lg">
+        <div className="flex-1">
+          <h4 className="font-medium">{feature.name}</h4>
+          <p className="text-sm text-muted-foreground">{feature.description}</p>
+          <Badge variant="outline" className="mt-1">
+            {feature.category}
+          </Badge>
+        </div>
+        <div className="flex items-center gap-2">
+          {feature.type === 'boolean' ? (
+            <Switch
+              checked={value === true}
+              onCheckedChange={(checked) => onUpdateFeature(feature.id, checked)}
+            />
+          ) : (
+            <div className="flex items-center gap-2">
+              <Input
+                type="number"
+                min="0"
+                value={value === -1 ? '' : String(value || 0)}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  onNumberInputChange(feature.id, e.target.value);
+                }}
+                onBlur={(e) => {
+                  if (e.target.value === '') {
+                    onUpdateFeature(feature.id, 0);
+                  }
+                }}
+                placeholder="0"
+                className="w-20"
+              />
+              <Button
+                type="button"
+                size="sm"
+                variant={value === -1 ? "default" : "outline"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onUpdateFeature(feature.id, value === -1 ? 0 : -1);
+                }}
+              >
+                <Infinity className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  });
+
   const EditPlanModal = React.memo(() => {
-    const currentFeatures = editingPlan.features || {};
+    console.log('EditPlanModal render');
     
     if (!isEditModalOpen) return null;
     
     return (
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+      <Dialog key={modalKey} open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Subscription Plan</DialogTitle>
@@ -209,58 +304,12 @@ const FeatureManagement = () => {
             {/* Feature Configuration */}
             <div>
               <h3 className="text-lg font-semibold mb-4">Feature Configuration</h3>
-              <div className="space-y-4">
-                {AVAILABLE_FEATURES.map((feature) => (
-                  <div key={feature.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <h4 className="font-medium">{feature.name}</h4>
-                      <p className="text-sm text-muted-foreground">{feature.description}</p>
-                      <Badge variant="outline" className="mt-1">
-                        {feature.category}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {feature.type === 'boolean' ? (
-                        <Switch
-                          checked={currentFeatures[feature.id] === true}
-                          onCheckedChange={(checked) => updateFeature(feature.id, checked)}
-                        />
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <Input
-                            type="number"
-                            min="0"
-                            value={currentFeatures[feature.id] === -1 ? '' : String(currentFeatures[feature.id] || 0)}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              handleNumberInputChange(feature.id, e.target.value);
-                            }}
-                            onBlur={(e) => {
-                              if (e.target.value === '') {
-                                updateFeature(feature.id, 0);
-                              }
-                            }}
-                            placeholder="0"
-                            className="w-20"
-                          />
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant={currentFeatures[feature.id] === -1 ? "default" : "outline"}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              updateFeature(feature.id, currentFeatures[feature.id] === -1 ? 0 : -1);
-                            }}
-                          >
-                            <Infinity className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <FeatureList 
+                features={AVAILABLE_FEATURES}
+                currentFeatures={editingPlan.features || {}}
+                onUpdateFeature={updateFeature}
+                onNumberInputChange={handleNumberInputChange}
+              />
             </div>
           </form>
 
