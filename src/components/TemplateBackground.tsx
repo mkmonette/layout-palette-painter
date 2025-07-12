@@ -235,8 +235,22 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
 
   const svgBackground = getSvgBackground();
   console.log('SVG background element:', svgBackground);
+  console.log('Settings enabled:', settings.enabled);
+  console.log('Style:', settings.style);
 
-  return svgBackground;
+  return (
+    <div style={{ 
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 0,
+      background: 'rgba(0,255,0,0.1)' // Debug green background
+    }}>
+      {svgBackground}
+    </div>
+  );
 };
 
 export default TemplateBackground;
