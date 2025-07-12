@@ -40,11 +40,16 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
 
   const loadAdminPresets = () => {
     try {
+      console.log('Loading admin presets...');
       const savedPresets = localStorage.getItem('admin-color-presets');
+      console.log('Raw localStorage data:', savedPresets);
+      
       if (savedPresets) {
         const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
+        console.log('Parsed presets:', parsedPresets);
         setPresets(parsedPresets);
       } else {
+        console.log('No presets found in localStorage');
         setPresets([]);
       }
     } catch (error) {
