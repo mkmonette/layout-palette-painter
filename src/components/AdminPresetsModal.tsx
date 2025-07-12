@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Palette, Check } from 'lucide-react';
+import { Palette, Check, RefreshCw } from 'lucide-react';
 import { ColorPalette } from '@/utils/colorGenerator';
 import { useToast } from '@/hooks/use-toast';
 
@@ -184,7 +184,15 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
           )}
         </div>
         
-        <div className="flex justify-end pt-4 border-t">
+        <div className="flex justify-between items-center pt-4 border-t">
+          <Button 
+            variant="outline" 
+            onClick={loadAdminPresets}
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Refresh
+          </Button>
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
