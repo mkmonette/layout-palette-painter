@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { 
   Save, 
   FolderOpen, 
@@ -16,11 +17,18 @@ import {
   Plus,
   Palette,
   Check,
-  X
+  X,
+  Wand2,
+  ChevronDown,
+  ChevronUp,
+  Edit,
+  RefreshCw,
+  Sparkles
 } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
-import { ColorRoles } from '@/types/colorRoles';
+import { ColorRoles, ColorRole } from '@/types/colorRoles';
 import { mapPaletteToRoles } from '@/utils/colorRoleMapper';
+import { generateAIColorPalette, isOpenAIInitialized } from '@/utils/openaiService';
 import { useToast } from '@/hooks/use-toast';
 
 interface ColorPreset {
@@ -38,6 +46,15 @@ interface PresetManagerProps {
   onApplyPreset: (palette: ColorPalette) => void;
 }
 
+const COLOR_ROLE_CATEGORIES = {
+  brand: ['brand', 'accent', 'highlight'],
+  buttons: ['button-primary', 'button-text', 'button-secondary', 'button-secondary-text'],
+  backgrounds: ['section-bg-1', 'section-bg-2', 'section-bg-3'],
+  text: ['text-primary', 'text-secondary'],
+  forms: ['input-bg', 'input-text'],
+  borders: ['border']
+} as const;
+
 const PresetManager: React.FC<PresetManagerProps> = ({ 
   currentPalette, 
   onApplyPreset 
@@ -51,6 +68,20 @@ const PresetManager: React.FC<PresetManagerProps> = ({
   // Save preset form state
   const [presetName, setPresetName] = useState('');
   const [presetDescription, setPresetDescription] = useState('');
+  
+  // Working palette state for live editing
+  const [workingPalette, setWorkingPalette] = useState<ColorPalette>(currentPalette);
+  
+  // Section collapse states
+  const [paletteGenOpen, setPaletteGenOpen] = useState(true);
+  const [roleEditorOpen, setRoleEditorOpen] = useState(false);
+  const [presetsOpen, setPresetsOpen] = useState(false);
+  
+  // Palette generation state
+  const [generationPrompt, setGenerationPrompt] = useState('');
+  const [selectedMood, setSelectedMood] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Load presets from localStorage on mount
   useEffect(() => {
@@ -64,6 +95,11 @@ const PresetManager: React.FC<PresetManagerProps> = ({
     }
   }, []);
 
+  // Update working palette when current palette changes
+  useEffect(() => {
+    setWorkingPalette(currentPalette);
+  }, [currentPalette]);
+
   // Save presets to localStorage
   const savePresetsToStorage = (updatedPresets: ColorPreset[]) => {
     localStorage.setItem('admin-color-presets', JSON.stringify(updatedPresets));
@@ -72,6 +108,58 @@ const PresetManager: React.FC<PresetManagerProps> = ({
 
   const generatePresetId = (name: string) => {
     return `preset_${name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
+  };
+
+  // Generate AI palette
+  const handleGenerateAIPalette = async () => {
+    if (!isOpenAIInitialized()) {
+      toast({
+        title: 'OpenAI Not Configured',
+        description: 'Please configure OpenAI API key in the OpenAI Settings tab',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const aiPalette = await generateAIColorPalette({
+        mood: selectedMood,
+        description: generationPrompt,
+        isDarkMode
+      });
+      
+      setWorkingPalette(aiPalette);
+      onApplyPreset(aiPalette);
+      
+      toast({
+        title: 'Success',
+        description: 'AI palette generated successfully'
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to generate palette',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Update a specific color role
+  const handleRoleColorChange = (role: ColorRole, color: string) => {
+    const updatedPalette = { ...workingPalette, [role]: color };
+    setWorkingPalette(updatedPalette);
+    onApplyPreset(updatedPalette);
+  };
+
+  // Reset palette to default
+  const handleResetPalette = () => {
+    setWorkingPalette(currentPalette);
+    setGenerationPrompt('');
+    setSelectedMood('');
+    setIsDarkMode(false);
   };
 
   const handleSavePreset = () => {
@@ -94,7 +182,7 @@ const PresetManager: React.FC<PresetManagerProps> = ({
       return;
     }
 
-    const currentRoles = mapPaletteToRoles(currentPalette);
+    const currentRoles = mapPaletteToRoles(workingPalette);
     const newPreset: ColorPreset = {
       id: generatePresetId(presetName),
       name: presetName,
@@ -102,7 +190,7 @@ const PresetManager: React.FC<PresetManagerProps> = ({
       createdBy: 'admin',
       createdAt: new Date().toISOString(),
       roles: currentRoles,
-      originalPalette: { ...currentPalette }
+      originalPalette: { ...workingPalette }
     };
 
     const updatedPresets = [...presets, newPreset];
@@ -190,14 +278,153 @@ const PresetManager: React.FC<PresetManagerProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Palette className="h-5 w-5" />
-            Preset Manager
+            Palette Generator & Preset Manager
           </CardTitle>
           <CardDescription>
-            Save and load color role presets for quick palette switching
+            Generate AI palettes, edit color roles, and save presets for quick switching
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex gap-3 mb-6">
+        <CardContent className="space-y-6">
+          {/* Palette Generator Section */}
+          <Collapsible open={paletteGenOpen} onOpenChange={setPaletteGenOpen}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  <span className="font-medium">🎨 Palette Generator</span>
+                </div>
+                {paletteGenOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-4 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="mood-select">Mood</Label>
+                  <Select value={selectedMood} onValueChange={setSelectedMood}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a mood" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="professional">Professional</SelectItem>
+                      <SelectItem value="modern">Modern</SelectItem>
+                      <SelectItem value="warm">Warm & Friendly</SelectItem>
+                      <SelectItem value="cool">Cool & Calm</SelectItem>
+                      <SelectItem value="vibrant">Vibrant & Energetic</SelectItem>
+                      <SelectItem value="elegant">Elegant & Luxury</SelectItem>
+                      <SelectItem value="minimalist">Minimalist</SelectItem>
+                      <SelectItem value="playful">Playful & Fun</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center space-x-2 pt-6">
+                  <input
+                    type="checkbox"
+                    id="dark-mode"
+                    checked={isDarkMode}
+                    onChange={(e) => setIsDarkMode(e.target.checked)}
+                    className="rounded border-border"
+                  />
+                  <Label htmlFor="dark-mode">Dark Mode</Label>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="custom-prompt">Custom Theme Description (Optional)</Label>
+                <Textarea
+                  id="custom-prompt"
+                  value={generationPrompt}
+                  onChange={(e) => setGenerationPrompt(e.target.value)}
+                  placeholder="e.g., Tech startup with blue and orange accents"
+                  rows={2}
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                <Button 
+                  onClick={handleGenerateAIPalette}
+                  disabled={isGenerating || !isOpenAIInitialized()}
+                  className="flex items-center gap-2"
+                >
+                  {isGenerating ? (
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Wand2 className="h-4 w-4" />
+                  )}
+                  {isGenerating ? 'Generating...' : 'Generate Palette'}
+                </Button>
+                <Button variant="outline" onClick={handleResetPalette}>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Reset
+                </Button>
+              </div>
+              
+              {!isOpenAIInitialized() && (
+                <div className="text-sm text-muted-foreground bg-muted p-3 rounded">
+                  💡 Configure OpenAI API key in the OpenAI Settings tab to enable AI generation
+                </div>
+              )}
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Role Editor Section */}
+          <Collapsible open={roleEditorOpen} onOpenChange={setRoleEditorOpen}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                <div className="flex items-center gap-2">
+                  <Edit className="h-4 w-4" />
+                  <span className="font-medium">🧰 Color Role Editor</span>
+                </div>
+                {roleEditorOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-4 pt-4">
+              {Object.entries(COLOR_ROLE_CATEGORIES).map(([categoryName, roles]) => (
+                <div key={categoryName} className="space-y-3">
+                  <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                    {categoryName}
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {roles.map((role) => (
+                      <div key={role} className="flex items-center gap-3 p-3 border rounded-lg">
+                        <div
+                          className="w-8 h-8 rounded border border-border flex-shrink-0"
+                          style={{ backgroundColor: workingPalette[role] }}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <label className="text-sm font-medium block mb-1">
+                            {role}
+                          </label>
+                          <input
+                            type="color"
+                            value={workingPalette[role] || '#000000'}
+                            onChange={(e) => handleRoleColorChange(role as ColorRole, e.target.value)}
+                            className="w-full h-6 border border-border rounded cursor-pointer"
+                          />
+                        </div>
+                        <div className="text-xs text-muted-foreground font-mono">
+                          {workingPalette[role]}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Save & Load Presets Section */}
+          <Collapsible open={presetsOpen} onOpenChange={setPresetsOpen}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                <div className="flex items-center gap-2">
+                  <Save className="h-4 w-4" />
+                  <span className="font-medium">💾 Save & Load Presets</span>
+                </div>
+                {presetsOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-4 pt-4">
+              <div className="flex gap-3 mb-6">
             <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="flex items-center gap-2">
@@ -357,40 +584,42 @@ const PresetManager: React.FC<PresetManagerProps> = ({
                 </div>
               </DialogContent>
             </Dialog>
-          </div>
-
-          {presets.length > 0 && (
-            <div className="border rounded-lg p-4">
-              <h4 className="font-medium mb-3">Quick Access</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {presets.slice(0, 6).map((preset) => (
-                  <div key={preset.id} className="border rounded p-3 bg-muted/50">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-sm">{preset.name}</span>
-                      <div className="flex gap-1">
-                        <div 
-                          className="w-3 h-3 rounded-full border"
-                          style={{ backgroundColor: preset.originalPalette.brand }}
-                        />
-                        <div 
-                          className="w-3 h-3 rounded-full border"
-                          style={{ backgroundColor: preset.originalPalette.accent }}
-                        />
-                      </div>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-full text-xs"
-                      onClick={() => handleLoadPreset(preset.id)}
-                    >
-                      Apply
-                    </Button>
-                  </div>
-                ))}
               </div>
-            </div>
-          )}
+
+              {presets.length > 0 && (
+                <div className="border rounded-lg p-4">
+                  <h4 className="font-medium mb-3">Quick Access</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {presets.slice(0, 6).map((preset) => (
+                      <div key={preset.id} className="border rounded p-3 bg-muted/50">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-sm">{preset.name}</span>
+                          <div className="flex gap-1">
+                            <div 
+                              className="w-3 h-3 rounded-full border"
+                              style={{ backgroundColor: preset.originalPalette.brand }}
+                            />
+                            <div 
+                              className="w-3 h-3 rounded-full border"
+                              style={{ backgroundColor: preset.originalPalette.accent }}
+                            />
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="w-full text-xs"
+                          onClick={() => handleLoadPreset(preset.id)}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CollapsibleContent>
+          </Collapsible>
         </CardContent>
       </Card>
     </div>
