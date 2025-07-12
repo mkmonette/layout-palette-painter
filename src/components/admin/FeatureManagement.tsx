@@ -76,8 +76,16 @@ const FeatureManagement = () => {
     setIsCreateModalOpen(true);
   };
 
-  const savePlan = () => {
-    if (!editingPlan.name) return;
+  const savePlan = React.useCallback(() => {
+    console.log('💾 savePlan called - start');
+    
+    if (!editingPlan.name) {
+      console.log('💾 savePlan - no name, returning');
+      return;
+    }
+    
+    console.log('💾 savePlan - editingPlan:', editingPlan);
+    console.log('💾 savePlan - editingFeatures:', editingFeatures);
     
     const newPlan: SubscriptionPlan = {
       id: editingPlan.id || `plan_${Date.now()}`,
@@ -91,16 +99,25 @@ const FeatureManagement = () => {
       revenue: editingPlan.revenue || 0
     };
 
+    console.log('💾 savePlan - newPlan created:', newPlan);
+
     const updatedPlans = editingPlan.id 
       ? plans.map(p => p.id === editingPlan.id ? newPlan : p)
       : [...plans, newPlan];
     
-    updatePlans(updatedPlans);
-    setIsEditModalOpen(false);
-    setIsCreateModalOpen(false);
-    setEditingPlan({});
-    setEditingFeatures({});
-  };
+    console.log('💾 savePlan - about to update plans');
+    
+    // Batch all state updates together to prevent intermediate renders
+    React.startTransition(() => {
+      updatePlans(updatedPlans);
+      setIsEditModalOpen(false);
+      setIsCreateModalOpen(false);
+      setEditingPlan({});
+      setEditingFeatures({});
+    });
+    
+    console.log('💾 savePlan - all updates queued');
+  }, [editingPlan, editingFeatures, plans, updatePlans]);
 
   const deletePlan = (planId: string) => {
     const updatedPlans = plans.filter(p => p.id !== planId);
@@ -374,14 +391,18 @@ const FeatureManagement = () => {
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => {
-              setIsEditModalOpen(false);
-              setEditingPlan({});
-              setEditingFeatures({});
+              console.log('❌ Cancel clicked');
+              React.startTransition(() => {
+                setIsEditModalOpen(false);
+                setEditingPlan({});
+                setEditingFeatures({});
+              });
             }}>
               Cancel
             </Button>
             <Button type="button" onClick={(e) => {
               e.preventDefault();
+              console.log('💾 Save clicked');
               savePlan();
             }}>
               Save Changes
@@ -537,14 +558,18 @@ const FeatureManagement = () => {
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => {
-              setIsCreateModalOpen(false);
-              setEditingPlan({});
-              setEditingFeatures({});
+              console.log('❌ Create Cancel clicked');
+              React.startTransition(() => {
+                setIsCreateModalOpen(false);
+                setEditingPlan({});
+                setEditingFeatures({});
+              });
             }}>
               Cancel
             </Button>
             <Button type="button" onClick={(e) => {
               e.preventDefault();
+              console.log('💾 Create Save clicked');
               savePlan();
             }}>
               Create Plan
