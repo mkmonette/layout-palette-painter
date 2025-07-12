@@ -87,23 +87,17 @@ const FeatureManagement = () => {
     updatePlans(updatedPlans);
   };
 
-  const updateFeature = (featureId: string, value: boolean | number) => {
-    console.log('updateFeature called:', featureId, value);
-    setEditingPlan(prev => {
-      const updated = {
-        ...prev,
-        features: {
-          ...prev.features,
-          [featureId]: value
-        }
-      };
-      console.log('Updated plan:', updated);
-      return updated;
-    });
-  };
+  const updateFeature = React.useCallback((featureId: string, value: boolean | number) => {
+    setEditingPlan(prev => ({
+      ...prev,
+      features: {
+        ...prev.features,
+        [featureId]: value
+      }
+    }));
+  }, []);
 
-  const handleNumberInputChange = (featureId: string, inputValue: string) => {
-    console.log('handleNumberInputChange called:', featureId, inputValue);
+  const handleNumberInputChange = React.useCallback((featureId: string, inputValue: string) => {
     // Allow empty string during editing
     if (inputValue === '') {
       updateFeature(featureId, 0);
@@ -114,7 +108,7 @@ const FeatureManagement = () => {
     if (!isNaN(numValue) && numValue >= 0) {
       updateFeature(featureId, numValue);
     }
-  };
+  }, [updateFeature]);
 
   const getFeatureDisplayValue = (plan: SubscriptionPlan, featureId: string) => {
     const value = plan.features[featureId];
@@ -128,6 +122,8 @@ const FeatureManagement = () => {
   };
 
   const EditPlanModal = React.memo(() => {
+    const currentFeatures = editingPlan.features || {};
+    
     if (!isEditModalOpen) return null;
     
     return (
@@ -226,7 +222,7 @@ const FeatureManagement = () => {
                     <div className="flex items-center gap-2">
                       {feature.type === 'boolean' ? (
                         <Switch
-                          checked={editingPlan.features?.[feature.id] === true}
+                          checked={currentFeatures[feature.id] === true}
                           onCheckedChange={(checked) => updateFeature(feature.id, checked)}
                         />
                       ) : (
@@ -234,8 +230,11 @@ const FeatureManagement = () => {
                           <Input
                             type="number"
                             min="0"
-                            value={editingPlan.features?.[feature.id] === -1 ? '' : String(editingPlan.features?.[feature.id] || 0)}
-                            onChange={(e) => handleNumberInputChange(feature.id, e.target.value)}
+                            value={currentFeatures[feature.id] === -1 ? '' : String(currentFeatures[feature.id] || 0)}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleNumberInputChange(feature.id, e.target.value);
+                            }}
                             onBlur={(e) => {
                               if (e.target.value === '') {
                                 updateFeature(feature.id, 0);
@@ -247,10 +246,11 @@ const FeatureManagement = () => {
                           <Button
                             type="button"
                             size="sm"
-                            variant={editingPlan.features?.[feature.id] === -1 ? "default" : "outline"}
+                            variant={currentFeatures[feature.id] === -1 ? "default" : "outline"}
                             onClick={(e) => {
                               e.preventDefault();
-                              updateFeature(feature.id, editingPlan.features?.[feature.id] === -1 ? 0 : -1);
+                              e.stopPropagation();
+                              updateFeature(feature.id, currentFeatures[feature.id] === -1 ? 0 : -1);
                             }}
                           >
                             <Infinity className="h-4 w-4" />
@@ -284,6 +284,8 @@ const FeatureManagement = () => {
   });
 
   const CreatePlanModal = React.memo(() => {
+    const currentFeatures = editingPlan.features || {};
+    
     if (!isCreateModalOpen) return null;
     
     return (
@@ -382,7 +384,7 @@ const FeatureManagement = () => {
                     <div className="flex items-center gap-2">
                       {feature.type === 'boolean' ? (
                         <Switch
-                          checked={editingPlan.features?.[feature.id] === true}
+                          checked={currentFeatures[feature.id] === true}
                           onCheckedChange={(checked) => updateFeature(feature.id, checked)}
                         />
                       ) : (
@@ -390,8 +392,11 @@ const FeatureManagement = () => {
                           <Input
                             type="number"
                             min="0"
-                            value={editingPlan.features?.[feature.id] === -1 ? '' : String(editingPlan.features?.[feature.id] || 0)}
-                            onChange={(e) => handleNumberInputChange(feature.id, e.target.value)}
+                            value={currentFeatures[feature.id] === -1 ? '' : String(currentFeatures[feature.id] || 0)}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleNumberInputChange(feature.id, e.target.value);
+                            }}
                             onBlur={(e) => {
                               if (e.target.value === '') {
                                 updateFeature(feature.id, 0);
@@ -403,10 +408,11 @@ const FeatureManagement = () => {
                           <Button
                             type="button"
                             size="sm"
-                            variant={editingPlan.features?.[feature.id] === -1 ? "default" : "outline"}
+                            variant={currentFeatures[feature.id] === -1 ? "default" : "outline"}
                             onClick={(e) => {
                               e.preventDefault();
-                              updateFeature(feature.id, editingPlan.features?.[feature.id] === -1 ? 0 : -1);
+                              e.stopPropagation();
+                              updateFeature(feature.id, currentFeatures[feature.id] === -1 ? 0 : -1);
                             }}
                           >
                             <Infinity className="h-4 w-4" />
