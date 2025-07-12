@@ -1,12 +1,14 @@
 import React from 'react';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
+import type { ColorPalette } from '@/types/template';
 
 interface TemplateBackgroundProps {
   settings: BackgroundSettings;
   children: React.ReactNode;
+  colorPalette: ColorPalette;
 }
 
-const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, children }) => {
+const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, children, colorPalette }) => {
   const getSvgBackground = () => {
     if (!settings.enabled) return null;
 
@@ -23,12 +25,12 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
           >
             <defs>
               <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="var(--section-bg-2)" stopOpacity={baseOpacity * 0.8} />
-                <stop offset="100%" stopColor="var(--section-bg-3)" stopOpacity={baseOpacity * 0.6} />
+                <stop offset="0%" stopColor={colorPalette['section-bg-2']} stopOpacity={baseOpacity * 0.8} />
+                <stop offset="100%" stopColor={colorPalette['section-bg-3']} stopOpacity={baseOpacity * 0.6} />
               </linearGradient>
               <linearGradient id="wave-gradient-2" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="var(--highlight)" stopOpacity={baseOpacity * 0.4} />
-                <stop offset="100%" stopColor="var(--accent)" stopOpacity={baseOpacity * 0.3} />
+                <stop offset="0%" stopColor={colorPalette.highlight} stopOpacity={baseOpacity * 0.4} />
+                <stop offset="100%" stopColor={colorPalette.accent} stopOpacity={baseOpacity * 0.3} />
               </linearGradient>
             </defs>
             
@@ -66,7 +68,7 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
               cy="200"
               rx={120 + settings.blobSize * 2}
               ry={80 + settings.blobSize * 1.5}
-              fill="var(--section-bg-2)"
+              fill={colorPalette['section-bg-2']}
               opacity={baseOpacity * 0.6}
               filter="url(#blob-blur)"
             />
@@ -77,7 +79,7 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
               cy="400"
               rx={90 + settings.blobSize * 1.5}
               ry={110 + settings.blobSize * 1.8}
-              fill="var(--section-bg-3)"
+              fill={colorPalette['section-bg-3']}
               opacity={baseOpacity * 0.5}
               filter="url(#blob-blur)"
             />
@@ -88,7 +90,7 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
               cy="150"
               rx={60 + settings.blobSize}
               ry={40 + settings.blobSize * 0.8}
-              fill="var(--highlight)"
+              fill={colorPalette.highlight}
               opacity={baseOpacity * 0.3}
               filter="url(#blob-blur)"
             />
@@ -99,7 +101,7 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
               cy="600"
               rx={40 + settings.blobSize * 0.6}
               ry={50 + settings.blobSize * 0.7}
-              fill="var(--accent)"
+              fill={colorPalette.accent}
               opacity={baseOpacity * 0.4}
               filter="url(#blob-blur)"
             />
@@ -116,18 +118,18 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
           >
             <defs>
               <radialGradient id="mesh-1" cx="30%" cy="30%">
-                <stop offset="0%" stopColor="var(--highlight)" stopOpacity={baseOpacity * settings.meshIntensity / 100} />
-                <stop offset="70%" stopColor="var(--section-bg-2)" stopOpacity={baseOpacity * 0.2} />
+                <stop offset="0%" stopColor={colorPalette.highlight} stopOpacity={baseOpacity * settings.meshIntensity / 100} />
+                <stop offset="70%" stopColor={colorPalette['section-bg-2']} stopOpacity={baseOpacity * 0.2} />
                 <stop offset="100%" stopColor="transparent" />
               </radialGradient>
               <radialGradient id="mesh-2" cx="70%" cy="60%">
-                <stop offset="0%" stopColor="var(--accent)" stopOpacity={baseOpacity * settings.meshIntensity / 100} />
-                <stop offset="70%" stopColor="var(--section-bg-3)" stopOpacity={baseOpacity * 0.3} />
+                <stop offset="0%" stopColor={colorPalette.accent} stopOpacity={baseOpacity * settings.meshIntensity / 100} />
+                <stop offset="70%" stopColor={colorPalette['section-bg-3']} stopOpacity={baseOpacity * 0.3} />
                 <stop offset="100%" stopColor="transparent" />
               </radialGradient>
               <radialGradient id="mesh-3" cx="20%" cy="80%">
-                <stop offset="0%" stopColor="var(--section-bg-2)" stopOpacity={baseOpacity * settings.meshIntensity / 100} />
-                <stop offset="70%" stopColor="var(--highlight)" stopOpacity={baseOpacity * 0.1} />
+                <stop offset="0%" stopColor={colorPalette['section-bg-2']} stopOpacity={baseOpacity * settings.meshIntensity / 100} />
+                <stop offset="70%" stopColor={colorPalette.highlight} stopOpacity={baseOpacity * 0.1} />
                 <stop offset="100%" stopColor="transparent" />
               </radialGradient>
             </defs>
@@ -148,9 +150,9 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
           >
             <defs>
               <linearGradient id="flow-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="var(--section-bg-2)" stopOpacity={baseOpacity * 0.7} />
-                <stop offset="50%" stopColor="var(--highlight)" stopOpacity={baseOpacity * 0.4} />
-                <stop offset="100%" stopColor="var(--accent)" stopOpacity={baseOpacity * 0.3} />
+                <stop offset="0%" stopColor={colorPalette['section-bg-2']} stopOpacity={baseOpacity * 0.7} />
+                <stop offset="50%" stopColor={colorPalette.highlight} stopOpacity={baseOpacity * 0.4} />
+                <stop offset="100%" stopColor={colorPalette.accent} stopOpacity={baseOpacity * 0.3} />
               </linearGradient>
             </defs>
             
@@ -181,14 +183,14 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
               >
                 <polygon
                   points={`${20 * scale},${10 * scale} ${35 * scale},${30 * scale} ${20 * scale},${50 * scale} ${5 * scale},${30 * scale}`}
-                  fill="var(--section-bg-2)"
+                  fill={colorPalette['section-bg-2']}
                   opacity={baseOpacity * 0.4}
                 />
                 <circle
                   cx={60 * scale}
                   cy={60 * scale}
                   r={8 * scale}
-                  fill="var(--highlight)"
+                  fill={colorPalette.highlight}
                   opacity={baseOpacity * 0.3}
                 />
               </pattern>
@@ -205,7 +207,7 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
                   y={10 * scale}
                   width={15 * scale}
                   height={15 * scale}
-                  fill="var(--accent)"
+                  fill={colorPalette.accent}
                   opacity={baseOpacity * 0.2}
                   transform={`rotate(45 ${17.5 * scale} ${17.5 * scale})`}
                 />

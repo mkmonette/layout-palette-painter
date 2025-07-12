@@ -106,7 +106,10 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
 
   return (
     <div className="relative">
-      <TemplateBackground settings={backgroundSettings || { enabled: false, style: 'wavy-layers', waveHeight: 50, blobSize: 50, meshIntensity: 50, patternScale: 50, opacity: 0.3 }}>
+      <TemplateBackground 
+        settings={backgroundSettings || { enabled: false, style: 'wavy-layers', waveHeight: 50, blobSize: 50, meshIntensity: 50, patternScale: 50, opacity: 0.3 }}
+        colorPalette={colorPalette}
+      >
         {renderTemplate()}
       </TemplateBackground>
       {showSaveButton && (
