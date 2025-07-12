@@ -72,8 +72,17 @@ Return ONLY valid JSON with hex color values. Ensure text colors have sufficient
       logTokenUsage(userId, 'ai-color-generation', completion.usage, "gpt-4.1-2025-04-14");
     }
 
-    // Parse the JSON response
-    const palette = JSON.parse(response) as ColorPalette;
+    // Parse the JSON response - handle markdown code blocks
+    let jsonString = response.trim();
+    
+    // Remove markdown code block formatting if present
+    if (jsonString.startsWith('```json')) {
+      jsonString = jsonString.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    } else if (jsonString.startsWith('```')) {
+      jsonString = jsonString.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    }
+    
+    const palette = JSON.parse(jsonString) as ColorPalette;
     
     // Validate that all required keys are present
     const requiredKeys: (keyof ColorPalette)[] = [
