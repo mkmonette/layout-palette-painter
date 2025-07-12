@@ -70,41 +70,48 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
       </div>
       
       
-      {/* Fixed background container */}
+      {/* Restore conditional test */}
       {backgroundSettings?.enabled && (
-        <div style={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 1,
-          pointerEvents: 'none',
-          overflow: 'visible'
+        <div style={{
+          position: 'fixed',
+          top: '250px',
+          left: '50px',
+          width: '300px',
+          height: '100px',
+          background: 'red',
+          color: 'white',
+          fontSize: '20px',
+          fontWeight: 'bold',
+          zIndex: 99998,
+          border: '5px solid yellow',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}>
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(255,0,0,0.3)', // Semi-transparent red for now
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              background: 'blue',
-              color: 'white',
-              padding: '20px',
-              fontSize: '20px',
-              fontWeight: 'bold'
-            }}>
-              BACKGROUND WORKS!
-            </div>
-          </div>
+          CONDITIONAL TEST VISIBLE
         </div>
       )}
+      
+      {/* Debug: Show raw backgroundSettings */}
+      <div style={{
+        position: 'fixed',
+        top: '350px',
+        left: '50px',
+        width: '400px',
+        height: '100px',
+        background: 'orange',
+        color: 'black',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        zIndex: 99997,
+        border: '3px solid purple',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '10px'
+      }}>
+        RAW: {JSON.stringify(backgroundSettings)}
+      </div>
       
       {/* Template Content */}
       <div className="template-content relative z-10" style={{ 
