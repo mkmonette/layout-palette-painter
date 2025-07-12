@@ -359,8 +359,8 @@ const PresetManager: React.FC<PresetManagerProps> = ({
               </div>
               
               {!isOpenAIInitialized() && (
-                <div className="text-sm text-muted-foreground bg-muted p-3 rounded">
-                  💡 Configure OpenAI API key in the OpenAI Settings tab to enable AI generation
+                <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 p-3 rounded">
+                  ⚠️ <strong>OpenAI API Key Required:</strong> Please configure your OpenAI API key in the OpenAI Settings tab to enable AI palette generation.
                 </div>
               )}
             </CollapsibleContent>
