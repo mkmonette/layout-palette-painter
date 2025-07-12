@@ -1,0 +1,184 @@
+import React, { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import { Palette, Check } from 'lucide-react';
+import { ColorPalette } from '@/utils/colorGenerator';
+import { useToast } from '@/hooks/use-toast';
+
+interface AdminPresetsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onPresetSelect: (palette: ColorPalette) => void;
+}
+
+interface AdminPreset {
+  name: string;
+  palette: ColorPalette;
+  isDarkMode?: boolean;
+  createdAt?: string;
+}
+
+const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
+  isOpen,
+  onClose,
+  onPresetSelect
+}) => {
+  const [presets, setPresets] = useState<AdminPreset[]>([]);
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (isOpen) {
+      loadAdminPresets();
+    }
+  }, [isOpen]);
+
+  const loadAdminPresets = () => {
+    try {
+      const savedPresets = localStorage.getItem('admin_color_presets');
+      if (savedPresets) {
+        const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
+        setPresets(parsedPresets);
+      } else {
+        setPresets([]);
+      }
+    } catch (error) {
+      console.error('Error loading admin presets:', error);
+      setPresets([]);
+    }
+  };
+
+  const handlePresetSelect = (preset: AdminPreset) => {
+    setSelectedPreset(preset.name);
+    onPresetSelect(preset.palette);
+    
+    toast({
+      title: "Preset Applied",
+      description: `Applied "${preset.name}" color preset successfully.`,
+    });
+    
+    onClose();
+  };
+
+  const renderColorSwatches = (palette: ColorPalette) => {
+    const mainColors = [
+      { key: 'brand', label: 'Brand' },
+      { key: 'accent', label: 'Accent' },
+      { key: 'button-primary', label: 'Primary' },
+      { key: 'section-bg-1', label: 'Background' },
+    ];
+
+    return (
+      <div className="flex space-x-1">
+        {mainColors.map(({ key, label }) => (
+          <div
+            key={key}
+            className="w-4 h-4 rounded-full border border-border shadow-sm"
+            style={{ backgroundColor: palette[key as keyof ColorPalette] }}
+            title={`${label}: ${palette[key as keyof ColorPalette]}`}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[80vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Palette className="h-5 w-5 text-primary" />
+            Admin Color Presets
+          </DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-4">
+          {presets.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <Palette className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg font-medium">No Admin Presets Available</p>
+              <p className="text-sm">
+                No color presets have been created by administrators yet.
+              </p>
+            </div>
+          ) : (
+            <ScrollArea className="h-[400px] pr-4">
+              <div className="space-y-3">
+                {presets.map((preset, index) => (
+                  <div
+                    key={index}
+                    className="border rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer group"
+                    onClick={() => handlePresetSelect(preset)}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-medium text-sm group-hover:text-primary transition-colors">
+                          {preset.name}
+                        </h3>
+                        {preset.isDarkMode && (
+                          <Badge variant="secondary" className="text-xs">
+                            Dark Mode
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {renderColorSwatches(preset.palette)}
+                        {selectedPreset === preset.name && (
+                          <Check className="h-4 w-4 text-green-600" />
+                        )}
+                      </div>
+                    </div>
+                    
+                    {preset.createdAt && (
+                      <p className="text-xs text-muted-foreground">
+                        Created: {new Date(preset.createdAt).toLocaleDateString()}
+                      </p>
+                    )}
+                    
+                    {/* Preview Mini Template */}
+                    <div className="mt-3 h-16 rounded border bg-gradient-to-r overflow-hidden">
+                      <div 
+                        className="h-full flex items-center justify-center text-xs font-medium"
+                        style={{ 
+                          backgroundColor: preset.palette['section-bg-1'],
+                          color: preset.palette['text-primary']
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-3 h-3 rounded"
+                            style={{ backgroundColor: preset.palette.brand }}
+                          />
+                          <span>Preview</span>
+                          <div
+                            className="px-2 py-1 rounded text-xs"
+                            style={{
+                              backgroundColor: preset.palette['button-primary'],
+                              color: preset.palette['button-text']
+                            }}
+                          >
+                            Button
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+        </div>
+
+        <div className="flex justify-end gap-2 pt-4 border-t">
+          <Button variant="outline" onClick={onClose}>
+            Close
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default AdminPresetsModal;

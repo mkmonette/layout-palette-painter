@@ -32,6 +32,7 @@ import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 import BackgroundCustomizer from '@/components/BackgroundCustomizer';
 import OpenAIKeyInput from '@/components/OpenAIKeyInput';
 import AIColorGenerator from '@/components/AIColorGenerator';
+import AdminPresetsModal from '@/components/AdminPresetsModal';
 import { initializeOpenAI } from '@/utils/openaiService';
 import { validatePaletteContrast, getAccessibleVersion } from '@/utils/contrastChecker';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
@@ -555,6 +556,7 @@ const Dashboard = () => {
                  onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => setActiveModal('saved-palettes')}
                 onBackgroundClick={() => setActiveModal('background')}
+                onAdminPresetsClick={() => setActiveModal('admin-presets')}
               />
             </div>
 
@@ -665,6 +667,7 @@ const Dashboard = () => {
                    onColorsClick={() => setActiveModal('colors')}
                   onSetsClick={() => setActiveModal('saved-palettes')}
                   onBackgroundClick={() => setActiveModal('background')}
+                  onAdminPresetsClick={() => setActiveModal('admin-presets')}
                 />
               </div>
 
@@ -829,6 +832,16 @@ const Dashboard = () => {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Admin Presets Modal */}
+      <AdminPresetsModal
+        isOpen={activeModal === 'admin-presets'}
+        onClose={closeModal}
+        onPresetSelect={(palette) => {
+          setColorPalette(palette);
+          closeModal();
+        }}
+      />
 
       {/* Pro Upsell Modal */}
       <ProUpsellModal

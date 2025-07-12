@@ -21,6 +21,7 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
+import AdminPresetsModal from '@/components/AdminPresetsModal';
 import BackgroundCustomizer, { type BackgroundSettings } from '@/components/BackgroundCustomizer';
 
 
@@ -254,6 +255,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                 onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => {}}
                 onBackgroundClick={() => setActiveModal('background')}
+                onAdminPresetsClick={() => setActiveModal('admin-presets')}
               />
             </div>
 
@@ -443,6 +445,16 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Admin Presets Modal */}
+      <AdminPresetsModal
+        isOpen={activeModal === 'admin-presets'}
+        onClose={closeModal}
+        onPresetSelect={(palette) => {
+          onColorChange(palette);
+          closeModal();
+        }}
+      />
 
       {/* Pro Upsell Modal */}
       <ProUpsellModal

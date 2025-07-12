@@ -24,6 +24,7 @@ import { generateColorPalettePDF } from '@/utils/pdfGenerator';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
+import AdminPresetsModal from '@/components/AdminPresetsModal';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 import BackgroundCustomizer, { type BackgroundSettings } from '@/components/BackgroundCustomizer';
 
@@ -573,6 +574,7 @@ const AutoGenerate = () => {
                 onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => setActiveModal('saved')}
                 onBackgroundClick={() => setActiveModal('background')}
+                onAdminPresetsClick={() => setActiveModal('admin-presets')}
               />
 
               {/* Download PDF */}
@@ -739,6 +741,16 @@ const AutoGenerate = () => {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Admin Presets Modal */}
+      <AdminPresetsModal
+        isOpen={activeModal === 'admin-presets'}
+        onClose={closeModal}
+        onPresetSelect={(palette) => {
+          setColorPalette(palette);
+          closeModal();
+        }}
+      />
 
       {/* Pro Upsell Modal */}
       <ProUpsellModal
