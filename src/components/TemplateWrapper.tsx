@@ -51,9 +51,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
           left: 0,
           width: '100%',
           height: '100%',
-          zIndex: 0,
+          zIndex: 1, // Changed from 0 to 1
           border: '2px solid red', // Debug border
-          background: 'rgba(255,0,0,0.1)' // Debug background
+          background: 'rgba(255,0,0,0.1)', // Debug background
+          overflow: 'visible' // Ensure content isn't clipped
         }}>
           <TemplateBackground 
             settings={backgroundSettings}
@@ -67,7 +68,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
       {/* Template Content */}
       <div className="template-content relative z-10" style={{ 
         background: 'rgba(255,255,255,0.8)', // Semi-transparent so we can see background
-        minHeight: '100vh'
+        minHeight: '100vh',
+        position: 'relative' // Ensure proper stacking context
       }}>
         {children}
       </div>

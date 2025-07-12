@@ -256,9 +256,11 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
       left: 0,
       width: '100%',
       height: '100%',
-      zIndex: 0,
+      zIndex: 2, // Higher z-index
       background: 'rgba(0,255,0,0.5)', // Bright green background
-      border: '10px solid orange' // Very obvious orange border
+      border: '10px solid orange', // Very obvious orange border
+      overflow: 'visible',
+      pointerEvents: 'none'
     }}>
       {/* Simple test element to see if this container renders */}
       <div style={{
@@ -271,7 +273,8 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
         padding: '20px',
         fontSize: '24px',
         fontWeight: 'bold',
-        zIndex: 999
+        zIndex: 3,
+        pointerEvents: 'auto'
       }}>
         BACKGROUND CONTAINER IS HERE
       </div>
