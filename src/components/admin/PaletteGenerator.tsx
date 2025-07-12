@@ -83,7 +83,7 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
         };
         
         enhancedPrompt = `Generate a color palette ${schemeDescriptions[selectedScheme]}`;
-        if (selectedMood) {
+        if (selectedMood && selectedMood !== 'none') {
           enhancedPrompt += ` that feels ${selectedMood}`;
         }
         if (isDarkMode) {
@@ -183,7 +183,7 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
                   <SelectValue placeholder="Select mood" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No specific mood</SelectItem>
+                  <SelectItem value="none">No specific mood</SelectItem>
                   <SelectItem value="calm">Calm</SelectItem>
                   <SelectItem value="energetic">Energetic</SelectItem>
                   <SelectItem value="professional">Professional</SelectItem>
