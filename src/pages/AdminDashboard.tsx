@@ -24,6 +24,7 @@ import OpenAISettings from '@/components/admin/OpenAISettings';
 import AIGenerationSettings from '@/components/admin/AIGenerationSettings';
 import OpenAIUsageLogs from '@/components/admin/OpenAIUsageLogs';
 import ColorRolePreview from '@/components/admin/ColorRolePreview';
+import MiniTemplatePreview from '@/components/admin/MiniTemplatePreview';
 import AutoGenerator from '@/components/AutoGenerator';
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -68,7 +69,7 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-10">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="subscriptions">Plans</TabsTrigger>
@@ -77,6 +78,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="openai">OpenAI</TabsTrigger>
             <TabsTrigger value="usage-logs">Usage Logs</TabsTrigger>
             <TabsTrigger value="color-preview">Colors</TabsTrigger>
+            <TabsTrigger value="template-preview">Template</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -110,6 +112,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="color-preview">
             <ColorRolePreview />
+          </TabsContent>
+
+          <TabsContent value="template-preview">
+            <MiniTemplatePreview />
           </TabsContent>
 
           <TabsContent value="settings">
