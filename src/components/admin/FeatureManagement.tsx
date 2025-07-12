@@ -88,16 +88,22 @@ const FeatureManagement = () => {
   };
 
   const updateFeature = (featureId: string, value: boolean | number) => {
-    setEditingPlan(prev => ({
-      ...prev,
-      features: {
-        ...prev.features,
-        [featureId]: value
-      }
-    }));
+    console.log('updateFeature called:', featureId, value);
+    setEditingPlan(prev => {
+      const updated = {
+        ...prev,
+        features: {
+          ...prev.features,
+          [featureId]: value
+        }
+      };
+      console.log('Updated plan:', updated);
+      return updated;
+    });
   };
 
   const handleNumberInputChange = (featureId: string, inputValue: string) => {
+    console.log('handleNumberInputChange called:', featureId, inputValue);
     // Allow empty string during editing
     if (inputValue === '') {
       updateFeature(featureId, 0);
@@ -121,17 +127,23 @@ const FeatureManagement = () => {
     }
   };
 
-  const PlanEditModal = ({ isCreate = false }) => (
-    <Dialog open={isCreate ? isCreateModalOpen : isEditModalOpen} onOpenChange={isCreate ? setIsCreateModalOpen : setIsEditModalOpen}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{isCreate ? 'Create New Plan' : 'Edit Subscription Plan'}</DialogTitle>
-          <DialogDescription>
-            Configure plan details and feature access limits.
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="grid gap-6 py-4">
+  const PlanEditModal = ({ isCreate = false }) => {
+    console.log('PlanEditModal rendering:', { isCreate, editingPlan });
+    
+    return (
+      <Dialog open={isCreate ? isCreateModalOpen : isEditModalOpen} onOpenChange={isCreate ? setIsCreateModalOpen : setIsEditModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isCreate ? 'Create New Plan' : 'Edit Subscription Plan'}</DialogTitle>
+            <DialogDescription>
+              Configure plan details and feature access limits.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            console.log('Form submit prevented');
+          }} className="grid gap-6 py-4">
           {/* Basic Plan Details */}
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -252,23 +264,29 @@ const FeatureManagement = () => {
               ))}
             </div>
           </div>
-        </div>
+          </form>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => {
-            setIsEditModalOpen(false);
-            setIsCreateModalOpen(false);
-            setEditingPlan({});
-          }}>
-            Cancel
-          </Button>
-          <Button onClick={savePlan}>
-            {isCreate ? 'Create Plan' : 'Save Changes'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => {
+              console.log('Cancel clicked');
+              setIsEditModalOpen(false);
+              setIsCreateModalOpen(false);
+              setEditingPlan({});
+            }}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={(e) => {
+              e.preventDefault();
+              console.log('Save clicked');
+              savePlan();
+            }}>
+              {isCreate ? 'Create Plan' : 'Save Changes'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  };
 
   return (
     <div className="space-y-6">
