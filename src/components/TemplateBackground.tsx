@@ -14,8 +14,12 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
   console.log('TemplateBackground received colorPalette:', colorPalette);
 
   const getSvgBackground = () => {
-    if (!settings.enabled) return null;
+    if (!settings.enabled) {
+      console.log('Background disabled, returning null');
+      return null;
+    }
 
+    console.log('Generating SVG background for style:', settings.style);
     const baseOpacity = settings.opacity;
     
     switch (settings.style) {
@@ -228,9 +232,12 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
     }
   };
 
+  const svgBackground = getSvgBackground();
+  console.log('SVG background element:', svgBackground);
+
   return (
-    <div className="template-background relative w-full overflow-hidden">
-      {getSvgBackground()}
+    <div className="template-background relative w-full overflow-hidden" style={{ minHeight: '100%' }}>
+      {svgBackground}
       <div className="relative z-10">
         {children}
       </div>
