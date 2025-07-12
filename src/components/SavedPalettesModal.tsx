@@ -226,6 +226,7 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
                           <LivePreview
                             template={palette.template || 'modern-hero'}
                             colorPalette={palette}
+                            backgroundSettings={{ enabled: false, style: 'wavy-layers', waveHeight: 50, blobSize: 50, meshIntensity: 50, patternScale: 50, opacity: 0.3 }}
                           />
                         </div>
                       </div>

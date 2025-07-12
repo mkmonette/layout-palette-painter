@@ -405,6 +405,7 @@ const Dashboard = () => {
               <LivePreview
                 template={selectedTemplate}
                 colorPalette={colorPalette}
+                backgroundSettings={backgroundSettings}
               />
             </div>
           </div>

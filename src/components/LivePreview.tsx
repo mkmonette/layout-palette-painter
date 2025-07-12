@@ -2,6 +2,8 @@
 import React from 'react';
 import { TemplateType, ColorPalette } from '@/types/template';
 import { Button } from '@/components/ui/button';
+import TemplateBackground from '@/components/TemplateBackground';
+import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
 import { Save, Check } from 'lucide-react';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { useToast } from '@/hooks/use-toast';
@@ -31,9 +33,10 @@ interface LivePreviewProps {
   template: TemplateType;
   colorPalette: ColorPalette;
   showSaveButton?: boolean;
+  backgroundSettings?: BackgroundSettings;
 }
 
-const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showSaveButton = false }) => {
+const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showSaveButton = false, backgroundSettings }) => {
   const { canSaveMore, savePalette } = useSavedPalettes();
   const { toast } = useToast();
   const handleSave = () => {
@@ -103,7 +106,9 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
 
   return (
     <div className="relative">
-      {renderTemplate()}
+      <TemplateBackground settings={backgroundSettings || { enabled: false, style: 'wavy-layers', waveHeight: 50, blobSize: 50, meshIntensity: 50, patternScale: 50, opacity: 0.3 }}>
+        {renderTemplate()}
+      </TemplateBackground>
       {showSaveButton && (
         <div className="absolute top-4 right-4 z-10">
           <Button

@@ -395,6 +395,7 @@ const AutoGenerate = () => {
                       <LivePreview
                         template={palette.templateId as TemplateType}
                         colorPalette={convertToColorPalette(palette)}
+                        backgroundSettings={backgroundSettings}
                       />
                     </div>
                   </div>

@@ -174,6 +174,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           <LivePreview
             template={template}
             colorPalette={colorPalette}
+            backgroundSettings={backgroundSettings}
           />
         </div>
       </div>
