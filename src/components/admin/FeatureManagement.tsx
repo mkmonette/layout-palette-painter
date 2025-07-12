@@ -102,16 +102,23 @@ const FeatureManagement = () => {
   };
 
   const updateFeature = React.useCallback((featureId: string, value: boolean | number) => {
-    setEditingPlan(prev => ({
-      ...prev,
-      features: {
-        ...prev.features,
-        [featureId]: value
-      }
-    }));
+    console.log('🔄 updateFeature called:', featureId, value);
+    setEditingPlan(prev => {
+      console.log('📝 setEditingPlan - prev:', prev.name, prev.features);
+      const newPlan = {
+        ...prev,
+        features: {
+          ...prev.features,
+          [featureId]: value
+        }
+      };
+      console.log('📝 setEditingPlan - new:', newPlan.name, newPlan.features);
+      return newPlan;
+    });
   }, []);
 
   const handleNumberInputChange = React.useCallback((featureId: string, inputValue: string) => {
+    console.log('⌨️ handleNumberInputChange called:', featureId, inputValue);
     // Allow empty string during editing
     if (inputValue === '') {
       updateFeature(featureId, 0);
@@ -128,7 +135,16 @@ const FeatureManagement = () => {
   const stableFeatures = React.useMemo(() => AVAILABLE_FEATURES, []);
   const stableCurrentFeatures = React.useMemo(() => editingPlan.features || {}, [editingPlan.features]);
 
-  console.log('Component render - editingPlan:', editingPlan.name);
+  console.log('🎭 Main component render - isEditModalOpen:', isEditModalOpen, 'editingPlan.name:', editingPlan.name);
+
+  // Check if there are any unexpected state changes
+  React.useEffect(() => {
+    console.log('🔍 editingPlan effect triggered:', editingPlan);
+  }, [editingPlan]);
+
+  React.useEffect(() => {
+    console.log('🔍 isEditModalOpen effect triggered:', isEditModalOpen);
+  }, [isEditModalOpen]);
 
   const getFeatureDisplayValue = (plan: SubscriptionPlan, featureId: string) => {
     const value = plan.features[featureId];
@@ -143,7 +159,7 @@ const FeatureManagement = () => {
 
   // Memoized feature list component to prevent re-renders
   const FeatureList = React.memo<FeatureListProps>(({ features, currentFeatures, onUpdateFeature, onNumberInputChange }) => {
-    console.log('FeatureList render');
+    console.log('📋 FeatureList render');
     return (
       <div className="space-y-4">
         {features.map((feature) => (
@@ -185,7 +201,7 @@ const FeatureManagement = () => {
       }
     }, [localValue, feature.id, onUpdateFeature]);
     
-    console.log('FeatureItem render:', feature.id, value);
+    console.log('🎯 FeatureItem render:', feature.id, value, 'localValue:', localValue);
     
     return (
       <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -230,12 +246,21 @@ const FeatureManagement = () => {
   });
 
   const EditPlanModal = React.memo(() => {
-    console.log('EditPlanModal render');
+    console.log('🎬 EditPlanModal render - isOpen:', isEditModalOpen);
     
-    if (!isEditModalOpen) return null;
+    if (!isEditModalOpen) {
+      console.log('🎬 EditPlanModal - not open, returning null');
+      return null;
+    }
     
     return (
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+      <Dialog 
+        open={isEditModalOpen} 
+        onOpenChange={(open) => {
+          console.log('🎬 Dialog onOpenChange:', open);
+          setIsEditModalOpen(open);
+        }}
+      >
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Subscription Plan</DialogTitle>
