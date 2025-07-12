@@ -30,6 +30,7 @@ import { ColorRoles, ColorRole } from '@/types/colorRoles';
 import { mapPaletteToRoles } from '@/utils/colorRoleMapper';
 import { generateAIColorPalette, isOpenAIInitialized } from '@/utils/openaiService';
 import { useToast } from '@/hooks/use-toast';
+import { ColorSchemeType } from '@/components/ColorSchemeSelector';
 
 interface ColorPreset {
   id: string;
@@ -80,8 +81,15 @@ const PresetManager: React.FC<PresetManagerProps> = ({
   // Palette generation state
   const [generationPrompt, setGenerationPrompt] = useState('');
   const [selectedMood, setSelectedMood] = useState('');
+  const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Preset action states
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [renamingPreset, setRenamingPreset] = useState<ColorPreset | null>(null);
+  const [newPresetName, setNewPresetName] = useState('');
+  const [newPresetDescription, setNewPresetDescription] = useState('');
 
   // Load presets from localStorage on mount
   useEffect(() => {
@@ -125,9 +133,37 @@ const PresetManager: React.FC<PresetManagerProps> = ({
 
     setIsGenerating(true);
     try {
+      // Build enhanced prompt with scheme information
+      let enhancedPrompt = generationPrompt;
+      
+      if (selectedScheme !== 'random') {
+        const schemeDescriptions = {
+          monochromatic: 'using a monochromatic color scheme (various shades of the same color)',
+          analogous: 'using an analogous color scheme (colors next to each other on the color wheel)',
+          complementary: 'using a complementary color scheme (opposite colors on the color wheel)',
+          triadic: 'using a triadic color scheme (three evenly spaced colors)',
+          tetradic: 'using a tetradic color scheme (four colors forming a rectangle)'
+        };
+        
+        enhancedPrompt = `Generate a color palette ${schemeDescriptions[selectedScheme]}`;
+        if (selectedMood) {
+          enhancedPrompt += ` that feels ${selectedMood}`;
+        }
+        if (isDarkMode) {
+          enhancedPrompt += ` and is optimized for a dark theme`;
+        } else {
+          enhancedPrompt += ` and is optimized for a light theme`;
+        }
+        enhancedPrompt += '. Output cohesive and UI-friendly colors.';
+        
+        if (generationPrompt) {
+          enhancedPrompt += ` Additional context: ${generationPrompt}`;
+        }
+      }
+
       const aiPalette = await generateAIColorPalette({
         mood: selectedMood,
-        description: generationPrompt,
+        description: enhancedPrompt,
         isDarkMode
       });
       
@@ -272,6 +308,74 @@ const PresetManager: React.FC<PresetManagerProps> = ({
         description: `Preset duplicated as "${duplicatedPreset.name}"`
       });
     }
+  };
+
+  const handleRenamePreset = (preset: ColorPreset) => {
+    setRenamingPreset(preset);
+    setNewPresetName(preset.name);
+    setNewPresetDescription(preset.description || '');
+    setRenameDialogOpen(true);
+  };
+
+  const handleConfirmRename = () => {
+    if (!renamingPreset || !newPresetName.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Preset name is required',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Check for duplicate names (excluding current preset)
+    if (presets.some(p => p.id !== renamingPreset.id && p.name.toLowerCase() === newPresetName.toLowerCase())) {
+      toast({
+        title: 'Error',
+        description: 'A preset with this name already exists',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const updatedPresets = presets.map(p => 
+      p.id === renamingPreset.id 
+        ? { ...p, name: newPresetName, description: newPresetDescription }
+        : p
+    );
+    
+    savePresetsToStorage(updatedPresets);
+    
+    toast({
+      title: 'Success',
+      description: `Preset renamed to "${newPresetName}"`
+    });
+
+    setRenameDialogOpen(false);
+    setRenamingPreset(null);
+    setNewPresetName('');
+    setNewPresetDescription('');
+  };
+
+  const handleExportAsJSON = (preset: ColorPreset) => {
+    const exportData = {
+      name: preset.name,
+      roles: preset.roles
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `${preset.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast({
+      title: 'Success',
+      description: `Preset exported as ${exportFileDefaultName}`
+    });
   };
 
   return (
@@ -451,7 +555,23 @@ const PresetManager: React.FC<PresetManagerProps> = ({
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-4 pt-4">
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="scheme-select">Color Scheme</Label>
+                      <Select value={selectedScheme} onValueChange={(value: ColorSchemeType) => setSelectedScheme(value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a color scheme" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="random">Random - Completely random combinations</SelectItem>
+                          <SelectItem value="monochromatic">Monochromatic - Shades of same color</SelectItem>
+                          <SelectItem value="analogous">Analogous - Adjacent colors</SelectItem>
+                          <SelectItem value="complementary">Complementary - Opposite colors</SelectItem>
+                          <SelectItem value="triadic">Triadic - Three evenly spaced</SelectItem>
+                          <SelectItem value="tetradic">Tetradic - Four colors rectangle</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div>
                       <Label htmlFor="mood-select">Mood</Label>
                       <Select value={selectedMood} onValueChange={setSelectedMood}>
@@ -702,6 +822,14 @@ const PresetManager: React.FC<PresetManagerProps> = ({
                               <Button
                                 size="sm"
                                 variant="outline"
+                                onClick={() => handleRenamePreset(preset)}
+                                title="Rename preset"
+                              >
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
                                 onClick={() => handleDuplicatePreset(preset.id)}
                                 title="Duplicate preset"
                               >
@@ -710,7 +838,7 @@ const PresetManager: React.FC<PresetManagerProps> = ({
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => handleExportPreset(preset.id)}
+                                onClick={() => handleExportAsJSON(preset)}
                                 title="Export as JSON"
                               >
                                 <Download className="h-3 w-3" />
@@ -741,6 +869,55 @@ const PresetManager: React.FC<PresetManagerProps> = ({
               </DialogContent>
             </Dialog>
               </div>
+
+              {/* Rename Preset Dialog */}
+              <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Rename Preset</DialogTitle>
+                    <DialogDescription>
+                      Update the name and description of this preset
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="new-preset-name">Preset Name *</Label>
+                      <Input
+                        id="new-preset-name"
+                        value={newPresetName}
+                        onChange={(e) => setNewPresetName(e.target.value)}
+                        placeholder="Enter new preset name"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="new-preset-description">Description</Label>
+                      <Textarea
+                        id="new-preset-description"
+                        value={newPresetDescription}
+                        onChange={(e) => setNewPresetDescription(e.target.value)}
+                        placeholder="Optional description"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setRenameDialogOpen(false);
+                          setRenamingPreset(null);
+                          setNewPresetName('');
+                          setNewPresetDescription('');
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button onClick={handleConfirmRename}>
+                        Save Changes
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
 
               {presets.length > 0 && (
                 <div className="border rounded-lg p-4">
