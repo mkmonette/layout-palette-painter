@@ -15,6 +15,17 @@ export interface ColorRoles {
   highlight: string;                // Badges, tags, decorative indicators
   "input-bg": string;              // Background color for form input fields
   "input-text": string;            // Text color inside input fields
+  
+  // Material-style on* roles for text/foreground colors
+  onBrand?: string;                 // Text color for brand backgrounds
+  onAccent?: string;                // Text color for accent backgrounds
+  onHighlight?: string;             // Text color for highlight backgrounds
+  onPrimary?: string;               // Text color for primary button backgrounds
+  onSecondary?: string;             // Text color for secondary button backgrounds
+  onBg1?: string;                   // Text color for section-bg-1
+  onBg2?: string;                   // Text color for section-bg-2
+  onBg3?: string;                   // Text color for section-bg-3
+  onInput?: string;                 // Text color for input backgrounds
 }
 
 export type ColorRole = keyof ColorRoles;

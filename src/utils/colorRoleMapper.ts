@@ -8,30 +8,31 @@ import chroma from 'chroma-js';
  * Maps a ColorPalette to extended ColorRoles with automatic contrast fixing
  */
 export const mapPaletteToRoles = (palette: ColorPalette): ColorRoles => {
-  // Create a copy of the palette with contrast-fixed text colors
-  const fixedPalette = { ...palette };
+  // Start with the base palette
+  const roleMap = { ...palette } as ColorRoles;
   
-  // Apply contrast fixes to all text-related roles
-  const textBgPairs = [
-    { textKey: 'text-primary', bgKey: 'section-bg-1' },
-    { textKey: 'text-secondary', bgKey: 'section-bg-1' },
-    { textKey: 'text-onBackground', bgKey: 'section-bg-1' },
-    { textKey: 'text-onSurface', bgKey: 'section-bg-2' },
-    { textKey: 'button-text', bgKey: 'button-primary' },
-    { textKey: 'button-secondary-text', bgKey: 'button-secondary' },
-    { textKey: 'input-text', bgKey: 'input-bg' },
-  ];
+  // Generate Material-style on* roles using getReadableTextColor
+  roleMap.onBrand = getReadableTextColor(roleMap.brand);
+  roleMap.onAccent = getReadableTextColor(roleMap.accent);
+  roleMap.onHighlight = getReadableTextColor(roleMap.highlight);
   
-  textBgPairs.forEach(({ textKey, bgKey }) => {
-    if (fixedPalette[textKey] && fixedPalette[bgKey]) {
-      fixedPalette[textKey] = getReadableTextColor(
-        fixedPalette[bgKey], 
-        fixedPalette[textKey]
-      );
-    }
-  });
+  roleMap.onPrimary = getReadableTextColor(roleMap['button-primary']);
+  roleMap.onSecondary = getReadableTextColor(roleMap['button-secondary']);
   
-  return fixedPalette;
+  roleMap.onBg1 = getReadableTextColor(roleMap['section-bg-1']);
+  roleMap.onBg2 = getReadableTextColor(roleMap['section-bg-2']);
+  roleMap.onBg3 = roleMap['section-bg-3'] ? getReadableTextColor(roleMap['section-bg-3']) : getReadableTextColor(roleMap['section-bg-2']);
+  
+  roleMap.onInput = getReadableTextColor(roleMap['input-bg']);
+  
+  // Update legacy roles to use the new on* roles for consistency
+  roleMap['button-text'] = roleMap.onPrimary;
+  roleMap['button-secondary-text'] = roleMap.onSecondary;
+  roleMap['text-primary'] = roleMap.onBg1;
+  roleMap['text-secondary'] = roleMap.onBg2;
+  roleMap['input-text'] = roleMap.onInput;
+  
+  return roleMap;
 };
 
 
