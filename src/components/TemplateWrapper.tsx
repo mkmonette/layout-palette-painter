@@ -56,12 +56,30 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
           background: 'rgba(255,0,0,0.1)', // Debug background
           overflow: 'visible' // Ensure content isn't clipped
         }}>
-          <TemplateBackground 
-            settings={backgroundSettings}
-            colorPalette={colorPalette}
-          >
-            <></>
-          </TemplateBackground>
+          {/* Test if removing TemplateBackground component shows anything */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'purple',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 5
+          }}>
+            <div style={{
+              background: 'white',
+              color: 'black',
+              padding: '40px',
+              fontSize: '32px',
+              fontWeight: 'bold',
+              border: '5px solid green'
+            }}>
+              DIRECT RENDER TEST - DO YOU SEE THIS?
+            </div>
+          </div>
         </div>
       )}
       
