@@ -181,41 +181,45 @@ const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
 };
 
 const generateMonochromaticScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
-  const baseSaturation = 70 + Math.random() * 20; // 70-90%
+  // Add more variation in saturation and lightness
+  const baseSaturation = 60 + Math.floor(Math.random() * 30); // 60-90%
+  const saturationVariation = 10 + Math.floor(Math.random() * 15); // 10-25%
   
   if (isDarkMode) {
+    const baseLightness = 55 + Math.floor(Math.random() * 15); // 55-70%
     return {
-      brand: hslToHex(baseHue, baseSaturation, 60),
-      accent: hslToHex(baseHue, baseSaturation + 15, 70),
-      "button-primary": hslToHex(baseHue, baseSaturation, 60),
-      "button-text": hslToHex(baseHue, 20, 8),
+      brand: hslToHex(baseHue, baseSaturation, baseLightness),
+      accent: hslToHex(baseHue, baseSaturation + saturationVariation, baseLightness + 10),
+      "button-primary": hslToHex(baseHue, baseSaturation, baseLightness),
+      "button-text": hslToHex(baseHue, 25, 8),
       "button-secondary": hslToHex(baseHue, 30, 20),
-      "button-secondary-text": hslToHex(baseHue, baseSaturation, 60),
-      "text-primary": hslToHex(baseHue, 10, 95),
-      "text-secondary": hslToHex(baseHue, 15, 75),
-      "section-bg-1": hslToHex(baseHue, 20, 8),
-      "section-bg-2": hslToHex(baseHue, 25, 12),
-      "section-bg-3": hslToHex(baseHue, 30, 16),
+      "button-secondary-text": hslToHex(baseHue, baseSaturation, baseLightness),
+      "text-primary": hslToHex(0, 0, 95),
+      "text-secondary": hslToHex(baseHue, 20, 75),
+      "section-bg-1": hslToHex(baseHue, 25, 8),
+      "section-bg-2": hslToHex(baseHue, 30, 12),
+      "section-bg-3": hslToHex(baseHue, 35, 16),
       border: hslToHex(baseHue, 20, 25),
       highlight: hslToHex(baseHue, baseSaturation + 10, 65),
       "input-bg": hslToHex(baseHue, 25, 12),
       "input-text": hslToHex(baseHue, 10, 95)
     };
   } else {
+    const baseLightness = 45 + Math.floor(Math.random() * 15); // 45-60%
     return {
-      brand: hslToHex(baseHue, baseSaturation, 50),
-      accent: hslToHex(baseHue, baseSaturation + 10, 60),
-      "button-primary": hslToHex(baseHue, baseSaturation, 50),
+      brand: hslToHex(baseHue, baseSaturation, baseLightness),
+      accent: hslToHex(baseHue, baseSaturation + saturationVariation, baseLightness + 10),
+      "button-primary": hslToHex(baseHue, baseSaturation, baseLightness),
       "button-text": '#FFFFFF',
       "button-secondary": hslToHex(baseHue, 15, 95),
-      "button-secondary-text": hslToHex(baseHue, baseSaturation, 50),
+      "button-secondary-text": hslToHex(baseHue, baseSaturation, baseLightness),
       "text-primary": hslToHex(baseHue, 30, 15),
       "text-secondary": hslToHex(baseHue, 20, 45),
       "section-bg-1": hslToHex(baseHue, 15, 98),
       "section-bg-2": hslToHex(baseHue, 20, 96),
       "section-bg-3": hslToHex(baseHue, 25, 94),
       border: hslToHex(baseHue, 15, 85),
-      highlight: hslToHex(baseHue, baseSaturation - 10, 55),
+      highlight: hslToHex(baseHue, baseSaturation - 10, baseLightness + 10),
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(baseHue, 30, 15)
     };
@@ -404,9 +408,20 @@ export const generateColorPalette = (isDarkMode: boolean = false): ColorPalette 
 
 export const generateColorScheme = (scheme: ColorSchemeType, isDarkMode: boolean = false): ColorPalette => {
   if (scheme === 'random') {
-    return generateColorPalette(isDarkMode);
+    // Enhanced random generation with more variety
+    const randomChoice = Math.random();
+    if (randomChoice < 0.3) {
+      // 30% chance: Use predefined palettes
+      return generateColorPalette(isDarkMode);
+    } else {
+      // 70% chance: Generate dynamic schemes
+      const schemes: ColorSchemeType[] = ['monochromatic', 'analogous', 'complementary', 'triadic', 'tetradic'];
+      const randomScheme = schemes[Math.floor(Math.random() * schemes.length)];
+      return generateColorScheme(randomScheme, isDarkMode);
+    }
   }
 
+  // Add more variation to base hue generation
   const baseHue = Math.floor(Math.random() * 360);
   
   switch (scheme) {
