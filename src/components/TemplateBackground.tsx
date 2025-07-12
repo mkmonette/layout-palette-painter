@@ -26,19 +26,20 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
       case 'wavy-layers':
         return (
           <svg
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 w-full h-full z-0"
             viewBox="0 0 1200 800"
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="xMidYMid slice"
+            style={{ zIndex: 0 }}
           >
             <defs>
               <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FF0000" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#0000FF" stopOpacity="0.3" />
+                <stop offset="0%" stopColor="#FF0000" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#0000FF" stopOpacity="0.8" />
               </linearGradient>
               <linearGradient id="wave-gradient-2" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#00FF00" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#FFFF00" stopOpacity="0.3" />
+                <stop offset="0%" stopColor="#00FF00" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#FFFF00" stopOpacity="0.8" />
               </linearGradient>
             </defs>
             
@@ -237,8 +238,12 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
 
   return (
     <div className="template-background relative w-full overflow-hidden" style={{ minHeight: '100%' }}>
-      {svgBackground}
-      <div className="relative z-10">
+      {svgBackground && (
+        <div className="absolute inset-0 z-0">
+          {svgBackground}
+        </div>
+      )}
+      <div className="relative z-10 bg-transparent">
         {children}
       </div>
     </div>
