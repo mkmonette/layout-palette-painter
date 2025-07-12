@@ -273,6 +273,7 @@ const FeatureManagement = () => {
                 <TableHead>Status</TableHead>
                 <TableHead>Subscribers</TableHead>
                 <TableHead>Pro Templates</TableHead>
+                <TableHead>AI Generations</TableHead>
                 <TableHead>Saved Palettes</TableHead>
                 <TableHead>Downloads/Day</TableHead>
                 <TableHead>Actions</TableHead>
@@ -299,6 +300,7 @@ const FeatureManagement = () => {
                   </TableCell>
                   <TableCell>{plan.subscribers}</TableCell>
                   <TableCell>{getFeatureDisplayValue(plan, 'pro_templates')}</TableCell>
+                  <TableCell>{getFeatureDisplayValue(plan, 'ai_generations_per_month')}</TableCell>
                   <TableCell>{getFeatureDisplayValue(plan, 'saved_palettes')}</TableCell>
                   <TableCell>{getFeatureDisplayValue(plan, 'downloads_per_day')}</TableCell>
                   <TableCell>

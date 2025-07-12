@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 
 interface AISettings {
   enabled: boolean;
-  maxGenerationsPerUser: number;
 }
 
 interface UserUsage {
@@ -26,8 +25,7 @@ interface UserUsage {
 
 const AIGenerationSettings = () => {
   const [settings, setSettings] = useState<AISettings>({
-    enabled: true,
-    maxGenerationsPerUser: 50
+    enabled: true
   });
   
   const [userUsage] = useState<UserUsage[]>([
@@ -86,15 +84,15 @@ const AIGenerationSettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Settings2 className="h-5 w-5 text-primary" />
-            AI Generation Settings
+            AI Generation Control
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label className="text-base">Enable AI Generation for PRO Users</Label>
+              <Label className="text-base">Enable AI Generation</Label>
               <p className="text-sm text-muted-foreground">
-                Allow PRO subscribers to use AI-powered color generation
+                Allow AI-powered color generation for eligible users. Limits are configured per subscription plan.
               </p>
             </div>
             <Switch
@@ -107,29 +105,16 @@ const AIGenerationSettings = () => {
 
           <Separator />
 
-          <div className="space-y-2">
-            <Label htmlFor="maxGenerations">Max AI Generations per PRO User (Monthly)</Label>
-            <div className="flex gap-2">
-              <Input
-                id="maxGenerations"
-                type="number"
-                min="1"
-                max="1000"
-                value={settings.maxGenerationsPerUser}
-                onChange={(e) => 
-                  setSettings(prev => ({ 
-                    ...prev, 
-                    maxGenerationsPerUser: parseInt(e.target.value) || 50 
-                  }))
-                }
-                className="w-32"
-              />
-              <Button onClick={handleSaveSettings}>
-                Save Settings
-              </Button>
-            </div>
+          <div className="flex gap-2">
+            <Button onClick={handleSaveSettings}>
+              Save Settings
+            </Button>
+          </div>
+          
+          <div className="bg-muted/50 p-4 rounded-lg">
             <p className="text-sm text-muted-foreground">
-              Current default: 50 generations per month for PRO users
+              <strong>Note:</strong> AI generation limits are configured in the "Plans" tab under each subscription plan's features. 
+              This setting only controls whether AI generation is globally enabled or disabled.
             </p>
           </div>
         </CardContent>
