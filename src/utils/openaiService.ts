@@ -23,11 +23,24 @@ export const generateAIColorPalette = async (request: OpenAIColorRequest): Promi
     throw new Error('OpenAI not initialized. Please provide API key.');
   }
 
+  // Get selected model from admin settings
+  const adminSettings = localStorage.getItem('openai_admin_settings');
+  let selectedModel = "gpt-4.1-2025-04-14"; // default model
+  
+  if (adminSettings) {
+    try {
+      const settings = JSON.parse(adminSettings);
+      selectedModel = settings.selectedModel || "gpt-4.1-2025-04-14";
+    } catch (error) {
+      console.warn('Error parsing admin settings for model selection:', error);
+    }
+  }
+
   const prompt = buildColorPrompt(request);
   
   try {
     const completion = await openaiInstance.chat.completions.create({
-      model: "gpt-4.1-2025-04-14",
+      model: selectedModel,
       messages: [
         {
           role: "system",
@@ -69,7 +82,7 @@ Return ONLY valid JSON with hex color values. Ensure text colors have sufficient
     // Log token usage
     if (completion.usage) {
       const userId = localStorage.getItem('currentUserId') || 'unknown';
-      logTokenUsage(userId, 'ai-color-generation', completion.usage, "gpt-4.1-2025-04-14");
+      logTokenUsage(userId, 'ai-color-generation', completion.usage, selectedModel);
     }
 
     // Parse the JSON response - handle markdown code blocks

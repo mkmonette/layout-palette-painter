@@ -51,6 +51,7 @@ const OpenAISettings: React.FC = () => {
   const [environment, setEnvironment] = useState('production');
   const [isEnabled, setIsEnabled] = useState(false);
   const [enforceHighContrast, setEnforceHighContrast] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('gpt-4.1-2025-04-14');
   const [defaultPrompt, setDefaultPrompt] = useState(
     'Generate a balanced color palette with good contrast ratios. Ensure text colors are readable against their backgrounds and follow WCAG AA guidelines.'
   );
@@ -76,6 +77,7 @@ const OpenAISettings: React.FC = () => {
       try {
         const settings = JSON.parse(storedSettings);
         setEnvironment(settings.environment || 'production');
+        setSelectedModel(settings.selectedModel || 'gpt-4.1-2025-04-14');
         setDefaultPrompt(settings.defaultPrompt || defaultPrompt);
         setPromptTemplates(settings.promptTemplates || defaultPromptTemplates);
         setMaxTokens([settings.maxTokens || 500]);
@@ -91,6 +93,7 @@ const OpenAISettings: React.FC = () => {
   const saveSettings = () => {
     const settings = {
       environment,
+      selectedModel,
       defaultPrompt,
       promptTemplates,
       maxTokens: maxTokens[0],
@@ -262,6 +265,25 @@ const OpenAISettings: React.FC = () => {
                       <SelectItem value="production">Production</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="model-select">OpenAI Model</Label>
+                  <Select value={selectedModel} onValueChange={setSelectedModel}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select OpenAI model" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover border z-50">
+                      <SelectItem value="gpt-4.1-2025-04-14">GPT-4.1 (Flagship) - Recommended</SelectItem>
+                      <SelectItem value="o3-2025-04-16">O3 (Reasoning) - Advanced Analysis</SelectItem>
+                      <SelectItem value="o4-mini-2025-04-16">O4 Mini (Fast Reasoning) - Quick & Efficient</SelectItem>
+                      <SelectItem value="gpt-4.1-mini-2025-04-14">GPT-4.1 Mini - Older Vision Model</SelectItem>
+                      <SelectItem value="gpt-4o">GPT-4o - Older Powerful Model</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Choose the OpenAI model for color generation. GPT-4.1 is recommended for best results.
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-2">
