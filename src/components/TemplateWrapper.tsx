@@ -65,7 +65,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
       )}
       
       {/* Template Content */}
-      <div className="template-content relative z-10" style={{ background: 'transparent' }}>
+      <div className="template-content relative z-10" style={{ 
+        background: 'rgba(255,255,255,0.8)', // Semi-transparent so we can see background
+        minHeight: '100vh'
+      }}>
         {children}
       </div>
     </div>

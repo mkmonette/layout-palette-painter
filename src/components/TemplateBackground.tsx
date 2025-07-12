@@ -20,8 +20,14 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
     }
 
     console.log('Generating SVG background for style:', settings.style);
-    const baseOpacity = Math.max(settings.opacity * 3, 0.6); // Boost opacity for visibility
-    console.log('Using boosted opacity:', baseOpacity);
+    console.log('Color palette colors:', {
+      'section-bg-2': colorPalette['section-bg-2'],
+      'section-bg-3': colorPalette['section-bg-3'],
+      highlight: colorPalette.highlight,
+      accent: colorPalette.accent
+    });
+    const baseOpacity = 1; // Make it fully opaque for debugging
+    console.log('Using opacity:', baseOpacity);
     
     switch (settings.style) {
       case 'wavy-layers':
@@ -31,16 +37,20 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
             viewBox="0 0 1200 800"
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="xMidYMid slice"
-            style={{ zIndex: 0 }}
+            style={{ 
+              zIndex: 0,
+              border: '5px solid purple', // Debug border to see if SVG is there
+              background: 'rgba(255,255,255,0.5)' // Debug background
+            }}
           >
             <defs>
               <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={colorPalette['section-bg-2']} stopOpacity={baseOpacity * 0.8} />
-                <stop offset="100%" stopColor={colorPalette['section-bg-3']} stopOpacity={baseOpacity * 0.6} />
+                <stop offset="0%" stopColor="#ff0000" stopOpacity="1" />
+                <stop offset="100%" stopColor="#00ff00" stopOpacity="1" />
               </linearGradient>
               <linearGradient id="wave-gradient-2" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={colorPalette.highlight} stopOpacity={baseOpacity * 0.4} />
-                <stop offset="100%" stopColor={colorPalette.accent} stopOpacity={baseOpacity * 0.3} />
+                <stop offset="0%" stopColor="#0000ff" stopOpacity="1" />
+                <stop offset="100%" stopColor="#ffff00" stopOpacity="1" />
               </linearGradient>
             </defs>
             
