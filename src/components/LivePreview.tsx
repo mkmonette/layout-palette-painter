@@ -106,12 +106,24 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
 
   return (
     <div className="relative">
-      <TemplateBackground 
-        settings={backgroundSettings || { enabled: false, style: 'wavy-layers', waveHeight: 50, blobSize: 50, meshIntensity: 50, patternScale: 50, opacity: 0.3 }}
-        colorPalette={colorPalette}
+      <div 
+        className="template-background"
+        style={{
+          '--section-bg-1': colorPalette['section-bg-1'],
+          '--section-bg-2': colorPalette['section-bg-2'], 
+          '--section-bg-3': colorPalette['section-bg-3'],
+          '--highlight': colorPalette.highlight,
+          '--accent': colorPalette.accent,
+          '--brand': colorPalette.brand,
+        } as React.CSSProperties}
       >
-        {renderTemplate()}
-      </TemplateBackground>
+        <TemplateBackground 
+          settings={backgroundSettings || { enabled: false, style: 'wavy-layers', waveHeight: 50, blobSize: 50, meshIntensity: 50, patternScale: 50, opacity: 0.3 }}
+          colorPalette={colorPalette}
+        >
+          {renderTemplate()}
+        </TemplateBackground>
+      </div>
       {showSaveButton && (
         <div className="absolute top-4 right-4 z-10">
           <Button
