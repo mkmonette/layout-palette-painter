@@ -27,29 +27,26 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
       pointerEvents: 'none',
       background: 'rgba(255,0,255,0.1)' // Debug background
     }}>
-      <svg
-        className="absolute inset-0 w-full h-full"
-        viewBox="0 0 1200 800"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ 
-          border: '10px solid purple', // Debug border
-          background: 'rgba(255,255,255,0.3)' // Debug background
-        }}
-      >
-        {/* Simple solid red rectangle */}
-        <rect x="0" y="0" width="1200" height="400" fill="red" />
-        
-        {/* Simple solid blue rectangle */}
-        <rect x="0" y="400" width="1200" height="400" fill="blue" />
-        
-        {/* Simple green circle */}
-        <circle cx="600" cy="400" r="200" fill="green" />
-        
-        {/* Yellow text */}
-        <text x="600" y="400" fill="yellow" fontSize="48" textAnchor="middle" dominantBaseline="middle">
-          SVG WORKS!
-        </text>
-      </svg>
+      {/* Bright overlay div instead of SVG to test */}
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '400px',
+        height: '200px',
+        backgroundColor: 'red',
+        border: '5px solid yellow',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        color: 'white',
+        zIndex: 1000
+      }}>
+        BACKGROUND WORKS!
+      </div>
     </div>
   );
 };
