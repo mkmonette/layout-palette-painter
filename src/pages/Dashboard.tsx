@@ -95,12 +95,13 @@ const Dashboard = () => {
   };
 
   const handleGenerateColors = async () => {
+    if (isGenerating) return; // Prevent multiple simultaneous generations
+    
     setIsGenerating(true);
     setTimeout(() => {
       try {
         const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, false, selectedMoodId);
         setColorPalette(newPalette);
-        setIsGenerating(false);
       } catch (error) {
         // If accessibility mode fails, fall back to regular generation
         if (error instanceof Error && error.message.includes('No accessible palette found')) {
@@ -113,6 +114,7 @@ const Dashboard = () => {
           const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, false, selectedMoodId);
           setColorPalette(fallbackPalette);
         }
+      } finally {
         setIsGenerating(false);
       }
     }, 800);
