@@ -4,11 +4,13 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Wand2, AlertTriangle } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Sparkles, Wand2, AlertTriangle, Crown, Info } from 'lucide-react';
 import { generateAIColorPalette, isOpenAIInitialized } from '@/utils/openaiService';
 import { ColorPalette } from '@/utils/colorGenerator';
 import { useToast } from '@/hooks/use-toast';
 import { validatePaletteContrast, ContrastIssue } from '@/utils/contrastChecker';
+import { useAIQuota } from '@/hooks/useAIQuota';
 
 interface AIColorGeneratorProps {
   isDarkMode: boolean;
@@ -22,6 +24,14 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
   const [description, setDescription] = useState('');
   const [contrastIssues, setContrastIssues] = useState<ContrastIssue[]>([]);
   const { toast } = useToast();
+  const { 
+    canGenerate, 
+    isPro, 
+    remainingGenerations, 
+    maxGenerations, 
+    usedGenerations,
+    incrementUsage 
+  } = useAIQuota();
 
   const predefinedMoods = [
     'Professional and trustworthy',
@@ -79,6 +89,9 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
       const issues = validatePaletteContrast(palette);
       setContrastIssues(issues);
 
+      // Increment usage count
+      incrementUsage();
+      
       // Apply the palette
       onPaletteGenerated(palette);
 
@@ -86,13 +99,13 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
       if (invalidIssues.length > 0) {
         toast({
           title: "Palette Generated with Warnings",
-          description: `${invalidIssues.length} contrast issue(s) detected. Check the warnings below.`,
+          description: `${invalidIssues.length} contrast issue(s) detected. ${remainingGenerations - 1} generations remaining.`,
           variant: "destructive",
         });
       } else {
         toast({
           title: "AI Palette Generated",
-          description: "Perfect! All colors meet accessibility standards.",
+          description: `Perfect! All colors meet accessibility standards. ${remainingGenerations - 1} generations remaining.`,
         });
       }
     } catch (error) {
@@ -117,15 +130,101 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
     return null;
   }
 
+  const getGenerateButton = () => {
+    if (!isPro) {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex-1">
+                <Button
+                  disabled
+                  size="sm"
+                  className="w-full opacity-50"
+                >
+                  <Crown className="h-3 w-3 mr-2" />
+                  PRO Feature
+                </Button>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>AI generation is available for PRO users only. Upgrade to access this feature.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    if (!canGenerate && remainingGenerations === 0) {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex-1">
+                <Button
+                  disabled
+                  size="sm"
+                  className="w-full opacity-50"
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  Limit Reached
+                </Button>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>You've reached your monthly limit of {maxGenerations} AI generations. Resets next month.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    return (
+      <Button
+        onClick={handleGenerate}
+        disabled={isGenerating || (!mood && !theme && !description)}
+        size="sm"
+        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+      >
+        {isGenerating ? (
+          <>
+            <Wand2 className="h-3 w-3 mr-2 animate-spin" />
+            Generating...
+          </>
+        ) : (
+          <>
+            <Sparkles className="h-3 w-3 mr-2" />
+            Generate
+          </>
+        )}
+      </Button>
+    );
+  };
+
   return (
     <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-sm">
           <Sparkles className="h-4 w-4 text-purple-600" />
           AI Color Generation
+          {isPro && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="h-3 w-3 text-muted-foreground" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{usedGenerations}/{maxGenerations} AI generations used this month</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </CardTitle>
         <CardDescription className="text-xs">
-          Describe your vision and let AI create the perfect color palette
+          {isPro 
+            ? `Describe your vision and let AI create the perfect color palette (${remainingGenerations} remaining)` 
+            : "AI color generation is available for PRO users"
+          }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -172,24 +271,7 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
 
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <Button
-            onClick={handleGenerate}
-            disabled={isGenerating || (!mood && !theme && !description)}
-            size="sm"
-            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-          >
-            {isGenerating ? (
-              <>
-                <Wand2 className="h-3 w-3 mr-2 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-3 w-3 mr-2" />
-                Generate
-              </>
-            )}
-          </Button>
+          {getGenerateButton()}
           <Button
             onClick={clearInputs}
             variant="outline"

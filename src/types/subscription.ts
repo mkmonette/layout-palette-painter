@@ -81,5 +81,12 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     type: 'boolean',
     description: 'Access to dark theme interface',
     category: 'access'
+  },
+  {
+    id: 'ai_generations_per_month',
+    name: 'AI Generations per Month',
+    type: 'number',
+    description: 'Maximum number of AI-powered color generations per month',
+    category: 'usage'
   }
 ];

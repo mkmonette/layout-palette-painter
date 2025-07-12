@@ -28,6 +28,11 @@ export const useFeatureAccess = () => {
     // Auto Generator
     canAccessAutoGenerator: hasFeatureAccess('auto_generator'),
     
+    // AI Generations
+    maxAIGenerationsPerMonth: getFeatureLimit('ai_generations_per_month'),
+    remainingAIGenerations: getUsageRemaining('ai_generations_per_month'),
+    canUseAIGeneration: hasFeatureAccess('auto_generator') && getUsageRemaining('ai_generations_per_month') > 0,
+    
     // Custom Color Schemes
     canAccessColorSchemes: hasFeatureAccess('custom_color_schemes'),
     
