@@ -235,18 +235,7 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
   const svgBackground = getSvgBackground();
   console.log('SVG background element:', svgBackground);
 
-  if (!settings.enabled) {
-    return <>{children}</>;
-  }
-
-  return (
-    <>
-      <div className="svg-background">
-        {svgBackground}
-      </div>
-      {children}
-    </>
-  );
+  return svgBackground;
 };
 
 export default TemplateBackground;

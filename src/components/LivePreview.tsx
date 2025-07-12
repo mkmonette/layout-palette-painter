@@ -7,6 +7,7 @@ import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
 import { Save, Check } from 'lucide-react';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { useToast } from '@/hooks/use-toast';
+import TemplateWrapper from '@/components/TemplateWrapper';
 import ModernHeroTemplate from '@/components/templates/ModernHeroTemplate';
 import MinimalHeaderTemplate from '@/components/templates/MinimalHeaderTemplate';
 import BoldLandingTemplate from '@/components/templates/BoldLandingTemplate';
@@ -58,72 +59,85 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
   const renderTemplate = () => {
     const templateProps = { colorPalette };
 
+    let templateComponent;
     switch (template) {
       case 'modern-hero':
-        return <ModernHeroTemplate {...templateProps} />;
+        templateComponent = <ModernHeroTemplate {...templateProps} />;
+        break;
       case 'minimal-header':
-        return <MinimalHeaderTemplate {...templateProps} />;
+        templateComponent = <MinimalHeaderTemplate {...templateProps} />;
+        break;
       case 'bold-landing':
-        return <BoldLandingTemplate {...templateProps} />;
+        templateComponent = <BoldLandingTemplate {...templateProps} />;
+        break;
       case 'creative-portfolio':
-        return <CreativePortfolioTemplate {...templateProps} />;
+        templateComponent = <CreativePortfolioTemplate {...templateProps} />;
+        break;
       case 'gradient-hero':
-        return <GradientHeroTemplate {...templateProps} />;
+        templateComponent = <GradientHeroTemplate {...templateProps} />;
+        break;
       case 'split-screen':
-        return <SplitScreenTemplate {...templateProps} />;
+        templateComponent = <SplitScreenTemplate {...templateProps} />;
+        break;
       case 'magazine-style':
-        return <MagazineStyleTemplate {...templateProps} />;
+        templateComponent = <MagazineStyleTemplate {...templateProps} />;
+        break;
       case 'startup-landing':
-        return <StartupLandingTemplate {...templateProps} />;
+        templateComponent = <StartupLandingTemplate {...templateProps} />;
+        break;
       case 'tech-startup':
-        return <TechStartupTemplate {...templateProps} />;
+        templateComponent = <TechStartupTemplate {...templateProps} />;
+        break;
       case 'creative-agency':
-        return <CreativeAgencyTemplate {...templateProps} />;
+        templateComponent = <CreativeAgencyTemplate {...templateProps} />;
+        break;
       case 'saas-product':
-        return <SaasProductTemplate {...templateProps} />;
+        templateComponent = <SaasProductTemplate {...templateProps} />;
+        break;
       case 'ecommerce-landing':
-        return <EcommerceLandingTemplate {...templateProps} />;
+        templateComponent = <EcommerceLandingTemplate {...templateProps} />;
+        break;
       case 'pro-dashboard':
-        return <ProDashboardTemplate {...templateProps} />;
+        templateComponent = <ProDashboardTemplate {...templateProps} />;
+        break;
       case 'pro-analytics':
-        return <ProAnalyticsTemplate {...templateProps} />;
+        templateComponent = <ProAnalyticsTemplate {...templateProps} />;
+        break;
       case 'pro-multimedia':
-        return <ProMultimediaTemplate {...templateProps} />;
+        templateComponent = <ProMultimediaTemplate {...templateProps} />;
+        break;
       case 'pro-interactive':
-        return <ProInteractiveTemplate {...templateProps} />;
+        templateComponent = <ProInteractiveTemplate {...templateProps} />;
+        break;
       case 'pro-enterprise':
-        return <ProEnterpriseTemplate {...templateProps} />;
+        templateComponent = <ProEnterpriseTemplate {...templateProps} />;
+        break;
       case 'pro-premium':
-        return <ProPremiumTemplate {...templateProps} />;
+        templateComponent = <ProPremiumTemplate {...templateProps} />;
+        break;
       case 'pro-organic-food':
-        return <ProOrganicFoodTemplate {...templateProps} />;
+        templateComponent = <ProOrganicFoodTemplate {...templateProps} />;
+        break;
       case 'pro-cosmetics':
-        return <ProCosmeticsTemplate palette={colorPalette} />;
+        templateComponent = <ProCosmeticsTemplate palette={colorPalette} />;
+        break;
       default:
-        return <ModernHeroTemplate {...templateProps} />;
+        templateComponent = <ModernHeroTemplate {...templateProps} />;
     }
+
+    return (
+      <TemplateWrapper 
+        colorPalette={colorPalette}
+        backgroundSettings={backgroundSettings}
+      >
+        {templateComponent}
+      </TemplateWrapper>
+    );
   };
 
   return (
     <div className="relative">
-      <div 
-        className="template-background"
-        style={{
-          '--section-bg-1': colorPalette['section-bg-1'],
-          '--section-bg-2': colorPalette['section-bg-2'], 
-          '--section-bg-3': colorPalette['section-bg-3'],
-          '--highlight': colorPalette.highlight,
-          '--accent': colorPalette.accent,
-          '--brand': colorPalette.brand,
-        } as React.CSSProperties}
-      >
-        <TemplateBackground 
-          settings={backgroundSettings || { enabled: false, style: 'wavy-layers', waveHeight: 50, blobSize: 50, meshIntensity: 50, patternScale: 50, opacity: 0.3 }}
-          colorPalette={colorPalette}
-        >
-          {renderTemplate()}
-        </TemplateBackground>
-      </div>
+      {renderTemplate()}
       {showSaveButton && (
         <div className="absolute top-4 right-4 z-10">
           <Button
