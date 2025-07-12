@@ -5,31 +5,46 @@ import { getReadableTextColor } from './colorUtils';
 import chroma from 'chroma-js';
 
 /**
- * Maps a ColorPalette to extended ColorRoles with automatic contrast fixing
+ * Maps a ColorPalette to extended ColorRoles with dual role system:
+ * - Material-style on* roles (source of truth for text colors)
+ * - Legacy roles (derived from on* roles for compatibility)
  */
 export const mapPaletteToRoles = (palette: ColorPalette): ColorRoles => {
   // Start with the base palette
   const roleMap = { ...palette } as ColorRoles;
   
-  // Generate Material-style on* roles using getReadableTextColor
+  // Step 1: Generate Material-style on* roles using getReadableTextColor
+  // These are the source of truth for text/foreground colors
+  
+  // Brand and accent colors
   roleMap.onBrand = getReadableTextColor(roleMap.brand);
   roleMap.onAccent = getReadableTextColor(roleMap.accent);
   roleMap.onHighlight = getReadableTextColor(roleMap.highlight);
   
+  // Button backgrounds
   roleMap.onPrimary = getReadableTextColor(roleMap['button-primary']);
   roleMap.onSecondary = getReadableTextColor(roleMap['button-secondary']);
   
+  // Section backgrounds
   roleMap.onBg1 = getReadableTextColor(roleMap['section-bg-1']);
   roleMap.onBg2 = getReadableTextColor(roleMap['section-bg-2']);
-  roleMap.onBg3 = roleMap['section-bg-3'] ? getReadableTextColor(roleMap['section-bg-3']) : getReadableTextColor(roleMap['section-bg-2']);
+  roleMap.onBg3 = roleMap['section-bg-3'] ? getReadableTextColor(roleMap['section-bg-3']) : roleMap.onBg2;
   
+  // Input background
   roleMap.onInput = getReadableTextColor(roleMap['input-bg']);
   
-  // Update legacy roles to use the new on* roles for consistency
+  // Step 2: Map legacy text roles to the new on* roles (for compatibility)
+  // Legacy roles are now derived from on* roles, ensuring consistency
+  
+  // Button text roles
   roleMap['button-text'] = roleMap.onPrimary;
   roleMap['button-secondary-text'] = roleMap.onSecondary;
+  
+  // General text roles
   roleMap['text-primary'] = roleMap.onBg1;
   roleMap['text-secondary'] = roleMap.onBg2;
+  
+  // Input text role
   roleMap['input-text'] = roleMap.onInput;
   
   return roleMap;
@@ -37,60 +52,49 @@ export const mapPaletteToRoles = (palette: ColorPalette): ColorRoles => {
 
 
 /**
- * Hook for using color roles in components with legacy aliases and automatic contrast
+ * Hook for using color roles in components with legacy aliases
+ * Now uses the dual role system from mapPaletteToRoles
  */
 export const useColorRoles = (palette: ColorPalette) => {
   const roles = mapPaletteToRoles(palette);
   
-  // Calculate high-contrast text colors for each section background
-  const getContrastTextChroma = (bgColor: string): string => {
-    return getReadableTextColor(bgColor);
-  };
-  
-  const sectionBg1TextColor = getContrastTextChroma(palette["section-bg-1"]);
-  const sectionBg2TextColor = getContrastTextChroma(palette["section-bg-2"]);
-  const sectionBg3TextColor = palette["section-bg-3"] ? getContrastTextChroma(palette["section-bg-3"]) : sectionBg2TextColor;
-  const buttonPrimaryTextColor = getContrastTextChroma(palette["button-primary"]);
-  const cardBackgroundTextColor = getContrastTextChroma(palette["section-bg-2"]);
-  
-  // The roles already have contrast-fixed colors from mapPaletteToRoles
+  // Use the on* roles as source of truth for text colors
   const enhancedRoles = {
     ...roles,
-    // Additional overrides for legacy compatibility
-    "text-primary": roles["text-primary"] || sectionBg1TextColor,
-    "text-secondary": roles["text-secondary"] || sectionBg1TextColor,
-    "text-onBackground": roles["text-onBackground"] || sectionBg1TextColor,
-    "text-onSurface": roles["text-onSurface"] || cardBackgroundTextColor,
-    "button-text": roles["button-text"] || buttonPrimaryTextColor,
-    "input-text": roles["input-text"] || getReadableTextColor(palette["input-bg"]),
+    // Ensure legacy text roles are properly mapped
+    "text-primary": roles.onBg1,
+    "text-secondary": roles.onBg2,
+    "button-text": roles.onPrimary,
+    "button-secondary-text": roles.onSecondary,
+    "input-text": roles.onInput,
   };
   
   // Add legacy aliases for templates that haven't been migrated yet
   return {
     ...enhancedRoles,
-    // Core legacy aliases with contrast-safe text
+    // Core legacy aliases using on* roles
     primary: palette.brand,
     secondary: palette.highlight, 
     background: palette["section-bg-1"],
-    text: sectionBg1TextColor,
-    textLight: sectionBg1TextColor + '80', // Add transparency
+    text: roles.onBg1,
+    textLight: roles.onBg1 + '80', // Add transparency
     
-    // Pro template aliases with high-contrast text colors
+    // Pro template aliases using on* roles for consistency
     backgroundPrimary: palette["section-bg-1"],
     backgroundSecondary: palette["section-bg-2"], 
     backgroundAccent: palette["section-bg-3"],
-    textPrimary: sectionBg1TextColor,
-    textSecondary: sectionBg1TextColor + '90', // Less transparency for better readability
-    textInverse: buttonPrimaryTextColor,
-    textMuted: sectionBg1TextColor + '75', // Less transparency for better readability
-    textOnBackground: sectionBg1TextColor,
-    textOnSurface: cardBackgroundTextColor,
+    textPrimary: roles.onBg1,
+    textSecondary: roles.onBg1 + '90', // Less transparency for better readability
+    textInverse: roles.onPrimary,
+    textMuted: roles.onBg1 + '75', // Less transparency for better readability
+    textOnBackground: roles.onBg1,
+    textOnSurface: roles.onBg2,
     brandPrimary: palette.brand,
     brandAccent: palette.accent,
     buttonPrimary: palette["button-primary"],
-    buttonText: buttonPrimaryTextColor,
+    buttonText: roles.onPrimary,
     buttonSecondary: palette["button-secondary"],
-    buttonSecondaryText: getReadableTextColor(palette["button-secondary"]),
+    buttonSecondaryText: roles.onSecondary,
     borderMuted: palette.border,
     borderPrimary: palette.border,
     borderSecondary: palette.border,
@@ -98,18 +102,18 @@ export const useColorRoles = (palette: ColorPalette) => {
     surfaceCard: palette["section-bg-2"],
     surfaceInput: palette["input-bg"],
     navBackground: palette["section-bg-1"],
-    navText: sectionBg1TextColor,
+    navText: roles.onBg1,
     navTextActive: palette.brand,
-    // Heading colors - ensure high contrast
-    headingPrimary: sectionBg1TextColor,
-    headingSecondary: sectionBg2TextColor,
-    headingTertiary: sectionBg3TextColor,
-    // Label colors - ensure high contrast
-    labelPrimary: sectionBg1TextColor,
-    labelSecondary: sectionBg1TextColor + '90',
-    // Paragraph colors - ensure high contrast
-    paragraphPrimary: sectionBg1TextColor,
-    paragraphSecondary: sectionBg1TextColor + '85',
+    // Heading colors using on* roles
+    headingPrimary: roles.onBg1,
+    headingSecondary: roles.onBg2,
+    headingTertiary: roles.onBg3,
+    // Label colors using on* roles
+    labelPrimary: roles.onBg1,
+    labelSecondary: roles.onBg1 + '90',
+    // Paragraph colors using on* roles
+    paragraphPrimary: roles.onBg1,
+    paragraphSecondary: roles.onBg1 + '85',
     dataPoint1: palette.brand,
     dataPoint2: palette.accent, 
     dataPoint3: palette.highlight,
