@@ -41,6 +41,30 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
     }
   }, [isOpen]);
 
+  // Listen for localStorage changes to update presets in real-time
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'admin-color-presets') {
+        loadAdminPresets();
+      }
+    };
+
+    // Also listen for custom events when the modal is open
+    const handleCustomUpdate = () => {
+      if (isOpen) {
+        loadAdminPresets();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('admin-presets-updated', handleCustomUpdate);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('admin-presets-updated', handleCustomUpdate);
+    };
+  }, [isOpen]);
+
   const loadAdminPresets = () => {
     try {
       console.log('Loading admin presets...');

@@ -85,6 +85,9 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
   const savePresetsToStorage = (updatedPresets: ColorPreset[]) => {
     localStorage.setItem('admin-color-presets', JSON.stringify(updatedPresets));
     setPresets(updatedPresets);
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('admin-presets-updated'));
   };
 
   const generatePresetId = (name: string) => {
