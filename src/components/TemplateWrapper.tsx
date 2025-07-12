@@ -15,6 +15,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
   backgroundSettings 
 }) => {
   console.log('TemplateWrapper rendering with:', { backgroundSettings, colorPalette });
+  console.log('backgroundSettings?.enabled:', backgroundSettings?.enabled);
+  console.log('backgroundSettings exists:', !!backgroundSettings);
   return (
     <div 
       className="template-wrapper relative w-full min-h-screen"
@@ -43,25 +45,49 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
         </div>
       )}
       
-      {/* Direct test - bypassing background container */}
+      {/* Always show test - no condition */}
+      <div style={{
+        position: 'fixed',
+        top: '50px',
+        left: '50px',
+        width: '400px',
+        height: '150px',
+        background: 'black',
+        color: 'yellow',
+        fontSize: '18px',
+        fontWeight: 'bold',
+        zIndex: 99999,
+        border: '10px solid magenta',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        padding: '20px'
+      }}>
+        <div>ALWAYS VISIBLE TEST</div>
+        <div>enabled: {String(backgroundSettings?.enabled)}</div>
+        <div>settings: {backgroundSettings ? 'exists' : 'null'}</div>
+      </div>
+      
+      {/* Conditional test */}
       {backgroundSettings?.enabled && (
         <div style={{
           position: 'fixed',
-          top: '100px',
-          left: '100px',
+          top: '250px',
+          left: '50px',
           width: '300px',
-          height: '200px',
+          height: '100px',
           background: 'red',
           color: 'white',
-          fontSize: '24px',
+          fontSize: '20px',
           fontWeight: 'bold',
-          zIndex: 9999,
+          zIndex: 99998,
           border: '5px solid yellow',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          BYPASS TEST - DO YOU SEE THIS?
+          CONDITIONAL TEST VISIBLE
         </div>
       )}
       
