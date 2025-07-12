@@ -13,34 +13,6 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
   console.log('TemplateBackground component mounting...');
   console.log('TemplateBackground received settings:', settings);
   console.log('TemplateBackground received colorPalette:', colorPalette);
-  
-  // Return simple test element first
-  return (
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      background: 'blue',
-      zIndex: 5,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>
-      <div style={{
-        background: 'yellow',
-        color: 'black',
-        padding: '30px',
-        fontSize: '30px',
-        fontWeight: 'bold',
-        border: '5px solid black',
-        zIndex: 10
-      }}>
-        SIMPLE TEST - CAN YOU SEE THIS?
-      </div>
-    </div>
-  );
 
   const getSvgBackground = () => {
     if (!settings.enabled) {
@@ -275,8 +247,6 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
 
   const svgBackground = getSvgBackground();
   console.log('SVG background element:', svgBackground);
-  console.log('Settings enabled:', settings.enabled);
-  console.log('Style:', settings.style);
 
   return (
     <div style={{ 
@@ -285,28 +255,9 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
       left: 0,
       width: '100%',
       height: '100%',
-      zIndex: 2, // Higher z-index
-      background: 'rgba(0,255,0,0.5)', // Bright green background
-      border: '10px solid orange', // Very obvious orange border
-      overflow: 'visible',
+      zIndex: 0,
       pointerEvents: 'none'
     }}>
-      {/* Simple test element to see if this container renders */}
-      <div style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        background: 'red',
-        color: 'white',
-        padding: '20px',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        zIndex: 3,
-        pointerEvents: 'auto'
-      }}>
-        BACKGROUND CONTAINER IS HERE
-      </div>
       {svgBackground}
     </div>
   );
