@@ -8,14 +8,29 @@ import { Separator } from '@/components/ui/separator';
 
 export type BackgroundStyle = 'wavy-layers' | 'cloudy-blobs' | 'mesh-gradients' | 'flowing-shapes' | 'geometric-patterns';
 
+export type BackgroundMode = 'svg' | 'gradient';
+
+export type GradientFillType = 'none' | 'solid' | 'gradient';
+
+export type GradientDirection = 'horizontal' | 'vertical' | 'diagonal';
+
+export type ColorRole = 'section-bg-1' | 'section-bg-2' | 'section-bg-3' | 'brand' | 'accent' | 'highlight' | 'button-primary' | 'button-secondary';
+
 export interface BackgroundSettings {
   enabled: boolean;
+  mode: BackgroundMode;
+  // SVG settings
   style: BackgroundStyle;
   waveHeight: number;
   blobSize: number;
   meshIntensity: number;
   patternScale: number;
   opacity: number;
+  // Gradient settings
+  gradientFillType: GradientFillType;
+  gradientStartColor: ColorRole;
+  gradientEndColor: ColorRole;
+  gradientDirection: GradientDirection;
 }
 
 interface BackgroundCustomizerProps {
@@ -31,13 +46,156 @@ const backgroundStyles = [
   { value: 'geometric-patterns', label: 'Geometric Patterns' },
 ] as const;
 
+const backgroundModes = [
+  { value: 'svg', label: 'SVG Background' },
+  { value: 'gradient', label: 'Gradient Background' },
+] as const;
+
+const gradientFillTypes = [
+  { value: 'none', label: 'None' },
+  { value: 'solid', label: 'Solid' },
+  { value: 'gradient', label: 'Gradient' },
+] as const;
+
+const gradientDirections = [
+  { value: 'horizontal', label: 'Horizontal (left→right)' },
+  { value: 'vertical', label: 'Vertical (top→bottom)' },
+  { value: 'diagonal', label: 'Diagonal (45°)' },
+] as const;
+
+const colorRoles = [
+  { value: 'section-bg-1', label: 'Section Background 1' },
+  { value: 'section-bg-2', label: 'Section Background 2' },
+  { value: 'section-bg-3', label: 'Section Background 3' },
+  { value: 'brand', label: 'Brand Color' },
+  { value: 'accent', label: 'Accent Color' },
+  { value: 'highlight', label: 'Highlight Color' },
+  { value: 'button-primary', label: 'Primary Button' },
+  { value: 'button-secondary', label: 'Secondary Button' },
+] as const;
+
 export function BackgroundCustomizer({ settings, onSettingsChange }: BackgroundCustomizerProps) {
   const updateSettings = (updates: Partial<BackgroundSettings>) => {
     onSettingsChange({ ...settings, ...updates });
   };
 
+  const renderGradientControls = () => {
+    if (!settings.enabled || settings.mode !== 'gradient') return null;
+
+    return (
+      <div className="space-y-4">
+        {/* Fill Type */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Fill Type</Label>
+          <Select
+            value={settings.gradientFillType}
+            onValueChange={(fillType: GradientFillType) => updateSettings({ gradientFillType: fillType })}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select fill type" />
+            </SelectTrigger>
+            <SelectContent>
+              {gradientFillTypes.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Gradient controls - only show if gradient fill type is selected */}
+        {settings.gradientFillType === 'gradient' && (
+          <>
+            {/* Start Color */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Start Color</Label>
+              <Select
+                value={settings.gradientStartColor}
+                onValueChange={(color: ColorRole) => updateSettings({ gradientStartColor: color })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select start color" />
+                </SelectTrigger>
+                <SelectContent>
+                  {colorRoles.map((role) => (
+                    <SelectItem key={role.value} value={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* End Color */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">End Color</Label>
+              <Select
+                value={settings.gradientEndColor}
+                onValueChange={(color: ColorRole) => updateSettings({ gradientEndColor: color })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select end color" />
+                </SelectTrigger>
+                <SelectContent>
+                  {colorRoles.map((role) => (
+                    <SelectItem key={role.value} value={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Direction */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Direction</Label>
+              <Select
+                value={settings.gradientDirection}
+                onValueChange={(direction: GradientDirection) => updateSettings({ gradientDirection: direction })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select direction" />
+                </SelectTrigger>
+                <SelectContent>
+                  {gradientDirections.map((dir) => (
+                    <SelectItem key={dir.value} value={dir.value}>
+                      {dir.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+
+        {/* Solid color control - only show if solid fill type is selected */}
+        {settings.gradientFillType === 'solid' && (
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Color</Label>
+            <Select
+              value={settings.gradientStartColor}
+              onValueChange={(color: ColorRole) => updateSettings({ gradientStartColor: color })}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select color" />
+              </SelectTrigger>
+              <SelectContent>
+                {colorRoles.map((role) => (
+                  <SelectItem key={role.value} value={role.value}>
+                    {role.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderStyleSliders = () => {
-    if (!settings.enabled) return null;
+    if (!settings.enabled || settings.mode !== 'svg') return null;
 
     switch (settings.style) {
       case 'wavy-layers':
@@ -162,20 +320,20 @@ export function BackgroundCustomizer({ settings, onSettingsChange }: BackgroundC
           <>
             <Separator />
             
-            {/* Background Style Dropdown */}
+            {/* Background Mode Dropdown */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Background Style</Label>
+              <Label className="text-sm font-medium">Background Mode</Label>
               <Select
-                value={settings.style}
-                onValueChange={(style: BackgroundStyle) => updateSettings({ style })}
+                value={settings.mode}
+                onValueChange={(mode: BackgroundMode) => updateSettings({ mode })}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a style" />
+                  <SelectValue placeholder="Select a mode" />
                 </SelectTrigger>
                 <SelectContent>
-                  {backgroundStyles.map((style) => (
-                    <SelectItem key={style.value} value={style.value}>
-                      {style.label}
+                  {backgroundModes.map((mode) => (
+                    <SelectItem key={mode.value} value={mode.value}>
+                      {mode.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -184,8 +342,43 @@ export function BackgroundCustomizer({ settings, onSettingsChange }: BackgroundC
 
             <Separator />
 
-            {/* Style-specific sliders */}
-            {renderStyleSliders()}
+            {/* SVG Background Controls */}
+            {settings.mode === 'svg' && (
+              <>
+                {/* Background Style Dropdown */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Background Style</Label>
+                  <Select
+                    value={settings.style}
+                    onValueChange={(style: BackgroundStyle) => updateSettings({ style })}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a style" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {backgroundStyles.map((style) => (
+                        <SelectItem key={style.value} value={style.value}>
+                          {style.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Separator />
+
+                {/* Style-specific sliders */}
+                {renderStyleSliders()}
+              </>
+            )}
+
+            {/* Gradient Background Controls */}
+            {settings.mode === 'gradient' && (
+              <>
+                {renderGradientControls()}
+                <Separator />
+              </>
+            )}
 
             {/* Opacity Slider - Always shown when enabled */}
             <div className="space-y-2">

@@ -14,6 +14,48 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
   colorPalette, 
   backgroundSettings 
 }) => {
+  const getGradientStyle = () => {
+    if (!backgroundSettings?.enabled || backgroundSettings.mode !== 'gradient') return {};
+
+    const { gradientFillType, gradientStartColor, gradientEndColor, gradientDirection, opacity } = backgroundSettings;
+
+    if (gradientFillType === 'none') return {};
+
+    const startColorValue = colorPalette[gradientStartColor];
+    const endColorValue = colorPalette[gradientEndColor];
+
+    if (gradientFillType === 'solid') {
+      return {
+        background: startColorValue,
+        opacity: opacity,
+      };
+    }
+
+    if (gradientFillType === 'gradient') {
+      let direction = '';
+      switch (gradientDirection) {
+        case 'horizontal':
+          direction = 'to right';
+          break;
+        case 'vertical':
+          direction = 'to bottom';
+          break;
+        case 'diagonal':
+          direction = '45deg';
+          break;
+        default:
+          direction = 'to right';
+      }
+
+      return {
+        background: `linear-gradient(${direction}, ${startColorValue}, ${endColorValue})`,
+        opacity: opacity,
+      };
+    }
+
+    return {};
+  };
+
   return (
     <div 
       className="template-wrapper relative w-full min-h-screen"
@@ -24,9 +66,11 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
         '--highlight': colorPalette.highlight,
         '--accent': colorPalette.accent,
         '--brand': colorPalette.brand,
+        '--button-primary': colorPalette['button-primary'],
+        '--button-secondary': colorPalette['button-secondary'],
       } as React.CSSProperties}
     >
-      {/* Working background container */}
+      {/* Background container - handles both SVG and Gradient */}
       {backgroundSettings?.enabled && (
         <div style={{ 
           position: 'fixed',
@@ -37,12 +81,29 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
           zIndex: 9998,
           pointerEvents: 'none'
         }}>
-          <TemplateBackground 
-            settings={backgroundSettings}
-            colorPalette={colorPalette}
-          >
-            <></>
-          </TemplateBackground>
+          {/* SVG Background */}
+          {backgroundSettings.mode === 'svg' && (
+            <TemplateBackground 
+              settings={backgroundSettings}
+              colorPalette={colorPalette}
+            >
+              <></>
+            </TemplateBackground>
+          )}
+          
+          {/* Gradient Background */}
+          {backgroundSettings.mode === 'gradient' && (
+            <div 
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                ...getGradientStyle()
+              }}
+            />
+          )}
         </div>
       )}
       

@@ -87,12 +87,17 @@ const AutoGenerate = () => {
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; feature: string }>({ isOpen: false, feature: '' });
   const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
     enabled: false,
+    mode: 'svg',
     style: 'wavy-layers',
     waveHeight: 50,
     blobSize: 50,
     meshIntensity: 50,
     patternScale: 50,
     opacity: 0.3,
+    gradientFillType: 'gradient',
+    gradientStartColor: 'section-bg-1',
+    gradientEndColor: 'accent',
+    gradientDirection: 'horizontal',
   });
 
   // Removed auto-generation on mount to allow users to adjust settings first
