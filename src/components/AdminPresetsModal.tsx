@@ -14,10 +14,13 @@ interface AdminPresetsModalProps {
 }
 
 interface AdminPreset {
+  id: string;
   name: string;
-  palette: ColorPalette;
-  isDarkMode?: boolean;
-  createdAt?: string;
+  description?: string;
+  createdBy: string;
+  createdAt: string;
+  roles: any; // ColorRoles from PresetManager
+  originalPalette: ColorPalette;
 }
 
 const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
@@ -52,7 +55,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
 
   const handlePresetSelect = (preset: AdminPreset) => {
     setSelectedPreset(preset.name);
-    onPresetSelect(preset.palette);
+    onPresetSelect(preset.originalPalette);
     
     toast({
       title: "Preset Applied",
@@ -117,14 +120,14 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
                         <h3 className="font-medium text-sm group-hover:text-primary transition-colors">
                           {preset.name}
                         </h3>
-                        {preset.isDarkMode && (
+                        {preset.description && (
                           <Badge variant="secondary" className="text-xs">
-                            Dark Mode
+                            {preset.description}
                           </Badge>
                         )}
                       </div>
                       <div className="flex items-center gap-2">
-                        {renderColorSwatches(preset.palette)}
+                        {renderColorSwatches(preset.originalPalette)}
                         {selectedPreset === preset.name && (
                           <Check className="h-4 w-4 text-green-600" />
                         )}
@@ -142,21 +145,21 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
                       <div 
                         className="h-full flex items-center justify-center text-xs font-medium"
                         style={{ 
-                          backgroundColor: preset.palette['section-bg-1'],
-                          color: preset.palette['text-primary']
+                          backgroundColor: preset.originalPalette['section-bg-1'],
+                          color: preset.originalPalette['text-primary']
                         }}
                       >
                         <div className="flex items-center gap-2">
                           <div
                             className="w-3 h-3 rounded"
-                            style={{ backgroundColor: preset.palette.brand }}
+                            style={{ backgroundColor: preset.originalPalette.brand }}
                           />
                           <span>Preview</span>
                           <div
                             className="px-2 py-1 rounded text-xs"
                             style={{
-                              backgroundColor: preset.palette['button-primary'],
-                              color: preset.palette['button-text']
+                              backgroundColor: preset.originalPalette['button-primary'],
+                              color: preset.originalPalette['button-text']
                             }}
                           >
                             Button
