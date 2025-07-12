@@ -1,0 +1,232 @@
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Sparkles, Wand2, AlertTriangle } from 'lucide-react';
+import { generateAIColorPalette, isOpenAIInitialized } from '@/utils/openaiService';
+import { ColorPalette } from '@/utils/colorGenerator';
+import { useToast } from '@/hooks/use-toast';
+import { validatePaletteContrast, ContrastIssue } from '@/utils/contrastChecker';
+
+interface AIColorGeneratorProps {
+  isDarkMode: boolean;
+  onPaletteGenerated: (palette: ColorPalette) => void;
+}
+
+const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPaletteGenerated }) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [mood, setMood] = useState('');
+  const [theme, setTheme] = useState('');
+  const [description, setDescription] = useState('');
+  const [contrastIssues, setContrastIssues] = useState<ContrastIssue[]>([]);
+  const { toast } = useToast();
+
+  const predefinedMoods = [
+    'Professional and trustworthy',
+    'Warm and friendly', 
+    'Vibrant and energetic',
+    'Calm and peaceful',
+    'Bold and modern',
+    'Elegant and sophisticated',
+    'Fun and playful',
+    'Minimalist and clean'
+  ];
+
+  const predefinedThemes = [
+    'Technology and innovation',
+    'Healthcare and wellness',
+    'Finance and banking',
+    'E-commerce and retail',
+    'Education and learning',
+    'Creative and artistic',
+    'Food and restaurant',
+    'Travel and adventure'
+  ];
+
+  const handleGenerate = async () => {
+    if (!isOpenAIInitialized()) {
+      toast({
+        title: "OpenAI Not Setup",
+        description: "Please set your OpenAI API key first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!mood && !theme && !description) {
+      toast({
+        title: "Input Required",
+        description: "Please specify a mood, theme, or description",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    setContrastIssues([]);
+
+    try {
+      const palette = await generateAIColorPalette({
+        mood,
+        theme, 
+        description,
+        isDarkMode
+      });
+
+      // Validate contrast
+      const issues = validatePaletteContrast(palette);
+      setContrastIssues(issues);
+
+      // Apply the palette
+      onPaletteGenerated(palette);
+
+      const invalidIssues = issues.filter(issue => !issue.isValid);
+      if (invalidIssues.length > 0) {
+        toast({
+          title: "Palette Generated with Warnings",
+          description: `${invalidIssues.length} contrast issue(s) detected. Check the warnings below.`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "AI Palette Generated",
+          description: "Perfect! All colors meet accessibility standards.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate AI palette",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const clearInputs = () => {
+    setMood('');
+    setTheme('');
+    setDescription('');
+    setContrastIssues([]);
+  };
+
+  if (!isOpenAIInitialized()) {
+    return null;
+  }
+
+  return (
+    <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-sm">
+          <Sparkles className="h-4 w-4 text-purple-600" />
+          AI Color Generation
+        </CardTitle>
+        <CardDescription className="text-xs">
+          Describe your vision and let AI create the perfect color palette
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Mood Selection */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-700">Mood</label>
+          <Select value={mood} onValueChange={setMood}>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="Select a mood..." />
+            </SelectTrigger>
+            <SelectContent>
+              {predefinedMoods.map((m) => (
+                <SelectItem key={m} value={m} className="text-xs">{m}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Theme Selection */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-700">Theme</label>
+          <Select value={theme} onValueChange={setTheme}>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="Select a theme..." />
+            </SelectTrigger>
+            <SelectContent>
+              {predefinedThemes.map((t) => (
+                <SelectItem key={t} value={t} className="text-xs">{t}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Custom Description */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-700">Custom Description</label>
+          <Input
+            placeholder="e.g., bright summer colors for a beach app..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="h-8 text-xs"
+          />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <Button
+            onClick={handleGenerate}
+            disabled={isGenerating || (!mood && !theme && !description)}
+            size="sm"
+            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+          >
+            {isGenerating ? (
+              <>
+                <Wand2 className="h-3 w-3 mr-2 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-3 w-3 mr-2" />
+                Generate
+              </>
+            )}
+          </Button>
+          <Button
+            onClick={clearInputs}
+            variant="outline"
+            size="sm"
+            disabled={isGenerating}
+          >
+            Clear
+          </Button>
+        </div>
+
+        {/* Contrast Issues Display */}
+        {contrastIssues.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="text-xs font-medium text-gray-700 flex items-center gap-1">
+              <AlertTriangle className="h-3 w-3" />
+              Accessibility Check
+            </h4>
+            <div className="space-y-1">
+              {contrastIssues.map((issue, index) => (
+                <div key={index} className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">
+                    {issue.textRole} on {issue.backgroundRole}
+                  </span>
+                  <Badge 
+                    variant={issue.isValid ? "default" : "destructive"}
+                    className="h-5 text-xs"
+                  >
+                    {issue.ratio}:1 {issue.isValid ? '✓' : '⚠'}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default AIColorGenerator;

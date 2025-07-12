@@ -1,0 +1,117 @@
+import OpenAI from 'openai';
+import { ColorPalette } from './colorGenerator';
+
+interface OpenAIColorRequest {
+  mood?: string;
+  theme?: string;
+  description?: string;
+  isDarkMode?: boolean;
+}
+
+let openaiInstance: OpenAI | null = null;
+
+export const initializeOpenAI = (apiKey: string) => {
+  openaiInstance = new OpenAI({
+    apiKey,
+    dangerouslyAllowBrowser: true
+  });
+};
+
+export const generateAIColorPalette = async (request: OpenAIColorRequest): Promise<ColorPalette> => {
+  if (!openaiInstance) {
+    throw new Error('OpenAI not initialized. Please provide API key.');
+  }
+
+  const prompt = buildColorPrompt(request);
+  
+  try {
+    const completion = await openaiInstance.chat.completions.create({
+      model: "gpt-4.1-2025-04-14",
+      messages: [
+        {
+          role: "system",
+          content: `You are a professional color palette designer. Generate color palettes in JSON format with specific roles. Ensure WCAG AA contrast compliance for text colors against backgrounds.
+
+Color roles to include:
+- brand: Primary brand color
+- accent: Secondary accent color
+- button-primary: Primary button background
+- button-text: Text color for primary buttons
+- button-secondary: Secondary button background
+- button-secondary-text: Text color for secondary buttons
+- text-primary: Main text color
+- text-secondary: Secondary/muted text color
+- section-bg-1: Primary background color
+- section-bg-2: Secondary background color
+- section-bg-3: Tertiary background color
+- border: Border color
+- highlight: Highlight/emphasis color
+- input-bg: Form input background
+- input-text: Form input text color
+
+Return ONLY valid JSON with hex color values. Ensure text colors have sufficient contrast against their respective backgrounds.`
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 500
+    });
+
+    const response = completion.choices[0]?.message?.content;
+    if (!response) {
+      throw new Error('No response from OpenAI');
+    }
+
+    // Parse the JSON response
+    const palette = JSON.parse(response) as ColorPalette;
+    
+    // Validate that all required keys are present
+    const requiredKeys: (keyof ColorPalette)[] = [
+      'brand', 'accent', 'button-primary', 'button-text', 'button-secondary',
+      'button-secondary-text', 'text-primary', 'text-secondary', 'section-bg-1',
+      'section-bg-2', 'section-bg-3', 'border', 'highlight', 'input-bg', 'input-text'
+    ];
+    
+    for (const key of requiredKeys) {
+      if (!palette[key]) {
+        throw new Error(`Missing color role: ${key}`);
+      }
+    }
+
+    return palette;
+  } catch (error) {
+    console.error('OpenAI API Error:', error);
+    throw new Error('Failed to generate AI color palette. Please try again.');
+  }
+};
+
+const buildColorPrompt = (request: OpenAIColorRequest): string => {
+  const { mood, theme, description, isDarkMode } = request;
+  
+  let prompt = `Generate a ${isDarkMode ? 'dark mode' : 'light mode'} color palette`;
+  
+  if (mood || theme || description) {
+    prompt += ' with the following characteristics:\n';
+    
+    if (mood) prompt += `- Mood: ${mood}\n`;
+    if (theme) prompt += `- Theme: ${theme}\n`;
+    if (description) prompt += `- Description: ${description}\n`;
+  }
+  
+  prompt += `\nEnsure:
+- Text colors have WCAG AA contrast ratio (4.5:1) against their backgrounds
+- Colors work well together and create visual hierarchy
+- ${isDarkMode ? 'Dark backgrounds with light text' : 'Light backgrounds with dark text'}
+- Professional and accessible design
+
+Return the palette as JSON with hex color values only.`;
+
+  return prompt;
+};
+
+export const isOpenAIInitialized = (): boolean => {
+  return openaiInstance !== null;
+};

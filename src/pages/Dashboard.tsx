@@ -30,6 +30,10 @@ import ImageColorGenerator from '@/components/ImageColorGenerator';
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 import BackgroundCustomizer from '@/components/BackgroundCustomizer';
+import OpenAIKeyInput from '@/components/OpenAIKeyInput';
+import AIColorGenerator from '@/components/AIColorGenerator';
+import { initializeOpenAI } from '@/utils/openaiService';
+import { validatePaletteContrast, getAccessibleVersion } from '@/utils/contrastChecker';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
 
 const Dashboard = () => {
@@ -85,6 +89,18 @@ const Dashboard = () => {
     gradientDirection: 'horizontal',
   });
 
+  // Initialize OpenAI on component mount if API key exists
+  React.useEffect(() => {
+    const savedKey = localStorage.getItem('openai_api_key');
+    if (savedKey) {
+      try {
+        initializeOpenAI(savedKey);
+      } catch (error) {
+        console.error('Failed to initialize OpenAI:', error);
+      }
+    }
+  }, []);
+
   const handleLogout = () => {
     logoutUser();
     toast({
@@ -121,10 +137,14 @@ const Dashboard = () => {
   };
 
   const handleColorChange = (colorKey: keyof ColorPalette, color: string) => {
-    setColorPalette(prev => ({
-      ...prev,
+    const newPalette = {
+      ...colorPalette,
       [colorKey]: color
-    }));
+    };
+    
+    // Auto-fix text contrast if needed
+    const fixedPalette = autoFixTextContrast(newPalette, colorKey);
+    setColorPalette(fixedPalette);
   };
 
   const handleModeToggle = (checked: boolean) => {
@@ -189,7 +209,37 @@ const Dashboard = () => {
     });
   };
 
+  // Auto-fix text contrast when backgrounds change
+  const autoFixTextContrast = (palette: ColorPalette, changedKey: keyof ColorPalette): ColorPalette => {
+    const result = { ...palette };
+    
+    // Only auto-fix if a background color was changed
+    const backgroundKeys = ['section-bg-1', 'button-primary', 'button-secondary', 'input-bg'];
+    
+    if (backgroundKeys.includes(changedKey)) {
+      const issues = validatePaletteContrast(result);
+      
+      issues.forEach(issue => {
+        if (!issue.isValid && issue.suggestedColor) {
+          // Check if the background that was changed affects this text color
+          if (issue.backgroundRole === changedKey) {
+            result[issue.textRole as keyof ColorPalette] = issue.suggestedColor;
+            
+            toast({
+              title: "Auto-fixed Text Contrast",
+              description: `Adjusted ${issue.textRole} for better readability`,
+            });
+          }
+        }
+      });
+    }
+    
+    return result;
+  };
 
+  const handleAIPaletteGenerated = (aiPalette: ColorPalette) => {
+    setColorPalette(aiPalette);
+  };
 
   const handleDownloadPDF = async () => {
     if (!canDownload()) {
@@ -704,7 +754,17 @@ const Dashboard = () => {
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
+            <div className="p-4 space-y-4">
+              {/* OpenAI Integration */}
+              <div className="space-y-3">
+                <OpenAIKeyInput onKeySet={() => {}} />
+                <AIColorGenerator 
+                  isDarkMode={isDarkMode}
+                  onPaletteGenerated={handleAIPaletteGenerated}
+                />
+              </div>
+
+              {/* Color Controls */}
               <ColorControls
                 colorPalette={colorPalette}
                 onColorChange={handleColorChange}
