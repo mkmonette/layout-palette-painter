@@ -14,9 +14,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
   colorPalette, 
   backgroundSettings 
 }) => {
-  console.log('TemplateWrapper rendering with:', { backgroundSettings, colorPalette });
-  console.log('backgroundSettings?.enabled:', backgroundSettings?.enabled);
-  console.log('backgroundSettings exists:', !!backgroundSettings);
   return (
     <div 
       className="template-wrapper relative w-full min-h-screen"
@@ -29,47 +26,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
         '--brand': colorPalette.brand,
       } as React.CSSProperties}
     >
-      {/* Debug info */}
-      {backgroundSettings?.enabled && (
-        <div style={{ 
-          position: 'fixed', 
-          top: 0, 
-          left: 0, 
-          zIndex: 9999, 
-          background: 'rgba(0,0,0,0.8)', 
-          color: 'white', 
-          padding: '10px',
-          fontSize: '12px'
-        }}>
-          Background: {backgroundSettings.style} | Enabled: {backgroundSettings.enabled.toString()} | Opacity: {backgroundSettings.opacity}
-        </div>
-      )}
-      
-      {/* Always show test - no condition */}
-      <div style={{
-        position: 'fixed',
-        top: '50px',
-        left: '50px',
-        width: '400px',
-        height: '150px',
-        background: 'black',
-        color: 'yellow',
-        fontSize: '18px',
-        fontWeight: 'bold',
-        zIndex: 99999,
-        border: '10px solid magenta',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        padding: '20px'
-      }}>
-        <div>ALWAYS VISIBLE TEST</div>
-        <div>enabled: {String(backgroundSettings?.enabled)}</div>
-        <div>settings: {backgroundSettings ? 'exists' : 'null'}</div>
-      </div>
-      
-      
       {/* Working background container */}
       {backgroundSettings?.enabled && (
         <div style={{ 
