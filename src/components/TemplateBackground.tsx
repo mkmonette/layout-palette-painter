@@ -30,6 +30,7 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
             viewBox="0 0 1200 800"
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="xMidYMid slice"
+            style={{ zIndex: 0 }}
           >
             <defs>
               <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
