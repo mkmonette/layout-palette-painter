@@ -73,12 +73,12 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({
       {/* Working background container */}
       {backgroundSettings?.enabled && (
         <div style={{ 
-          position: 'absolute',
+          position: 'fixed',
           top: 0,
           left: 0,
           width: '100%',
           height: '100%',
-          zIndex: 1,
+          zIndex: 9998,
           pointerEvents: 'none'
         }}>
           <TemplateBackground 
