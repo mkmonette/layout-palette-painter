@@ -124,12 +124,11 @@ const FeatureManagement = () => {
     }
   }, [updateFeature]);
 
-  // Create a stable key for the modal to prevent re-mounting
-  const modalKey = React.useMemo(() => 
-    isEditModalOpen ? `edit-${editingPlan.id || 'new'}` : 'closed'
-  , [isEditModalOpen, editingPlan.id]);
+  // Prevent any visual flashing by maintaining stable refs
+  const stableFeatures = React.useMemo(() => AVAILABLE_FEATURES, []);
+  const stableCurrentFeatures = React.useMemo(() => editingPlan.features || {}, [editingPlan.features]);
 
-  console.log('Component render - modalKey:', modalKey, 'editingPlan:', editingPlan.name);
+  console.log('Component render - editingPlan:', editingPlan.name);
 
   const getFeatureDisplayValue = (plan: SubscriptionPlan, featureId: string) => {
     const value = plan.features[featureId];
@@ -160,8 +159,32 @@ const FeatureManagement = () => {
     );
   });
 
-  // Individual feature item component
+  // Individual feature item component with focus preservation
   const FeatureItem = React.memo<FeatureItemProps>(({ feature, value, onUpdateFeature, onNumberInputChange }) => {
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [localValue, setLocalValue] = React.useState(value === -1 ? '' : String(value || 0));
+    
+    // Sync local value with prop value only when prop actually changes
+    React.useEffect(() => {
+      const newValue = value === -1 ? '' : String(value || 0);
+      if (newValue !== localValue) {
+        setLocalValue(newValue);
+      }
+    }, [value]);
+    
+    const handleInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      const inputValue = e.target.value;
+      setLocalValue(inputValue); // Update local state immediately for smooth typing
+      onNumberInputChange(feature.id, inputValue); // Update parent state
+    }, [feature.id, onNumberInputChange]);
+    
+    const handleInputBlur = React.useCallback(() => {
+      if (localValue === '') {
+        onUpdateFeature(feature.id, 0);
+        setLocalValue('0');
+      }
+    }, [localValue, feature.id, onUpdateFeature]);
+    
     console.log('FeatureItem render:', feature.id, value);
     
     return (
@@ -182,18 +205,12 @@ const FeatureManagement = () => {
           ) : (
             <div className="flex items-center gap-2">
               <Input
+                ref={inputRef}
                 type="number"
                 min="0"
-                value={value === -1 ? '' : String(value || 0)}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  onNumberInputChange(feature.id, e.target.value);
-                }}
-                onBlur={(e) => {
-                  if (e.target.value === '') {
-                    onUpdateFeature(feature.id, 0);
-                  }
-                }}
+                value={localValue}
+                onChange={handleInputChange}
+                onBlur={handleInputBlur}
                 placeholder="0"
                 className="w-20"
               />
@@ -201,11 +218,7 @@ const FeatureManagement = () => {
                 type="button"
                 size="sm"
                 variant={value === -1 ? "default" : "outline"}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onUpdateFeature(feature.id, value === -1 ? 0 : -1);
-                }}
+                onClick={() => onUpdateFeature(feature.id, value === -1 ? 0 : -1)}
               >
                 <Infinity className="h-4 w-4" />
               </Button>
@@ -222,7 +235,7 @@ const FeatureManagement = () => {
     if (!isEditModalOpen) return null;
     
     return (
-      <Dialog key={modalKey} open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Subscription Plan</DialogTitle>
@@ -305,8 +318,8 @@ const FeatureManagement = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Feature Configuration</h3>
               <FeatureList 
-                features={AVAILABLE_FEATURES}
-                currentFeatures={editingPlan.features || {}}
+                features={stableFeatures}
+                currentFeatures={stableCurrentFeatures}
                 onUpdateFeature={updateFeature}
                 onNumberInputChange={handleNumberInputChange}
               />
