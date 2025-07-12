@@ -97,6 +97,19 @@ const FeatureManagement = () => {
     }));
   };
 
+  const handleNumberInputChange = (featureId: string, inputValue: string) => {
+    // Allow empty string during editing
+    if (inputValue === '') {
+      updateFeature(featureId, 0);
+      return;
+    }
+    
+    const numValue = parseInt(inputValue);
+    if (!isNaN(numValue) && numValue >= 0) {
+      updateFeature(featureId, numValue);
+    }
+  };
+
   const getFeatureDisplayValue = (plan: SubscriptionPlan, featureId: string) => {
     const value = plan.features[featureId];
     const feature = AVAILABLE_FEATURES.find(f => f.id === featureId);
@@ -209,15 +222,26 @@ const FeatureManagement = () => {
                       <div className="flex items-center gap-2">
                         <Input
                           type="number"
+                          min="0"
                           value={editingPlan.features?.[feature.id] === -1 ? '' : String(editingPlan.features?.[feature.id] || 0)}
-                          onChange={(e) => updateFeature(feature.id, parseInt(e.target.value) || 0)}
+                          onChange={(e) => handleNumberInputChange(feature.id, e.target.value)}
+                          onBlur={(e) => {
+                            // Ensure we have a valid number on blur
+                            if (e.target.value === '') {
+                              updateFeature(feature.id, 0);
+                            }
+                          }}
                           placeholder="0"
                           className="w-20"
                         />
                         <Button
+                          type="button"
                           size="sm"
                           variant={editingPlan.features?.[feature.id] === -1 ? "default" : "outline"}
-                          onClick={() => updateFeature(feature.id, editingPlan.features?.[feature.id] === -1 ? 0 : -1)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            updateFeature(feature.id, editingPlan.features?.[feature.id] === -1 ? 0 : -1);
+                          }}
                         >
                           <Infinity className="h-4 w-4" />
                         </Button>
