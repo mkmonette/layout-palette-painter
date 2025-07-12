@@ -37,7 +37,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
 
   const loadAdminPresets = () => {
     try {
-      const savedPresets = localStorage.getItem('admin_color_presets');
+      const savedPresets = localStorage.getItem('admin-color-presets');
       if (savedPresets) {
         const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
         setPresets(parsedPresets);
