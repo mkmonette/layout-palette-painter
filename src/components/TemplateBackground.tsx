@@ -9,6 +9,10 @@ interface TemplateBackgroundProps {
 }
 
 const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, children, colorPalette }) => {
+  // Debug logging
+  console.log('TemplateBackground received settings:', settings);
+  console.log('TemplateBackground received colorPalette:', colorPalette);
+
   const getSvgBackground = () => {
     if (!settings.enabled) return null;
 
