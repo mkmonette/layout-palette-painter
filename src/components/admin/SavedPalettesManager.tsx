@@ -14,7 +14,11 @@ import {
   Download,
   Edit,
   Check,
-  X
+  X,
+  Palette as PaletteIcon,
+  Smile,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
 import { ColorRoles } from '@/types/colorRoles';
@@ -29,16 +33,25 @@ interface ColorPreset {
   createdAt: string;
   roles: ColorRoles;
   originalPalette: ColorPalette;
+  scheme?: string;
+  mood?: string;
+  mode?: 'light' | 'dark';
 }
 
 interface SavedPalettesManagerProps {
   currentPalette: ColorPalette;
   onApplyPreset: (palette: ColorPalette) => void;
+  currentScheme?: string;
+  currentMood?: string;
+  currentMode?: 'light' | 'dark';
 }
 
 const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({ 
   currentPalette, 
-  onApplyPreset 
+  onApplyPreset,
+  currentScheme,
+  currentMood,
+  currentMode
 }) => {
   const { toast } = useToast();
   const [presets, setPresets] = useState<ColorPreset[]>([]);
@@ -106,7 +119,10 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
       createdBy: 'admin',
       createdAt: new Date().toISOString(),
       roles: currentRoles,
-      originalPalette: { ...currentPalette }
+      originalPalette: { ...currentPalette },
+      scheme: currentScheme,
+      mood: currentMood && currentMood !== 'none' ? currentMood : undefined,
+      mode: currentMode
     };
 
     const updatedPresets = [...presets, newPreset];
@@ -345,9 +361,33 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
                         </Badge>
                       </div>
                       {preset.description && (
-                        <p className="text-sm text-muted-foreground mb-3">
+                        <p className="text-sm text-muted-foreground mb-2">
                           {preset.description}
                         </p>
+                      )}
+                      
+                      {/* Preset Metadata */}
+                      {(preset.scheme || preset.mood || preset.mode) && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                          {preset.scheme && (
+                            <div className="flex items-center gap-1">
+                              <PaletteIcon className="h-3 w-3" />
+                              <span>{preset.scheme}</span>
+                            </div>
+                          )}
+                          {preset.mood && (
+                            <div className="flex items-center gap-1">
+                              <Smile className="h-3 w-3" />
+                              <span>{preset.mood}</span>
+                            </div>
+                          )}
+                          {preset.mode && (
+                            <div className="flex items-center gap-1">
+                              {preset.mode === 'dark' ? <Moon className="h-3 w-3" /> : <Sun className="h-3 w-3" />}
+                              <span className="capitalize">{preset.mode}</span>
+                            </div>
+                          )}
+                        </div>
                       )}
                       
                       {/* Color Preview */}

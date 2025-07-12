@@ -37,6 +37,11 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   
+  // Palette generation state
+  const [currentScheme, setCurrentScheme] = useState('random');
+  const [currentMood, setCurrentMood] = useState('');
+  const [currentMode, setCurrentMode] = useState<'light' | 'dark'>('light');
+  
   // Mock current palette - in real implementation this would come from state management
   const [currentPalette, setCurrentPalette] = useState({
     brand: '#3366FF',
@@ -170,6 +175,12 @@ const AdminDashboard = () => {
                 <PaletteGenerator 
                   currentPalette={currentPalette}
                   onApplyPreset={handleApplyPreset}
+                  currentScheme={currentScheme}
+                  currentMood={currentMood}
+                  currentMode={currentMode}
+                  onSchemeChange={setCurrentScheme}
+                  onMoodChange={setCurrentMood}
+                  onModeChange={setCurrentMode}
                 />
               </TabsContent>
               
@@ -177,6 +188,9 @@ const AdminDashboard = () => {
                 <SavedPalettesManager 
                   currentPalette={currentPalette}
                   onApplyPreset={handleApplyPreset}
+                  currentScheme={currentScheme}
+                  currentMood={currentMood}
+                  currentMode={currentMode}
                 />
               </TabsContent>
             </Tabs>

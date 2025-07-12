@@ -25,6 +25,12 @@ import { ColorSchemeType } from '@/components/ColorSchemeSelector';
 interface PaletteGeneratorProps {
   currentPalette: ColorPalette;
   onApplyPreset: (palette: ColorPalette) => void;
+  currentScheme?: string;
+  currentMood?: string;
+  currentMode?: 'light' | 'dark';
+  onSchemeChange?: (scheme: string) => void;
+  onMoodChange?: (mood: string) => void;
+  onModeChange?: (mode: 'light' | 'dark') => void;
 }
 
 const COLOR_ROLE_CATEGORIES = {
@@ -38,7 +44,13 @@ const COLOR_ROLE_CATEGORIES = {
 
 const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({ 
   currentPalette, 
-  onApplyPreset 
+  onApplyPreset,
+  currentScheme,
+  currentMood,
+  currentMode,
+  onSchemeChange,
+  onMoodChange,
+  onModeChange
 }) => {
   const { toast } = useToast();
   
@@ -47,9 +59,9 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
   
   // Palette generation state
   const [generationPrompt, setGenerationPrompt] = useState('');
-  const [selectedMood, setSelectedMood] = useState('');
-  const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedMood, setSelectedMood] = useState(currentMood || '');
+  const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>((currentScheme as ColorSchemeType) || 'random');
+  const [isDarkMode, setIsDarkMode] = useState(currentMode === 'dark');
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Update working palette when current palette changes
@@ -161,7 +173,10 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="scheme-select">Color Scheme</Label>
-              <Select value={selectedScheme} onValueChange={(value: ColorSchemeType) => setSelectedScheme(value)}>
+              <Select value={selectedScheme} onValueChange={(value: ColorSchemeType) => {
+                setSelectedScheme(value);
+                onSchemeChange?.(value);
+              }}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select scheme" />
                 </SelectTrigger>
@@ -178,7 +193,10 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
 
             <div className="space-y-2">
               <Label htmlFor="mood-select">Mood</Label>
-              <Select value={selectedMood} onValueChange={setSelectedMood}>
+              <Select value={selectedMood} onValueChange={(value) => {
+                setSelectedMood(value);
+                onMoodChange?.(value);
+              }}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select mood" />
                 </SelectTrigger>
@@ -201,7 +219,10 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
                 <Sun className="h-4 w-4" />
                 <Switch
                   checked={isDarkMode}
-                  onCheckedChange={setIsDarkMode}
+                  onCheckedChange={(checked) => {
+                    setIsDarkMode(checked);
+                    onModeChange?.(checked ? 'dark' : 'light');
+                  }}
                 />
                 <Moon className="h-4 w-4" />
               </div>
