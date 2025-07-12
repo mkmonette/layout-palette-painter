@@ -286,146 +286,21 @@ const PresetManager: React.FC<PresetManagerProps> = ({
             Generate AI palettes, edit color roles, and save presets for quick switching
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Palette Generator Section */}
-          <Collapsible open={paletteGenOpen} onOpenChange={setPaletteGenOpen}>
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="w-full justify-between p-0 h-auto">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  <span className="font-medium">🎨 Palette Generator</span>
-                </div>
-                {paletteGenOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-4 pt-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="mood-select">Mood</Label>
-                  <Select value={selectedMood} onValueChange={setSelectedMood}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a mood" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="professional">Professional</SelectItem>
-                      <SelectItem value="modern">Modern</SelectItem>
-                      <SelectItem value="warm">Warm & Friendly</SelectItem>
-                      <SelectItem value="cool">Cool & Calm</SelectItem>
-                      <SelectItem value="vibrant">Vibrant & Energetic</SelectItem>
-                      <SelectItem value="elegant">Elegant & Luxury</SelectItem>
-                      <SelectItem value="minimalist">Minimalist</SelectItem>
-                      <SelectItem value="playful">Playful & Fun</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center space-x-2 pt-6">
-                  <input
-                    type="checkbox"
-                    id="dark-mode"
-                    checked={isDarkMode}
-                    onChange={(e) => setIsDarkMode(e.target.checked)}
-                    className="rounded border-border"
-                  />
-                  <Label htmlFor="dark-mode">Dark Mode</Label>
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="custom-prompt">Custom Theme Description (Optional)</Label>
-                <Textarea
-                  id="custom-prompt"
-                  value={generationPrompt}
-                  onChange={(e) => setGenerationPrompt(e.target.value)}
-                  placeholder="e.g., Tech startup with blue and orange accents"
-                  rows={2}
-                />
-              </div>
-              
-              <div className="flex gap-2">
-                <Button 
-                  onClick={handleGenerateAIPalette}
-                  disabled={isGenerating || !isOpenAIInitialized()}
-                  className="flex items-center gap-2"
-                >
-                  {isGenerating ? (
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Wand2 className="h-4 w-4" />
-                  )}
-                  {isGenerating ? 'Generating...' : 'Generate Palette'}
-                </Button>
-                <Button variant="outline" onClick={handleResetPalette}>
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Reset
-                </Button>
-              </div>
-              
-              {!isOpenAIInitialized() && (
-                <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 p-3 rounded">
-                  ⚠️ <strong>OpenAI API Key Required:</strong> Please configure your OpenAI API key in the OpenAI Settings tab to enable AI palette generation.
-                </div>
-              )}
-            </CollapsibleContent>
-          </Collapsible>
-
-          {/* Role Editor Section */}
-          <Collapsible open={roleEditorOpen} onOpenChange={setRoleEditorOpen}>
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="w-full justify-between p-0 h-auto">
-                <div className="flex items-center gap-2">
-                  <Edit className="h-4 w-4" />
-                  <span className="font-medium">🧰 Color Role Editor</span>
-                </div>
-                {roleEditorOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-4 pt-4">
-              {Object.entries(COLOR_ROLE_CATEGORIES).map(([categoryName, roles]) => (
-                <div key={categoryName} className="space-y-3">
-                  <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
-                    {categoryName}
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {roles.map((role) => (
-                      <div key={role} className="flex items-center gap-3 p-3 border rounded-lg">
-                        <div
-                          className="w-8 h-8 rounded border border-border flex-shrink-0"
-                          style={{ backgroundColor: workingPalette[role] }}
-                        />
-                        <div className="flex-1 min-w-0">
-                          <label className="text-sm font-medium block mb-1">
-                            {role}
-                          </label>
-                          <input
-                            type="color"
-                            value={workingPalette[role] || '#000000'}
-                            onChange={(e) => handleRoleColorChange(role as ColorRole, e.target.value)}
-                            className="w-full h-6 border border-border rounded cursor-pointer"
-                          />
-                        </div>
-                        <div className="text-xs text-muted-foreground font-mono">
-                          {workingPalette[role]}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </CollapsibleContent>
-          </Collapsible>
-
-          {/* Mini Live Template Preview */}
-          <Card className="bg-muted/30 border-dashed">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <div className="w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded" />
-                Live Template Preview
-              </CardTitle>
-              <CardDescription className="text-sm">
-                See how your color roles apply to real UI components
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <CardContent>
+          {/* Top Row - Live Preview and Controls */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Live Template Preview */}
+            <Card className="bg-muted/30 border-dashed">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <div className="w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded" />
+                  Live Template Preview
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  See how your color roles apply to real UI components
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
               {/* Header Section */}
               <div 
                 className="p-4 rounded-lg transition-colors"
@@ -560,7 +435,138 @@ const PresetManager: React.FC<PresetManagerProps> = ({
                 </div>
               </div>
             </CardContent>
-          </Card>
+            </Card>
+
+            {/* Right Column - Controls */}
+            <div className="space-y-4">
+              {/* Palette Generator Section */}
+              <Collapsible open={paletteGenOpen} onOpenChange={setPaletteGenOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      <span className="font-medium">🎨 Palette Generator</span>
+                    </div>
+                    {paletteGenOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-4 pt-4">
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <Label htmlFor="mood-select">Mood</Label>
+                      <Select value={selectedMood} onValueChange={setSelectedMood}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a mood" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="professional">Professional</SelectItem>
+                          <SelectItem value="modern">Modern</SelectItem>
+                          <SelectItem value="warm">Warm & Friendly</SelectItem>
+                          <SelectItem value="cool">Cool & Calm</SelectItem>
+                          <SelectItem value="vibrant">Vibrant & Energetic</SelectItem>
+                          <SelectItem value="elegant">Elegant & Luxury</SelectItem>
+                          <SelectItem value="minimalist">Minimalist</SelectItem>
+                          <SelectItem value="playful">Playful & Fun</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="dark-mode"
+                        checked={isDarkMode}
+                        onChange={(e) => setIsDarkMode(e.target.checked)}
+                        className="rounded border-border"
+                      />
+                      <Label htmlFor="dark-mode">Dark Mode</Label>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="custom-prompt">Custom Theme Description (Optional)</Label>
+                    <Textarea
+                      id="custom-prompt"
+                      value={generationPrompt}
+                      onChange={(e) => setGenerationPrompt(e.target.value)}
+                      placeholder="e.g., Tech startup with blue and orange accents"
+                      rows={2}
+                    />
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={handleGenerateAIPalette}
+                      disabled={isGenerating || !isOpenAIInitialized()}
+                      className="flex items-center gap-2"
+                    >
+                      {isGenerating ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Wand2 className="h-4 w-4" />
+                      )}
+                      {isGenerating ? 'Generating...' : 'Generate Palette'}
+                    </Button>
+                    <Button variant="outline" onClick={handleResetPalette}>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Reset
+                    </Button>
+                  </div>
+                  
+                  {!isOpenAIInitialized() && (
+                    <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 p-3 rounded">
+                      ⚠️ <strong>OpenAI API Key Required:</strong> Please configure your OpenAI API key in the OpenAI Settings tab to enable AI palette generation.
+                    </div>
+                  )}
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* Role Editor Section */}
+              <Collapsible open={roleEditorOpen} onOpenChange={setRoleEditorOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                    <div className="flex items-center gap-2">
+                      <Edit className="h-4 w-4" />
+                      <span className="font-medium">🧰 Color Role Editor</span>
+                    </div>
+                    {roleEditorOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-4 pt-4">
+                  {Object.entries(COLOR_ROLE_CATEGORIES).map(([categoryName, roles]) => (
+                    <div key={categoryName} className="space-y-3">
+                      <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                        {categoryName}
+                      </h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        {roles.map((role) => (
+                          <div key={role} className="flex items-center gap-3 p-3 border rounded-lg">
+                            <div
+                              className="w-8 h-8 rounded border border-border flex-shrink-0"
+                              style={{ backgroundColor: workingPalette[role] }}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <label className="text-sm font-medium block mb-1">
+                                {role}
+                              </label>
+                              <input
+                                type="color"
+                                value={workingPalette[role] || '#000000'}
+                                onChange={(e) => handleRoleColorChange(role as ColorRole, e.target.value)}
+                                className="w-full h-6 border border-border rounded cursor-pointer"
+                              />
+                            </div>
+                            <div className="text-xs text-muted-foreground font-mono">
+                              {workingPalette[role]}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+          </div>
 
           {/* Save & Load Presets Section */}
           <Collapsible open={presetsOpen} onOpenChange={setPresetsOpen}>
