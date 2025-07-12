@@ -412,6 +412,154 @@ const PresetManager: React.FC<PresetManagerProps> = ({
             </CollapsibleContent>
           </Collapsible>
 
+          {/* Mini Live Template Preview */}
+          <Card className="bg-muted/30 border-dashed">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <div className="w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded" />
+                Live Template Preview
+              </CardTitle>
+              <CardDescription className="text-sm">
+                See how your color roles apply to real UI components
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Header Section */}
+              <div 
+                className="p-4 rounded-lg transition-colors"
+                style={{ 
+                  backgroundColor: workingPalette['section-bg-1'] || '#FFFFFF',
+                  color: workingPalette['text-primary'] || '#000000'
+                }}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <Badge variant="outline" className="text-xs bg-white/10 border-current">
+                    section-bg-1
+                  </Badge>
+                </div>
+                <h1 className="text-lg font-bold mb-2">Platform Header</h1>
+                <p className="text-sm mb-3 opacity-80">
+                  Header section with primary background and text colors
+                </p>
+                <button 
+                  className="text-sm px-3 py-1.5 rounded font-medium transition-colors"
+                  style={{ 
+                    backgroundColor: workingPalette['button-primary'] || '#3366FF',
+                    color: workingPalette['button-text'] || '#FFFFFF'
+                  }}
+                >
+                  Primary CTA
+                </button>
+              </div>
+
+              {/* Content Card */}
+              <div 
+                className="p-4 rounded-lg transition-colors"
+                style={{ 
+                  backgroundColor: workingPalette['section-bg-2'] || '#F9FAFB',
+                  color: workingPalette['text-primary'] || '#000000'
+                }}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <Badge variant="outline" className="text-xs bg-white/10 border-current">
+                    section-bg-2
+                  </Badge>
+                </div>
+                <h2 className="text-base font-semibold mb-2">Content Block</h2>
+                <p 
+                  className="text-sm mb-3"
+                  style={{ color: workingPalette['text-secondary'] || workingPalette['text-primary'] }}
+                >
+                  Content with secondary text for descriptions and details
+                </p>
+                <button 
+                  className="text-sm px-3 py-1.5 rounded font-medium transition-colors"
+                  style={{ 
+                    backgroundColor: workingPalette['button-secondary'] || '#6C757D',
+                    color: workingPalette['button-secondary-text'] || '#FFFFFF'
+                  }}
+                >
+                  Secondary Action
+                </button>
+              </div>
+
+              {/* Form Section */}
+              <div 
+                className="p-4 rounded-lg transition-colors"
+                style={{ 
+                  backgroundColor: workingPalette['section-bg-3'] || '#F3F4F6',
+                  color: workingPalette['text-primary'] || '#000000'
+                }}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <Badge variant="outline" className="text-xs bg-white/10 border-current">
+                    section-bg-3
+                  </Badge>
+                </div>
+                <h3 className="text-sm font-medium mb-3">Form Elements</h3>
+                <div className="space-y-2">
+                  <div>
+                    <label className="block text-xs font-medium mb-1">
+                      Email Input
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="your@email.com"
+                      className="w-full text-xs px-2 py-1.5 rounded transition-colors"
+                      style={{ 
+                        backgroundColor: workingPalette['input-bg'] || '#FFFFFF',
+                        color: workingPalette['input-text'] || '#000000',
+                        border: `1px solid ${workingPalette.border || '#D1D5DB'}`
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Brand Footer */}
+              <div 
+                className="p-4 rounded-lg transition-colors"
+                style={{ 
+                  backgroundColor: workingPalette.brand || '#3366FF',
+                  color: '#FFFFFF'  // Using white as fallback for brand text
+                }}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs border-current bg-white/10"
+                    style={{ color: '#FFFFFF', borderColor: '#FFFFFF' }}
+                  >
+                    brand
+                  </Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h4 className="text-sm font-semibold">Brand Section</h4>
+                    <p className="text-xs opacity-90">Powered by your brand colors</p>
+                  </div>
+                  <div 
+                    className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center text-xs font-bold"
+                    style={{ backgroundColor: workingPalette.accent || '#FF6B35' }}
+                  >
+                    !
+                  </div>
+                </div>
+              </div>
+
+              {/* Color Values Display */}
+              <div className="text-xs space-y-1 p-3 bg-background/50 rounded border">
+                <div className="font-medium mb-2">Current Values:</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  <div>Primary: <span className="font-mono">{workingPalette['button-primary']}</span></div>
+                  <div>Brand: <span className="font-mono">{workingPalette.brand}</span></div>
+                  <div>BG-1: <span className="font-mono">{workingPalette['section-bg-1']}</span></div>
+                  <div>BG-2: <span className="font-mono">{workingPalette['section-bg-2']}</span></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Save & Load Presets Section */}
           <Collapsible open={presetsOpen} onOpenChange={setPresetsOpen}>
             <CollapsibleTrigger asChild>
