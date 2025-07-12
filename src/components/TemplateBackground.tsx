@@ -257,8 +257,24 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
       width: '100%',
       height: '100%',
       zIndex: 0,
-      background: 'rgba(0,255,0,0.1)' // Debug green background
+      background: 'rgba(0,255,0,0.5)', // Bright green background
+      border: '10px solid orange' // Very obvious orange border
     }}>
+      {/* Simple test element to see if this container renders */}
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        background: 'red',
+        color: 'white',
+        padding: '20px',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        zIndex: 999
+      }}>
+        BACKGROUND CONTAINER IS HERE
+      </div>
       {svgBackground}
     </div>
   );
