@@ -29,14 +29,14 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
           <svg {...baseProps} viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="wavy-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={colorPalette.brand} stopOpacity="0.3" />
-                <stop offset="100%" stopColor={colorPalette.accent} stopOpacity="0.1" />
+                <stop offset="0%" stopColor={colorPalette.brand} stopOpacity="0.8" />
+                <stop offset="100%" stopColor={colorPalette.accent} stopOpacity="0.6" />
               </linearGradient>
             </defs>
             <path d={`M0,${400 + settings.waveHeight * 0.5} C300,${350 - settings.waveHeight * 0.3} 600,${450 + settings.waveHeight * 0.4} 1200,${400 - settings.waveHeight * 0.2} L1200,800 L0,800 Z`} 
                   fill="url(#wavy-gradient)" />
             <path d={`M0,${300 + settings.waveHeight * 0.3} C400,${250 - settings.waveHeight * 0.4} 800,${350 + settings.waveHeight * 0.3} 1200,${300 - settings.waveHeight * 0.1} L1200,800 L0,800 Z`} 
-                  fill={colorPalette.highlight} fillOpacity="0.2" />
+                  fill={colorPalette.highlight} fillOpacity="0.7" />
           </svg>
         );
 
