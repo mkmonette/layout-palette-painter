@@ -25,6 +25,7 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
+import BackgroundCustomizer, { type BackgroundSettings } from '@/components/BackgroundCustomizer';
 
 // Template definitions (reusing from TemplateSelector)
 const allTemplates: Template[] = [
@@ -84,6 +85,15 @@ const AutoGenerate = () => {
   const [selectedPaletteIndex, setSelectedPaletteIndex] = useState<number | null>(null);
   const [adminSettings] = useState(getAdminSettings());
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; feature: string }>({ isOpen: false, feature: '' });
+  const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
+    enabled: false,
+    style: 'wavy-layers',
+    waveHeight: 50,
+    blobSize: 50,
+    meshIntensity: 50,
+    patternScale: 50,
+    opacity: 0.3,
+  });
 
   // Removed auto-generation on mount to allow users to adjust settings first
 
@@ -556,6 +566,7 @@ const AutoGenerate = () => {
                 onImageGeneratorClick={() => setActiveModal('image-generator')}
                 onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => setActiveModal('saved')}
+                onBackgroundClick={() => setActiveModal('background')}
               />
 
               {/* Download PDF */}
@@ -702,6 +713,26 @@ const AutoGenerate = () => {
         onPaletteSelect={handleSavedPaletteSelect}
         onTemplateChange={setSelectedTemplate}
       />
+
+      {/* Background Customizer Modal */}
+      <Dialog open={activeModal === 'background'} onOpenChange={closeModal}>
+        <DialogContent className="max-w-sm max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Background Settings
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="p-4">
+              <BackgroundCustomizer
+                settings={backgroundSettings}
+                onSettingsChange={setBackgroundSettings}
+              />
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
 
       {/* Pro Upsell Modal */}
       <ProUpsellModal

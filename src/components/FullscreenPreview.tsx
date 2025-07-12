@@ -21,6 +21,7 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
+import BackgroundCustomizer, { type BackgroundSettings } from '@/components/BackgroundCustomizer';
 
 
 interface FullscreenPreviewProps {
@@ -72,6 +73,15 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   const [zoomLevel, setZoomLevel] = useState(100);
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; templateName: string }>({ isOpen: false, templateName: '' });
+  const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
+    enabled: false,
+    style: 'wavy-layers',
+    waveHeight: 50,
+    blobSize: 50,
+    meshIntensity: 50,
+    patternScale: 50,
+    opacity: 0.3,
+  });
 
   const closeModal = () => setActiveModal(null);
 
@@ -237,6 +247,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                 }}
                 onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => {}}
+                onBackgroundClick={() => setActiveModal('background')}
               />
             </div>
 
@@ -401,6 +412,26 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                 }}
                 isGenerating={isGenerating}
                 setIsGenerating={() => {}} // Read-only in fullscreen
+              />
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Background Customizer Modal */}
+      <Dialog open={activeModal === 'background'} onOpenChange={closeModal}>
+        <DialogContent className="max-w-sm max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Background Settings
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="p-4">
+              <BackgroundCustomizer
+                settings={backgroundSettings}
+                onSettingsChange={setBackgroundSettings}
               />
             </div>
           </ScrollArea>

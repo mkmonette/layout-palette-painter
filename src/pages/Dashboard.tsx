@@ -29,6 +29,8 @@ import ImageColorGenerator from '@/components/ImageColorGenerator';
 
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
+import BackgroundCustomizer from '@/components/BackgroundCustomizer';
+import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -68,6 +70,15 @@ const Dashboard = () => {
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; templateName: string }>({ isOpen: false, templateName: '' });
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
   const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
+  const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
+    enabled: false,
+    style: 'wavy-layers',
+    waveHeight: 50,
+    blobSize: 50,
+    meshIntensity: 50,
+    patternScale: 50,
+    opacity: 0.3,
+  });
 
   const handleLogout = () => {
     logoutUser();
@@ -483,8 +494,9 @@ const Dashboard = () => {
                   }
                   setActiveModal('image-generator');
                 }}
-                onColorsClick={() => setActiveModal('colors')}
+                 onColorsClick={() => setActiveModal('colors')}
                 onSetsClick={() => setActiveModal('saved-palettes')}
+                onBackgroundClick={() => setActiveModal('background')}
               />
             </div>
 
@@ -592,8 +604,9 @@ const Dashboard = () => {
                     }
                     setActiveModal('image-generator');
                   }}
-                  onColorsClick={() => setActiveModal('colors')}
+                   onColorsClick={() => setActiveModal('colors')}
                   onSetsClick={() => setActiveModal('saved-palettes')}
+                  onBackgroundClick={() => setActiveModal('background')}
                 />
               </div>
 
@@ -723,6 +736,26 @@ const Dashboard = () => {
                 }}
                 isGenerating={isGenerating}
                 setIsGenerating={setIsGenerating}
+              />
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Background Customizer Modal */}
+      <Dialog open={activeModal === 'background'} onOpenChange={closeModal}>
+        <DialogContent className="max-w-sm max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Background Settings
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="p-4">
+              <BackgroundCustomizer
+                settings={backgroundSettings}
+                onSettingsChange={setBackgroundSettings}
               />
             </div>
           </ScrollArea>

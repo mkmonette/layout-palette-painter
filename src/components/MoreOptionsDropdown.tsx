@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MoreHorizontal, Zap, ImageIcon, Settings, BookOpen } from 'lucide-react';
+import { MoreHorizontal, Zap, ImageIcon, Settings, BookOpen, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
@@ -8,12 +8,14 @@ interface MoreOptionsDropdownProps {
   onImageGeneratorClick: () => void;
   onColorsClick: () => void;
   onSetsClick: () => void;
+  onBackgroundClick: () => void;
 }
 
 const MoreOptionsDropdown: React.FC<MoreOptionsDropdownProps> = ({
   onImageGeneratorClick,
   onColorsClick,
-  onSetsClick
+  onSetsClick,
+  onBackgroundClick
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,6 +60,15 @@ const MoreOptionsDropdown: React.FC<MoreOptionsDropdownProps> = ({
           </button>
           
           <Separator />
+          
+          {/* Background */}
+          <button
+            onClick={() => handleItemClick(onBackgroundClick)}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <Layers className="h-4 w-4" />
+            <span>Background</span>
+          </button>
           
           <Separator />
           

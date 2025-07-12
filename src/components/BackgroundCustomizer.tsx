@@ -6,9 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
-type BackgroundStyle = 'wavy-layers' | 'cloudy-blobs' | 'mesh-gradients' | 'flowing-shapes' | 'geometric-patterns';
+export type BackgroundStyle = 'wavy-layers' | 'cloudy-blobs' | 'mesh-gradients' | 'flowing-shapes' | 'geometric-patterns';
 
-interface BackgroundSettings {
+export interface BackgroundSettings {
   enabled: boolean;
   style: BackgroundStyle;
   waveHeight: number;
