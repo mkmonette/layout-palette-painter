@@ -102,7 +102,9 @@ const PresetManager: React.FC<PresetManagerProps> = ({
 
   // Save presets to localStorage
   const savePresetsToStorage = (updatedPresets: ColorPreset[]) => {
+    console.log('Saving presets to localStorage:', updatedPresets);
     localStorage.setItem('admin-color-presets', JSON.stringify(updatedPresets));
+    console.log('Presets saved successfully');
     setPresets(updatedPresets);
   };
 
