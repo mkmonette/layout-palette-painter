@@ -18,13 +18,14 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
   // Super simple SVG test
   return (
     <div style={{ 
-      position: 'absolute',
+      position: 'fixed',
       top: 0,
       left: 0,
       width: '100%',
       height: '100%',
-      zIndex: 0,
-      pointerEvents: 'none'
+      zIndex: 999,
+      pointerEvents: 'none',
+      background: 'rgba(255,0,255,0.1)' // Debug background
     }}>
       <svg
         className="absolute inset-0 w-full h-full"
