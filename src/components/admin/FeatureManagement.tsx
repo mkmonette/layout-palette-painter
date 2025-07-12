@@ -127,14 +127,14 @@ const FeatureManagement = () => {
     }
   };
 
-  const PlanEditModal = ({ isCreate = false }) => {
-    console.log('PlanEditModal rendering:', { isCreate, editingPlan });
+  const EditPlanModal = React.memo(() => {
+    if (!isEditModalOpen) return null;
     
     return (
-      <Dialog open={isCreate ? isCreateModalOpen : isEditModalOpen} onOpenChange={isCreate ? setIsCreateModalOpen : setIsEditModalOpen}>
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{isCreate ? 'Create New Plan' : 'Edit Subscription Plan'}</DialogTitle>
+            <DialogTitle>Edit Subscription Plan</DialogTitle>
             <DialogDescription>
               Configure plan details and feature access limits.
             </DialogDescription>
@@ -142,134 +142,286 @@ const FeatureManagement = () => {
           
           <form onSubmit={(e) => {
             e.preventDefault();
-            console.log('Form submit prevented');
           }} className="grid gap-6 py-4">
-          {/* Basic Plan Details */}
-          <div className="grid grid-cols-2 gap-4">
+            {/* Basic Plan Details */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="name">Plan Name</Label>
+                <Input 
+                  id="name"
+                  value={editingPlan.name || ''}
+                  onChange={(e) => setEditingPlan(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="e.g. Pro, Enterprise"
+                />
+              </div>
+              <div>
+                <Label htmlFor="price">Price</Label>
+                <Input 
+                  id="price"
+                  type="number"
+                  value={editingPlan.price || 0}
+                  onChange={(e) => setEditingPlan(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                  placeholder="9.99"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="interval">Billing Interval</Label>
+                <Select 
+                  value={editingPlan.interval} 
+                  onValueChange={(value: 'month' | 'year') => setEditingPlan(prev => ({ ...prev, interval: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select interval" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="month">Monthly</SelectItem>
+                    <SelectItem value="year">Yearly</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select 
+                  value={editingPlan.status} 
+                  onValueChange={(value: 'active' | 'deprecated' | 'draft') => setEditingPlan(prev => ({ ...prev, status: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="deprecated">Deprecated</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div>
-              <Label htmlFor="name">Plan Name</Label>
-              <Input 
-                id="name"
-                value={editingPlan.name || ''}
-                onChange={(e) => setEditingPlan(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="e.g. Pro, Enterprise"
+              <Label htmlFor="description">Description</Label>
+              <Textarea 
+                id="description"
+                value={editingPlan.description || ''}
+                onChange={(e) => setEditingPlan(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Brief description of the plan"
               />
             </div>
-            <div>
-              <Label htmlFor="price">Price</Label>
-              <Input 
-                id="price"
-                type="number"
-                value={editingPlan.price || 0}
-                onChange={(e) => setEditingPlan(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-                placeholder="9.99"
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
+            {/* Feature Configuration */}
             <div>
-              <Label htmlFor="interval">Billing Interval</Label>
-              <Select 
-                value={editingPlan.interval} 
-                onValueChange={(value: 'month' | 'year') => setEditingPlan(prev => ({ ...prev, interval: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select interval" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="month">Monthly</SelectItem>
-                  <SelectItem value="year">Yearly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="status">Status</Label>
-              <Select 
-                value={editingPlan.status} 
-                onValueChange={(value: 'active' | 'deprecated' | 'draft') => setEditingPlan(prev => ({ ...prev, status: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="deprecated">Deprecated</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea 
-              id="description"
-              value={editingPlan.description || ''}
-              onChange={(e) => setEditingPlan(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Brief description of the plan"
-            />
-          </div>
-
-          {/* Feature Configuration */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Feature Configuration</h3>
-            <div className="space-y-4">
-              {AVAILABLE_FEATURES.map((feature) => (
-                <div key={feature.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex-1">
-                    <h4 className="font-medium">{feature.name}</h4>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
-                    <Badge variant="outline" className="mt-1">
-                      {feature.category}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {feature.type === 'boolean' ? (
-                      <Switch
-                        checked={editingPlan.features?.[feature.id] === true}
-                        onCheckedChange={(checked) => updateFeature(feature.id, checked)}
-                      />
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="number"
-                          min="0"
-                          value={editingPlan.features?.[feature.id] === -1 ? '' : String(editingPlan.features?.[feature.id] || 0)}
-                          onChange={(e) => handleNumberInputChange(feature.id, e.target.value)}
-                          onBlur={(e) => {
-                            // Ensure we have a valid number on blur
-                            if (e.target.value === '') {
-                              updateFeature(feature.id, 0);
-                            }
-                          }}
-                          placeholder="0"
-                          className="w-20"
+              <h3 className="text-lg font-semibold mb-4">Feature Configuration</h3>
+              <div className="space-y-4">
+                {AVAILABLE_FEATURES.map((feature) => (
+                  <div key={feature.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <h4 className="font-medium">{feature.name}</h4>
+                      <p className="text-sm text-muted-foreground">{feature.description}</p>
+                      <Badge variant="outline" className="mt-1">
+                        {feature.category}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {feature.type === 'boolean' ? (
+                        <Switch
+                          checked={editingPlan.features?.[feature.id] === true}
+                          onCheckedChange={(checked) => updateFeature(feature.id, checked)}
                         />
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant={editingPlan.features?.[feature.id] === -1 ? "default" : "outline"}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            updateFeature(feature.id, editingPlan.features?.[feature.id] === -1 ? 0 : -1);
-                          }}
-                        >
-                          <Infinity className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="number"
+                            min="0"
+                            value={editingPlan.features?.[feature.id] === -1 ? '' : String(editingPlan.features?.[feature.id] || 0)}
+                            onChange={(e) => handleNumberInputChange(feature.id, e.target.value)}
+                            onBlur={(e) => {
+                              if (e.target.value === '') {
+                                updateFeature(feature.id, 0);
+                              }
+                            }}
+                            placeholder="0"
+                            className="w-20"
+                          />
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant={editingPlan.features?.[feature.id] === -1 ? "default" : "outline"}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              updateFeature(feature.id, editingPlan.features?.[feature.id] === -1 ? 0 : -1);
+                            }}
+                          >
+                            <Infinity className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
           </form>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => {
-              console.log('Cancel clicked');
               setIsEditModalOpen(false);
+              setEditingPlan({});
+            }}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={(e) => {
+              e.preventDefault();
+              savePlan();
+            }}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  });
+
+  const CreatePlanModal = React.memo(() => {
+    if (!isCreateModalOpen) return null;
+    
+    return (
+      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create New Plan</DialogTitle>
+            <DialogDescription>
+              Configure plan details and feature access limits.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={(e) => {
+            e.preventDefault();
+          }} className="grid gap-6 py-4">
+            {/* Basic Plan Details */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="create-name">Plan Name</Label>
+                <Input 
+                  id="create-name"
+                  value={editingPlan.name || ''}
+                  onChange={(e) => setEditingPlan(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="e.g. Pro, Enterprise"
+                />
+              </div>
+              <div>
+                <Label htmlFor="create-price">Price</Label>
+                <Input 
+                  id="create-price"
+                  type="number"
+                  value={editingPlan.price || 0}
+                  onChange={(e) => setEditingPlan(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                  placeholder="9.99"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="create-interval">Billing Interval</Label>
+                <Select 
+                  value={editingPlan.interval} 
+                  onValueChange={(value: 'month' | 'year') => setEditingPlan(prev => ({ ...prev, interval: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select interval" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="month">Monthly</SelectItem>
+                    <SelectItem value="year">Yearly</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="create-status">Status</Label>
+                <Select 
+                  value={editingPlan.status} 
+                  onValueChange={(value: 'active' | 'deprecated' | 'draft') => setEditingPlan(prev => ({ ...prev, status: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="deprecated">Deprecated</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="create-description">Description</Label>
+              <Textarea 
+                id="create-description"
+                value={editingPlan.description || ''}
+                onChange={(e) => setEditingPlan(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Brief description of the plan"
+              />
+            </div>
+
+            {/* Feature Configuration */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Feature Configuration</h3>
+              <div className="space-y-4">
+                {AVAILABLE_FEATURES.map((feature) => (
+                  <div key={`create-${feature.id}`} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <h4 className="font-medium">{feature.name}</h4>
+                      <p className="text-sm text-muted-foreground">{feature.description}</p>
+                      <Badge variant="outline" className="mt-1">
+                        {feature.category}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {feature.type === 'boolean' ? (
+                        <Switch
+                          checked={editingPlan.features?.[feature.id] === true}
+                          onCheckedChange={(checked) => updateFeature(feature.id, checked)}
+                        />
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="number"
+                            min="0"
+                            value={editingPlan.features?.[feature.id] === -1 ? '' : String(editingPlan.features?.[feature.id] || 0)}
+                            onChange={(e) => handleNumberInputChange(feature.id, e.target.value)}
+                            onBlur={(e) => {
+                              if (e.target.value === '') {
+                                updateFeature(feature.id, 0);
+                              }
+                            }}
+                            placeholder="0"
+                            className="w-20"
+                          />
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant={editingPlan.features?.[feature.id] === -1 ? "default" : "outline"}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              updateFeature(feature.id, editingPlan.features?.[feature.id] === -1 ? 0 : -1);
+                            }}
+                          >
+                            <Infinity className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </form>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => {
               setIsCreateModalOpen(false);
               setEditingPlan({});
             }}>
@@ -277,16 +429,15 @@ const FeatureManagement = () => {
             </Button>
             <Button type="button" onClick={(e) => {
               e.preventDefault();
-              console.log('Save clicked');
               savePlan();
             }}>
-              {isCreate ? 'Create Plan' : 'Save Changes'}
+              Create Plan
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     );
-  };
+  });
 
   return (
     <div className="space-y-6">
@@ -367,8 +518,8 @@ const FeatureManagement = () => {
         </CardContent>
       </Card>
 
-      <PlanEditModal isCreate={false} />
-      <PlanEditModal isCreate={true} />
+      <EditPlanModal />
+      <CreatePlanModal />
     </div>
   );
 };
