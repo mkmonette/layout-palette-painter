@@ -42,20 +42,20 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
     try {
       console.log('Loading admin presets...');
       
-      // Debug: Check all localStorage keys
-      console.log('All localStorage keys:', Object.keys(localStorage));
-      
-      const savedPresets = localStorage.getItem('admin-color-presets');
-      console.log('Raw localStorage data:', savedPresets);
-      
-      if (savedPresets) {
-        const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
-        console.log('Parsed presets:', parsedPresets);
-        setPresets(parsedPresets);
-      } else {
-        console.log('No presets found in localStorage');
-        setPresets([]);
-      }
+      // Add a small delay to ensure localStorage is ready
+      setTimeout(() => {
+        const savedPresets = localStorage.getItem('admin-color-presets');
+        console.log('Raw localStorage data:', savedPresets);
+        
+        if (savedPresets) {
+          const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
+          console.log('Parsed presets:', parsedPresets);
+          setPresets(parsedPresets);
+        } else {
+          console.log('No presets found in localStorage');
+          setPresets([]);
+        }
+      }, 100);
     } catch (error) {
       console.error('Error loading admin presets:', error);
       setPresets([]);
