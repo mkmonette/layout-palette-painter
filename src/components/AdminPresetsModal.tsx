@@ -41,21 +41,34 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
   const loadAdminPresets = () => {
     try {
       console.log('Loading admin presets...');
+      console.log('All localStorage keys before:', Object.keys(localStorage));
       
-      // Add a small delay to ensure localStorage is ready
-      setTimeout(() => {
-        const savedPresets = localStorage.getItem('admin-color-presets');
-        console.log('Raw localStorage data:', savedPresets);
-        
-        if (savedPresets) {
-          const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
-          console.log('Parsed presets:', parsedPresets);
-          setPresets(parsedPresets);
-        } else {
-          console.log('No presets found in localStorage');
-          setPresets([]);
-        }
-      }, 100);
+      // Try immediate load first
+      let savedPresets = localStorage.getItem('admin-color-presets');
+      console.log('Immediate load result:', savedPresets);
+      
+      if (!savedPresets) {
+        // If no data found, wait and try again
+        console.log('No immediate data, waiting...');
+        setTimeout(() => {
+          savedPresets = localStorage.getItem('admin-color-presets');
+          console.log('Delayed load result:', savedPresets);
+          console.log('All localStorage keys after delay:', Object.keys(localStorage));
+          
+          if (savedPresets) {
+            const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
+            console.log('Parsed presets from delayed load:', parsedPresets);
+            setPresets(parsedPresets);
+          } else {
+            console.log('Still no presets found after delay');
+            setPresets([]);
+          }
+        }, 200);
+      } else {
+        const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
+        console.log('Parsed presets from immediate load:', parsedPresets);
+        setPresets(parsedPresets);
+      }
     } catch (error) {
       console.error('Error loading admin presets:', error);
       setPresets([]);
