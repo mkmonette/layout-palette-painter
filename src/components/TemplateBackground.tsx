@@ -9,6 +9,8 @@ interface TemplateBackgroundProps {
 }
 
 const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, children, colorPalette }) => {
+  console.log('TemplateBackground rendering:', { enabled: settings.enabled, style: settings.style });
+  
   if (!settings.enabled) {
     return null;
   }
@@ -119,9 +121,23 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        backgroundColor: 'rgba(255, 0, 255, 0.1)' // Debug background to confirm rendering
       }}
     >
+      {/* Debug element */}
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        background: 'red',
+        color: 'white',
+        padding: '5px',
+        fontSize: '12px',
+        zIndex: 10000
+      }}>
+        SVG: {settings.style}
+      </div>
       {getBackgroundElement()}
       {children}
     </div>
