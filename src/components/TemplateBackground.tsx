@@ -20,7 +20,8 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
     }
 
     console.log('Generating SVG background for style:', settings.style);
-    const baseOpacity = settings.opacity;
+    const baseOpacity = Math.max(settings.opacity * 3, 0.6); // Boost opacity for visibility
+    console.log('Using boosted opacity:', baseOpacity);
     
     switch (settings.style) {
       case 'wavy-layers':
@@ -34,12 +35,12 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
           >
             <defs>
               <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="var(--section-bg-2)" stopOpacity={baseOpacity * 0.8} />
-                <stop offset="100%" stopColor="var(--section-bg-3)" stopOpacity={baseOpacity * 0.6} />
+                <stop offset="0%" stopColor={colorPalette['section-bg-2']} stopOpacity={baseOpacity * 0.8} />
+                <stop offset="100%" stopColor={colorPalette['section-bg-3']} stopOpacity={baseOpacity * 0.6} />
               </linearGradient>
               <linearGradient id="wave-gradient-2" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="var(--highlight)" stopOpacity={baseOpacity * 0.4} />
-                <stop offset="100%" stopColor="var(--accent)" stopOpacity={baseOpacity * 0.3} />
+                <stop offset="0%" stopColor={colorPalette.highlight} stopOpacity={baseOpacity * 0.4} />
+                <stop offset="100%" stopColor={colorPalette.accent} stopOpacity={baseOpacity * 0.3} />
               </linearGradient>
             </defs>
             
