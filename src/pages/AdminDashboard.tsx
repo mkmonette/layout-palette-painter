@@ -25,7 +25,6 @@ import AIGenerationSettings from '@/components/admin/AIGenerationSettings';
 import OpenAIUsageLogs from '@/components/admin/OpenAIUsageLogs';
 import ColorRolePreview from '@/components/admin/ColorRolePreview';
 import MiniTemplatePreview from '@/components/admin/MiniTemplatePreview';
-import PresetManager from '@/components/admin/PresetManager';
 import AutoGenerator from '@/components/AutoGenerator';
 import PromptControlPanel from '@/components/admin/PromptControlPanel';
 import PaletteGenerator from '@/components/admin/PaletteGenerator';
