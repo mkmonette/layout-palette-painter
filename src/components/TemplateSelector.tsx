@@ -18,9 +18,6 @@ import TechStartupTemplate from '@/components/templates/TechStartupTemplate';
 import CreativeAgencyTemplate from '@/components/templates/CreativeAgencyTemplate';
 import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
 import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
-import ProDashboardTemplate from '@/components/templates/ProDashboardTemplate';
-import ProAnalyticsTemplate from '@/components/templates/ProAnalyticsTemplate';
-import ProOrganicFoodTemplate from '@/components/templates/ProOrganicFoodTemplate';
 import { ProCosmeticsTemplate } from '@/components/templates/ProCosmeticsTemplate';
 
 interface TemplateSelectorProps {
@@ -45,13 +42,6 @@ const freeTemplates: Template[] = [
 ];
 
 const proTemplates: Template[] = [
-  { id: 'pro-dashboard', name: 'PRO Dashboard', description: 'Advanced admin dashboard with analytics', isPro: true },
-  { id: 'pro-analytics', name: 'PRO Analytics', description: 'Comprehensive data visualization suite', isPro: true },
-  { id: 'pro-multimedia', name: 'PRO Multimedia', description: 'Rich media showcase with interactions', isPro: true },
-  { id: 'pro-interactive', name: 'PRO Interactive', description: 'Dynamic components with animations', isPro: true },
-  { id: 'pro-enterprise', name: 'PRO Enterprise', description: 'Corporate-grade business template', isPro: true },
-  { id: 'pro-premium', name: 'PRO Premium', description: 'Luxury design with premium features', isPro: true },
-  { id: 'pro-organic-food', name: 'PRO Organic Food', description: 'Healthy lifestyle and organic products showcase', isPro: true },
   { id: 'pro-cosmetics', name: 'PRO Cosmetics', description: 'Beauty and cosmetics product showcase', isPro: true }
 ];
 
@@ -83,28 +73,8 @@ const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPale
       return <SaasProductTemplate {...previewProps} />;
     case 'ecommerce-landing':
       return <EcommerceLandingTemplate {...previewProps} />;
-    case 'pro-dashboard':
-      return <ProDashboardTemplate {...previewProps} />;
-    case 'pro-analytics':
-      return <ProAnalyticsTemplate {...previewProps} />;
-    case 'pro-organic-food':
-      return <ProOrganicFoodTemplate {...previewProps} />;
     case 'pro-cosmetics':
       return <ProCosmeticsTemplate palette={colorPalette} />;
-    // For now, PRO templates that don't have components yet will show a placeholder
-    case 'pro-multimedia':
-    case 'pro-interactive':
-    case 'pro-enterprise':
-    case 'pro-premium':
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
-          <div className="text-center">
-            <Crown className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800">PRO Template</h2>
-            <p className="text-gray-600">Advanced design coming soon</p>
-          </div>
-        </div>
-      );
     default:
       return <ModernHeroTemplate {...previewProps} />;
   }

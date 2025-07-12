@@ -12,13 +12,6 @@ export type TemplateType =
   | 'creative-agency'
   | 'saas-product'
   | 'ecommerce-landing'
-  | 'pro-dashboard'
-  | 'pro-analytics'
-  | 'pro-multimedia'
-  | 'pro-interactive'
-  | 'pro-enterprise'
-  | 'pro-premium'
-  | 'pro-organic-food'
   | 'pro-cosmetics';
 
 export interface ColorPalette {

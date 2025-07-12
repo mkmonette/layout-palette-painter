@@ -20,13 +20,6 @@ import TechStartupTemplate from '@/components/templates/TechStartupTemplate';
 import CreativeAgencyTemplate from '@/components/templates/CreativeAgencyTemplate';
 import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
 import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
-import ProDashboardTemplate from '@/components/templates/ProDashboardTemplate';
-import ProAnalyticsTemplate from '@/components/templates/ProAnalyticsTemplate';
-import ProMultimediaTemplate from '@/components/templates/ProMultimediaTemplate';
-import ProInteractiveTemplate from '@/components/templates/ProInteractiveTemplate';
-import ProEnterpriseTemplate from '@/components/templates/ProEnterpriseTemplate';
-import ProPremiumTemplate from '@/components/templates/ProPremiumTemplate';
-import ProOrganicFoodTemplate from '@/components/templates/ProOrganicFoodTemplate';
 import { ProCosmeticsTemplate } from '@/components/templates/ProCosmeticsTemplate';
 import { Crown } from 'lucide-react';
 
@@ -96,27 +89,6 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
         break;
       case 'ecommerce-landing':
         templateComponent = <EcommerceLandingTemplate {...templateProps} />;
-        break;
-      case 'pro-dashboard':
-        templateComponent = <ProDashboardTemplate {...templateProps} />;
-        break;
-      case 'pro-analytics':
-        templateComponent = <ProAnalyticsTemplate {...templateProps} />;
-        break;
-      case 'pro-multimedia':
-        templateComponent = <ProMultimediaTemplate {...templateProps} />;
-        break;
-      case 'pro-interactive':
-        templateComponent = <ProInteractiveTemplate {...templateProps} />;
-        break;
-      case 'pro-enterprise':
-        templateComponent = <ProEnterpriseTemplate {...templateProps} />;
-        break;
-      case 'pro-premium':
-        templateComponent = <ProPremiumTemplate {...templateProps} />;
-        break;
-      case 'pro-organic-food':
-        templateComponent = <ProOrganicFoodTemplate {...templateProps} />;
         break;
       case 'pro-cosmetics':
         templateComponent = <ProCosmeticsTemplate palette={colorPalette} />;
