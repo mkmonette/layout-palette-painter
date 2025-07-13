@@ -116,21 +116,21 @@ const Index = () => {
 
   // Render fullscreen mode
   if (isFullscreen) {
-    return (
-      <FullscreenPreview
-        template={selectedTemplate}
-        colorPalette={colorPalette}
-        selectedScheme={selectedScheme}
-        isDarkMode={isDarkMode}
-        isGenerating={isGenerating}
-        onClose={() => setIsFullscreen(false)}
-        onGenerateColors={handleGenerateColors}
-        onSchemeChange={handleSchemeChange}
-        onTemplateChange={setSelectedTemplate}
-        onColorChange={(palette) => setColorPalette(palette)}
-        onModeToggle={handleModeToggle}
-      />
-    );
+      return (
+        <FullscreenPreview
+          template={selectedTemplate}
+          colorPalette={colorPalette}
+          selectedScheme={selectedScheme}
+          isDarkMode={isDarkMode}
+          isGenerating={isGenerating}
+          onClose={() => setIsFullscreen(false)}
+          onGenerateColors={handleGenerateColors}
+          onSchemeChange={handleSchemeChange}
+          onTemplateChange={setSelectedTemplate}
+          onColorChange={(palette) => setColorPalette(palette)}
+          onTemplateToggle={handleModeToggle}
+        />
+      );
   }
 
   return (

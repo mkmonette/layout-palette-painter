@@ -35,7 +35,7 @@ interface FullscreenPreviewProps {
   onSchemeChange: (scheme: ColorSchemeType) => void;
   onTemplateChange: (template: TemplateType) => void;
   onColorChange: (palette: ColorPalette, moodId?: string | null) => void;
-  onModeToggle: (checked: boolean) => void;
+  onTemplateToggle: (checked: boolean) => void; // Renamed to be more specific
   onDownloadPDF?: () => void;
   onAutogenerateCountChange?: (count: number) => void;
   onAutoGenerateChange?: (checked: boolean) => void;
@@ -53,7 +53,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onSchemeChange,
   onTemplateChange,
   onColorChange,
-  onModeToggle,
+  onTemplateToggle,
   onDownloadPDF,
   onAutogenerateCountChange,
   onAutoGenerateChange
@@ -70,6 +70,10 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   const {
     isPro
   } = useFeatureAccess();
+  
+  // Local template-only dark mode state (separate from dashboard dark mode)
+  const [templateDarkMode, setTemplateDarkMode] = useState(isDarkMode);
+  
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
@@ -95,6 +99,12 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     gradientEndColor: 'accent',
     gradientDirection: 'horizontal'
   });
+  
+  // Handle template-only dark mode toggle
+  const handleTemplateDarkModeToggle = (checked: boolean) => {
+    setTemplateDarkMode(checked);
+    onTemplateToggle(checked);
+  };
   const closeModal = () => setActiveModal(null);
   const handleZoomIn = () => {
     setZoomLevel(prev => Math.min(prev + 25, 200));
@@ -191,7 +201,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             {/* Light/Dark Mode Toggle */}
             <div className="flex items-center gap-1 px-2 py-1 border rounded-full h-10 bg-slate-300">
               <Sun className="h-4 w-4" />
-              <Switch checked={isDarkMode} onCheckedChange={onModeToggle} className="bg-slate-500 hover:bg-slate-400" />
+              <Switch checked={templateDarkMode} onCheckedChange={handleTemplateDarkModeToggle} className="bg-slate-500 hover:bg-slate-400" />
               <Moon className="h-4 w-4" />
             </div>
 

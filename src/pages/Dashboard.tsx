@@ -380,7 +380,7 @@ const Dashboard = () => {
     return <FullscreenPreview template={selectedTemplate} colorPalette={colorPalette} selectedScheme={selectedScheme} isDarkMode={isDarkMode} isGenerating={isGenerating} autogenerateCount={autogenerateCount} onClose={() => setIsFullscreen(false)} onGenerateColors={handleGenerateColors} onSchemeChange={handleSchemeChange} onTemplateChange={setSelectedTemplate} onColorChange={(palette, moodId) => {
       setColorPalette(palette);
       if (moodId !== undefined) setSelectedMoodId(moodId);
-    }} onModeToggle={handleModeToggle} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
+    }} onTemplateToggle={handleModeToggle} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
   }
   const handleSidebarItemClick = (sectionId: typeof activeSection) => {
     if (activeSection === sectionId && !isContextPanelCollapsed) {
