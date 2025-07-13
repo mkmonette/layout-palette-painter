@@ -230,79 +230,83 @@ const OpenAISettings: React.FC = () => {
                   Configure your OpenAI API key and environment settings
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="api-key">OpenAI API Key</Label>
-                  <div className="relative">
-                    <Input
-                      id="api-key"
-                      type={showApiKey ? 'text' : 'password'}
-                      placeholder="sk-..."
-                      value={apiKey}
-                      onChange={(e) => setApiKey(e.target.value)}
-                      className="pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-                      onClick={() => setShowApiKey(!showApiKey)}
-                    >
-                      {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
+              <CardContent className="grid grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="api-key">OpenAI API Key</Label>
+                    <div className="relative">
+                      <Input
+                        id="api-key"
+                        type={showApiKey ? 'text' : 'password'}
+                        placeholder="sk-..."
+                        value={apiKey}
+                        onChange={(e) => setApiKey(e.target.value)}
+                        className="pr-10"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                        onClick={() => setShowApiKey(!showApiKey)}
+                      >
+                        {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="environment">Environment</Label>
+                    <Select value={environment} onValueChange={setEnvironment}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select environment" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="development">Development</SelectItem>
+                        <SelectItem value="test">Test</SelectItem>
+                        <SelectItem value="production">Production</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="environment">Environment</Label>
-                  <Select value={environment} onValueChange={setEnvironment}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select environment" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="development">Development</SelectItem>
-                      <SelectItem value="test">Test</SelectItem>
-                      <SelectItem value="production">Production</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="model-select">OpenAI Model</Label>
+                    <Select value={selectedModel} onValueChange={setSelectedModel}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select OpenAI model" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border z-50">
+                        <SelectItem value="gpt-4.1-2025-04-14">GPT-4.1 (Flagship) - Recommended</SelectItem>
+                        <SelectItem value="o3-2025-04-16">O3 (Reasoning) - Advanced Analysis</SelectItem>
+                        <SelectItem value="o4-mini-2025-04-16">O4 Mini (Fast Reasoning) - Quick & Efficient</SelectItem>
+                        <SelectItem value="gpt-4.1-mini-2025-04-14">GPT-4.1 Mini - Older Vision Model</SelectItem>
+                        <SelectItem value="gpt-4o">GPT-4o - Older Powerful Model</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Choose the OpenAI model for color generation. GPT-4.1 is recommended for best results.
+                    </p>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="model-select">OpenAI Model</Label>
-                  <Select value={selectedModel} onValueChange={setSelectedModel}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select OpenAI model" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover border z-50">
-                      <SelectItem value="gpt-4.1-2025-04-14">GPT-4.1 (Flagship) - Recommended</SelectItem>
-                      <SelectItem value="o3-2025-04-16">O3 (Reasoning) - Advanced Analysis</SelectItem>
-                      <SelectItem value="o4-mini-2025-04-16">O4 Mini (Fast Reasoning) - Quick & Efficient</SelectItem>
-                      <SelectItem value="gpt-4.1-mini-2025-04-14">GPT-4.1 Mini - Older Vision Model</SelectItem>
-                      <SelectItem value="gpt-4o">GPT-4o - Older Powerful Model</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    Choose the OpenAI model for color generation. GPT-4.1 is recommended for best results.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={testConnection} 
-                    disabled={isTestingConnection || !apiKey}
-                    className="flex-1"
-                  >
-                    {isTestingConnection ? (
-                      <Loader className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <>
-                        {connectionStatus === 'success' && <CheckCircle className="h-4 w-4 mr-2 text-green-600" />}
-                        {connectionStatus === 'error' && <XCircle className="h-4 w-4 mr-2 text-red-600" />}
-                      </>
-                    )}
-                    {isTestingConnection ? 'Testing...' : 'Test Connection'}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      onClick={testConnection} 
+                      disabled={isTestingConnection || !apiKey}
+                      className="flex-1"
+                    >
+                      {isTestingConnection ? (
+                        <Loader className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <>
+                          {connectionStatus === 'success' && <CheckCircle className="h-4 w-4 mr-2 text-green-600" />}
+                          {connectionStatus === 'error' && <XCircle className="h-4 w-4 mr-2 text-red-600" />}
+                        </>
+                      )}
+                      {isTestingConnection ? 'Testing...' : 'Test Connection'}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
