@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Eye, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen } from 'lucide-react';
+import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -175,11 +175,18 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           <div className="flex items-center justify-center gap-2">
             {/* Template Selector */}
             <Button onClick={() => setActiveModal('template')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
-              <Eye className="h-4 w-4" />
+              <Layout className="h-4 w-4" />
             </Button>
 
-            {/* Color Theme Dropdown */}
-            <ColorThemeDropdown onSchemeClick={() => setActiveModal('scheme')} onMoodClick={() => setActiveModal('mood')} />
+            {/* Color Scheme Selector */}
+            <Button onClick={() => setActiveModal('scheme')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+              <Palette className="h-4 w-4" />
+            </Button>
+
+            {/* Color Mood Selector */}
+            <Button onClick={() => setActiveModal('mood')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+              <Sparkles className="h-4 w-4" />
+            </Button>
 
             {/* Light/Dark Mode Toggle */}
             <div className="flex items-center gap-1 px-2 py-1 border rounded-full bg-white h-10">
@@ -199,16 +206,18 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </Button>
 
             {/* More Options Dropdown */}
-            <MoreOptionsDropdown onImageGeneratorClick={() => {
-            if (!isPro) {
-              setUpsellModal({
-                isOpen: true,
-                templateName: 'Image/URL Color Generator'
-              });
-              return;
-            }
-            setActiveModal('image-generator');
-          }} onColorsClick={() => setActiveModal('colors')} onSetsClick={() => {}} onBackgroundClick={() => setActiveModal('background')} onAdminPresetsClick={() => setActiveModal('admin-presets')} />
+            <Button variant="outline" size="icon" className="h-10 w-10 rounded-full" asChild>
+              <MoreOptionsDropdown onImageGeneratorClick={() => {
+                if (!isPro) {
+                  setUpsellModal({
+                    isOpen: true,
+                    templateName: 'Image/URL Color Generator'
+                  });
+                  return;
+                }
+                setActiveModal('image-generator');
+              }} onColorsClick={() => setActiveModal('colors')} onSetsClick={() => {}} onBackgroundClick={() => setActiveModal('background')} onAdminPresetsClick={() => setActiveModal('admin-presets')} />
+            </Button>
 
             {/* Zoom Controls */}
             <div className="flex items-center gap-1 px-2 py-1 border rounded-full bg-white h-10">
@@ -228,7 +237,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
             {/* Generate Button - Last item */}
             <Button onClick={onGenerateColors} disabled={isGenerating} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-10 w-10 rounded-full p-0">
-              {isGenerating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Palette className="h-4 w-4" />}
+              {isGenerating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
             </Button>
           </div>
         </div>
@@ -239,7 +248,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         <DialogContent className="max-w-6xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Eye className="h-5 w-5" />
+              <Layout className="h-5 w-5" />
               Choose Template
             </DialogTitle>
           </DialogHeader>
@@ -305,7 +314,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5" />
-              Generate from Image or Website
+              Color Mood
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
