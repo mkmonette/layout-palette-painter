@@ -148,7 +148,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden">
+      <DialogContent className="max-w-4xl h-[85vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Palette className="h-5 w-5 text-primary" />
@@ -156,7 +156,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
           </DialogTitle>
         </DialogHeader>
         
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden min-h-0">
           {presets.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Palette className="h-12 w-12 mx-auto mb-4 opacity-50" />
