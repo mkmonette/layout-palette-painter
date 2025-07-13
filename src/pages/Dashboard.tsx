@@ -793,16 +793,6 @@ const Dashboard = () => {
                 </Tooltip>
               </div>
               
-              <div className="flex space-x-2">
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => setActiveModal('saved')}
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  Save
-                </Button>
-              </div>
             </div>
             </div>
           )}
@@ -907,14 +897,6 @@ const Dashboard = () => {
           }}
         />
 
-        <SavedPalettesModal
-          isOpen={activeModal === 'saved'}
-          onClose={closeModal}
-          currentPalette={colorPalette}
-          currentTemplate={selectedTemplate}
-          onPaletteSelect={handleSavedPaletteSelect}
-          onTemplateChange={setSelectedTemplate}
-        />
 
         {/* Pro Upsell Modal */}
         <ProUpsellModal
