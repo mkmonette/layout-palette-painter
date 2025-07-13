@@ -127,7 +127,39 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
   };
 
   if (!isOpenAIInitialized()) {
-    return null;
+    return (
+      <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <Sparkles className="h-4 w-4 text-purple-600" />
+            AI Color Generation
+          </CardTitle>
+          <CardDescription className="text-xs">
+            Set up your OpenAI API key to enable AI color generation
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              OpenAI API key required to use AI color generation features.
+            </p>
+            <Button 
+              onClick={() => {
+                // This will trigger the OpenAI key input in settings
+                toast({
+                  title: "Setup Required",
+                  description: "Go to Settings to configure your OpenAI API key",
+                });
+              }}
+              variant="outline"
+              size="sm"
+            >
+              Go to Settings
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   const getGenerateButton = () => {

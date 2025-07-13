@@ -421,7 +421,7 @@ const Dashboard = () => {
   }, {
     id: 'ai-colors' as const,
     icon: Bot,
-    label: 'AI Colors',
+    label: `AI Colors (${maxAIGenerationsPerMonth - remainingAIGenerations}/${maxAIGenerationsPerMonth})`,
     available: canUseAIGeneration,
     isPro: true
   }, {
