@@ -462,120 +462,122 @@ const Dashboard = () => {
     <TooltipProvider>
       <div className="h-screen flex flex-col bg-background">
         {/* Top Navigation Bar */}
-        <div className="h-14 border-b bg-card flex items-center justify-between px-4 z-10">
-          <div className="flex items-center space-x-4">
-            {isEditingName ? (
-              <input
-                type="text"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                onBlur={() => setIsEditingName(false)}
-                onKeyDown={(e) => e.key === 'Enter' && setIsEditingName(false)}
-                className="bg-transparent text-foreground font-medium text-lg outline-none border-b border-border"
-                autoFocus
-              />
-            ) : (
-              <h1 
-                className="text-lg font-medium text-foreground cursor-pointer hover:text-primary"
-                onClick={() => setIsEditingName(true)}
-              >
-                {projectName}
-              </h1>
-            )}
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {/* AI Quota Display */}
-            {canUseAIGeneration && (
-              <div className="flex items-center space-x-2">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-sm text-muted-foreground">
-                  AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
-                </span>
-              </div>
-            )}
-
-            {/* Plan Badge */}
-            <Badge variant={isPro ? "default" : "secondary"}>
-              {isPro ? "Pro" : "Free"}
-            </Badge>
-
-            {/* Action Buttons */}
-            <div className="flex items-center space-x-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <Undo className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Undo</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <Redo className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Redo</TooltipContent>
-              </Tooltip>
-
-              <Button variant="outline" size="sm">
-                <Share className="h-4 w-4 mr-2" />
-                Share
-              </Button>
+        <div className="h-14 border-b border-white/20" style={{ backgroundColor: '#3b82f6' }}>
+          <div className="flex items-center justify-between px-4 h-full">
+            <div className="flex items-center space-x-4">
+              {isEditingName ? (
+                <input
+                  type="text"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  onBlur={() => setIsEditingName(false)}
+                  onKeyDown={(e) => e.key === 'Enter' && setIsEditingName(false)}
+                  className="bg-transparent text-white font-medium text-lg outline-none border-b border-white/50 placeholder-white/70"
+                  autoFocus
+                />
+              ) : (
+                <h1 
+                  className="text-lg font-medium text-white cursor-pointer hover:text-white/80"
+                  onClick={() => setIsEditingName(true)}
+                >
+                  {projectName}
+                </h1>
+              )}
             </div>
 
-            {/* Dashboard Dark Mode Toggle */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-10 h-10 p-0"
-                  onClick={() => {
-                    // Dashboard dark mode toggle
-                    const newDarkMode = !isDarkMode;
-                    setIsDarkMode(newDarkMode);
-                    if (newDarkMode) {
-                      document.documentElement.classList.add('dark');
-                    } else {
-                      document.documentElement.classList.remove('dark');
-                    }
-                    
-                    if (!canAccessTemplateDarkMode) {
-                      toast({
-                        title: "Dashboard Dark Mode",
-                        description: "Upgrade to Pro to also generate dark color palettes for templates.",
-                        variant: "default",
-                      });
-                    }
-                  }}
-                >
-                  {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Dashboard {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-              </TooltipContent>
-            </Tooltip>
+            <div className="flex items-center space-x-4">
+              {/* AI Quota Display */}
+              {canUseAIGeneration && (
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="h-4 w-4 text-white" />
+                  <span className="text-sm text-white/80">
+                    AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
+                  </span>
+                </div>
+              )}
 
-            {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar className="h-8 w-8 cursor-pointer">
-                  <AvatarFallback>
-                    <User className="h-4 w-4" />
-                  </AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              {/* Plan Badge */}
+              <Badge variant={isPro ? "default" : "secondary"} className="bg-white/20 text-white border-white/30">
+                {isPro ? "Pro" : "Free"}
+              </Badge>
+
+              {/* Action Buttons */}
+              <div className="flex items-center space-x-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 hover:text-white">
+                      <Undo className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Undo</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 hover:text-white">
+                      <Redo className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Redo</TooltipContent>
+                </Tooltip>
+
+                <Button variant="outline" size="sm" className="text-white border-white/50 hover:bg-white/20 hover:text-white hover:border-white/70">
+                  <Share className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+              </div>
+
+              {/* Dashboard Dark Mode Toggle */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-10 h-10 p-0 text-white hover:bg-white/20 hover:text-white"
+                    onClick={() => {
+                      // Dashboard dark mode toggle
+                      const newDarkMode = !isDarkMode;
+                      setIsDarkMode(newDarkMode);
+                      if (newDarkMode) {
+                        document.documentElement.classList.add('dark');
+                      } else {
+                        document.documentElement.classList.remove('dark');
+                      }
+                      
+                      if (!canAccessTemplateDarkMode) {
+                        toast({
+                          title: "Dashboard Dark Mode",
+                          description: "Upgrade to Pro to also generate dark color palettes for templates.",
+                          variant: "default",
+                        });
+                      }
+                    }}
+                  >
+                    {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Dashboard {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                </TooltipContent>
+              </Tooltip>
+
+              {/* User Menu */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="h-8 w-8 cursor-pointer bg-white/20 hover:bg-white/30">
+                    <AvatarFallback className="bg-transparent">
+                      <User className="h-4 w-4 text-white" />
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
 
