@@ -397,6 +397,17 @@ const Dashboard = () => {
     );
   }
 
+  const handleSidebarItemClick = (sectionId: typeof activeSection) => {
+    if (activeSection === sectionId && !isContextPanelCollapsed) {
+      // If clicking the same active section and panel is open, close it
+      setIsContextPanelCollapsed(true);
+    } else {
+      // Otherwise, set the section and ensure panel is open
+      setActiveSection(sectionId);
+      setIsContextPanelCollapsed(false);
+    }
+  };
+
   const sidebarItems = [
     { id: 'templates' as const, icon: Palette, label: 'Templates', available: true },
     { id: 'schemes' as const, icon: Shapes, label: 'Schemes', available: canAccessColorSchemes },
@@ -509,7 +520,7 @@ const Dashboard = () => {
                       variant={activeSection === item.id ? "default" : "ghost"}
                       size="sm"
                       className="w-10 h-10 p-0 relative"
-                      onClick={() => setActiveSection(item.id)}
+                      onClick={() => handleSidebarItemClick(item.id)}
                     >
                       <item.icon className="h-5 w-5" />
                       {item.isPro && (
@@ -552,10 +563,18 @@ const Dashboard = () => {
           {/* Context Panel */}
           {!isContextPanelCollapsed && (
             <div className="w-80 bg-background border-r flex flex-col">
-            <div className="p-4 border-b">
+            <div className="p-4 border-b flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
               </h2>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setIsContextPanelCollapsed(true)}
+                className="h-8 w-8 p-0"
+              >
+                <PanelLeftClose className="h-4 w-4" />
+              </Button>
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
