@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, Shapes, Sun, Moon, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -405,7 +405,7 @@ const Dashboard = () => {
   };
   const sidebarItems = [{
     id: 'templates' as const,
-    icon: Palette,
+    icon: Layout,
     label: 'Templates',
     available: true
   }, {
@@ -689,6 +689,15 @@ const Dashboard = () => {
                 <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200}>
                   <ZoomIn className="h-4 w-4" />
                 </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white">
+                      {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
+                      Auto Generate
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Generate new color palette</TooltipContent>
+                </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()}>
