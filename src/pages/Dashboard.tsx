@@ -743,17 +743,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Color Controls Overlay */}
-            <div className="absolute bottom-6 right-6">
-              <Card className="p-4">
-                <ColorControls
-                  colorPalette={colorPalette}
-                  onColorChange={handleColorChange}
-                  lockedColors={lockedColors}
-                  onToggleLock={handleToggleLock}
-                />
-              </Card>
-            </div>
           </div>
         </div>
 
