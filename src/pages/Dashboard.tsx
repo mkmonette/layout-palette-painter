@@ -804,20 +804,6 @@ const Dashboard = () => {
             {/* Canvas Toolbar */}
             <div className="h-12 bg-background border-b flex items-center justify-between px-4">
               <div className="flex items-center space-x-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={handleDownloadPDF}
-                      disabled={!canDownload()}
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Export PDF
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Export color palette as PDF</TooltipContent>
-                </Tooltip>
 
                 <div className="h-4 w-px bg-border mx-2" />
 
@@ -857,6 +843,20 @@ const Dashboard = () => {
                   <Plus className="h-4 w-4 mr-2" />
                   Add Page
                 </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleDownloadPDF}
+                      disabled={!canDownload()}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Export PDF
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Export color palette as PDF</TooltipContent>
+                </Tooltip>
                 <Button variant="outline" size="sm" onClick={handleFullscreenToggle}>
                   <Maximize className="h-4 w-4 mr-2" />
                   Fullscreen
