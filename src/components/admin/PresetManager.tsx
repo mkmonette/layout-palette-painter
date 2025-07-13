@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FilterX } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { 
@@ -40,6 +41,9 @@ interface ColorPreset {
   createdAt: string;
   roles: ColorRoles;
   originalPalette: ColorPalette;
+  scheme?: string;
+  mood?: string;
+  mode?: 'light' | 'dark';
 }
 
 interface PresetManagerProps {
@@ -90,6 +94,37 @@ const PresetManager: React.FC<PresetManagerProps> = ({
   const [renamingPreset, setRenamingPreset] = useState<ColorPreset | null>(null);
   const [newPresetName, setNewPresetName] = useState('');
   const [newPresetDescription, setNewPresetDescription] = useState('');
+
+  // Filter states
+  const [filterScheme, setFilterScheme] = useState<string>('all');
+  const [filterMood, setFilterMood] = useState<string>('all');
+  const [filterMode, setFilterMode] = useState<string>('all');
+
+  // Get unique values for filter options
+  const getUniqueSchemes = () => {
+    const schemes = presets.map(p => p.scheme).filter(Boolean);
+    return [...new Set(schemes)];
+  };
+
+  const getUniqueMoods = () => {
+    const moods = presets.map(p => p.mood).filter(Boolean);
+    return [...new Set(moods)];
+  };
+
+  // Filter presets based on current filter selections
+  const filteredPresets = presets.filter(preset => {
+    const schemeMatch = filterScheme === 'all' || preset.scheme === filterScheme;
+    const moodMatch = filterMood === 'all' || preset.mood === filterMood;
+    const modeMatch = filterMode === 'all' || preset.mode === filterMode;
+    return schemeMatch && moodMatch && modeMatch;
+  });
+
+  // Clear all filters
+  const clearFilters = () => {
+    setFilterScheme('all');
+    setFilterMood('all');
+    setFilterMode('all');
+  };
 
   // Load presets from localStorage on mount
   useEffect(() => {
@@ -228,7 +263,10 @@ const PresetManager: React.FC<PresetManagerProps> = ({
       createdBy: 'admin',
       createdAt: new Date().toISOString(),
       roles: currentRoles,
-      originalPalette: { ...workingPalette }
+      originalPalette: { ...workingPalette },
+      scheme: selectedScheme !== 'random' ? selectedScheme : undefined,
+      mood: selectedMood || undefined,
+      mode: isDarkMode ? 'dark' : 'light'
     };
 
     const updatedPresets = [...presets, newPreset];
@@ -769,15 +807,94 @@ const PresetManager: React.FC<PresetManagerProps> = ({
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
-                  {presets.length === 0 ? (
+                  {/* Filter Controls */}
+                  <div className="border-b pb-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-medium text-sm">Filter Presets</h4>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={clearFilters}
+                        className="h-7 px-2 text-xs"
+                      >
+                        <FilterX className="h-3 w-3 mr-1" />
+                        Clear
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <Label className="text-xs">Scheme</Label>
+                        <Select value={filterScheme} onValueChange={setFilterScheme}>
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Schemes</SelectItem>
+                            <SelectItem value="monochromatic">Monochromatic</SelectItem>
+                            <SelectItem value="analogous">Analogous</SelectItem>
+                            <SelectItem value="complementary">Complementary</SelectItem>
+                            <SelectItem value="triadic">Triadic</SelectItem>
+                            <SelectItem value="tetradic">Tetradic</SelectItem>
+                            {getUniqueSchemes().map(scheme => (
+                              <SelectItem key={scheme} value={scheme}>
+                                {scheme.charAt(0).toUpperCase() + scheme.slice(1)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs">Mood</Label>
+                        <Select value={filterMood} onValueChange={setFilterMood}>
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Moods</SelectItem>
+                            <SelectItem value="professional">Professional</SelectItem>
+                            <SelectItem value="modern">Modern</SelectItem>
+                            <SelectItem value="warm">Warm & Friendly</SelectItem>
+                            <SelectItem value="cool">Cool & Calm</SelectItem>
+                            <SelectItem value="vibrant">Vibrant & Energetic</SelectItem>
+                            <SelectItem value="elegant">Elegant & Luxury</SelectItem>
+                            <SelectItem value="minimalist">Minimalist</SelectItem>
+                            <SelectItem value="playful">Playful & Fun</SelectItem>
+                            {getUniqueMoods().map(mood => (
+                              <SelectItem key={mood} value={mood}>
+                                {mood.charAt(0).toUpperCase() + mood.slice(1)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs">Mode</Label>
+                        <Select value={filterMode} onValueChange={setFilterMode}>
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Modes</SelectItem>
+                            <SelectItem value="light">Light</SelectItem>
+                            <SelectItem value="dark">Dark</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
+                      <span>Showing {filteredPresets.length} of {presets.length} presets</span>
+                    </div>
+                  </div>
+
+                  {filteredPresets.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
                       <Palette className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>No presets saved yet</p>
-                      <p className="text-sm">Save your first preset to get started</p>
+                      <p>No presets match your filters</p>
+                      <p className="text-sm">Try adjusting your filter criteria</p>
                     </div>
                   ) : (
                     <div className="space-y-3 max-h-96 overflow-y-auto">
-                      {presets.map((preset) => (
+                      {filteredPresets.map((preset) => (
                         <div key={preset.id} className="border rounded-lg p-4">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
@@ -804,13 +921,35 @@ const PresetManager: React.FC<PresetManagerProps> = ({
                               {preset.description && (
                                 <p className="text-sm text-muted-foreground mb-2">
                                   {preset.description}
-                                </p>
-                              )}
-                              <p className="text-xs text-muted-foreground">
-                                Created {new Date(preset.createdAt).toLocaleDateString()}
-                              </p>
-                            </div>
-                            <div className="flex gap-1 ml-4">
+                                 </p>
+                               )}
+                               
+                               {/* Scheme, Mood, Mode badges */}
+                               {(preset.scheme || preset.mood || preset.mode) && (
+                                 <div className="flex flex-wrap gap-1 mb-2">
+                                   {preset.scheme && (
+                                     <Badge variant="secondary" className="text-xs">
+                                       {preset.scheme}
+                                     </Badge>
+                                   )}
+                                   {preset.mood && (
+                                     <Badge variant="secondary" className="text-xs">
+                                       {preset.mood}
+                                     </Badge>
+                                   )}
+                                   {preset.mode && (
+                                     <Badge variant="secondary" className="text-xs">
+                                       {preset.mode}
+                                     </Badge>
+                                   )}
+                                 </div>
+                               )}
+                               
+                               <p className="text-xs text-muted-foreground">
+                                 Created {new Date(preset.createdAt).toLocaleDateString()}
+                               </p>
+                             </div>
+                             <div className="flex gap-1 ml-4">
                               <Button
                                 size="sm"
                                 onClick={() => handleLoadPreset(preset.id)}
@@ -854,23 +993,26 @@ const PresetManager: React.FC<PresetManagerProps> = ({
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                  <div className="flex justify-end">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setLoadDialogOpen(false)}
-                    >
-                      Close
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-              </div>
+                       ))}
+                     </div>
+                   )}
+                   
+                   {presets.length > 0 && (
+                     <div className="flex justify-end">
+                       <Button 
+                         variant="outline" 
+                         onClick={() => setLoadDialogOpen(false)}
+                       >
+                         Close
+                       </Button>
+                     </div>
+                   )}
+                 </div>
+               </DialogContent>
+             </Dialog>
+               </div>
 
-              {/* Rename Preset Dialog */}
+               {/* Rename Preset Dialog */}
               <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
                 <DialogContent>
                   <DialogHeader>
