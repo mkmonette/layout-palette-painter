@@ -503,24 +503,6 @@ const Dashboard = () => {
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 hover:text-white">
-                      <Undo className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Undo</TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 hover:text-white">
-                      <Redo className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Redo</TooltipContent>
-                </Tooltip>
-
                 <Button variant="outline" size="sm" className="text-white border-white/50 hover:bg-white/20 hover:text-white hover:border-white/70">
                   <Share className="h-4 w-4 mr-2" />
                   Share
@@ -838,10 +820,6 @@ const Dashboard = () => {
                 </Button>
                 <Button variant="ghost" size="sm" onClick={handleZoomReset}>
                   <RotateCcw className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Page
                 </Button>
                 <Tooltip>
                   <TooltipTrigger asChild>
