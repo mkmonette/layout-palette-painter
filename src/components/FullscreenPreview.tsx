@@ -170,54 +170,36 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       </div>
 
       {/* Bottom Toolbar */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 bg-white/95 backdrop-blur-md border-t shadow-lg">
-        <div className="px-4 py-3 relative bg-[#000a00]/[0.03]">
-          <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap">
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="bg-white/95 backdrop-blur-md border shadow-lg rounded-full px-4 py-2">
+          <div className="flex items-center justify-center gap-2">
             {/* Template Selector */}
-            <Button onClick={() => setActiveModal('template')} variant="outline" className="flex items-center gap-2 h-9 px-3 flex-shrink-0" style={{
-            scrollSnapAlign: 'start'
-          }}>
+            <Button onClick={() => setActiveModal('template')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
               <Eye className="h-4 w-4" />
-              <span className="text-sm">Template</span>
             </Button>
 
             {/* Color Theme Dropdown */}
-            <div className="flex-shrink-0" style={{
-            scrollSnapAlign: 'start'
-          }}>
-              <ColorThemeDropdown onSchemeClick={() => setActiveModal('scheme')} onMoodClick={() => setActiveModal('mood')} />
-            </div>
+            <ColorThemeDropdown onSchemeClick={() => setActiveModal('scheme')} onMoodClick={() => setActiveModal('mood')} />
 
             {/* Light/Dark Mode Toggle */}
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{
-            scrollSnapAlign: 'start'
-          }}>
+            <div className="flex items-center gap-1 px-2 py-1 border rounded-full bg-white h-10">
               <Sun className="h-3 w-3 text-yellow-500" />
               <Switch checked={isDarkMode} onCheckedChange={onModeToggle} />
               <Moon className="h-3 w-3 text-gray-600" />
             </div>
 
             {/* PDF Download */}
-            {onDownloadPDF && <Button onClick={onDownloadPDF} variant="outline" className="flex items-center gap-2 h-9 px-3 flex-shrink-0" style={{
-            scrollSnapAlign: 'start'
-          }}>
+            {onDownloadPDF && <Button onClick={onDownloadPDF} variant="outline" size="icon" className="h-10 w-10 rounded-full">
                 <Download className="h-4 w-4" />
-                <span className="text-sm whitespace-nowrap">PDF</span>
               </Button>}
 
             {/* Save Sets */}
-            <Button onClick={() => setActiveModal('saved')} variant="outline" className="flex items-center gap-2 h-9 px-3 flex-shrink-0" style={{
-            scrollSnapAlign: 'start'
-          }}>
+            <Button onClick={() => setActiveModal('saved')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
               <BookOpen className="h-4 w-4" />
-              <span className="text-sm whitespace-nowrap">Save ({savedPalettesCount}/10)</span>
             </Button>
 
             {/* More Options Dropdown */}
-            <div className="flex-shrink-0" style={{
-            scrollSnapAlign: 'start'
-          }}>
-              <MoreOptionsDropdown onImageGeneratorClick={() => {
+            <MoreOptionsDropdown onImageGeneratorClick={() => {
               if (!isPro) {
                 setUpsellModal({
                   isOpen: true,
@@ -227,24 +209,13 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               }
               setActiveModal('image-generator');
             }} onColorsClick={() => setActiveModal('colors')} onSetsClick={() => {}} onBackgroundClick={() => setActiveModal('background')} onAdminPresetsClick={() => setActiveModal('admin-presets')} />
-            </div>
-
-            {/* Generate Button - Last item */}
-            <Button onClick={onGenerateColors} disabled={isGenerating} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-9 font-medium flex-shrink-0" style={{
-            scrollSnapAlign: 'start'
-          }}>
-              {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Palette className="h-4 w-4 mr-2" />}
-              Generate
-            </Button>
 
             {/* Zoom Controls */}
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{
-            scrollSnapAlign: 'start'
-          }}>
+            <div className="flex items-center gap-1 px-2 py-1 border rounded-full bg-white h-10">
               <Button onClick={handleZoomOut} variant="ghost" size="sm" disabled={zoomLevel <= 50} className="h-6 w-6 p-0">
                 <ZoomOut className="h-3 w-3" />
               </Button>
-              <span className="text-xs font-medium text-gray-600 min-w-[2.5rem] text-center">
+              <span className="text-xs font-medium text-gray-600 min-w-[2rem] text-center">
                 {zoomLevel}%
               </span>
               <Button onClick={handleZoomIn} variant="ghost" size="sm" disabled={zoomLevel >= 200} className="h-6 w-6 p-0">
@@ -254,10 +225,12 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                 <RotateCcw className="h-3 w-3" />
               </Button>
             </div>
-          </div>
 
-          {/* Scroll indicator gradient */}
-          <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white/95 to-transparent pointer-events-none" />
+            {/* Generate Button - Last item */}
+            <Button onClick={onGenerateColors} disabled={isGenerating} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-10 w-10 rounded-full p-0">
+              {isGenerating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Palette className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
       </div>
 
