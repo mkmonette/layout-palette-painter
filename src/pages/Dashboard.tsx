@@ -66,6 +66,7 @@ import BackgroundCustomizer from '@/components/BackgroundCustomizer';
 import OpenAIKeyInput from '@/components/OpenAIKeyInput';
 import AIColorGenerator from '@/components/AIColorGenerator';
 import AdminPresetsModal from '@/components/AdminPresetsModal';
+import InlineColorMoods from '@/components/InlineColorMoods';
 import { initializeOpenAI } from '@/utils/openaiService';
 import { validatePaletteContrast, getAccessibleVersion } from '@/utils/contrastChecker';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
@@ -587,24 +588,11 @@ const Dashboard = () => {
               )}
 
               {activeSection === 'moods' && (
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    Select a mood to generate colors that match the desired feeling.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowColorMood(true)}
-                    className="w-full"
-                  >
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Choose Color Mood
-                  </Button>
-                  {selectedMoodId && (
-                    <div className="text-sm text-muted-foreground">
-                      Current mood: <span className="text-foreground font-medium">{selectedMoodId}</span>
-                    </div>
-                  )}
-                </div>
+                <InlineColorMoods
+                  onMoodSelect={handleMoodSelect}
+                  currentPalette={colorPalette}
+                  selectedMoodId={selectedMoodId}
+                />
               )}
 
               {activeSection === 'ai-colors' && (

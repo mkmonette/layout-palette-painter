@@ -84,7 +84,7 @@ const ColorSchemeSelector: React.FC<ColorSchemeSelectorProps> = ({
           </Button>
         </div>
         
-        <RadioGroup value={selectedScheme} onValueChange={onSchemeChange} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <RadioGroup value={selectedScheme} onValueChange={onSchemeChange} className="grid grid-cols-1 gap-3">
           {colorSchemes.map((scheme) => (
             <div
               key={scheme.id}
