@@ -125,6 +125,7 @@ const Dashboard = () => {
   const [activeSection, setActiveSection] = useState<'templates' | 'ai-colors' | 'auto-generate' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings'>('templates');
   const [projectName, setProjectName] = useState('Untitled Project');
   const [isEditingName, setIsEditingName] = useState(false);
+  const [showColorMood, setShowColorMood] = useState(false);
   const { remainingAIGenerations, maxAIGenerationsPerMonth, canUseAIGeneration } = useFeatureAccess();
 
   // Initialize OpenAI on component mount if API key exists
@@ -564,12 +565,16 @@ const Dashboard = () => {
                     onGenerateScheme={handleGenerateColors}
                     isGenerating={isGenerating}
                   />
-                  <ColorMoodSelector
-                    isOpen={true}
-                    onClose={() => {}}
-                    onMoodSelect={handleMoodSelect}
-                    currentPalette={colorPalette}
-                  />
+                  <div className="space-y-2">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setShowColorMood(true)}
+                      className="w-full"
+                    >
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Choose Color Mood
+                    </Button>
+                  </div>
                   <BackgroundCustomizer
                     settings={backgroundSettings}
                     onSettingsChange={setBackgroundSettings}
@@ -776,6 +781,17 @@ const Dashboard = () => {
           isOpen={upsellModal.isOpen}
           onClose={() => setUpsellModal({ isOpen: false, templateName: '' })}
           templateName={upsellModal.templateName}
+        />
+
+        {/* Color Mood Modal */}
+        <ColorMoodSelector
+          isOpen={showColorMood}
+          onClose={() => setShowColorMood(false)}
+          onMoodSelect={(palette, moodId) => {
+            handleMoodSelect(palette, moodId);
+            setShowColorMood(false);
+          }}
+          currentPalette={colorPalette}
         />
       </div>
     </TooltipProvider>
