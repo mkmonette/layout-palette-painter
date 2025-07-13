@@ -259,20 +259,8 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               />
             </div>
 
-            {/* Generate Button - Last item */}
-            <Button 
-              onClick={onGenerateColors}
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-9 font-medium flex-shrink-0"
-              style={{ scrollSnapAlign: 'start' }}
-            >
-              {isGenerating ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Palette className="h-4 w-4 mr-2" />
-              )}
-              Generate
-            </Button>
+            {/* Spacer to push zoom and generate to the right */}
+            <div className="flex-1" />
 
             {/* Zoom Controls */}
             <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
@@ -307,6 +295,21 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                 <RotateCcw className="h-3 w-3" />
               </Button>
             </div>
+
+            {/* Generate Button - Last item */}
+            <Button 
+              onClick={onGenerateColors}
+              disabled={isGenerating}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-9 font-medium flex-shrink-0"
+              style={{ scrollSnapAlign: 'start' }}
+            >
+              {isGenerating ? (
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Palette className="h-4 w-4 mr-2" />
+              )}
+              Generate
+            </Button>
           </div>
 
           {/* Scroll indicator gradient */}
