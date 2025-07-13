@@ -242,7 +242,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
       </div>
 
       {/* 2 Column Template Grid */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2">
         {allTemplates.map(renderTemplateCard)}
       </div>
 
