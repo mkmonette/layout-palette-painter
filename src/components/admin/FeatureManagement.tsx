@@ -611,7 +611,7 @@ const FeatureManagement = () => {
                 <TableHead>Status</TableHead>
                 <TableHead>Subscribers</TableHead>
                 <TableHead>Pro Templates</TableHead>
-                <TableHead>AI Generations</TableHead>
+                <TableHead>AI Colors</TableHead>
                 <TableHead>Saved Palettes</TableHead>
                 <TableHead>Downloads/Day</TableHead>
                 <TableHead>Actions</TableHead>

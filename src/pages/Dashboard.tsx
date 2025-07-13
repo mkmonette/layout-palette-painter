@@ -116,7 +116,7 @@ const Dashboard = () => {
   });
 
   // New state for sidebar sections
-  const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'ai-colors' | 'auto-generate' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings'>('templates');
+  const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'ai-colors' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings'>('templates');
   const [projectName, setProjectName] = useState('Untitled Project');
   const [isEditingName, setIsEditingName] = useState(false);
   const [showColorMood, setShowColorMood] = useState(false);
@@ -425,12 +425,6 @@ const Dashboard = () => {
     available: canUseAIGeneration,
     isPro: true
   }, {
-    id: 'auto-generate' as const,
-    icon: Wand2,
-    label: 'Auto Generate',
-    available: canAccessAutoGenerator,
-    isPro: true
-  }, {
     id: 'from-image' as const,
     icon: ImageIcon,
     label: 'From Image',
@@ -605,15 +599,6 @@ const Dashboard = () => {
               {activeSection === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
 
               {activeSection === 'ai-colors' && <AIColorGenerator isDarkMode={isDarkMode} onPaletteGenerated={handleAIPaletteGenerated} />}
-
-              {activeSection === 'auto-generate' && <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    Generate multiple color palettes automatically.
-                  </p>
-                  <Button onClick={handleGenerateColors} className="w-full" disabled={isGenerating}>
-                    Auto Generate Sets
-                  </Button>
-                </div>}
 
               {activeSection === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
 

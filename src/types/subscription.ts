@@ -84,7 +84,7 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
   },
   {
     id: 'ai_generations_per_month',
-    name: 'AI Generations per Month',
+    name: 'AI Colors per Month',
     type: 'number',
     description: 'Maximum number of AI-powered color generations per month',
     category: 'usage'
