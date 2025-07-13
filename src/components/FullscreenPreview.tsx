@@ -179,7 +179,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </Button>
 
             {/* Color Scheme Selector */}
-            <Button onClick={() => setActiveModal('scheme')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+            <Button onClick={() => setActiveModal('scheme')} variant="outline" size="icon" className="h-10 w-10 rounded-full bg-slate-400 hover:bg-slate-300">
               <Palette className="h-4 w-4" />
             </Button>
 
