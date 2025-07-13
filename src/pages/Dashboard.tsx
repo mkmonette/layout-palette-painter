@@ -11,8 +11,6 @@ import {
   Wand2, 
   Image as ImageIcon, 
   Shield,
-  Undo,
-  Redo,
   Share,
   ZoomIn,
   ZoomOut,
