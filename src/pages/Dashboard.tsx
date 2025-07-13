@@ -690,19 +690,40 @@ const Dashboard = () => {
 
             {/* Action Buttons */}
             <div className="p-4 border-t space-y-2">
-              <Button 
-                onClick={handleGenerateColors}
-                className="w-full"
-                size="lg"
-                disabled={isGenerating}
-              >
-                {isGenerating ? (
-                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Palette className="mr-2 h-4 w-4" />
-                )}
-                Generate Colors
-              </Button>
+              {/* Main Generate Buttons - Responsive Layout */}
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button 
+                  onClick={handleGenerateColors}
+                  className="flex-1"
+                  size="lg"
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? (
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Palette className="mr-2 h-4 w-4" />
+                  )}
+                  🎨 Generate Colors
+                </Button>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')}
+                      className="flex-1"
+                      size="lg"
+                      variant={canUseAIGeneration ? "default" : "outline"}
+                      disabled={isGenerating}
+                    >
+                      <Bot className="mr-2 h-4 w-4" />
+                      🤖 AI Colors {!canUseAIGeneration && '🔒 PRO'}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Use AI to generate palettes based on mood or theme
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               
               <div className="flex space-x-2">
                 <Button 
@@ -823,9 +844,12 @@ const Dashboard = () => {
 
         {/* Pro Upsell Modal */}
         <ProUpsellModal
-          isOpen={upsellModal.isOpen}
-          onClose={() => setUpsellModal({ isOpen: false, templateName: '' })}
-          templateName={upsellModal.templateName}
+          isOpen={upsellModal.isOpen || activeModal === 'pro-upsell'}
+          onClose={() => {
+            setUpsellModal({ isOpen: false, templateName: '' });
+            setActiveModal(null);
+          }}
+          templateName={activeModal === 'pro-upsell' ? 'AI Colors' : upsellModal.templateName}
         />
 
         {/* Color Mood Modal */}
