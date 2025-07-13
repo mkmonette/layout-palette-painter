@@ -183,39 +183,39 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         <div className="backdrop-blur-md border shadow-lg rounded-full px-4 py-2 bg-white/0">
           <div className="flex items-center justify-center gap-2">
             {/* Template Selector */}
-            <Button onClick={() => setActiveModal('template')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+            <Button onClick={() => setActiveModal('template')} variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-md">
               <Layout className="h-4 w-4" />
             </Button>
 
             {/* Color Scheme Selector */}
-            <Button onClick={() => setActiveModal('scheme')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+            <Button onClick={() => setActiveModal('scheme')} variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-md">
               <Palette className="h-4 w-4" />
             </Button>
 
             {/* Color Mood Selector */}
-            <Button onClick={() => setActiveModal('mood')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+            <Button onClick={() => setActiveModal('mood')} variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-md">
               <Sparkles className="h-4 w-4" />
             </Button>
 
             {/* Light/Dark Mode Toggle */}
-            <div className="flex items-center gap-1 px-2 py-1 border rounded-full h-10 bg-slate-50">
+            <div className="flex items-center gap-1 px-2 py-1 border rounded-full h-10 bg-slate-50 shadow-md">
               <Sun className="h-4 w-4" />
               <Switch checked={templateDarkMode} onCheckedChange={handleTemplateDarkModeToggle} className="bg-slate-500 hover:bg-slate-400" />
               <Moon className="h-4 w-4" />
             </div>
 
             {/* PDF Download */}
-            {onDownloadPDF && <Button onClick={onDownloadPDF} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+            {onDownloadPDF && <Button onClick={onDownloadPDF} variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-md">
                 <Download className="h-4 w-4" />
               </Button>}
 
             {/* Save Sets */}
-            <Button onClick={() => setActiveModal('saved')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+            <Button onClick={() => setActiveModal('saved')} variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-md">
               <BookOpen className="h-4 w-4" />
             </Button>
 
             {/* More Options Dropdown */}
-            <Button variant="outline" size="icon" className="h-10 w-10 rounded-full" asChild>
+            <Button variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-md" asChild>
               <MoreOptionsDropdown onImageGeneratorClick={() => {
               if (!isPro) {
                 setUpsellModal({
@@ -229,7 +229,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </Button>
 
             {/* Zoom Controls */}
-            <div className="flex items-center gap-1 px-2 py-1 border rounded-full bg-white h-10">
+            <div className="flex items-center gap-1 px-2 py-1 border rounded-full bg-white h-10 shadow-md">
               <Button onClick={handleZoomOut} variant="ghost" size="sm" disabled={zoomLevel <= 50} className="h-6 w-6 p-0">
                 <ZoomOut className="h-3 w-3" />
               </Button>
@@ -245,7 +245,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </div>
 
             {/* Generate Button - Last item */}
-            <Button onClick={onGenerateColors} disabled={isGenerating} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-10 w-10 rounded-full p-0">
+            <Button onClick={onGenerateColors} disabled={isGenerating} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-10 w-10 rounded-full p-0 shadow-md">
               {isGenerating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
             </Button>
           </div>
