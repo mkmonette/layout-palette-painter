@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Users, 
@@ -15,8 +15,27 @@ import {
   Clock
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  BarChart, 
+  Bar, 
+  LineChart, 
+  Line, 
+  PieChart, 
+  Pie, 
+  Cell, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer 
+} from 'recharts';
 
 const AnalyticsDashboard: React.FC = () => {
+  const [timePeriod, setTimePeriod] = useState('monthly');
+
   // Mock analytics data - in real implementation this would come from your analytics service
   const analyticsData = {
     overview: {
@@ -55,7 +74,59 @@ const AnalyticsDashboard: React.FC = () => {
     }
   };
 
-  const StatCard = ({ 
+  // Chart data that changes based on time period
+  const getChartData = () => {
+    const baseData = {
+      daily: [
+        { name: 'Mon', users: 1200, revenue: 3400, palettes: 890 },
+        { name: 'Tue', users: 1400, revenue: 3800, palettes: 1020 },
+        { name: 'Wed', users: 1100, revenue: 3200, palettes: 780 },
+        { name: 'Thu', users: 1600, revenue: 4200, palettes: 1150 },
+        { name: 'Fri', users: 1800, revenue: 4800, palettes: 1340 },
+        { name: 'Sat', users: 900, revenue: 2800, palettes: 650 },
+        { name: 'Sun', users: 700, revenue: 2200, palettes: 420 }
+      ],
+      weekly: [
+        { name: 'Week 1', users: 8500, revenue: 24000, palettes: 5200 },
+        { name: 'Week 2', users: 9200, revenue: 26500, palettes: 5800 },
+        { name: 'Week 3', users: 8800, revenue: 25200, palettes: 5400 },
+        { name: 'Week 4', users: 10100, revenue: 28800, palettes: 6300 }
+      ],
+      monthly: [
+        { name: 'Jan', users: 32000, revenue: 98000, palettes: 18500 },
+        { name: 'Feb', users: 28000, revenue: 85000, palettes: 16200 },
+        { name: 'Mar', users: 35000, revenue: 105000, palettes: 20800 },
+        { name: 'Apr', users: 38000, revenue: 115000, palettes: 22400 },
+        { name: 'May', users: 42000, revenue: 128000, palettes: 25100 },
+        { name: 'Jun', users: 45000, revenue: 135000, palettes: 27300 }
+      ],
+      yearly: [
+        { name: '2021', users: 280000, revenue: 850000, palettes: 165000 },
+        { name: '2022', users: 420000, revenue: 1200000, palettes: 245000 },
+        { name: '2023', users: 580000, revenue: 1650000, palettes: 340000 },
+        { name: '2024', users: 750000, revenue: 2100000, palettes: 425000 }
+      ]
+    };
+    
+    return baseData[timePeriod as keyof typeof baseData] || baseData.monthly;
+  };
+
+  // Pie chart data for user distribution
+  const pieChartData = [
+    { name: 'Free Users', value: analyticsData.subscription.freeUsers, color: 'hsl(var(--muted))' },
+    { name: 'Pro Users', value: analyticsData.subscription.proUsers, color: 'hsl(var(--primary))' },
+    { name: 'Enterprise Users', value: analyticsData.subscription.enterpriseUsers, color: 'hsl(var(--accent))' }
+  ];
+
+  // Feature usage bar chart data
+  const featureUsageData = [
+    { name: 'AI Generation', value: analyticsData.features.aiGeneration },
+    { name: 'Templates', value: analyticsData.features.templateUsage },
+    { name: 'Exports', value: analyticsData.features.exportDownloads },
+    { name: 'Presets', value: analyticsData.features.presetSaves }
+  ];
+
+  const StatCard = ({
     title, 
     value, 
     growth, 
@@ -133,6 +204,208 @@ const AnalyticsDashboard: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* Charts Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Analytics Charts
+              </CardTitle>
+              <CardDescription>
+                Visual representation of key metrics over time
+              </CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant={timePeriod === 'daily' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTimePeriod('daily')}
+              >
+                Daily
+              </Button>
+              <Button
+                variant={timePeriod === 'weekly' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTimePeriod('weekly')}
+              >
+                Weekly
+              </Button>
+              <Button
+                variant={timePeriod === 'monthly' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTimePeriod('monthly')}
+              >
+                Monthly
+              </Button>
+              <Button
+                variant={timePeriod === 'yearly' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTimePeriod('yearly')}
+              >
+                Yearly
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Line Chart - User Growth */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">User Growth Trend</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={getChartData()}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                    <XAxis 
+                      dataKey="name" 
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <YAxis 
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--popover))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '6px'
+                      }}
+                    />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="users" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={2}
+                      name="Users"
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="palettes" 
+                      stroke="hsl(var(--accent))" 
+                      strokeWidth={2}
+                      name="Palettes"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Bar Chart - Revenue */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Revenue Analysis</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={getChartData()}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                    <XAxis 
+                      dataKey="name" 
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <YAxis 
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--popover))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '6px'
+                      }}
+                    />
+                    <Bar 
+                      dataKey="revenue" 
+                      fill="hsl(var(--primary))"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Pie Chart - User Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">User Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={pieChartData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {pieChartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--popover))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '6px'
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Bar Chart - Feature Usage */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Feature Usage</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={featureUsageData} layout="horizontal">
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                    <XAxis 
+                      type="number" 
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <YAxis 
+                      type="category" 
+                      dataKey="name"
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                      width={80}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--popover))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '6px'
+                      }}
+                    />
+                    <Bar 
+                      dataKey="value" 
+                      fill="hsl(var(--accent))"
+                      radius={[0, 4, 4, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Engagement Metrics */}
       <div>
