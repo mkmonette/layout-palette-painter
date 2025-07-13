@@ -711,7 +711,7 @@ const Dashboard = () => {
 
             {/* Canvas */}
             <div className="flex-1 overflow-auto p-2 flex items-start justify-center bg-slate-300">
-              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full" style={{
+              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full my-5" style={{
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
               width: `min(800px, calc(100vw - ${isContextPanelCollapsed ? '120px' : '440px'}))`,
