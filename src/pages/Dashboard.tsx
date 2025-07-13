@@ -1,5 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, RefreshCw, Settings, Eye, Moon, Sun, Maximize, ZoomIn, ZoomOut, RotateCcw, Download, Sparkles, BookOpen } from 'lucide-react';
+import { 
+  Palette, 
+  Shapes, 
+  Sun, 
+  Moon, 
+  Save, 
+  Download, 
+  Settings, 
+  Bot, 
+  Wand2, 
+  Image as ImageIcon, 
+  Shield,
+  Undo,
+  Redo,
+  Share,
+  ZoomIn,
+  ZoomOut,
+  Plus,
+  User,
+  LogOut,
+  Sparkles,
+  Eye,
+  Maximize,
+  RotateCcw,
+  RefreshCw,
+  BookOpen
+} from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -89,6 +120,12 @@ const Dashboard = () => {
     gradientEndColor: 'accent',
     gradientDirection: 'horizontal',
   });
+
+  // New state for sidebar sections
+  const [activeSection, setActiveSection] = useState<'templates' | 'ai-colors' | 'auto-generate' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings'>('templates');
+  const [projectName, setProjectName] = useState('Untitled Project');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const { remainingAIGenerations, maxAIGenerationsPerMonth, canUseAIGeneration } = useFeatureAccess();
 
   // Initialize OpenAI on component mount if API key exists
   React.useEffect(() => {
@@ -355,502 +392,393 @@ const Dashboard = () => {
     );
   }
 
+  const sidebarItems = [
+    { id: 'templates' as const, icon: Palette, label: 'Templates', available: true },
+    { id: 'ai-colors' as const, icon: Bot, label: 'AI Colors', available: canUseAIGeneration, isPro: true },
+    { id: 'auto-generate' as const, icon: Wand2, label: 'Auto Generate', available: canAccessAutoGenerator, isPro: true },
+    { id: 'from-image' as const, icon: ImageIcon, label: 'From Image', available: true },
+    { id: 'admin-presets' as const, icon: Shield, label: 'Admin Presets', available: true },
+    { id: 'saved-palettes' as const, icon: Save, label: 'Saved Palettes', available: true },
+    { id: 'settings' as const, icon: Settings, label: 'Settings', available: true }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-20">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-                <Palette className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Palette Painter
-                </h1>
-                <p className="text-sm text-gray-600">
-                  Welcome, {currentUser?.username}!
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <span className="capitalize font-medium">
-                  {selectedTemplate.replace('-', ' ')}
-                </span>
-                <span className="px-2 py-1 rounded-full bg-gray-100 text-xs">
-                  {isDarkMode ? 'Dark' : 'Light'}
-                </span>
-                <span className="px-2 py-1 rounded-full bg-purple-100 text-xs text-purple-700">
-                  {selectedScheme.charAt(0).toUpperCase() + selectedScheme.slice(1)}
-                </span>
-              </div>
-              <Button
-                onClick={() => navigate('/history')}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
+    <TooltipProvider>
+      <div className="h-screen flex flex-col bg-background">
+        {/* Top Navigation Bar */}
+        <div className="h-14 border-b bg-card flex items-center justify-between px-4 z-10">
+          <div className="flex items-center space-x-4">
+            {isEditingName ? (
+              <input
+                type="text"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                onBlur={() => setIsEditingName(false)}
+                onKeyDown={(e) => e.key === 'Enter' && setIsEditingName(false)}
+                className="bg-transparent text-foreground font-medium text-lg outline-none border-b border-border"
+                autoFocus
+              />
+            ) : (
+              <h1 
+                className="text-lg font-medium text-foreground cursor-pointer hover:text-primary"
+                onClick={() => setIsEditingName(true)}
               >
-                <span>History</span>
-              </Button>
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <span>Logout</span>
-              </Button>
-              <Button
-                onClick={handleFullscreenToggle}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <Maximize className="h-4 w-4" />
-                <span>Fullscreen</span>
-              </Button>
-            </div>
+                {projectName}
+              </h1>
+            )}
           </div>
-        </div>
-      </header>
 
-      {/* Main Content - Live Preview */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Plan Selector for Testing */}
-        <PlanSelector />
-        
-        <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold">Live Preview</h2>
+          <div className="flex items-center space-x-4">
+            {/* AI Quota Display */}
+            {canUseAIGeneration && (
+              <div className="flex items-center space-x-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="text-sm text-muted-foreground">
+                  AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
+                </span>
+              </div>
+            )}
+
+            {/* Plan Badge */}
+            <Badge variant={isPro ? "default" : "secondary"}>
+              {isPro ? "Pro" : "Free"}
+            </Badge>
+
+            {/* Action Buttons */}
             <div className="flex items-center space-x-2">
-              <Button
-                onClick={handleZoomOut}
-                variant="outline"
-                size="icon"
-                disabled={zoomLevel <= 50}
-              >
-                <ZoomOut className="h-4 w-4" />
-              </Button>
-              <span className="text-sm font-medium text-gray-600 min-w-[3rem] text-center">
-                {zoomLevel}%
-              </span>
-              <Button
-                onClick={handleZoomIn}
-                variant="outline"
-                size="icon"
-                disabled={zoomLevel >= 200}
-              >
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-              <Button
-                onClick={handleZoomReset}
-                variant="outline"
-                size="icon"
-                title="Reset Zoom"
-              >
-                <RotateCcw className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          <div className="border rounded-lg overflow-auto shadow-inner h-[500px] bg-gray-100">
-            <div 
-              className="min-h-full transition-transform duration-200 origin-top"
-              style={{ transform: `scale(${zoomLevel / 100})` }}
-              data-preview-element
-            >
-              <LivePreview
-                template={selectedTemplate}
-                colorPalette={colorPalette}
-                backgroundSettings={backgroundSettings}
-              />
-            </div>
-          </div>
-          
-        </Card>
-      </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Undo className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Undo</TooltipContent>
+              </Tooltip>
 
-      {/* Optimized Bottom Toolbar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t shadow-lg">
-        <div className="p-3 max-w-7xl mx-auto">
-          {/* Desktop Layout: Always visible controls in specified order */}
-          <div className="hidden md:flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              {/* Template */}
-              <Button
-                onClick={() => setActiveModal('template')}
-                variant="outline"
-                className="flex items-center gap-2 h-9"
-              >
-                <Eye className="h-4 w-4" />
-                <span className="text-sm">Template</span>
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Redo className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Redo</TooltipContent>
+              </Tooltip>
 
-              {/* Color Theme Dropdown */}
-              <ColorThemeDropdown
-                onSchemeClick={() => {
-                  if (!canAccessColorSchemes) {
-                    setUpsellModal({ isOpen: true, templateName: 'Color schemes' });
-                    return;
-                  }
-                  setActiveModal('scheme');
-                }}
-                onMoodClick={() => {
-                  if (!canAccessColorMood) {
-                    setUpsellModal({ isOpen: true, templateName: 'Color moods' });
-                    return;
-                  }
-                  setActiveModal('mood');
-                }}
-              />
-
-              {/* Light/Dark Mode Toggle */}
-              <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9">
-                <Sun className="h-3 w-3 text-yellow-500" />
-                <Switch
-                  checked={isDarkMode}
-                  onCheckedChange={(checked) => {
-                    if (!canAccessDarkMode) {
-                      setUpsellModal({ isOpen: true, templateName: 'Dark mode' });
-                      return;
-                    }
-                    handleModeToggle(checked);
-                  }}
-                  disabled={!canAccessDarkMode}
-                />
-                <Moon className="h-3 w-3 text-gray-600" />
-                {!canAccessDarkMode && <span className="text-xs text-gray-500">🔒</span>}
-              </div>
-
-              {/* PDF Download */}
-              <Button
-                onClick={handleDownloadPDF}
-                variant="outline"
-                className="flex items-center gap-2 h-9"
-                disabled={!canDownload()}
-              >
-                <Download className="h-4 w-4" />
-                <span className="text-sm">{isPro ? 'PDF' : `PDF (${getRemainingDownloads()}/3)`}</span>
-              </Button>
-
-              {/* Save Sets */}
-              <Button
-                onClick={() => setActiveModal('saved')}
-                variant="outline"
-                className="flex items-center gap-2 h-9"
-              >
-                <BookOpen className="h-4 w-4" />
-                <span className="text-sm">Save ({savedPalettesCount}/{MAX_PALETTES})</span>
-              </Button>
-
-              {/* More Options Dropdown */}
-              <MoreOptionsDropdown
-                onImageGeneratorClick={() => {
-                  if (!isPro) {
-                    setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
-                    return;
-                  }
-                  setActiveModal('image-generator');
-                }}
-                 onColorsClick={() => setActiveModal('colors')}
-                onSetsClick={() => setActiveModal('saved-palettes')}
-                onBackgroundClick={() => setActiveModal('background')}
-                onAdminPresetsClick={() => setActiveModal('admin-presets')}
-              />
-            </div>
-
-            {/* Generate Button - Far Right */}
-            <Button 
-              onClick={handleGenerateColors}
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-10 font-medium"
-            >
-              {isGenerating ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Palette className="h-4 w-4 mr-2" />
-              )}
-              Generate
-            </Button>
-          </div>
-
-          {/* Mobile Layout: Horizontally scrollable container */}
-          <div className="md:hidden relative">
-            <div className="flex items-center gap-2 overflow-x-auto pb-2" style={{
-              scrollSnapType: 'x mandatory',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
-            }}>
-              {/* Template */}
-              <Button
-                onClick={() => setActiveModal('template')}
-                variant="outline"
-                className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
-                style={{ scrollSnapAlign: 'start' }}
-              >
-                <Eye className="h-4 w-4" />
-                <span className="text-sm">Template</span>
-              </Button>
-
-              {/* Color Theme Dropdown */}
-              <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
-                <ColorThemeDropdown
-                  onSchemeClick={() => {
-                    if (!canAccessColorSchemes) {
-                      setUpsellModal({ isOpen: true, templateName: 'Color schemes' });
-                      return;
-                    }
-                    setActiveModal('scheme');
-                  }}
-                  onMoodClick={() => {
-                    if (!canAccessColorMood) {
-                      setUpsellModal({ isOpen: true, templateName: 'Color moods' });
-                      return;
-                    }
-                    setActiveModal('mood');
-                  }}
-                />
-              </div>
-
-              {/* Light/Dark Mode Toggle */}
-              <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
-                <Sun className="h-3 w-3 text-yellow-500" />
-                <Switch
-                  checked={isDarkMode}
-                  onCheckedChange={(checked) => {
-                    if (!canAccessDarkMode) {
-                      setUpsellModal({ isOpen: true, templateName: 'Dark mode' });
-                      return;
-                    }
-                    handleModeToggle(checked);
-                  }}
-                  disabled={!canAccessDarkMode}
-                />
-                <Moon className="h-3 w-3 text-gray-600" />
-                {!canAccessDarkMode && <span className="text-xs">🔒</span>}
-              </div>
-
-              {/* PDF Download */}
-              <Button
-                onClick={handleDownloadPDF}
-                variant="outline"
-                className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
-                disabled={!canDownload()}
-                style={{ scrollSnapAlign: 'start' }}
-              >
-                <Download className="h-4 w-4" />
-                <span className="text-sm whitespace-nowrap">{isPro ? 'PDF' : `PDF (${getRemainingDownloads()}/3)`}</span>
-              </Button>
-
-              {/* Save Sets */}
-              <Button
-                onClick={() => setActiveModal('saved')}
-                variant="outline"
-                className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
-                style={{ scrollSnapAlign: 'start' }}
-              >
-                <BookOpen className="h-4 w-4" />
-                <span className="text-sm whitespace-nowrap">Save ({savedPalettesCount}/{MAX_PALETTES})</span>
-              </Button>
-
-              {/* More Options Dropdown */}
-              <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
-                <MoreOptionsDropdown
-                  onImageGeneratorClick={() => {
-                    if (!isPro) {
-                      setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
-                      return;
-                    }
-                    setActiveModal('image-generator');
-                  }}
-                   onColorsClick={() => setActiveModal('colors')}
-                  onSetsClick={() => setActiveModal('saved-palettes')}
-                  onBackgroundClick={() => setActiveModal('background')}
-                  onAdminPresetsClick={() => setActiveModal('admin-presets')}
-                />
-              </div>
-
-              {/* Generate Button - Last item */}
-              <Button 
-                onClick={handleGenerateColors}
-                disabled={isGenerating}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-10 font-medium flex-shrink-0"
-                style={{ scrollSnapAlign: 'start' }}
-              >
-                {isGenerating ? (
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Palette className="h-4 w-4 mr-2" />
-                )}
-                Generate
+              <Button variant="outline" size="sm">
+                <Share className="h-4 w-4 mr-2" />
+                Share
               </Button>
             </div>
 
-            {/* Scroll indicator gradient */}
-            <div className="absolute right-0 top-0 bottom-2 w-6 bg-gradient-to-l from-white/95 to-transparent pointer-events-none" />
+            {/* User Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="h-8 w-8 cursor-pointer">
+                  <AvatarFallback>
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
-      </div>
 
-      {/* Template Selector Modal - Single Column Layout with 4-Column Grid */}
-      <Dialog open={activeModal === 'template'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-6xl max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Eye className="h-5 w-5" />
-              Choose Template
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
-              <TemplateSelector
-                selectedTemplate={selectedTemplate}
-                onTemplateChange={(newTemplate) => {
-                  setSelectedTemplate(newTemplate);
-                  closeModal();
-                }}
-                colorPalette={colorPalette}
-              />
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left Sidebar */}
+          <div className="w-16 bg-card border-r flex flex-col items-center py-4 space-y-2">
+            {sidebarItems.map((item) => {
+              if (!item.available) return null;
+              
+              return (
+                <Tooltip key={item.id}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={activeSection === item.id ? "default" : "ghost"}
+                      size="sm"
+                      className="w-10 h-10 p-0 relative"
+                      onClick={() => setActiveSection(item.id)}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      {item.isPro && (
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full flex items-center justify-center">
+                          <Sparkles className="h-2 w-2 text-primary-foreground" />
+                        </div>
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">{item.label}</TooltipContent>
+                </Tooltip>
+              );
+            })}
+
+            {/* Dark Mode Toggle */}
+            <div className="flex-1" />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-10 h-10 p-0"
+                  onClick={() => {
+                    if (!canAccessDarkMode) {
+                      setUpsellModal({ isOpen: true, templateName: 'Dark mode' });
+                      return;
+                    }
+                    handleModeToggle(!isDarkMode);
+                  }}
+                >
+                  {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              </TooltipContent>
+            </Tooltip>
+          </div>
+
+          {/* Context Panel */}
+          <div className="w-80 bg-background border-r flex flex-col">
+            <div className="p-4 border-b">
+              <h2 className="text-lg font-semibold text-foreground">
+                {sidebarItems.find(item => item.id === activeSection)?.label}
+              </h2>
             </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
+            
+            <div className="flex-1 overflow-y-auto p-4">
+              {activeSection === 'templates' && (
+                <div className="space-y-6">
+                  <TemplateSelector
+                    selectedTemplate={selectedTemplate}
+                    onTemplateChange={setSelectedTemplate}
+                    colorPalette={colorPalette}
+                  />
+                  <ColorSchemeSelector
+                    selectedScheme={selectedScheme}
+                    onSchemeChange={handleSchemeChange}
+                    onGenerateScheme={handleGenerateColors}
+                    isGenerating={isGenerating}
+                  />
+                  <ColorMoodSelector
+                    isOpen={true}
+                    onClose={() => {}}
+                    onMoodSelect={handleMoodSelect}
+                    currentPalette={colorPalette}
+                  />
+                  <BackgroundCustomizer
+                    settings={backgroundSettings}
+                    onSettingsChange={setBackgroundSettings}
+                  />
+                </div>
+              )}
 
-      {/* Color Scheme Modal - 2 Column Layout */}
-      <Dialog open={activeModal === 'scheme'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5" />
-              Color Scheme
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-              <ColorSchemeSelector
-                selectedScheme={selectedScheme}
-                onSchemeChange={handleSchemeChange}
-                onGenerateScheme={handleGenerateColors}
-                isGenerating={isGenerating}
-              />
-            </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
-
-      {/* Color Mood Modal */}
-      <ColorMoodSelector
-        isOpen={activeModal === 'mood'}
-        onClose={closeModal}
-        onMoodSelect={handleMoodSelect}
-        currentPalette={colorPalette}
-      />
-
-      {/* Customize Colors Modal */}
-      <Dialog open={activeModal === 'colors'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-lg max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Customize Colors
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="p-4 space-y-4">
-              {/* OpenAI Integration */}
-              <div className="space-y-3">
-                <OpenAIKeyInput onKeySet={() => {}} />
+              {activeSection === 'ai-colors' && (
                 <AIColorGenerator 
                   isDarkMode={isDarkMode}
                   onPaletteGenerated={handleAIPaletteGenerated}
                 />
+              )}
+
+              {activeSection === 'auto-generate' && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Generate multiple color palettes automatically.
+                  </p>
+                  <Button 
+                    onClick={handleGenerateColors}
+                    className="w-full"
+                    disabled={isGenerating}
+                  >
+                    Auto Generate Sets
+                  </Button>
+                </div>
+              )}
+
+              {activeSection === 'from-image' && (
+                <ImageColorGenerator
+                  onPaletteGenerated={setColorPalette}
+                  isGenerating={isGenerating}
+                  setIsGenerating={setIsGenerating}
+                />
+              )}
+
+              {activeSection === 'admin-presets' && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Browse and apply professionally curated color palettes.
+                  </p>
+                  <Button 
+                    onClick={() => setActiveModal('admin-presets')}
+                    className="w-full"
+                  >
+                    Browse Admin Presets
+                  </Button>
+                </div>
+              )}
+
+              {activeSection === 'saved-palettes' && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Access your saved color palettes.
+                  </p>
+                  <Button 
+                    onClick={() => setActiveModal('saved')}
+                    className="w-full"
+                  >
+                    View Saved Palettes ({savedPalettesCount}/{MAX_PALETTES})
+                  </Button>
+                </div>
+              )}
+
+              {activeSection === 'settings' && (
+                <div className="space-y-4">
+                  <h3 className="text-md font-medium">Application Settings</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Configure your preferences and account settings.
+                  </p>
+                  <div className="space-y-3">
+                    <OpenAIKeyInput onKeySet={() => {}} />
+                  </div>
+                  <Button variant="outline" className="w-full" onClick={() => navigate('/history')}>
+                    View History
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="p-4 border-t space-y-2">
+              <Button 
+                onClick={handleGenerateColors}
+                className="w-full"
+                size="lg"
+                disabled={isGenerating}
+              >
+                {isGenerating ? (
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Palette className="mr-2 h-4 w-4" />
+                )}
+                Generate Colors
+              </Button>
+              
+              <div className="flex space-x-2">
+                <Button 
+                  variant="outline" 
+                  onClick={handleDownloadPDF}
+                  className="flex-1"
+                  disabled={!canDownload()}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Export PDF
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => setActiveModal('saved')}
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  Save
+                </Button>
               </div>
-
-              {/* Color Controls */}
-              <ColorControls
-                colorPalette={colorPalette}
-                onColorChange={handleColorChange}
-                lockedColors={lockedColors}
-                onToggleLock={handleToggleLock}
-              />
             </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
+          </div>
 
-      {/* Saved Palettes Modal */}
-      <SavedPalettesModal
-        isOpen={activeModal === 'saved'}
-        onClose={closeModal}
-        currentPalette={colorPalette}
-        currentTemplate={selectedTemplate}
-        onPaletteSelect={handleSavedPaletteSelect}
-        onTemplateChange={setSelectedTemplate}
-      />
-
-      {/* Image Color Generator Modal */}
-      <Dialog open={activeModal === 'image-generator'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-lg max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5" />
-              Generate from Image or Website
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
-              <ImageColorGenerator
-                onPaletteGenerated={(palette) => {
-                  setColorPalette(palette);
-                  closeModal();
-                }}
-                isGenerating={isGenerating}
-                setIsGenerating={setIsGenerating}
-              />
+          {/* Main Canvas Area */}
+          <div className="flex-1 flex flex-col bg-muted/30">
+            {/* Canvas Toolbar */}
+            <div className="h-12 bg-background border-b flex items-center justify-between px-4">
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-muted-foreground">Template Preview</span>
+                <span className="text-xs text-muted-foreground">•</span>
+                <span className="text-xs text-muted-foreground capitalize">
+                  {selectedTemplate.replace('-', ' ')}
+                </span>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50}>
+                  <ZoomOut className="h-4 w-4" />
+                </Button>
+                <span className="text-sm text-muted-foreground min-w-12 text-center">{zoomLevel}%</span>
+                <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200}>
+                  <ZoomIn className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleZoomReset}>
+                  <RotateCcw className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Page
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleFullscreenToggle}>
+                  <Maximize className="h-4 w-4 mr-2" />
+                  Fullscreen
+                </Button>
+              </div>
             </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
 
-      {/* Background Customizer Modal */}
-      <Dialog open={activeModal === 'background'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-sm max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Background Settings
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
-              <BackgroundCustomizer
-                settings={backgroundSettings}
-                onSettingsChange={setBackgroundSettings}
-              />
+            {/* Canvas */}
+            <div className="flex-1 overflow-auto p-8 flex items-center justify-center">
+              <div 
+                className="bg-background border rounded-lg shadow-lg transition-transform duration-200"
+                style={{ transform: `scale(${zoomLevel / 100})` }}
+                data-preview-element
+              >
+                <LivePreview
+                  template={selectedTemplate}
+                  colorPalette={colorPalette}
+                  backgroundSettings={backgroundSettings}
+                />
+              </div>
             </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
 
-      {/* Admin Presets Modal */}
-      <AdminPresetsModal
-        isOpen={activeModal === 'admin-presets'}
-        onClose={closeModal}
-        onPresetSelect={(palette) => {
-          setColorPalette(palette);
-          closeModal();
-        }}
-      />
+            {/* Color Controls Overlay */}
+            <div className="absolute bottom-6 right-6">
+              <Card className="p-4">
+                <ColorControls
+                  colorPalette={colorPalette}
+                  onColorChange={handleColorChange}
+                  lockedColors={lockedColors}
+                  onToggleLock={handleToggleLock}
+                />
+              </Card>
+            </div>
+          </div>
+        </div>
 
-      {/* Pro Upsell Modal */}
-      <ProUpsellModal
-        isOpen={upsellModal.isOpen}
-        onClose={() => setUpsellModal({ isOpen: false, templateName: '' })}
-        templateName={upsellModal.templateName}
-      />
+        {/* Modals */}
+        <AdminPresetsModal
+          isOpen={activeModal === 'admin-presets'}
+          onClose={closeModal}
+          onPresetSelect={(palette) => {
+            setColorPalette(palette);
+            closeModal();
+          }}
+        />
 
-    </div>
+        <SavedPalettesModal
+          isOpen={activeModal === 'saved'}
+          onClose={closeModal}
+          currentPalette={colorPalette}
+          currentTemplate={selectedTemplate}
+          onPaletteSelect={handleSavedPaletteSelect}
+          onTemplateChange={setSelectedTemplate}
+        />
+
+        {/* Pro Upsell Modal */}
+        <ProUpsellModal
+          isOpen={upsellModal.isOpen}
+          onClose={() => setUpsellModal({ isOpen: false, templateName: '' })}
+          templateName={upsellModal.templateName}
+        />
+      </div>
+    </TooltipProvider>
   );
 };
 
