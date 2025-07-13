@@ -184,17 +184,17 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         <div className="backdrop-blur-md border shadow-lg rounded-full px-4 py-2 bg-white/0">
           <div className="flex items-center justify-center gap-2">
             {/* Template Selector */}
-            <Button onClick={() => setActiveModal('template')} variant="outline" size="icon" className="h-10 w-10 rounded-full bg-slate-400 hover:bg-slate-300">
+            <Button onClick={() => setActiveModal('template')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
               <Layout className="h-4 w-4" />
             </Button>
 
             {/* Color Scheme Selector */}
-            <Button onClick={() => setActiveModal('scheme')} variant="outline" size="icon" className="h-10 w-10 rounded-full bg-slate-400 hover:bg-slate-300">
+            <Button onClick={() => setActiveModal('scheme')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
               <Palette className="h-4 w-4" />
             </Button>
 
             {/* Color Mood Selector */}
-            <Button onClick={() => setActiveModal('mood')} variant="outline" size="icon" className="h-10 w-10 rounded-full bg-slate-400 hover:bg-slate-300">
+            <Button onClick={() => setActiveModal('mood')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
               <Sparkles className="h-4 w-4" />
             </Button>
 
@@ -211,7 +211,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               </Button>}
 
             {/* Save Sets */}
-            <Button onClick={() => setActiveModal('saved')} variant="outline" size="icon" className="h-10 w-10 rounded-full bg-slate-400 hover:bg-slate-300">
+            <Button onClick={() => setActiveModal('saved')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
               <BookOpen className="h-4 w-4" />
             </Button>
 
