@@ -525,6 +525,40 @@ const Dashboard = () => {
               </Button>
             </div>
 
+            {/* Dashboard Dark Mode Toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-10 h-10 p-0"
+                  onClick={() => {
+                    // Dashboard dark mode toggle
+                    const newDarkMode = !isDarkMode;
+                    setIsDarkMode(newDarkMode);
+                    if (newDarkMode) {
+                      document.documentElement.classList.add('dark');
+                    } else {
+                      document.documentElement.classList.remove('dark');
+                    }
+                    
+                    if (!canAccessTemplateDarkMode) {
+                      toast({
+                        title: "Dashboard Dark Mode",
+                        description: "Upgrade to Pro to also generate dark color palettes for templates.",
+                        variant: "default",
+                      });
+                    }
+                  }}
+                >
+                  {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Dashboard {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              </TooltipContent>
+            </Tooltip>
+
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -572,7 +606,7 @@ const Dashboard = () => {
               );
             })}
 
-            {/* Dark Mode Toggle */}
+            {/* Template Dark Mode Toggle */}
             <div className="flex-1" />
             <Tooltip>
               <TooltipTrigger asChild>
@@ -581,7 +615,11 @@ const Dashboard = () => {
                   size="sm"
                   className="w-10 h-10 p-0"
                   onClick={() => {
-                    // Dashboard dark mode is always available
+                    if (!canAccessTemplateDarkMode) {
+                      setUpsellModal({ isOpen: true, templateName: 'Template dark mode' });
+                      return;
+                    }
+                    // Template dark mode toggle (generates new colors)
                     handleModeToggle(!isDarkMode);
                   }}
                 >
@@ -589,7 +627,7 @@ const Dashboard = () => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                Template {isDarkMode ? 'Light Mode' : 'Dark Mode'} {!canAccessTemplateDarkMode && '(Pro)'}
               </TooltipContent>
             </Tooltip>
           </div>
