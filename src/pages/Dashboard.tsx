@@ -51,6 +51,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logoutUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
+import SavedPalettesContent from '@/components/SavedPalettesContent';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { generateColorPalettePDF } from '@/utils/pdfGenerator';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
@@ -729,8 +730,14 @@ const Dashboard = () => {
                   </Button>
                 </div>
               )}
-
-
+              {activeSection === 'saved-palettes' && (
+                <SavedPalettesContent 
+                  currentPalette={colorPalette}
+                  currentTemplate={selectedTemplate}
+                  onPaletteSelect={handleSavedPaletteSelect}
+                  onTemplateChange={setSelectedTemplate}
+                />
+              )}
               {activeSection === 'settings' && (
                 <div className="space-y-4">
                   <h3 className="text-md font-medium">Application Settings</h3>
