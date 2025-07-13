@@ -186,7 +186,7 @@ const PromptControlPanel: React.FC = () => {
               <h4 className="font-medium">Prompt Templates</h4>
             </div>
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-4">
               {promptTemplates.map((template) => (
                 <div key={template.id} className="p-3 border rounded-lg space-y-2">
                   <div className="flex items-center justify-between">
