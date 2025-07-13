@@ -170,7 +170,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       </div>
 
       {/* Live Preview - Full height with scroll */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto bg-blue-300">
         <div className="min-h-full transition-transform duration-200 origin-top" style={{
         transform: `scale(${zoomLevel / 100})`
       }}>
