@@ -76,7 +76,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const currentUser = getCurrentUser();
-  const { isPro, canAccessDarkMode, canAccessColorSchemes, canAccessColorMood, canAccessAutoGenerator } = useFeatureAccess();
+  const { isPro, canAccessTemplateDarkMode, canAccessColorSchemes, canAccessColorMood, canAccessAutoGenerator } = useFeatureAccess();
   const { canDownload, getRemainingDownloads, incrementDownload } = useDownloadLimits();
 
   const { getSavedCount, loadSavedPalettes, MAX_PALETTES } = useSavedPalettes();
@@ -157,6 +157,16 @@ const Dashboard = () => {
   const handleGenerateColors = async () => {
     if (isGenerating) return; // Prevent multiple simultaneous generations
     
+    // Check if trying to generate dark mode colors without pro access
+    if (isDarkMode && !canAccessTemplateDarkMode) {
+      toast({
+        title: "Pro Feature Required",
+        description: "Dark mode color generation requires a Pro subscription. Upgrade to unlock this feature.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsGenerating(true);
     setTimeout(() => {
       try {
@@ -192,7 +202,33 @@ const Dashboard = () => {
   };
 
   const handleModeToggle = (checked: boolean) => {
+    // Dashboard dark mode is always available, but check template dark mode for generation
+    if (checked && !canAccessTemplateDarkMode) {
+      // Allow dashboard dark mode but show warning about template limitations
+      setIsDarkMode(checked);
+      // Add dark class to document for dashboard dark mode
+      if (checked) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      
+      toast({
+        title: "Dashboard Dark Mode Enabled",
+        description: "Upgrade to Pro to generate dark color palettes for templates.",
+        variant: "default",
+      });
+      return;
+    }
+    
     setIsDarkMode(checked);
+    // Add/remove dark class for full dark mode (dashboard + templates)
+    if (checked) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    
     try {
       const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, false);
       setColorPalette(newPalette);
@@ -545,10 +581,7 @@ const Dashboard = () => {
                   size="sm"
                   className="w-10 h-10 p-0"
                   onClick={() => {
-                    if (!canAccessDarkMode) {
-                      setUpsellModal({ isOpen: true, templateName: 'Dark mode' });
-                      return;
-                    }
+                    // Dashboard dark mode is always available
                     handleModeToggle(!isDarkMode);
                   }}
                 >
@@ -556,7 +589,7 @@ const Dashboard = () => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               </TooltipContent>
             </Tooltip>
           </div>

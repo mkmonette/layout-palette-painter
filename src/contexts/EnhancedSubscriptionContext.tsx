@@ -46,7 +46,7 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       auto_generator: false,
       custom_color_schemes: false,
       color_mood_options: false,
-      dark_mode: false
+      template_dark_mode: false
     },
     status: 'active',
     subscribers: 1250,
@@ -66,7 +66,7 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
         auto_generator: true,
         custom_color_schemes: true,
         color_mood_options: true,
-        dark_mode: true,
+        template_dark_mode: true,
         ai_generations_per_month: 50
       },
     status: 'active',
@@ -87,7 +87,7 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
         auto_generator: true,
         custom_color_schemes: true,
         color_mood_options: true,
-        dark_mode: true,
+        template_dark_mode: true,
         ai_generations_per_month: 100
       },
     status: 'active',

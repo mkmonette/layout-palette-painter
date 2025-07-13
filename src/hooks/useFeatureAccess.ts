@@ -39,8 +39,8 @@ export const useFeatureAccess = () => {
     // Color Mood Options
     canAccessColorMood: hasFeatureAccess('color_mood_options'),
     
-    // Dark Mode
-    canAccessDarkMode: hasFeatureAccess('dark_mode'),
+    // Dark Mode (separated for dashboard vs templates)
+    canAccessTemplateDarkMode: hasFeatureAccess('template_dark_mode'),
     
     // Current plan info
     currentPlan,
