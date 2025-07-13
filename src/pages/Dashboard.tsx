@@ -757,13 +757,13 @@ const Dashboard = () => {
             </div>
 
             {/* Canvas */}
-            <div className="flex-1 overflow-hidden p-8 flex items-center justify-center">
+            <div className="flex-1 overflow-hidden p-4 flex items-center justify-center">
               <div 
-                className="bg-background border rounded-lg shadow-lg transition-transform duration-200 w-full max-w-3xl"
+                className="bg-background border rounded-lg shadow-lg transition-transform duration-200 w-full max-w-2xl"
                 style={{ 
                   transform: `scale(${zoomLevel / 100})`,
-                  aspectRatio: '16/10',
-                  maxHeight: '70vh'
+                  aspectRatio: '4/3',
+                  maxHeight: '60vh'
                 }}
                 data-preview-element
               >
