@@ -96,7 +96,33 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
         // Backup mechanism - store in component state
         setBackupData(savedPresets);
       } else {
-        console.log('No admin presets found');
+        console.log('No admin presets found in admin-color-presets key');
+        
+        // Check savedPalettes as fallback since it exists in localStorage
+        const savedPalettesData = localStorage.getItem('savedPalettes');
+        console.log('Checking savedPalettes data:', savedPalettesData ? savedPalettesData.substring(0, 200) + '...' : 'null');
+        
+        if (savedPalettesData) {
+          try {
+            const savedPalettes = JSON.parse(savedPalettesData);
+            console.log('Parsed savedPalettes:', savedPalettes);
+            
+            // Check if these are admin presets by looking for createdBy: 'admin'
+            if (Array.isArray(savedPalettes)) {
+              const adminPresets = savedPalettes.filter(preset => preset && preset.createdBy === 'admin');
+              console.log('Found admin presets in savedPalettes:', adminPresets.length);
+              
+              if (adminPresets.length > 0) {
+                console.log('Using admin presets from savedPalettes');
+                setPresets(adminPresets);
+                return;
+              }
+            }
+          } catch (error) {
+            console.error('Error parsing savedPalettes:', error);
+          }
+        }
+        
         setPresets([]);
       }
     } catch (error) {
