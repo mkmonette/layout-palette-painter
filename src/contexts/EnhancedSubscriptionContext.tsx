@@ -10,6 +10,10 @@ interface EnhancedSubscriptionContextType {
   getUsageRemaining: (featureId: string) => number;
   updatePlans: (plans: SubscriptionPlan[]) => void;
   setCurrentPlan: (plan: SubscriptionPlan | null) => void;
+  // Test override features (dev only)
+  testPlanOverride: SubscriptionPlan | null;
+  setTestPlanOverride: (plan: SubscriptionPlan) => void;
+  clearTestPlanOverride: () => void;
 }
 
 const EnhancedSubscriptionContext = createContext<EnhancedSubscriptionContextType | undefined>(undefined);
@@ -93,9 +97,26 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
 ];
 
 export const EnhancedSubscriptionProvider: React.FC<EnhancedSubscriptionProviderProps> = ({ children }) => {
-  const [currentPlan, setCurrentPlan] = useState<SubscriptionPlan | null>(DEFAULT_PLANS[0]); // Default to free plan
+  const [basePlan, setBasePlan] = useState<SubscriptionPlan | null>(DEFAULT_PLANS[0]); // Default to free plan
   const [userSubscription, setUserSubscription] = useState<UserSubscription | null>(null);
   const [plans, setPlans] = useState<SubscriptionPlan[]>(DEFAULT_PLANS);
+  
+  // Test override state (dev only)
+  const [testPlanOverride, setTestPlanOverrideState] = useState<SubscriptionPlan | null>(() => {
+    if (process.env.NODE_ENV === 'production') return null;
+    const saved = sessionStorage.getItem('test_plan_override');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  // Current plan is override if in dev mode, otherwise base plan
+  const currentPlan = process.env.NODE_ENV !== 'production' && testPlanOverride ? testPlanOverride : basePlan;
 
   // Load plans from localStorage on mount
   useEffect(() => {
@@ -104,11 +125,11 @@ export const EnhancedSubscriptionProvider: React.FC<EnhancedSubscriptionProvider
       try {
         const parsedPlans = JSON.parse(savedPlans);
         setPlans(parsedPlans);
-        // Update current plan if it exists in saved plans
-        if (currentPlan) {
-          const updatedCurrentPlan = parsedPlans.find((p: SubscriptionPlan) => p.id === currentPlan.id);
-          if (updatedCurrentPlan) {
-            setCurrentPlan(updatedCurrentPlan);
+        // Update base plan if it exists in saved plans
+        if (basePlan) {
+          const updatedBasePlan = parsedPlans.find((p: SubscriptionPlan) => p.id === basePlan.id);
+          if (updatedBasePlan) {
+            setBasePlan(updatedBasePlan);
           }
         }
       } catch (error) {
@@ -116,6 +137,23 @@ export const EnhancedSubscriptionProvider: React.FC<EnhancedSubscriptionProvider
       }
     }
   }, []);
+
+  // Test override functions (dev only)
+  const setTestPlanOverride = (plan: SubscriptionPlan) => {
+    if (process.env.NODE_ENV === 'production') return;
+    setTestPlanOverrideState(plan);
+    sessionStorage.setItem('test_plan_override', JSON.stringify(plan));
+  };
+
+  const clearTestPlanOverride = () => {
+    if (process.env.NODE_ENV === 'production') return;
+    setTestPlanOverrideState(null);
+    sessionStorage.removeItem('test_plan_override');
+  };
+
+  const setCurrentPlan = (plan: SubscriptionPlan | null) => {
+    setBasePlan(plan);
+  };
 
   const hasFeatureAccess = (featureId: string): boolean => {
     if (!currentPlan) return false;
@@ -154,7 +192,10 @@ export const EnhancedSubscriptionProvider: React.FC<EnhancedSubscriptionProvider
       getFeatureLimit,
       getUsageRemaining,
       updatePlans,
-      setCurrentPlan
+      setCurrentPlan,
+      testPlanOverride,
+      setTestPlanOverride,
+      clearTestPlanOverride
     }}>
       {children}
     </EnhancedSubscriptionContext.Provider>

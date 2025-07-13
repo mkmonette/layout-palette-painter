@@ -67,6 +67,7 @@ import OpenAIKeyInput from '@/components/OpenAIKeyInput';
 import AIColorGenerator from '@/components/AIColorGenerator';
 import AdminPresetsModal from '@/components/AdminPresetsModal';
 import InlineColorMoods from '@/components/InlineColorMoods';
+import { TestPlanSwitcher } from '@/components/TestPlanSwitcher';
 import { initializeOpenAI } from '@/utils/openaiService';
 import { validatePaletteContrast, getAccessibleVersion } from '@/utils/contrastChecker';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
@@ -678,6 +679,10 @@ const Dashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     Configure your preferences and account settings.
                   </p>
+                  
+                  {/* Test Plan Switcher - Development Only */}
+                  <TestPlanSwitcher />
+                  
                   <div className="space-y-3">
                     <OpenAIKeyInput onKeySet={() => {}} />
                   </div>
