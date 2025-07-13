@@ -209,9 +209,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                     <h3 className={`font-medium text-sm ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
                       {template.name}
                     </h3>
-                    <p className={`text-xs ${isSelected ? 'text-blue-600' : 'text-gray-500'}`}>
-                      {template.description}
-                    </p>
+                    
                   </div>
                   {isSelected && <div className="flex items-center space-x-1">
                       <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
