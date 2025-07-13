@@ -721,7 +721,7 @@ const Dashboard = () => {
             </div>
 
             {/* Canvas */}
-            <div className="flex-1 overflow-auto p-2 flex items-start justify-center bg-slate-300">
+            <div className="flex-1 overflow-auto p-2 flex items-start justify-center bg-sky-200">
               <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full my-5" style={{
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
