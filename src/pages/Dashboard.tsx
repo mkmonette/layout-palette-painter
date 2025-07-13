@@ -645,7 +645,7 @@ const Dashboard = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="p-4 border-t space-y-2">
+            <div className="p-4 border-t space-y-2 bg-sky-200">
               {/* Main Generate Buttons - Responsive Layout */}
               <div className="grid grid-cols-1 gap-2">
                 <Button onClick={handleGenerateColors} className="w-full text-xs sm:text-sm h-9 sm:h-10 whitespace-normal leading-tight" disabled={isGenerating}>
