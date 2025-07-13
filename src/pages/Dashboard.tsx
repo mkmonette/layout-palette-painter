@@ -24,7 +24,9 @@ import {
   Maximize,
   RotateCcw,
   RefreshCw,
-  BookOpen
+  BookOpen,
+  PanelLeftClose,
+  PanelLeftOpen
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -126,6 +128,7 @@ const Dashboard = () => {
   const [projectName, setProjectName] = useState('Untitled Project');
   const [isEditingName, setIsEditingName] = useState(false);
   const [showColorMood, setShowColorMood] = useState(false);
+  const [isContextPanelCollapsed, setIsContextPanelCollapsed] = useState(false);
   const { remainingAIGenerations, maxAIGenerationsPerMonth, canUseAIGeneration } = useFeatureAccess();
 
   // Initialize OpenAI on component mount if API key exists
@@ -544,7 +547,8 @@ const Dashboard = () => {
           </div>
 
           {/* Context Panel */}
-          <div className="w-80 bg-background border-r flex flex-col">
+          {!isContextPanelCollapsed && (
+            <div className="w-80 bg-background border-r flex flex-col">
             <div className="p-4 border-b">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
@@ -692,13 +696,28 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </div>
+            </div>
+          )}
 
           {/* Main Canvas Area */}
           <div className="flex-1 flex flex-col bg-muted/30">
             {/* Canvas Toolbar */}
             <div className="h-12 bg-background border-b flex items-center justify-between px-4">
               <div className="flex items-center space-x-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setIsContextPanelCollapsed(!isContextPanelCollapsed)}
+                    >
+                      {isContextPanelCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {isContextPanelCollapsed ? 'Show Panel' : 'Hide Panel'}
+                  </TooltipContent>
+                </Tooltip>
                 <span className="text-sm text-muted-foreground">Template Preview</span>
                 <span className="text-xs text-muted-foreground">•</span>
                 <span className="text-xs text-muted-foreground capitalize">
