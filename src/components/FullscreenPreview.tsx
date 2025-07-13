@@ -190,9 +190,9 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
             {/* Light/Dark Mode Toggle */}
             <div className="flex items-center gap-1 px-2 py-1 border rounded-full h-10 bg-slate-300">
-              <Sun className="h-3 w-3 text-yellow-500" />
+              <Sun className="h-4 w-4" />
               <Switch checked={isDarkMode} onCheckedChange={onModeToggle} className="bg-slate-500 hover:bg-slate-400" />
-              <Moon className="h-3 w-3 text-gray-600" />
+              <Moon className="h-4 w-4" />
             </div>
 
             {/* PDF Download */}
