@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { 
@@ -13,7 +14,8 @@ import {
   Sparkles,
   Palette,
   Sun,
-  Moon
+  Moon,
+  Save
 } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
 import { ColorRoles, ColorRole } from '@/types/colorRoles';
@@ -63,6 +65,11 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
   const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>((currentScheme as ColorSchemeType) || 'random');
   const [isDarkMode, setIsDarkMode] = useState(currentMode === 'dark');
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Save preset state
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [presetName, setPresetName] = useState('');
+  const [presetDescription, setPresetDescription] = useState('');
 
   // Update working palette when current palette changes
   useEffect(() => {
@@ -147,6 +154,62 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
     setGenerationPrompt('');
     setSelectedMood('');
     setIsDarkMode(false);
+  };
+
+  // Save current palette as preset
+  const handleSaveCurrentPalette = () => {
+    if (!presetName.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Preset name is required',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Get existing presets
+    const existingPresets = JSON.parse(localStorage.getItem('admin-color-presets') || '[]');
+    
+    // Check for duplicate names
+    if (existingPresets.some((p: any) => p.name.toLowerCase() === presetName.toLowerCase())) {
+      toast({
+        title: 'Error',
+        description: 'A preset with this name already exists',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const currentRoles = mapPaletteToRoles(workingPalette);
+    const generatePresetId = (name: string) => {
+      return `preset_${name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
+    };
+
+    const newPreset = {
+      id: generatePresetId(presetName),
+      name: presetName,
+      description: presetDescription,
+      createdBy: 'admin',
+      createdAt: new Date().toISOString(),
+      roles: currentRoles,
+      originalPalette: { ...workingPalette },
+      scheme: selectedScheme !== 'random' ? selectedScheme : undefined,
+      mood: selectedMood || undefined,
+      mode: isDarkMode ? 'dark' : 'light'
+    };
+
+    const updatedPresets = [...existingPresets, newPreset];
+    localStorage.setItem('admin-color-presets', JSON.stringify(updatedPresets));
+
+    toast({
+      title: 'Success',
+      description: `Preset "${presetName}" saved successfully`
+    });
+
+    // Reset form and close dialog
+    setPresetName('');
+    setPresetDescription('');
+    setSaveDialogOpen(false);
   };
 
   return (
@@ -253,6 +316,58 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
               )}
               {isGenerating ? 'Generating...' : 'Generate AI Palette'}
             </Button>
+            <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Current
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Save Current Palette</DialogTitle>
+                  <DialogDescription>
+                    Save the current palette as a preset for quick access later
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="preset-name">Preset Name</Label>
+                    <Input
+                      id="preset-name"
+                      placeholder="Enter preset name..."
+                      value={presetName}
+                      onChange={(e) => setPresetName(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="preset-description">Description (Optional)</Label>
+                    <Textarea
+                      id="preset-description"
+                      placeholder="Describe this color palette..."
+                      value={presetDescription}
+                      onChange={(e) => setPresetDescription(e.target.value)}
+                      rows={2}
+                    />
+                  </div>
+                  <div className="flex gap-2 justify-end">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setSaveDialogOpen(false);
+                        setPresetName('');
+                        setPresetDescription('');
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSaveCurrentPalette}>
+                      Save Preset
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
             <Button variant="outline" onClick={handleResetPalette}>
               Reset
             </Button>
