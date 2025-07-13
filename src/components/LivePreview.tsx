@@ -108,19 +108,8 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
   };
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
-      <div 
-        className="origin-top-left"
-        style={{
-          transform: 'scale(0.4)',
-          width: '250%',
-          height: '250%'
-        }}
-      >
-        <div style={{ width: '1500px', height: '1125px' }}>
-          {renderTemplate()}
-        </div>
-      </div>
+    <div className="relative">
+      {renderTemplate()}
       {showSaveButton && (
         <div className="absolute top-4 right-4 z-10">
           <Button
