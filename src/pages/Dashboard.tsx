@@ -547,9 +547,9 @@ const Dashboard = () => {
 
         <div className="flex flex-1 overflow-hidden">
           {/* Left Sidebar */}
-          <div className="w-16 border-r flex flex-col items-center py-4 space-y-2" style={{
+          <div style={{
           backgroundColor: '#5b99fe'
-        }}>
+        }} className="w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600">
             {sidebarItems.map(item => {
             if (!item.available) return null;
             return <Tooltip key={item.id}>
