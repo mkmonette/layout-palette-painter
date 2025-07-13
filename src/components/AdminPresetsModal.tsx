@@ -67,8 +67,9 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
 
   const loadAdminPresets = () => {
     try {
-      console.clear(); // Clear console to ensure fresh logs
-      console.log('🔍 Loading admin presets... (ENHANCED VERSION)');
+      const timestamp = new Date().toISOString();
+      console.log(`🔍 [${timestamp}] ENHANCED VERSION - Loading admin presets...`);
+      console.log('Browser cache timestamp:', Date.now());
       console.log('Current localStorage keys:', Object.keys(localStorage));
       
       // Check for any preset-related keys
