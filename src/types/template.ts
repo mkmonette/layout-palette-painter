@@ -13,7 +13,12 @@ export type TemplateType =
   | 'saas-product'
   | 'ecommerce-landing'
   | 'pro-cosmetics'
-  | 'advanced-hero';
+  | 'advanced-hero'
+  | 'modern-executive'
+  | 'creative-showcase'
+  | 'tech-innovation'
+  | 'luxury-brand'
+  | 'startup-vision';
 
 export interface ColorPalette {
   brand: string;

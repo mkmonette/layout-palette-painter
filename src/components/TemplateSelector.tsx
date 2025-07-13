@@ -20,6 +20,11 @@ import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
 import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
 import { ProCosmeticsTemplate } from '@/components/templates/ProCosmeticsTemplate';
 import { AdvancedHeroTemplate } from '@/components/templates/AdvancedHeroTemplate';
+import { ModernExecutiveTemplate } from '@/components/templates/ModernExecutiveTemplate';
+import { CreativeShowcaseTemplate } from '@/components/templates/CreativeShowcaseTemplate';
+import { TechInnovationTemplate } from '@/components/templates/TechInnovationTemplate';
+import { LuxuryBrandTemplate } from '@/components/templates/LuxuryBrandTemplate';
+import { StartupVisionTemplate } from '@/components/templates/StartupVisionTemplate';
 interface TemplateSelectorProps {
   selectedTemplate: TemplateType;
   onTemplateChange: (template: TemplateType) => void;
@@ -86,17 +91,15 @@ const freeTemplates: Template[] = [{
   description: 'Product-focused e-commerce design',
   isPro: false
 }];
-const proTemplates: Template[] = [{
-  id: 'pro-cosmetics',
-  name: 'PRO Cosmetics',
-  description: 'Beauty and cosmetics product showcase',
-  isPro: true
-}, {
-  id: 'advanced-hero',
-  name: 'Advanced Hero',
-  description: 'Premium hero section with advanced typography and visual elements',
-  isPro: true
-}];
+const proTemplates: Template[] = [
+  { id: 'pro-cosmetics', name: 'Pro Cosmetics', description: 'Premium beauty and cosmetics template with elegant product showcase', isPro: true },
+  { id: 'advanced-hero', name: 'Advanced Hero', description: 'Sophisticated header design with premium typography and visual elements', isPro: true },
+  { id: 'modern-executive', name: 'Modern Executive', description: 'Professional business template with strategic design and authority', isPro: true },
+  { id: 'creative-showcase', name: 'Creative Showcase', description: 'Dynamic creative template with artistic layouts and bold visuals', isPro: true },
+  { id: 'tech-innovation', name: 'Tech Innovation', description: 'Cutting-edge technology template with futuristic design elements', isPro: true },
+  { id: 'luxury-brand', name: 'Luxury Brand', description: 'Premium luxury template with sophisticated elegance and refinement', isPro: true },
+  { id: 'startup-vision', name: 'Startup Vision', description: 'Dynamic startup template with growth-focused design and innovation', isPro: true },
+];
 const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPalette) => {
   const previewProps = {
     colorPalette
@@ -128,8 +131,18 @@ const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPale
       return <EcommerceLandingTemplate {...previewProps} />;
     case 'pro-cosmetics':
       return <ProCosmeticsTemplate palette={colorPalette} />;
-    case 'advanced-hero':
-      return <AdvancedHeroTemplate colorPalette={colorPalette} />;
+      case 'advanced-hero':
+        return <AdvancedHeroTemplate colorPalette={colorPalette} />;
+      case 'modern-executive':
+        return <ModernExecutiveTemplate colorPalette={colorPalette} />;
+      case 'creative-showcase':
+        return <CreativeShowcaseTemplate colorPalette={colorPalette} />;
+      case 'tech-innovation':
+        return <TechInnovationTemplate colorPalette={colorPalette} />;
+      case 'luxury-brand':
+        return <LuxuryBrandTemplate colorPalette={colorPalette} />;
+      case 'startup-vision':
+        return <StartupVisionTemplate colorPalette={colorPalette} />;
     default:
       return <ModernHeroTemplate {...previewProps} />;
   }

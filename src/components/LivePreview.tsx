@@ -22,6 +22,11 @@ import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
 import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
 import { ProCosmeticsTemplate } from '@/components/templates/ProCosmeticsTemplate';
 import { AdvancedHeroTemplate } from '@/components/templates/AdvancedHeroTemplate';
+import { ModernExecutiveTemplate } from '@/components/templates/ModernExecutiveTemplate';
+import { CreativeShowcaseTemplate } from '@/components/templates/CreativeShowcaseTemplate';
+import { TechInnovationTemplate } from '@/components/templates/TechInnovationTemplate';
+import { LuxuryBrandTemplate } from '@/components/templates/LuxuryBrandTemplate';
+import { StartupVisionTemplate } from '@/components/templates/StartupVisionTemplate';
 import { Crown } from 'lucide-react';
 
 interface LivePreviewProps {
@@ -96,6 +101,21 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
         break;
       case 'advanced-hero':
         templateComponent = <AdvancedHeroTemplate colorPalette={colorPalette} />;
+        break;
+      case 'modern-executive':
+        templateComponent = <ModernExecutiveTemplate colorPalette={colorPalette} />;
+        break;
+      case 'creative-showcase':
+        templateComponent = <CreativeShowcaseTemplate colorPalette={colorPalette} />;
+        break;
+      case 'tech-innovation':
+        templateComponent = <TechInnovationTemplate colorPalette={colorPalette} />;
+        break;
+      case 'luxury-brand':
+        templateComponent = <LuxuryBrandTemplate colorPalette={colorPalette} />;
+        break;
+      case 'startup-vision':
+        templateComponent = <StartupVisionTemplate colorPalette={colorPalette} />;
         break;
       default:
         templateComponent = <ModernHeroTemplate {...templateProps} />;
