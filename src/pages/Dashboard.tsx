@@ -644,7 +644,7 @@ const Dashboard = () => {
                 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-xs sm:text-sm h-9 sm:h-10 whitespace-normal leading-tight text-slate-50 bg-[#ffa11c]">
+                    <Button onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-xs h-9 sm:h-10 whitespace-normal leading-tight bg-amber-500 hover:bg-amber-400 text-slate-950 font-medium sm:text-base">
                       <Bot className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                       AI Colors {!canUseAIGeneration && '🔒 PRO'}
                     </Button>
