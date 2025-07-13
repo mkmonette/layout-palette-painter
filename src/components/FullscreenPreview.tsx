@@ -171,7 +171,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
       {/* Bottom Toolbar */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-        <div className="bg-white/95 backdrop-blur-md border shadow-lg rounded-full px-4 py-2">
+        <div className="backdrop-blur-md border shadow-lg rounded-full px-4 py-2 bg-white/0">
           <div className="flex items-center justify-center gap-2">
             {/* Template Selector */}
             <Button onClick={() => setActiveModal('template')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
@@ -200,15 +200,15 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
             {/* More Options Dropdown */}
             <MoreOptionsDropdown onImageGeneratorClick={() => {
-              if (!isPro) {
-                setUpsellModal({
-                  isOpen: true,
-                  templateName: 'Image/URL Color Generator'
-                });
-                return;
-              }
-              setActiveModal('image-generator');
-            }} onColorsClick={() => setActiveModal('colors')} onSetsClick={() => {}} onBackgroundClick={() => setActiveModal('background')} onAdminPresetsClick={() => setActiveModal('admin-presets')} />
+            if (!isPro) {
+              setUpsellModal({
+                isOpen: true,
+                templateName: 'Image/URL Color Generator'
+              });
+              return;
+            }
+            setActiveModal('image-generator');
+          }} onColorsClick={() => setActiveModal('colors')} onSetsClick={() => {}} onBackgroundClick={() => setActiveModal('background')} onAdminPresetsClick={() => setActiveModal('admin-presets')} />
 
             {/* Zoom Controls */}
             <div className="flex items-center gap-1 px-2 py-1 border rounded-full bg-white h-10">
