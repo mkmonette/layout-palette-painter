@@ -102,6 +102,7 @@ const OpenAISettings: React.FC = () => {
       enforceHighContrast
     };
 
+    console.log('OpenAI Settings - Saving settings:', settings);
     localStorage.setItem('openai_admin_settings', JSON.stringify(settings));
     
     if (apiKey && apiKey.startsWith('sk-')) {

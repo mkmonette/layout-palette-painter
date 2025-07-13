@@ -27,13 +27,19 @@ export const generateAIColorPalette = async (request: OpenAIColorRequest): Promi
   const adminSettings = localStorage.getItem('openai_admin_settings');
   let selectedModel = "gpt-4.1-2025-04-14"; // default model
   
+  console.log('OpenAI Service - Admin settings from localStorage:', adminSettings);
+  
   if (adminSettings) {
     try {
       const settings = JSON.parse(adminSettings);
       selectedModel = settings.selectedModel || "gpt-4.1-2025-04-14";
+      console.log('OpenAI Service - Parsed settings:', settings);
+      console.log('OpenAI Service - Selected model:', selectedModel);
     } catch (error) {
       console.warn('Error parsing admin settings for model selection:', error);
     }
+  } else {
+    console.log('OpenAI Service - No admin settings found, using default model:', selectedModel);
   }
 
   const prompt = buildColorPrompt(request);
