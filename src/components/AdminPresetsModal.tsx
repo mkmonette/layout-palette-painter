@@ -21,6 +21,9 @@ interface AdminPreset {
   createdAt: string;
   roles: any; // ColorRoles from PresetManager
   originalPalette: ColorPalette;
+  scheme?: string;
+  mood?: string;
+  mode?: 'light' | 'dark';
 }
 
 const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
@@ -237,6 +240,27 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
                     <div className="mb-3">
                       {renderColorSwatches(preset.originalPalette)}
                     </div>
+                    
+                    {/* Scheme, Mood, Mode badges */}
+                    {(preset.scheme || preset.mood || preset.mode) && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {preset.scheme && (
+                          <Badge variant="secondary" className="text-xs">
+                            {preset.scheme}
+                          </Badge>
+                        )}
+                        {preset.mood && (
+                          <Badge variant="secondary" className="text-xs">
+                            {preset.mood}
+                          </Badge>
+                        )}
+                        {preset.mode && (
+                          <Badge variant="secondary" className="text-xs">
+                            {preset.mode}
+                          </Badge>
+                        )}
+                      </div>
+                    )}
                     
                     <div className="text-xs text-muted-foreground space-y-1">
                       <div className="flex justify-between items-center">
