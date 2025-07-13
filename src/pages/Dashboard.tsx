@@ -636,7 +636,7 @@ const Dashboard = () => {
             {/* Action Buttons */}
             <div className="p-4 border-t space-y-2">
               {/* Main Generate Buttons - Responsive Layout */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 <Button onClick={handleGenerateColors} className="w-full text-xs sm:text-sm h-9 sm:h-10 whitespace-normal leading-tight" disabled={isGenerating}>
                   {isGenerating ? <RefreshCw className="mr-1 h-3 w-3 sm:h-4 sm:w-4 animate-spin flex-shrink-0" /> : <Palette className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />}
                   🎨 Generate Colors
