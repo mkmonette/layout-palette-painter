@@ -380,7 +380,7 @@ const Dashboard = () => {
     return <FullscreenPreview template={selectedTemplate} colorPalette={colorPalette} selectedScheme={selectedScheme} isDarkMode={isDarkMode} isGenerating={isGenerating} autogenerateCount={autogenerateCount} onClose={() => setIsFullscreen(false)} onGenerateColors={handleGenerateColors} onSchemeChange={handleSchemeChange} onTemplateChange={setSelectedTemplate} onColorChange={(palette, moodId) => {
       setColorPalette(palette);
       if (moodId !== undefined) setSelectedMoodId(moodId);
-    }} onTemplateToggle={(checked) => {
+    }} onTemplateToggle={checked => {
       // Only generate new template colors, don't affect global dark mode
       try {
         const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, false);
@@ -580,7 +580,7 @@ const Dashboard = () => {
 
           {/* Context Panel */}
           {!isContextPanelCollapsed && <div className="w-80 bg-background border-r flex flex-col">
-            <div className="p-4 border-b flex items-center justify-between h-12">
+            <div className="p-4 border-b flex items-center justify-between h-12 bg-[#fef3e0]">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
               </h2>
