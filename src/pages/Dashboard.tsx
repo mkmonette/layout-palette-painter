@@ -124,7 +124,7 @@ const Dashboard = () => {
   });
 
   // New state for sidebar sections
-  const [activeSection, setActiveSection] = useState<'templates' | 'ai-colors' | 'auto-generate' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings'>('templates');
+  const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'ai-colors' | 'auto-generate' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings'>('templates');
   const [projectName, setProjectName] = useState('Untitled Project');
   const [isEditingName, setIsEditingName] = useState(false);
   const [showColorMood, setShowColorMood] = useState(false);
@@ -398,6 +398,8 @@ const Dashboard = () => {
 
   const sidebarItems = [
     { id: 'templates' as const, icon: Palette, label: 'Templates', available: true },
+    { id: 'schemes' as const, icon: Shapes, label: 'Schemes', available: canAccessColorSchemes },
+    { id: 'moods' as const, icon: Sparkles, label: 'Moods', available: canAccessColorMood },
     { id: 'ai-colors' as const, icon: Bot, label: 'AI Colors', available: canUseAIGeneration, isPro: true },
     { id: 'auto-generate' as const, icon: Wand2, label: 'Auto Generate', available: canAccessAutoGenerator, isPro: true },
     { id: 'from-image' as const, icon: ImageIcon, label: 'From Image', available: true },
@@ -563,26 +565,45 @@ const Dashboard = () => {
                     onTemplateChange={setSelectedTemplate}
                     colorPalette={colorPalette}
                   />
+                  <BackgroundCustomizer
+                    settings={backgroundSettings}
+                    onSettingsChange={setBackgroundSettings}
+                  />
+                </div>
+              )}
+
+              {activeSection === 'schemes' && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Choose a color scheme to generate harmonious palettes.
+                  </p>
                   <ColorSchemeSelector
                     selectedScheme={selectedScheme}
                     onSchemeChange={handleSchemeChange}
                     onGenerateScheme={handleGenerateColors}
                     isGenerating={isGenerating}
                   />
-                  <div className="space-y-2">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setShowColorMood(true)}
-                      className="w-full"
-                    >
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Choose Color Mood
-                    </Button>
-                  </div>
-                  <BackgroundCustomizer
-                    settings={backgroundSettings}
-                    onSettingsChange={setBackgroundSettings}
-                  />
+                </div>
+              )}
+
+              {activeSection === 'moods' && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Select a mood to generate colors that match the desired feeling.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowColorMood(true)}
+                    className="w-full"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Choose Color Mood
+                  </Button>
+                  {selectedMoodId && (
+                    <div className="text-sm text-muted-foreground">
+                      Current mood: <span className="text-foreground font-medium">{selectedMoodId}</span>
+                    </div>
+                  )}
                 </div>
               )}
 
