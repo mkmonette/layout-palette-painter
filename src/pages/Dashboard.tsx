@@ -730,6 +730,19 @@ const Dashboard = () => {
                 </div>
               )}
 
+              {activeSection === 'saved-palettes' && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Access your saved color palettes.
+                  </p>
+                  <Button 
+                    onClick={() => setActiveModal('saved')}
+                    className="w-full"
+                  >
+                    View Saved Palettes ({savedPalettesCount}/{MAX_PALETTES})
+                  </Button>
+                </div>
+              )}
 
               {activeSection === 'settings' && (
                 <div className="space-y-4">
