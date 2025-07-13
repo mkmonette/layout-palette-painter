@@ -11,7 +11,6 @@ import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSe
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
-
 import { TemplateType, ColorPalette } from '@/types/template';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
@@ -23,8 +22,6 @@ import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 import AdminPresetsModal from '@/components/AdminPresetsModal';
 import BackgroundCustomizer, { type BackgroundSettings } from '@/components/BackgroundCustomizer';
-
-
 interface FullscreenPreviewProps {
   template: TemplateType;
   colorPalette: ColorPalette;
@@ -32,7 +29,6 @@ interface FullscreenPreviewProps {
   isDarkMode: boolean;
   isGenerating: boolean;
   autogenerateCount?: number;
-  
   autoGenerate?: boolean;
   onClose: () => void;
   onGenerateColors: () => void;
@@ -42,10 +38,8 @@ interface FullscreenPreviewProps {
   onModeToggle: (checked: boolean) => void;
   onDownloadPDF?: () => void;
   onAutogenerateCountChange?: (count: number) => void;
-  
   onAutoGenerateChange?: (checked: boolean) => void;
 }
-
 const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   template,
   colorPalette,
@@ -53,7 +47,6 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   isDarkMode,
   isGenerating,
   autogenerateCount = 10,
-  
   autoGenerate = false,
   onClose,
   onGenerateColors,
@@ -63,17 +56,31 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onModeToggle,
   onDownloadPDF,
   onAutogenerateCountChange,
-  
   onAutoGenerateChange
 }) => {
-  const { getSavedCount, loadSavedPalettes, canSaveMore, savePalette } = useSavedPalettes();
-  const { toast } = useToast();
-  const { isPro } = useFeatureAccess();
+  const {
+    getSavedCount,
+    loadSavedPalettes,
+    canSaveMore,
+    savePalette
+  } = useSavedPalettes();
+  const {
+    toast
+  } = useToast();
+  const {
+    isPro
+  } = useFeatureAccess();
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
-  const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; templateName: string }>({ isOpen: false, templateName: '' });
+  const [upsellModal, setUpsellModal] = useState<{
+    isOpen: boolean;
+    templateName: string;
+  }>({
+    isOpen: false,
+    templateName: ''
+  });
   const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
     enabled: false,
     mode: 'svg',
@@ -86,30 +93,25 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     gradientFillType: 'gradient',
     gradientStartColor: 'section-bg-1',
     gradientEndColor: 'accent',
-    gradientDirection: 'horizontal',
+    gradientDirection: 'horizontal'
   });
-
   const closeModal = () => setActiveModal(null);
-
   const handleZoomIn = () => {
     setZoomLevel(prev => Math.min(prev + 25, 200));
   };
-
   const handleZoomOut = () => {
     setZoomLevel(prev => Math.max(prev - 25, 50));
   };
-
   const handleZoomReset = () => {
     setZoomLevel(100);
   };
-
   const handleSave = () => {
     const success = savePalette(colorPalette, template);
     if (success) {
       setSavedPalettesCount(getSavedCount());
       toast({
         title: "Palette Saved",
-        description: "Your color palette has been saved successfully.",
+        description: "Your color palette has been saved successfully."
       });
     } else {
       toast({
@@ -119,15 +121,12 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       });
     }
   };
-
   const handleMoodSelect = (palette: ColorPalette, moodId?: string) => {
     onColorChange(palette, moodId);
   };
-
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
     onColorChange(palette);
   };
-
   const handleToggleLock = (colorKey: keyof ColorPalette) => {
     setLockedColors(prev => {
       const newSet = new Set(prev);
@@ -139,179 +138,126 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       return newSet;
     });
   };
-
   useEffect(() => {
     const updateCount = () => {
       setSavedPalettesCount(getSavedCount());
     };
-    
     updateCount();
-    
+
     // Listen for storage changes
     const handleStorageChange = () => {
       loadSavedPalettes();
       updateCount();
     };
-    
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [getSavedCount, loadSavedPalettes]);
-
-  return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col">
+  return <div className="fixed inset-0 z-50 bg-white flex flex-col">
       {/* Close button - top right */}
       <div className="absolute top-4 right-4 z-20">
-        <Button
-          onClick={onClose}
-          variant="outline"
-          size="icon"
-          className="bg-white/95 backdrop-blur-sm border shadow-lg"
-        >
+        <Button onClick={onClose} variant="outline" size="icon" className="bg-white/95 backdrop-blur-sm border shadow-lg">
           <X className="h-4 w-4" />
         </Button>
       </div>
 
       {/* Live Preview - Full height with scroll */}
       <div className="flex-1 overflow-auto">
-        <div 
-          className="min-h-full transition-transform duration-200 origin-top"
-          style={{ transform: `scale(${zoomLevel / 100})` }}
-        >
-          <LivePreview
-            template={template}
-            colorPalette={colorPalette}
-            backgroundSettings={backgroundSettings}
-          />
+        <div className="min-h-full transition-transform duration-200 origin-top" style={{
+        transform: `scale(${zoomLevel / 100})`
+      }}>
+          <LivePreview template={template} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
         </div>
       </div>
 
       {/* Bottom Toolbar */}
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-10">
-        <div className="bg-white/95 backdrop-blur-md border rounded-full shadow-lg px-4 py-3">
-          <div className="flex items-center justify-center gap-3">
+      <div className="fixed bottom-0 left-0 right-0 z-10 bg-white/95 backdrop-blur-md border-t shadow-lg">
+        <div className="px-4 py-3 relative bg-[#000a00]/[0.03]">
+          <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap">
             {/* Template Selector */}
-            <Button
-              onClick={() => setActiveModal('template')}
-              variant="ghost"
-              size="sm"
-              className="h-9 w-9 p-0 hover:bg-gray-100 rounded-full"
-              title="Template"
-            >
+            <Button onClick={() => setActiveModal('template')} variant="outline" className="flex items-center gap-2 h-9 px-3 flex-shrink-0" style={{
+            scrollSnapAlign: 'start'
+          }}>
               <Eye className="h-4 w-4" />
+              <span className="text-sm">Template</span>
             </Button>
 
             {/* Color Theme Dropdown */}
-            <div className="flex-shrink-0">
-              <ColorThemeDropdown
-                onSchemeClick={() => setActiveModal('scheme')}
-                onMoodClick={() => setActiveModal('mood')}
-              />
+            <div className="flex-shrink-0" style={{
+            scrollSnapAlign: 'start'
+          }}>
+              <ColorThemeDropdown onSchemeClick={() => setActiveModal('scheme')} onMoodClick={() => setActiveModal('mood')} />
             </div>
 
             {/* Light/Dark Mode Toggle */}
-            <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-50">
+            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{
+            scrollSnapAlign: 'start'
+          }}>
               <Sun className="h-3 w-3 text-yellow-500" />
-              <Switch
-                checked={isDarkMode}
-                onCheckedChange={onModeToggle}
-              />
+              <Switch checked={isDarkMode} onCheckedChange={onModeToggle} />
               <Moon className="h-3 w-3 text-gray-600" />
             </div>
 
             {/* PDF Download */}
-            {onDownloadPDF && (
-              <Button
-                onClick={onDownloadPDF}
-                variant="ghost"
-                size="sm"
-                className="h-9 w-9 p-0 hover:bg-gray-100 rounded-full"
-                title="Download PDF"
-              >
+            {onDownloadPDF && <Button onClick={onDownloadPDF} variant="outline" className="flex items-center gap-2 h-9 px-3 flex-shrink-0" style={{
+            scrollSnapAlign: 'start'
+          }}>
                 <Download className="h-4 w-4" />
-              </Button>
-            )}
+                <span className="text-sm whitespace-nowrap">PDF</span>
+              </Button>}
 
             {/* Save Sets */}
-            <Button
-              onClick={() => setActiveModal('saved')}
-              variant="ghost"
-              size="sm"
-              className="h-9 w-9 p-0 hover:bg-gray-100 rounded-full relative"
-              title={`Saved Palettes (${savedPalettesCount}/10)`}
-            >
+            <Button onClick={() => setActiveModal('saved')} variant="outline" className="flex items-center gap-2 h-9 px-3 flex-shrink-0" style={{
+            scrollSnapAlign: 'start'
+          }}>
               <BookOpen className="h-4 w-4" />
-              {savedPalettesCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  {savedPalettesCount}
-                </span>
-              )}
+              <span className="text-sm whitespace-nowrap">Save ({savedPalettesCount}/10)</span>
             </Button>
 
             {/* More Options Dropdown */}
-            <div className="flex-shrink-0">
-              <MoreOptionsDropdown
-                onImageGeneratorClick={() => {
-                  if (!isPro) {
-                    setUpsellModal({ isOpen: true, templateName: 'Image/URL Color Generator' });
-                    return;
-                  }
-                  setActiveModal('image-generator');
-                }}
-                onColorsClick={() => setActiveModal('colors')}
-                onSetsClick={() => {}}
-                onBackgroundClick={() => setActiveModal('background')}
-                onAdminPresetsClick={() => setActiveModal('admin-presets')}
-              />
+            <div className="flex-shrink-0" style={{
+            scrollSnapAlign: 'start'
+          }}>
+              <MoreOptionsDropdown onImageGeneratorClick={() => {
+              if (!isPro) {
+                setUpsellModal({
+                  isOpen: true,
+                  templateName: 'Image/URL Color Generator'
+                });
+                return;
+              }
+              setActiveModal('image-generator');
+            }} onColorsClick={() => setActiveModal('colors')} onSetsClick={() => {}} onBackgroundClick={() => setActiveModal('background')} onAdminPresetsClick={() => setActiveModal('admin-presets')} />
             </div>
 
+            {/* Generate Button - Last item */}
+            <Button onClick={onGenerateColors} disabled={isGenerating} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-9 font-medium flex-shrink-0" style={{
+            scrollSnapAlign: 'start'
+          }}>
+              {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Palette className="h-4 w-4 mr-2" />}
+              Generate
+            </Button>
+
             {/* Zoom Controls */}
-            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gray-50">
-              <Button
-                onClick={handleZoomOut}
-                variant="ghost"
-                size="sm"
-                disabled={zoomLevel <= 50}
-                className="h-6 w-6 p-0 rounded-full"
-              >
+            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{
+            scrollSnapAlign: 'start'
+          }}>
+              <Button onClick={handleZoomOut} variant="ghost" size="sm" disabled={zoomLevel <= 50} className="h-6 w-6 p-0">
                 <ZoomOut className="h-3 w-3" />
               </Button>
               <span className="text-xs font-medium text-gray-600 min-w-[2.5rem] text-center">
                 {zoomLevel}%
               </span>
-              <Button
-                onClick={handleZoomIn}
-                variant="ghost"
-                size="sm"
-                disabled={zoomLevel >= 200}
-                className="h-6 w-6 p-0 rounded-full"
-              >
+              <Button onClick={handleZoomIn} variant="ghost" size="sm" disabled={zoomLevel >= 200} className="h-6 w-6 p-0">
                 <ZoomIn className="h-3 w-3" />
               </Button>
-              <Button
-                onClick={handleZoomReset}
-                variant="ghost"
-                size="sm"
-                title="Reset Zoom"
-                className="h-6 w-6 p-0 rounded-full"
-              >
+              <Button onClick={handleZoomReset} variant="ghost" size="sm" title="Reset Zoom" className="h-6 w-6 p-0">
                 <RotateCcw className="h-3 w-3" />
               </Button>
             </div>
-
-            {/* Generate Button */}
-            <Button 
-              onClick={onGenerateColors}
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-9 w-9 p-0 rounded-full"
-              title="Generate Colors"
-            >
-              {isGenerating ? (
-                <RefreshCw className="h-4 w-4 animate-spin" />
-              ) : (
-                <Palette className="h-4 w-4" />
-              )}
-            </Button>
           </div>
+
+          {/* Scroll indicator gradient */}
+          <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white/95 to-transparent pointer-events-none" />
         </div>
       </div>
 
@@ -325,14 +271,10 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <TemplateSelector
-              selectedTemplate={template}
-              onTemplateChange={(newTemplate) => {
-                onTemplateChange(newTemplate);
-                closeModal();
-              }}
-              colorPalette={colorPalette}
-            />
+            <TemplateSelector selectedTemplate={template} onTemplateChange={newTemplate => {
+            onTemplateChange(newTemplate);
+            closeModal();
+          }} colorPalette={colorPalette} />
           </ScrollArea>
         </DialogContent>
       </Dialog>
@@ -348,24 +290,14 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-              <ColorSchemeSelector
-                selectedScheme={selectedScheme}
-                onSchemeChange={onSchemeChange}
-                onGenerateScheme={onGenerateColors}
-                isGenerating={isGenerating}
-              />
+              <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={onSchemeChange} onGenerateScheme={onGenerateColors} isGenerating={isGenerating} />
             </div>
           </ScrollArea>
         </DialogContent>
       </Dialog>
 
       {/* Color Mood Modal */}
-      <ColorMoodSelector
-        isOpen={activeModal === 'mood'}
-        onClose={closeModal}
-        onMoodSelect={handleMoodSelect}
-        currentPalette={colorPalette}
-      />
+      <ColorMoodSelector isOpen={activeModal === 'mood'} onClose={closeModal} onMoodSelect={handleMoodSelect} currentPalette={colorPalette} />
 
       {/* Customize Colors Modal */}
       <Dialog open={activeModal === 'colors'} onOpenChange={closeModal}>
@@ -378,29 +310,20 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
             <div className="p-4">
-              <ColorControls
-                colorPalette={colorPalette}
-                onColorChange={(colorKey, color) => {
-                  const newPalette = { ...colorPalette, [colorKey]: color };
-                  onColorChange(newPalette);
-                }}
-                lockedColors={lockedColors}
-                onToggleLock={handleToggleLock}
-              />
+              <ColorControls colorPalette={colorPalette} onColorChange={(colorKey, color) => {
+              const newPalette = {
+                ...colorPalette,
+                [colorKey]: color
+              };
+              onColorChange(newPalette);
+            }} lockedColors={lockedColors} onToggleLock={handleToggleLock} />
             </div>
           </ScrollArea>
         </DialogContent>
       </Dialog>
 
       {/* Saved Palettes Modal */}
-      <SavedPalettesModal
-        isOpen={activeModal === 'saved'}
-        onClose={closeModal}
-        currentPalette={colorPalette}
-        currentTemplate={template}
-        onPaletteSelect={handleSavedPaletteSelect}
-        onTemplateChange={onTemplateChange}
-      />
+      <SavedPalettesModal isOpen={activeModal === 'saved'} onClose={closeModal} currentPalette={colorPalette} currentTemplate={template} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={onTemplateChange} />
 
 
       {/* Image Color Generator Modal */}
@@ -414,14 +337,11 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
             <div className="p-4">
-              <ImageColorGenerator
-                onPaletteGenerated={(palette) => {
-                  onColorChange(palette);
-                  closeModal();
-                }}
-                isGenerating={isGenerating}
-                setIsGenerating={() => {}} // Read-only in fullscreen
-              />
+              <ImageColorGenerator onPaletteGenerated={palette => {
+              onColorChange(palette);
+              closeModal();
+            }} isGenerating={isGenerating} setIsGenerating={() => {}} // Read-only in fullscreen
+            />
             </div>
           </ScrollArea>
         </DialogContent>
@@ -438,33 +358,23 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
             <div className="p-4">
-              <BackgroundCustomizer
-                settings={backgroundSettings}
-                onSettingsChange={setBackgroundSettings}
-              />
+              <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
             </div>
           </ScrollArea>
         </DialogContent>
       </Dialog>
 
       {/* Admin Presets Modal */}
-      <AdminPresetsModal
-        isOpen={activeModal === 'admin-presets'}
-        onClose={closeModal}
-        onPresetSelect={(palette) => {
-          onColorChange(palette);
-          closeModal();
-        }}
-      />
+      <AdminPresetsModal isOpen={activeModal === 'admin-presets'} onClose={closeModal} onPresetSelect={palette => {
+      onColorChange(palette);
+      closeModal();
+    }} />
 
       {/* Pro Upsell Modal */}
-      <ProUpsellModal
-        isOpen={upsellModal.isOpen}
-        onClose={() => setUpsellModal({ isOpen: false, templateName: '' })}
-        templateName={upsellModal.templateName}
-      />
-    </div>
-  );
+      <ProUpsellModal isOpen={upsellModal.isOpen} onClose={() => setUpsellModal({
+      isOpen: false,
+      templateName: ''
+    })} templateName={upsellModal.templateName} />
+    </div>;
 };
-
 export default FullscreenPreview;
