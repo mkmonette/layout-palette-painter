@@ -68,6 +68,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
   const loadAdminPresets = () => {
     try {
       console.log('Loading admin presets...');
+      console.log('Current localStorage keys:', Object.keys(localStorage));
       
       const savedPresets = localStorage.getItem('admin-color-presets');
       console.log('Found admin presets:', savedPresets);
@@ -75,15 +76,40 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
       if (savedPresets) {
         const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
         console.log('Parsed presets:', parsedPresets);
+        console.log('Number of presets:', parsedPresets.length);
         setPresets(parsedPresets);
+        
+        // Backup mechanism - store in component state
+        setBackupData(savedPresets);
       } else {
         console.log('No admin presets found');
         setPresets([]);
       }
     } catch (error) {
       console.error('Error loading admin presets:', error);
-      setPresets([]);
+      console.log('Attempting to use backup data...');
+      if (backupData) {
+        try {
+          const parsedBackup = JSON.parse(backupData) as AdminPreset[];
+          setPresets(parsedBackup);
+        } catch (backupError) {
+          console.error('Backup data also failed:', backupError);
+          setPresets([]);
+        }
+      } else {
+        setPresets([]);
+      }
     }
+  };
+
+  const clearLocalStorageCache = () => {
+    localStorage.removeItem('admin-color-presets');
+    setPresets([]);
+    setBackupData(null);
+    toast({
+      title: "Cache Cleared",
+      description: "Local storage cache has been cleared. Please refresh to see updated presets.",
+    });
   };
 
   const handlePresetSelect = (preset: AdminPreset) => {
@@ -185,14 +211,23 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
         </div>
         
         <div className="flex justify-between items-center pt-4 border-t">
-          <Button 
-            variant="outline" 
-            onClick={loadAdminPresets}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={loadAdminPresets}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={clearLocalStorageCache}
+              className="flex items-center gap-2 text-destructive"
+            >
+              Clear Cache
+            </Button>
+          </div>
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
