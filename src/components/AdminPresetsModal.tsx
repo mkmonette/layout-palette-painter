@@ -70,6 +70,20 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
       console.log('Loading admin presets...');
       console.log('Current localStorage keys:', Object.keys(localStorage));
       
+      // Check for any preset-related keys
+      const allKeys = Object.keys(localStorage);
+      const presetKeys = allKeys.filter(key => key.toLowerCase().includes('preset'));
+      console.log('Preset-related keys found:', presetKeys);
+      
+      // Check multiple possible keys
+      const possibleKeys = ['admin-color-presets', 'color-presets', 'presets', 'savedPresets'];
+      possibleKeys.forEach(key => {
+        const data = localStorage.getItem(key);
+        if (data) {
+          console.log(`Found data in '${key}':`, data);
+        }
+      });
+      
       const savedPresets = localStorage.getItem('admin-color-presets');
       console.log('Found admin presets:', savedPresets);
       
@@ -103,7 +117,10 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
   };
 
   const clearLocalStorageCache = () => {
+    console.log('Clearing localStorage cache...');
+    console.log('Before clear - all localStorage keys:', Object.keys(localStorage));
     localStorage.removeItem('admin-color-presets');
+    console.log('After clear - all localStorage keys:', Object.keys(localStorage));
     setPresets([]);
     setBackupData(null);
     toast({
