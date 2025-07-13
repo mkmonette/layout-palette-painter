@@ -311,7 +311,6 @@ const Dashboard = () => {
       });
     }
   };
-
   const handleDownloadPDF = async () => {
     if (!canDownload()) {
       setUpsellModal({
@@ -469,7 +468,7 @@ const Dashboard = () => {
         <div className="h-14 border-b border-white/20" style={{
         backgroundColor: '#3b82f6'
       }}>
-          <div className="flex items-center justify-between px-4 h-full">
+          <div className="flex items-center justify-between px-4 h-full bg-blue-700">
             <div className="flex items-center space-x-4">
               {isEditingName ? <input type="text" value={projectName} onChange={e => setProjectName(e.target.value)} onBlur={() => setIsEditingName(false)} onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)} className="bg-transparent text-white font-medium text-lg outline-none border-b border-white/50 placeholder-white/70" autoFocus /> : <h1 className="text-lg font-medium text-white cursor-pointer hover:text-white/80" onClick={() => setIsEditingName(true)}>
                   {projectName}
