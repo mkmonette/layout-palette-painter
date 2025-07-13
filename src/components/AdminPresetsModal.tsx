@@ -80,7 +80,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
       possibleKeys.forEach(key => {
         const data = localStorage.getItem(key);
         if (data) {
-          console.log(`Found data in '${key}':`, data);
+          console.log(`Found data in '${key}':`, data.substring(0, 200) + '...');
         }
       });
       
