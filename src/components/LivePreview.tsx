@@ -21,6 +21,7 @@ import CreativeAgencyTemplate from '@/components/templates/CreativeAgencyTemplat
 import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
 import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
 import { ProCosmeticsTemplate } from '@/components/templates/ProCosmeticsTemplate';
+import { AdvancedHeroTemplate } from '@/components/templates/AdvancedHeroTemplate';
 import { Crown } from 'lucide-react';
 
 interface LivePreviewProps {
@@ -92,6 +93,9 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
         break;
       case 'pro-cosmetics':
         templateComponent = <ProCosmeticsTemplate palette={colorPalette} />;
+        break;
+      case 'advanced-hero':
+        templateComponent = <AdvancedHeroTemplate colorPalette={colorPalette} />;
         break;
       default:
         templateComponent = <ModernHeroTemplate {...templateProps} />;
