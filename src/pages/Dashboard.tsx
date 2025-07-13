@@ -702,7 +702,7 @@ const Dashboard = () => {
                   </TooltipTrigger>
                   <TooltipContent>Export color palette as PDF</TooltipContent>
                 </Tooltip>
-                <Button variant="outline" size="sm" onClick={handleFullscreenToggle}>
+                <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="bg-amber-500 hover:bg-amber-400">
                   <Maximize className="h-4 w-4 mr-2" />
                   Fullscreen
                 </Button>
