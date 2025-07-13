@@ -816,9 +816,6 @@ const Dashboard = () => {
                 <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200}>
                   <ZoomIn className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={handleZoomReset}>
-                  <RotateCcw className="h-4 w-4" />
-                </Button>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button 
