@@ -70,10 +70,9 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   const {
     isPro
   } = useFeatureAccess();
-  
+
   // Local template-only dark mode state (separate from dashboard dark mode)
   const [templateDarkMode, setTemplateDarkMode] = useState(isDarkMode);
-  
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
@@ -99,7 +98,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     gradientEndColor: 'accent',
     gradientDirection: 'horizontal'
   });
-  
+
   // Handle template-only dark mode toggle
   const handleTemplateDarkModeToggle = (checked: boolean) => {
     setTemplateDarkMode(checked);
@@ -199,7 +198,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </Button>
 
             {/* Light/Dark Mode Toggle */}
-            <div className="flex items-center gap-1 px-2 py-1 border rounded-full h-10 bg-slate-300">
+            <div className="flex items-center gap-1 px-2 py-1 border rounded-full h-10 bg-slate-50">
               <Sun className="h-4 w-4" />
               <Switch checked={templateDarkMode} onCheckedChange={handleTemplateDarkModeToggle} className="bg-slate-500 hover:bg-slate-400" />
               <Moon className="h-4 w-4" />
