@@ -410,7 +410,7 @@ const InlineColorMoods: React.FC<InlineColorMoodsProps> = ({
       </div>
 
       {/* Mood Grid - 1 Column Layout */}
-      <div className="space-y-3 max-h-96 overflow-y-auto">
+      <div className="space-y-3">
         {filteredMoods.map(mood => (
           <Card
             key={mood.id}
