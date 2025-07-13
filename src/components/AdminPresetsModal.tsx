@@ -37,6 +37,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      console.log('🚀 AdminPresetsModal opened - calling loadAdminPresets');
       loadAdminPresets();
     }
   }, [isOpen]);
