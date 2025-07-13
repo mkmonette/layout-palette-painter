@@ -674,9 +674,9 @@ const Dashboard = () => {
           {/* Main Canvas Area */}
           <div className="flex-1 flex flex-col bg-muted/30">
             {/* Canvas Toolbar */}
-            <div className="h-12 border-b flex items-center justify-between px-4" style={{
+            <div style={{
             backgroundColor: '#fef3e0'
-          }}>
+          }} className="h-12 border-b flex items-center justify-between px-4 bg-green-200">
               <div className="flex items-center space-x-2">
 
                 
