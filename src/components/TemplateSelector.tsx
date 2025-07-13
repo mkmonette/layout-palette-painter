@@ -19,6 +19,7 @@ import CreativeAgencyTemplate from '@/components/templates/CreativeAgencyTemplat
 import SaasProductTemplate from '@/components/templates/SaasProductTemplate';
 import EcommerceLandingTemplate from '@/components/templates/EcommerceLandingTemplate';
 import { ProCosmeticsTemplate } from '@/components/templates/ProCosmeticsTemplate';
+import { AdvancedHeroTemplate } from '@/components/templates/AdvancedHeroTemplate';
 interface TemplateSelectorProps {
   selectedTemplate: TemplateType;
   onTemplateChange: (template: TemplateType) => void;
@@ -90,6 +91,11 @@ const proTemplates: Template[] = [{
   name: 'PRO Cosmetics',
   description: 'Beauty and cosmetics product showcase',
   isPro: true
+}, {
+  id: 'advanced-hero',
+  name: 'Advanced Hero',
+  description: 'Premium hero section with advanced typography and visual elements',
+  isPro: true
 }];
 const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPalette) => {
   const previewProps = {
@@ -122,6 +128,8 @@ const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPale
       return <EcommerceLandingTemplate {...previewProps} />;
     case 'pro-cosmetics':
       return <ProCosmeticsTemplate palette={colorPalette} />;
+    case 'advanced-hero':
+      return <AdvancedHeroTemplate colorPalette={colorPalette} />;
     default:
       return <ModernHeroTemplate {...previewProps} />;
   }
