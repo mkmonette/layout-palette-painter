@@ -186,22 +186,22 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       </div>
 
       {/* Bottom Toolbar */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 bg-white/95 backdrop-blur-md border-t shadow-lg">
-        <div className="px-4 py-3 relative">
-          <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap">
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="bg-white/95 backdrop-blur-md border rounded-full shadow-lg px-4 py-3">
+          <div className="flex items-center justify-center gap-3">
             {/* Template Selector */}
             <Button
               onClick={() => setActiveModal('template')}
-              variant="outline"
-              className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
-              style={{ scrollSnapAlign: 'start' }}
+              variant="ghost"
+              size="sm"
+              className="h-9 w-9 p-0 hover:bg-gray-100 rounded-full"
+              title="Template"
             >
               <Eye className="h-4 w-4" />
-              <span className="text-sm">Template</span>
             </Button>
 
             {/* Color Theme Dropdown */}
-            <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+            <div className="flex-shrink-0">
               <ColorThemeDropdown
                 onSchemeClick={() => setActiveModal('scheme')}
                 onMoodClick={() => setActiveModal('mood')}
@@ -209,7 +209,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </div>
 
             {/* Light/Dark Mode Toggle */}
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+            <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-50">
               <Sun className="h-3 w-3 text-yellow-500" />
               <Switch
                 checked={isDarkMode}
@@ -222,28 +222,33 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             {onDownloadPDF && (
               <Button
                 onClick={onDownloadPDF}
-                variant="outline"
-                className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
-                style={{ scrollSnapAlign: 'start' }}
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 p-0 hover:bg-gray-100 rounded-full"
+                title="Download PDF"
               >
                 <Download className="h-4 w-4" />
-                <span className="text-sm whitespace-nowrap">PDF</span>
               </Button>
             )}
 
             {/* Save Sets */}
             <Button
               onClick={() => setActiveModal('saved')}
-              variant="outline"
-              className="flex items-center gap-2 h-9 px-3 flex-shrink-0"
-              style={{ scrollSnapAlign: 'start' }}
+              variant="ghost"
+              size="sm"
+              className="h-9 w-9 p-0 hover:bg-gray-100 rounded-full relative"
+              title={`Saved Palettes (${savedPalettesCount}/10)`}
             >
               <BookOpen className="h-4 w-4" />
-              <span className="text-sm whitespace-nowrap">Save ({savedPalettesCount}/10)</span>
+              {savedPalettesCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                  {savedPalettesCount}
+                </span>
+              )}
             </Button>
 
             {/* More Options Dropdown */}
-            <div className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+            <div className="flex-shrink-0">
               <MoreOptionsDropdown
                 onImageGeneratorClick={() => {
                   if (!isPro) {
@@ -259,17 +264,14 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               />
             </div>
 
-            {/* Spacer to push zoom and generate to the right */}
-            <div className="flex-1" />
-
             {/* Zoom Controls */}
-            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-white h-9 flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gray-50">
               <Button
                 onClick={handleZoomOut}
                 variant="ghost"
                 size="sm"
                 disabled={zoomLevel <= 50}
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 rounded-full"
               >
                 <ZoomOut className="h-3 w-3" />
               </Button>
@@ -281,7 +283,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                 variant="ghost"
                 size="sm"
                 disabled={zoomLevel >= 200}
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 rounded-full"
               >
                 <ZoomIn className="h-3 w-3" />
               </Button>
@@ -290,30 +292,26 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                 variant="ghost"
                 size="sm"
                 title="Reset Zoom"
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 rounded-full"
               >
                 <RotateCcw className="h-3 w-3" />
               </Button>
             </div>
 
-            {/* Generate Button - Last item */}
+            {/* Generate Button */}
             <Button 
               onClick={onGenerateColors}
               disabled={isGenerating}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 h-9 font-medium flex-shrink-0"
-              style={{ scrollSnapAlign: 'start' }}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-9 w-9 p-0 rounded-full"
+              title="Generate Colors"
             >
               {isGenerating ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                <RefreshCw className="h-4 w-4 animate-spin" />
               ) : (
-                <Palette className="h-4 w-4 mr-2" />
+                <Palette className="h-4 w-4" />
               )}
-              Generate
             </Button>
           </div>
-
-          {/* Scroll indicator gradient */}
-          <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white/95 to-transparent pointer-events-none" />
         </div>
       </div>
 
