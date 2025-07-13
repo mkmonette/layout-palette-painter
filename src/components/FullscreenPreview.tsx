@@ -180,7 +180,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
       {/* Bottom Toolbar */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-        <div className="backdrop-blur-md border shadow-lg rounded-full px-4 py-2 bg-white/0">
+        <div className="backdrop-blur-md border shadow-lg rounded-full px-4 py-2 bg-black/[0.09]">
           <div className="flex items-center justify-center gap-2">
             {/* Template Selector */}
             <Button onClick={() => setActiveModal('template')} variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-md">
