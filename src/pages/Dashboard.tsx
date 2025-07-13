@@ -691,17 +691,16 @@ const Dashboard = () => {
             {/* Action Buttons */}
             <div className="p-4 border-t space-y-2">
               {/* Main Generate Buttons - Responsive Layout */}
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <Button 
                   onClick={handleGenerateColors}
-                  className="flex-1"
-                  size="lg"
+                  className="w-full text-xs sm:text-sm h-9 sm:h-10 whitespace-normal leading-tight"
                   disabled={isGenerating}
                 >
                   {isGenerating ? (
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    <RefreshCw className="mr-1 h-3 w-3 sm:h-4 sm:w-4 animate-spin flex-shrink-0" />
                   ) : (
-                    <Palette className="mr-2 h-4 w-4" />
+                    <Palette className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                   )}
                   🎨 Generate Colors
                 </Button>
@@ -710,13 +709,12 @@ const Dashboard = () => {
                   <TooltipTrigger asChild>
                     <Button 
                       onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')}
-                      className="flex-1"
-                      size="lg"
+                      className="w-full text-xs sm:text-sm h-9 sm:h-10 whitespace-normal leading-tight"
                       variant={canUseAIGeneration ? "default" : "outline"}
                       disabled={isGenerating}
                     >
-                      <Bot className="mr-2 h-4 w-4" />
-                      🤖 AI Colors {!canUseAIGeneration && '🔒 PRO'}
+                      <Bot className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                      AI Colors {!canUseAIGeneration && '🔒 PRO'}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
