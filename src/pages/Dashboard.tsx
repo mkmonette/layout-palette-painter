@@ -662,7 +662,7 @@ const Dashboard = () => {
           }}>
               <div className="flex items-center space-x-2">
 
-                <div className="h-4 w-px bg-border mx-2" />
+                
 
                 <Tooltip>
                   <TooltipTrigger asChild>
