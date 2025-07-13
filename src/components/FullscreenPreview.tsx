@@ -184,7 +184,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </Button>
 
             {/* Color Mood Selector */}
-            <Button onClick={() => setActiveModal('mood')} variant="outline" size="icon" className="h-10 w-10 rounded-full">
+            <Button onClick={() => setActiveModal('mood')} variant="outline" size="icon" className="h-10 w-10 rounded-full bg-slate-400 hover:bg-slate-300">
               <Sparkles className="h-4 w-4" />
             </Button>
 
