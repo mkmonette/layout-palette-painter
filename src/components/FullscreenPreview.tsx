@@ -189,7 +189,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </Button>
 
             {/* Light/Dark Mode Toggle */}
-            <div className="flex items-center gap-1 px-2 py-1 border rounded-full bg-white h-10">
+            <div className="flex items-center gap-1 px-2 py-1 border rounded-full h-10 bg-slate-300">
               <Sun className="h-3 w-3 text-yellow-500" />
               <Switch checked={isDarkMode} onCheckedChange={onModeToggle} />
               <Moon className="h-3 w-3 text-gray-600" />
