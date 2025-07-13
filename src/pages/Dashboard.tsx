@@ -51,7 +51,6 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logoutUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
-import SavedPalettesPanel from '@/components/SavedPalettesPanel';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { generateColorPalettePDF } from '@/utils/pdfGenerator';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
@@ -636,21 +635,19 @@ const Dashboard = () => {
           {/* Context Panel */}
           {!isContextPanelCollapsed && (
             <div className="w-80 bg-background border-r flex flex-col">
-            {activeSection !== 'saved-palettes' && (
-              <div className="h-14 border-b flex items-center justify-between px-4">
-                <h2 className="text-lg font-semibold text-foreground">
-                  {sidebarItems.find(item => item.id === activeSection)?.label}
-                </h2>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setIsContextPanelCollapsed(true)}
-                  className="h-8 w-8 p-0"
-                >
-                  <PanelLeftClose className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
+            <div className="p-4 border-b flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">
+                {sidebarItems.find(item => item.id === activeSection)?.label}
+              </h2>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setIsContextPanelCollapsed(true)}
+                className="h-8 w-8 p-0"
+              >
+                <PanelLeftClose className="h-4 w-4" />
+              </Button>
+            </div>
             
             <div className="flex-1 overflow-y-auto p-4">
               {activeSection === 'templates' && (
@@ -734,12 +731,17 @@ const Dashboard = () => {
               )}
 
               {activeSection === 'saved-palettes' && (
-                <SavedPalettesPanel
-                  currentPalette={colorPalette}
-                  currentTemplate={selectedTemplate}
-                  onPaletteSelect={handleSavedPaletteSelect}
-                  onTemplateChange={setSelectedTemplate}
-                />
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Access your saved color palettes.
+                  </p>
+                  <Button 
+                    onClick={() => setActiveModal('saved')}
+                    className="w-full"
+                  >
+                    View Saved Palettes ({savedPalettesCount}/{MAX_PALETTES})
+                  </Button>
+                </div>
               )}
 
               {activeSection === 'settings' && (
