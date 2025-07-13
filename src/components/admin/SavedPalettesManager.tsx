@@ -160,6 +160,10 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
     if (preset && window.confirm(`Delete preset "${preset.name}"? This action cannot be undone.`)) {
       const updatedPresets = presets.filter(p => p.id !== presetId);
       savePresetsToStorage(updatedPresets);
+      
+      // Dispatch event to notify AdminPresetsModal of changes
+      window.dispatchEvent(new CustomEvent('admin-presets-updated'));
+      
       toast({
         title: 'Success',
         description: `Preset "${preset.name}" deleted`
