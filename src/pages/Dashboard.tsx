@@ -380,7 +380,18 @@ const Dashboard = () => {
     return <FullscreenPreview template={selectedTemplate} colorPalette={colorPalette} selectedScheme={selectedScheme} isDarkMode={isDarkMode} isGenerating={isGenerating} autogenerateCount={autogenerateCount} onClose={() => setIsFullscreen(false)} onGenerateColors={handleGenerateColors} onSchemeChange={handleSchemeChange} onTemplateChange={setSelectedTemplate} onColorChange={(palette, moodId) => {
       setColorPalette(palette);
       if (moodId !== undefined) setSelectedMoodId(moodId);
-    }} onTemplateToggle={handleModeToggle} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
+    }} onTemplateToggle={(checked) => {
+      // Only generate new template colors, don't affect global dark mode
+      try {
+        const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, false);
+        setColorPalette(newPalette);
+        setSelectedMoodId(null);
+      } catch (error) {
+        console.error('Error generating color palette:', error);
+        const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, false, selectedMoodId);
+        setColorPalette(fallbackPalette);
+      }
+    }} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
   }
   const handleSidebarItemClick = (sectionId: typeof activeSection) => {
     if (activeSection === sectionId && !isContextPanelCollapsed) {
