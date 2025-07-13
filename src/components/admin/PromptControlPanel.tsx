@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Upload, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import * as XLSX from 'xlsx';
 
 interface PromptTemplate {
   id: string;
@@ -40,6 +41,7 @@ const defaultPromptTemplates: PromptTemplate[] = [
 
 const PromptControlPanel: React.FC = () => {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [defaultPrompt, setDefaultPrompt] = useState(
     'Generate a balanced color palette with good contrast ratios. Ensure text colors are readable against their backgrounds and follow WCAG AA guidelines.'
   );
@@ -131,6 +133,75 @@ const PromptControlPanel: React.FC = () => {
     ));
   };
 
+  const handleImportExcel = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as string[][];
+
+        // Skip header row if it exists
+        const dataRows = jsonData.slice(1).filter(row => row.length >= 2 && row[0] && row[1]);
+        
+        const importedTemplates: PromptTemplate[] = dataRows.map((row, index) => ({
+          id: `imported_${Date.now()}_${index}`,
+          label: row[0].toString().trim(),
+          prompt: row[1].toString().trim()
+        }));
+
+        if (importedTemplates.length > 0) {
+          setPromptTemplates([...promptTemplates, ...importedTemplates]);
+          toast({
+            title: "Import Successful",
+            description: `Imported ${importedTemplates.length} prompt templates from Excel.`,
+          });
+        } else {
+          toast({
+            title: "No Data Found",
+            description: "Excel file should have Label and Prompt columns with data.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Import Failed",
+          description: "Error reading Excel file. Please check the format.",
+          variant: "destructive",
+        });
+      }
+    };
+    reader.readAsArrayBuffer(file);
+    
+    // Reset the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleExportExcel = () => {
+    const exportData = [
+      ['Label', 'Prompt'], // Header row
+      ...promptTemplates.map(template => [template.label, template.prompt])
+    ];
+
+    const worksheet = XLSX.utils.aoa_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Prompt Templates');
+    
+    XLSX.writeFile(workbook, 'prompt-templates.xlsx');
+    
+    toast({
+      title: "Export Successful",
+      description: "Prompt templates exported to prompt-templates.xlsx",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -181,9 +252,30 @@ const PromptControlPanel: React.FC = () => {
 
           <Separator />
 
-          <div className="space-y-4">
+            <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="font-medium">Prompt Templates</h4>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={handleExportExcel}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Excel
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Import Excel
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".xlsx,.xls"
+                  onChange={handleImportExcel}
+                  className="hidden"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
