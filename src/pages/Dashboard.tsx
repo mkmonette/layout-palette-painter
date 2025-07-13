@@ -583,7 +583,7 @@ const Dashboard = () => {
 
         <div className="flex flex-1 overflow-hidden">
           {/* Left Sidebar */}
-          <div className="w-16 bg-card border-r flex flex-col items-center py-4 space-y-2">
+          <div className="w-16 border-r flex flex-col items-center py-4 space-y-2" style={{ backgroundColor: '#4d90fd' }}>
             {sidebarItems.map((item) => {
               if (!item.available) return null;
               
@@ -593,13 +593,13 @@ const Dashboard = () => {
                     <Button
                       variant={activeSection === item.id ? "default" : "ghost"}
                       size="sm"
-                      className="w-10 h-10 p-0 relative"
+                      className="w-10 h-10 p-0 relative text-white hover:bg-white/20"
                       onClick={() => handleSidebarItemClick(item.id)}
                     >
-                      <item.icon className="h-5 w-5" />
+                      <item.icon className="h-5 w-5 text-white" />
                       {item.isPro && (
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full flex items-center justify-center">
-                          <Sparkles className="h-2 w-2 text-primary-foreground" />
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
+                          <Sparkles className="h-2 w-2 text-blue-600" />
                         </div>
                       )}
                     </Button>
@@ -616,7 +616,7 @@ const Dashboard = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="w-10 h-10 p-0"
+                  className="w-10 h-10 p-0 text-white hover:bg-white/20"
                   onClick={() => {
                     if (!canAccessTemplateDarkMode) {
                       setUpsellModal({ isOpen: true, templateName: 'Template dark mode' });
@@ -626,7 +626,7 @@ const Dashboard = () => {
                     handleModeToggle(!isDarkMode);
                   }}
                 >
-                  {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  {isDarkMode ? <Sun className="h-5 w-5 text-white" /> : <Moon className="h-5 w-5 text-white" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
