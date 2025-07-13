@@ -34,8 +34,6 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
 }) => {
   const { toast } = useToast();
   const [savedPalettes, setSavedPalettes] = useState<SavedPalette[]>([]);
-  const [showSaveForm, setShowSaveForm] = useState(false);
-  const [paletteName, setPaletteName] = useState('');
   const MAX_PALETTES = 10;
 
   useEffect(() => {
@@ -64,45 +62,6 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
     }
   };
 
-  const savePalette = () => {
-    if (!paletteName.trim()) {
-      toast({
-        title: "Name Required",
-        description: "Please enter a name for your palette.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (savedPalettes.length >= MAX_PALETTES) {
-      toast({
-        title: "Save Limit Reached",
-        description: "You can manage saved palettes or upgrade.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const newPalette: SavedPalette = {
-      ...currentPalette,
-      id: Date.now().toString(),
-      name: paletteName.trim(),
-      template: currentTemplate,
-      savedAt: new Date().toISOString()
-    };
-
-    const updatedPalettes = [...savedPalettes, newPalette];
-    setSavedPalettes(updatedPalettes);
-    localStorage.setItem('savedPalettes', JSON.stringify(updatedPalettes));
-
-    setPaletteName('');
-    setShowSaveForm(false);
-    
-    toast({
-      title: "Palette Saved",
-      description: `"${newPalette.name}" has been saved successfully.`
-    });
-  };
 
   const deletePalette = (id: string) => {
     const updatedPalettes = savedPalettes.filter(p => p.id !== id);
@@ -128,8 +87,6 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
     });
   };
 
-  const canSave = savedPalettes.length < MAX_PALETTES;
-  const remainingSlots = MAX_PALETTES - savedPalettes.length;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -149,68 +106,12 @@ const SavedPalettesModal: React.FC<SavedPalettesModalProps> = ({
               ) : savedPalettes.length >= MAX_PALETTES ? (
                 <p className="text-red-600">❗ You've reached the limit. Upgrade to save more palettes.</p>
               ) : (
-                <p className="text-green-600">
-                  ✅ You've saved {savedPalettes.length} out of {MAX_PALETTES} palettes ({remainingSlots} remaining).
-                </p>
+                 <p className="text-green-600">
+                   ✅ You've saved {savedPalettes.length} out of {MAX_PALETTES} palettes ({MAX_PALETTES - savedPalettes.length} remaining).
+                 </p>
               )}
             </div>
 
-            {/* Save Current Palette Section */}
-            <div className="border rounded-lg p-4">
-              <h3 className="font-medium mb-3">Save Current Palette</h3>
-              
-              {/* Current Palette Preview */}
-              <div className="flex items-center gap-3 mb-3">
-                {Object.entries(currentPalette).map(([key, color]) => (
-                  <div key={key} className="flex items-center gap-1">
-                    <div 
-                      className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
-                      style={{ backgroundColor: color }}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {showSaveForm ? (
-                <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Enter palette name..."
-                    value={paletteName}
-                    onChange={(e) => setPaletteName(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onKeyDown={(e) => e.key === 'Enter' && savePalette()}
-                  />
-                  <div className="flex gap-2">
-                    <Button 
-                      onClick={savePalette}
-                      disabled={!canSave}
-                      size="sm"
-                    >
-                      <Save className="h-4 w-4 mr-2" />
-                      Save
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setShowSaveForm(false)}
-                      size="sm"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <Button 
-                  onClick={() => setShowSaveForm(true)}
-                  disabled={!canSave}
-                  size="sm"
-                  className="w-full"
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  {canSave ? 'Save Current Palette' : 'Save Limit Reached'}
-                </Button>
-              )}
-            </div>
 
             {/* Saved Palettes List */}
             {savedPalettes.length > 0 && (

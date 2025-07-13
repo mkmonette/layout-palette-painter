@@ -63,7 +63,8 @@ const Dashboard = () => {
   const {
     getSavedCount,
     loadSavedPalettes,
-    MAX_PALETTES
+    MAX_PALETTES,
+    savePalette
   } = useSavedPalettes();
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
@@ -294,6 +295,23 @@ const Dashboard = () => {
   const handleAIPaletteGenerated = (aiPalette: ColorPalette) => {
     setColorPalette(aiPalette);
   };
+  const handleSave = () => {
+    const success = savePalette(colorPalette, selectedTemplate);
+    if (success) {
+      setSavedPalettesCount(getSavedCount());
+      toast({
+        title: "Palette Saved",
+        description: "Your color palette has been saved successfully."
+      });
+    } else {
+      toast({
+        title: "Save Limit Reached",
+        description: "You've reached the maximum number of saved palettes.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleDownloadPDF = async () => {
     if (!canDownload()) {
       setUpsellModal({
@@ -706,6 +724,15 @@ const Dashboard = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Export color palette as PDF</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="sm" onClick={handleSave}>
+                      <Save className="h-4 w-4 mr-2" />
+                      Save
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Save current palette</TooltipContent>
                 </Tooltip>
                 <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="bg-amber-500 hover:bg-amber-400">
                   <Maximize className="h-4 w-4 mr-2" />

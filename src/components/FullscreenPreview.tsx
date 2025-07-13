@@ -244,6 +244,11 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               </Button>
             </div>
 
+            {/* Save Button */}
+            <Button onClick={handleSave} variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-md" title="Save Palette">
+              <Save className="h-4 w-4" />
+            </Button>
+
             {/* Generate Button - Last item */}
             <Button onClick={onGenerateColors} disabled={isGenerating} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-10 w-10 rounded-full p-0 shadow-md">
               {isGenerating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
