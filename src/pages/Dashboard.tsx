@@ -757,21 +757,26 @@ const Dashboard = () => {
             </div>
 
             {/* Canvas */}
-            <div className="flex-1 overflow-hidden p-4 flex items-center justify-center">
+            <div className="flex-1 overflow-hidden p-2 flex items-center justify-center">
               <div 
-                className="bg-background border rounded-lg shadow-lg transition-transform duration-200 w-full max-w-2xl"
+                className="bg-background border rounded-lg shadow-lg transition-transform duration-200 w-full h-full max-w-none"
                 style={{ 
                   transform: `scale(${zoomLevel / 100})`,
-                  aspectRatio: '4/3',
-                  maxHeight: '60vh'
+                  maxWidth: `calc(100vw - ${isContextPanelCollapsed ? '80px' : '400px'})`, // Dynamic based on panel state
+                  maxHeight: 'calc(100vh - 120px)', // Account for top bar and toolbar
+                  aspectRatio: '16/9',
+                  width: `min(100%, calc((100vh - 120px) * 16/9))`, // Fit by height
+                  height: `min(calc(100vw - ${isContextPanelCollapsed ? '80px' : '400px'}) * 9/16, calc(100vh - 120px))` // Fit by width
                 }}
                 data-preview-element
               >
-                <LivePreview
-                  template={selectedTemplate}
-                  colorPalette={colorPalette}
-                  backgroundSettings={backgroundSettings}
-                />
+                <div className="w-full h-full overflow-hidden">
+                  <LivePreview
+                    template={selectedTemplate}
+                    colorPalette={colorPalette}
+                    backgroundSettings={backgroundSettings}
+                  />
+                </div>
               </div>
             </div>
 
