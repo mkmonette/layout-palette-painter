@@ -419,6 +419,8 @@ const Dashboard = () => {
       // Otherwise, set the section and ensure panel is open
       setActiveSection(sectionId);
       setIsContextPanelCollapsed(false);
+      // On mobile, also close the mobile menu
+      setIsMobileMenuOpen(false);
     }
   };
   const sidebarItems = [{
