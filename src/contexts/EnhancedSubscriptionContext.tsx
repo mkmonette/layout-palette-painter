@@ -67,7 +67,7 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
         custom_color_schemes: true,
         color_mood_options: true,
         template_dark_mode: true,
-        ai_generations_per_month: 50
+        ai_generations_per_month: 100
       },
     status: 'active',
     subscribers: 567,
@@ -120,6 +120,16 @@ export const EnhancedSubscriptionProvider: React.FC<EnhancedSubscriptionProvider
 
   // Load plans from localStorage on mount
   useEffect(() => {
+    // Clear outdated localStorage plans to force use of updated defaults
+    const migrationKey = 'template_dark_mode_migration';
+    const hasRunMigration = localStorage.getItem(migrationKey);
+    
+    if (!hasRunMigration) {
+      console.log('🚨 Running template dark mode migration - clearing old plans');
+      localStorage.removeItem('subscription_plans');
+      localStorage.setItem(migrationKey, 'true');
+    }
+    
     const savedPlans = localStorage.getItem('subscription_plans');
     if (savedPlans) {
       try {
@@ -135,6 +145,11 @@ export const EnhancedSubscriptionProvider: React.FC<EnhancedSubscriptionProvider
       } catch (error) {
         console.error('Error loading saved plans:', error);
       }
+    } else {
+      // If no saved plans, ensure we use default plans
+      console.log('🔄 No saved plans found, using defaults with updated features');
+      setPlans(DEFAULT_PLANS);
+      setBasePlan(DEFAULT_PLANS[0]);
     }
   }, []);
 
