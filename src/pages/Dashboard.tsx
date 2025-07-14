@@ -548,11 +548,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden relative">
           {/* Left Sidebar */}
           <div style={{
           backgroundColor: '#5b99fe'
-        }} className="w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600">
+        }} className="w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600 relative z-10">
             {sidebarItems.map(item => {
             if (!item.available) return null;
             return <Tooltip key={item.id}>
@@ -593,7 +593,7 @@ const Dashboard = () => {
           </div>
 
           {/* Context Panel */}
-          {!isContextPanelCollapsed && <div className="absolute sm:relative z-20 sm:z-auto top-0 left-16 sm:left-0 w-80 sm:w-80 h-full min-w-0 bg-background border-r flex flex-col shadow-lg sm:shadow-none">
+          {!isContextPanelCollapsed && <div className="w-80 sm:w-80 min-w-0 bg-background border-r flex flex-col absolute sm:relative left-16 sm:left-0 top-0 h-full z-20 sm:z-auto shadow-xl sm:shadow-none">
             <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
