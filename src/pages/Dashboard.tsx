@@ -71,6 +71,7 @@ const Dashboard = () => {
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDashboardDarkMode, setIsDashboardDarkMode] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
   const [colorPalette, setColorPalette] = useState<ColorPalette>({
     brand: '#3B82F6',
@@ -509,27 +510,25 @@ const Dashboard = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-white hover:bg-white/20 hover:text-white" onClick={() => {
-                  // Dashboard dark mode toggle
-                  const newDarkMode = !isDarkMode;
-                  setIsDarkMode(newDarkMode);
-                  if (newDarkMode) {
+                  // Dashboard dark mode toggle - only affects dashboard UI
+                  const newDashboardDarkMode = !isDashboardDarkMode;
+                  setIsDashboardDarkMode(newDashboardDarkMode);
+                  if (newDashboardDarkMode) {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
                   }
-                  if (!canAccessTemplateDarkMode) {
-                    toast({
-                      title: "Dashboard Dark Mode",
-                      description: "Upgrade to Pro to also generate dark color palettes for templates.",
-                      variant: "default"
-                    });
-                  }
+                  toast({
+                    title: "Dashboard Dark Mode",
+                    description: "Dashboard appearance changed. Use sidebar toggle to generate dark template colors.",
+                    variant: "default"
+                  });
                 }}>
-                    {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                    {isDashboardDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  Dashboard {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                  Dashboard {isDashboardDarkMode ? 'Light Mode' : 'Dark Mode'}
                 </TooltipContent>
               </Tooltip>
 
@@ -585,8 +584,26 @@ const Dashboard = () => {
                   });
                   return;
                 }
-                // Template dark mode toggle (generates new colors)
-                handleModeToggle(!isDarkMode);
+                // Template dark mode toggle - only generates new colors, doesn't affect dashboard UI
+                const newTemplateDarkMode = !isDarkMode;
+                setIsDarkMode(newTemplateDarkMode);
+                try {
+                  const newPalette = generateColorSchemeWithLocks(selectedScheme, newTemplateDarkMode, colorPalette, lockedColors, false);
+                  setColorPalette(newPalette);
+                  toast({
+                    title: "Template Colors Updated",
+                    description: `Generated ${newTemplateDarkMode ? 'dark' : 'light'} template colors. Dashboard appearance unchanged.`,
+                    variant: "default"
+                  });
+                } catch (error) {
+                  if (error instanceof Error && error.message.includes('No accessible palette found')) {
+                    toast({
+                      title: "⚠️ No Contrast-Safe Palettes Found",
+                      description: "No contrast-safe palettes found for current settings. Try adjusting mood or scheme.",
+                      variant: "destructive"
+                    });
+                  }
+                }
               }}>
                   {isDarkMode ? <Sun className="h-5 w-5 text-white" /> : <Moon className="h-5 w-5 text-white" />}
                 </Button>
