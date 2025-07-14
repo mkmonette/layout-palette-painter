@@ -591,7 +591,7 @@ const Dashboard = () => {
           </div>
 
           {/* Context Panel */}
-          {!isContextPanelCollapsed && <div className="w-80 bg-background border-r flex flex-col">
+          {!isContextPanelCollapsed && <div className="w-80 min-w-80 max-w-80 bg-background border-r flex flex-col">
             <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
