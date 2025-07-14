@@ -120,7 +120,7 @@ const Dashboard = () => {
   });
 
   // New state for sidebar sections
-  const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'ai-colors' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings'>('templates');
+  const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'ai-colors' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings' | 'test-plans'>('templates');
   const [projectName, setProjectName] = useState('Untitled Project');
   const [isEditingName, setIsEditingName] = useState(false);
   const [showColorMood, setShowColorMood] = useState(false);
@@ -470,6 +470,11 @@ const Dashboard = () => {
     icon: Settings,
     label: 'Settings',
     available: true
+  }, {
+    id: 'test-plans' as const,
+    icon: Shield,
+    label: 'Test Plans',
+    available: process.env.NODE_ENV !== 'production'
   }];
   return <TooltipProvider>
       <div className="h-screen flex flex-col bg-background">
@@ -659,15 +664,21 @@ const Dashboard = () => {
                     Configure your preferences and account settings.
                   </p>
                   
-                  {/* Test Plan Switcher - Development Only */}
-                  <TestPlanSwitcher />
-                  
                   <div className="space-y-3">
                     <OpenAIKeyInput onKeySet={() => {}} />
                   </div>
                   <Button variant="outline" className="w-full" onClick={() => navigate('/history')}>
                     View History
                   </Button>
+                </div>}
+
+              {activeSection === 'test-plans' && <div className="space-y-4">
+                  <h3 className="text-md font-medium">Test Plan Switcher</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Simulate different subscription plans for testing UI features. 
+                    This override is temporary and only affects the current session.
+                  </p>
+                  <TestPlanSwitcher />
                 </div>}
             </div>
 
