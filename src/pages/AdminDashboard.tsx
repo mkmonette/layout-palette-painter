@@ -172,7 +172,7 @@ const AdminDashboard = () => {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full bg-background border shadow-lg z-50" align="start" sideOffset={4}>
+              <DropdownMenuContent className="w-[calc(100vw-3rem)] bg-background border shadow-lg z-50" align="start" sideOffset={4}>
                 <DropdownMenuItem onClick={() => setActiveTab('overview')}>
                   Overview
                 </DropdownMenuItem>
