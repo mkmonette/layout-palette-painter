@@ -175,7 +175,7 @@ const AnalyticsDashboard: React.FC = () => {
           <BarChart3 className="h-5 w-5" />
           Overview Metrics
         </h3>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-2">
           <StatCard
             title="Total Users"
             value={analyticsData.overview.totalUsers}
@@ -413,7 +413,7 @@ const AnalyticsDashboard: React.FC = () => {
           <Activity className="h-5 w-5" />
           Engagement Metrics
         </h3>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-2">
           <StatCard
             title="Palette Generations"
             value={analyticsData.engagement.paletteGenerations}
@@ -447,7 +447,8 @@ const AnalyticsDashboard: React.FC = () => {
           <CreditCard className="h-5 w-5" />
           Subscription Metrics
         </h3>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-4">
+          {/* User Distribution - Full Width */}
           <Card>
             <CardHeader>
               <CardTitle className="text-sm font-medium">User Distribution</CardTitle>
@@ -477,20 +478,23 @@ const AnalyticsDashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <StatCard
-            title="Monthly Recurring Revenue"
-            value={analyticsData.subscription.mrr}
-            growth={analyticsData.subscription.mrrGrowth}
-            icon={DollarSign}
-            prefix="$"
-          />
+          {/* MRR and Churn Rate - 2 Columns */}
+          <div className="grid gap-4 grid-cols-2">
+            <StatCard
+              title="Monthly Recurring Revenue"
+              value={analyticsData.subscription.mrr}
+              growth={analyticsData.subscription.mrrGrowth}
+              icon={DollarSign}
+              prefix="$"
+            />
 
-          <StatCard
-            title="Churn Rate"
-            value={analyticsData.subscription.churnRate}
-            icon={UserPlus}
-            suffix="%"
-          />
+            <StatCard
+              title="Churn Rate"
+              value={analyticsData.subscription.churnRate}
+              icon={UserPlus}
+              suffix="%"
+            />
+          </div>
         </div>
       </div>
 
@@ -500,7 +504,7 @@ const AnalyticsDashboard: React.FC = () => {
           <Palette className="h-5 w-5" />
           Feature Usage
         </h3>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-2">
           <StatCard
             title="AI Generations"
             value={analyticsData.features.aiGeneration}
@@ -565,7 +569,7 @@ const AnalyticsDashboard: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 grid-cols-2">
             <div className="text-center p-4 border rounded-lg">
               <div className="text-2xl font-bold text-green-600">99.9%</div>
               <div className="text-sm text-muted-foreground">Uptime</div>
