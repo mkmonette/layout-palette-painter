@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { 
   Users, 
@@ -14,7 +15,8 @@ import {
   BarChart3,
   Shield,
   Bell,
-  Download
+  Download,
+  ChevronDown
 } from 'lucide-react';
 import AdminOverview from '@/components/admin/AdminOverview';
 import UserManagement from '@/components/admin/UserManagement';
@@ -70,6 +72,21 @@ const AdminDashboard = () => {
     setCurrentPalette(palette);
   };
 
+  const getTabLabel = (tab: string) => {
+    const labels: { [key: string]: string } = {
+      'overview': 'Overview',
+      'analytics': 'Analytics',
+      'users': 'Users',
+      'subscriptions': 'Plans',
+      'generator': 'Generator',
+      'ai-settings': 'AI Settings',
+      'color-preview': 'Colors',
+      'presets': 'Presets',
+      'settings': 'Settings'
+    };
+    return labels[tab] || 'Select Tab';
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -101,7 +118,8 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-9">
+          {/* Desktop Tab Navigation */}
+          <TabsList className="hidden md:grid w-full grid-cols-9">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
@@ -112,6 +130,47 @@ const AdminDashboard = () => {
             <TabsTrigger value="presets">Presets</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
+
+          {/* Mobile Dropdown Navigation */}
+          <div className="md:hidden mb-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between bg-background">
+                  {getTabLabel(activeTab)}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full bg-background border shadow-lg z-50" align="start">
+                <DropdownMenuItem onClick={() => setActiveTab('overview')}>
+                  Overview
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('analytics')}>
+                  Analytics
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('users')}>
+                  Users
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('subscriptions')}>
+                  Plans
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('generator')}>
+                  Generator
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('ai-settings')}>
+                  AI Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('color-preview')}>
+                  Colors
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('presets')}>
+                  Presets
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('settings')}>
+                  Settings
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
           <TabsContent value="overview">
             <AdminOverview />
