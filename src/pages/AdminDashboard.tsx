@@ -16,7 +16,10 @@ import {
   Shield,
   Bell,
   Download,
-  ChevronDown
+  ChevronDown,
+  Menu,
+  LogOut,
+  History
 } from 'lucide-react';
 import AdminOverview from '@/components/admin/AdminOverview';
 import UserManagement from '@/components/admin/UserManagement';
@@ -96,12 +99,15 @@ const AdminDashboard = () => {
             <Shield className="h-6 w-6 text-primary" />
             <h1 className="text-xl font-bold">Admin Dashboard</h1>
           </div>
-          <div className="flex items-center gap-4">
+          
+          {/* Desktop Header Actions */}
+          <div className="hidden md:flex items-center gap-4">
             <Button 
               onClick={() => navigate('/history')}
               variant="outline" 
               size="sm"
             >
+              <History className="h-4 w-4 mr-2" />
               History
             </Button>
             <Button variant="outline" size="sm">
@@ -109,8 +115,34 @@ const AdminDashboard = () => {
               Notifications
             </Button>
             <Button onClick={handleLogout} variant="outline" size="sm">
+              <LogOut className="h-4 w-4 mr-2" />
               Logout
             </Button>
+          </div>
+
+          {/* Mobile Hamburger Menu */}
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Menu className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-background border shadow-lg z-50" align="end">
+                <DropdownMenuItem onClick={() => navigate('/history')}>
+                  <History className="h-4 w-4 mr-2" />
+                  History
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Bell className="h-4 w-4 mr-2" />
+                  Notifications
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
