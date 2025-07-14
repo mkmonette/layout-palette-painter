@@ -591,7 +591,7 @@ const Dashboard = () => {
           </div>
 
           {/* Context Panel */}
-          {!isContextPanelCollapsed && <div className="w-full sm:w-80 bg-background border-r flex flex-col">
+          {!isContextPanelCollapsed && <div className="w-full sm:w-80 min-w-0 bg-background border-r flex flex-col">
             <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
@@ -601,7 +601,7 @@ const Dashboard = () => {
               </Button>
             </div>
             
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full min-w-0">
               {activeSection === 'templates' && <div className="space-y-6 w-full">
                   <div className="w-full">
                     <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
