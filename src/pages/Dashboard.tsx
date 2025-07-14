@@ -126,6 +126,7 @@ const Dashboard = () => {
   const [showColorMood, setShowColorMood] = useState(false);
   const [isContextPanelCollapsed, setIsContextPanelCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Set initial panel state based on mobile detection
   useEffect(() => {
@@ -479,6 +480,16 @@ const Dashboard = () => {
       }}>
           <div className="flex items-center justify-between px-4 h-full bg-blue-700">
             <div className="flex items-center space-x-4">
+              {/* Mobile hamburger menu for sidebar */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="sm:hidden w-8 h-8 p-0 text-white hover:bg-white/20"
+              >
+                <Menu className="h-4 w-4" />
+              </Button>
+              
               {isEditingName ? <input type="text" value={projectName} onChange={e => setProjectName(e.target.value)} onBlur={() => setIsEditingName(false)} onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)} className="bg-transparent text-white font-medium text-lg outline-none border-b border-white/50 placeholder-white/70" autoFocus /> : <h1 className="text-lg font-medium text-white cursor-pointer hover:text-white/80" onClick={() => setIsEditingName(true)}>
                   {projectName}
                 </h1>}
@@ -553,10 +564,85 @@ const Dashboard = () => {
         </div>
 
         <div className="flex flex-1 overflow-hidden">
-          {/* Left Sidebar */}
+          {/* Mobile Sidebar Overlay */}
+          {isMobile && isSidebarOpen && (
+            <div className="fixed inset-0 z-50 sm:hidden">
+              <div className="absolute inset-0 bg-black/50" onClick={() => setIsSidebarOpen(false)} />
+              <div style={{
+                backgroundColor: '#5b99fe'
+              }} className="absolute left-0 top-0 bottom-0 w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600">
+                {sidebarItems.map(item => {
+                  if (!item.available) return null;
+                  return <Tooltip key={item.id}>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          variant={activeSection === item.id ? "default" : "ghost"} 
+                          size="sm" 
+                          className="w-10 h-10 p-0 relative text-white hover:bg-white/20" 
+                          onClick={() => {
+                            handleSidebarItemClick(item.id);
+                            setIsSidebarOpen(false);
+                          }}
+                        >
+                          <item.icon className="h-5 w-5 text-white" />
+                          {item.isPro && <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
+                              <Sparkles className="h-2 w-2 text-blue-600" />
+                            </div>}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">{item.label}</TooltipContent>
+                    </Tooltip>;
+                })}
+
+                {/* Template Dark Mode Toggle */}
+                <div className="flex-1" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-white hover:bg-white/20" onClick={() => {
+                    if (!canAccessTemplateDarkMode) {
+                      setUpsellModal({
+                        isOpen: true,
+                        templateName: 'Template dark mode'
+                      });
+                      return;
+                    }
+                    // Template dark mode toggle - only generates new colors, doesn't affect dashboard UI
+                    const newTemplateDarkMode = !isDarkMode;
+                    setIsDarkMode(newTemplateDarkMode);
+                    try {
+                      const newPalette = generateColorSchemeWithLocks(selectedScheme, newTemplateDarkMode, colorPalette, lockedColors, false);
+                      setColorPalette(newPalette);
+                      toast({
+                        title: "Template Colors Updated",
+                        description: `Generated ${newTemplateDarkMode ? 'dark' : 'light'} template colors. Dashboard appearance unchanged.`,
+                        variant: "default"
+                      });
+                    } catch (error) {
+                      if (error instanceof Error && error.message.includes('No accessible palette found')) {
+                        toast({
+                          title: "⚠️ No Contrast-Safe Palettes Found",
+                          description: "No contrast-safe palettes found for current settings. Try adjusting mood or scheme.",
+                          variant: "destructive"
+                        });
+                      }
+                    }
+                    setIsSidebarOpen(false);
+                  }}>
+                      {isDarkMode ? <Sun className="h-5 w-5 text-white" /> : <Moon className="h-5 w-5 text-white" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    Template {isDarkMode ? 'Light Mode' : 'Dark Mode'} {!canAccessTemplateDarkMode && '(Pro)'}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </div>
+          )}
+
+          {/* Desktop Left Sidebar */}
           <div style={{
           backgroundColor: '#5b99fe'
-        }} className="w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600">
+        }} className="hidden sm:flex w-16 border-r flex-col items-center py-4 space-y-2 bg-sky-600">
             {sidebarItems.map(item => {
             if (!item.available) return null;
             return <Tooltip key={item.id}>
@@ -827,7 +913,7 @@ const Dashboard = () => {
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
               width: isMobile ? 
-                'calc(100vw - 80px)' : // 64px sidebar + 16px padding
+                'calc(100vw - 16px)' : // Full width on mobile (8px padding each side)
                 `min(800px, calc(100vw - ${isContextPanelCollapsed ? '80px' : '400px'}))`, // 64px sidebar + panel width
               minHeight: '400px'
             }} data-preview-element>
