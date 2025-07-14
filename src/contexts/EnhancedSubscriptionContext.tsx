@@ -156,8 +156,12 @@ export const EnhancedSubscriptionProvider: React.FC<EnhancedSubscriptionProvider
   };
 
   const hasFeatureAccess = (featureId: string): boolean => {
-    if (!currentPlan) return false;
+    if (!currentPlan) {
+      console.log('🔍 hasFeatureAccess: No current plan');
+      return false;
+    }
     const featureValue = currentPlan.features[featureId];
+    console.log(`🔍 hasFeatureAccess: ${featureId} = ${featureValue} (plan: ${currentPlan.name})`);
     return featureValue === true;
   };
 
@@ -181,6 +185,15 @@ export const EnhancedSubscriptionProvider: React.FC<EnhancedSubscriptionProvider
   const updatePlans = (newPlans: SubscriptionPlan[]) => {
     setPlans(newPlans);
     localStorage.setItem('subscription_plans', JSON.stringify(newPlans));
+    
+    // Update current base plan if it exists in the new plans
+    if (basePlan) {
+      const updatedBasePlan = newPlans.find(p => p.id === basePlan.id);
+      if (updatedBasePlan) {
+        console.log(`🔄 Updating current plan features:`, updatedBasePlan.features);
+        setBasePlan(updatedBasePlan);
+      }
+    }
   };
 
   return (
