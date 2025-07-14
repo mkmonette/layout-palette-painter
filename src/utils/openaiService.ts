@@ -5,8 +5,15 @@ import { logTokenUsage } from './tokenUsageLogger';
 interface OpenAIColorRequest {
   mood?: string;
   theme?: string;
+  backgroundStyle?: string;
   description?: string;
   isDarkMode?: boolean;
+  backgroundSettings?: {
+    enabled: boolean;
+    mode: 'svg' | 'gradient';
+    style?: string;
+    opacity?: number;
+  };
 }
 
 let openaiInstance: OpenAI | null = null;
@@ -124,15 +131,21 @@ Return ONLY valid JSON with hex color values. Ensure text colors have sufficient
 };
 
 const buildColorPrompt = (request: OpenAIColorRequest): string => {
-  const { mood, theme, description, isDarkMode } = request;
+  const { mood, theme, backgroundStyle, description, isDarkMode, backgroundSettings } = request;
   
   let prompt = `Generate a ${isDarkMode ? 'dark mode' : 'light mode'} color palette`;
   
-  if (mood || theme || description) {
+  if (theme || backgroundStyle || mood || description) {
     prompt += ' with the following characteristics:\n';
     
-    if (mood) prompt += `- Mood: ${mood}\n`;
     if (theme) prompt += `- Theme: ${theme}\n`;
+    if (backgroundStyle) prompt += `- Background Style: ${backgroundStyle}\n`;
+    if (backgroundSettings?.enabled && backgroundSettings.mode === 'svg' && backgroundSettings.style) {
+      prompt += `- Background Type: ${backgroundSettings.style} with ${Math.round((backgroundSettings.opacity || 0.3) * 100)}% opacity\n`;
+    } else if (backgroundSettings?.enabled && backgroundSettings.mode === 'gradient') {
+      prompt += `- Background Type: Gradient background with ${Math.round((backgroundSettings.opacity || 0.3) * 100)}% opacity\n`;
+    }
+    if (mood) prompt += `- Mood: ${mood}\n`;
     if (description) prompt += `- Description: ${description}\n`;
   }
   

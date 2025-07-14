@@ -15,12 +15,19 @@ import { useAIQuota } from '@/hooks/useAIQuota';
 interface AIColorGeneratorProps {
   isDarkMode: boolean;
   onPaletteGenerated: (palette: ColorPalette) => void;
+  backgroundSettings?: {
+    enabled: boolean;
+    mode: 'svg' | 'gradient';
+    style?: string;
+    opacity?: number;
+  };
 }
 
-const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPaletteGenerated }) => {
+const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPaletteGenerated, backgroundSettings }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [mood, setMood] = useState('');
   const [theme, setTheme] = useState('');
+  const [backgroundStyle, setBackgroundStyle] = useState('');
   const [description, setDescription] = useState('');
   const [contrastIssues, setContrastIssues] = useState<ContrastIssue[]>([]);
   const { toast } = useToast();
@@ -55,6 +62,16 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
     'Travel and adventure'
   ];
 
+  const backgroundStyleOptions = [
+    'Clean and minimal backgrounds',
+    'Dynamic wavy patterns',
+    'Organic blob shapes',
+    'Geometric patterns',
+    'Flowing organic shapes',
+    'Gradient overlays',
+    'Subtle textures'
+  ];
+
   const handleGenerate = async () => {
     if (!isOpenAIInitialized()) {
       toast({
@@ -65,10 +82,10 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
       return;
     }
 
-    if (!mood && !theme && !description) {
+    if (!mood && !theme && !backgroundStyle && !description) {
       toast({
         title: "Input Required",
-        description: "Please specify a mood, theme, or description",
+        description: "Please specify a theme, background style, mood, or description",
         variant: "destructive",
       });
       return;
@@ -80,9 +97,11 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
     try {
       const palette = await generateAIColorPalette({
         mood,
-        theme, 
+        theme,
+        backgroundStyle,
         description,
-        isDarkMode
+        isDarkMode,
+        backgroundSettings
       });
 
       // Validate contrast
@@ -122,6 +141,7 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
   const clearInputs = () => {
     setMood('');
     setTheme('');
+    setBackgroundStyle('');
     setDescription('');
     setContrastIssues([]);
   };
@@ -214,7 +234,7 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
     return (
       <Button
         onClick={handleGenerate}
-        disabled={isGenerating || (!mood && !theme && !description)}
+        disabled={isGenerating || (!mood && !theme && !backgroundStyle && !description)}
         size="sm"
         className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
       >
@@ -260,21 +280,6 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Mood Selection */}
-        <div className="space-y-2">
-          <label className="text-xs font-medium text-gray-700">Mood</label>
-          <Select value={mood} onValueChange={setMood}>
-            <SelectTrigger className="h-8 text-xs">
-              <SelectValue placeholder="Select a mood..." />
-            </SelectTrigger>
-            <SelectContent>
-              {predefinedMoods.map((m) => (
-                <SelectItem key={m} value={m} className="text-xs">{m}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* Theme Selection */}
         <div className="space-y-2">
           <label className="text-xs font-medium text-gray-700">Theme</label>
@@ -285,6 +290,36 @@ const AIColorGenerator: React.FC<AIColorGeneratorProps> = ({ isDarkMode, onPalet
             <SelectContent>
               {predefinedThemes.map((t) => (
                 <SelectItem key={t} value={t} className="text-xs">{t}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Background Settings */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-700">Background Style</label>
+          <Select value={backgroundStyle} onValueChange={setBackgroundStyle}>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="Select background style..." />
+            </SelectTrigger>
+            <SelectContent>
+              {backgroundStyleOptions.map((style) => (
+                <SelectItem key={style} value={style} className="text-xs">{style}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Mood Selection */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-700">Mood</label>
+          <Select value={mood} onValueChange={setMood}>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="Select a mood..." />
+            </SelectTrigger>
+            <SelectContent>
+              {predefinedMoods.map((m) => (
+                <SelectItem key={m} value={m} className="text-xs">{m}</SelectItem>
               ))}
             </SelectContent>
           </Select>

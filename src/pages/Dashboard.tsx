@@ -645,7 +645,11 @@ const Dashboard = () => {
 
               {activeSection === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
 
-              {activeSection === 'ai-colors' && <AIColorGenerator isDarkMode={isDarkMode} onPaletteGenerated={handleAIPaletteGenerated} />}
+              {activeSection === 'ai-colors' && <AIColorGenerator 
+                isDarkMode={isDarkMode} 
+                onPaletteGenerated={handleAIPaletteGenerated}
+                backgroundSettings={backgroundSettings}
+              />}
 
               {activeSection === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
 
