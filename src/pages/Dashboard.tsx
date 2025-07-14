@@ -120,7 +120,7 @@ const Dashboard = () => {
   });
 
   // New state for sidebar sections
-  const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'ai-colors' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings' | 'test-plans'>('templates');
+  const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'background-settings' | 'ai-colors' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings' | 'test-plans'>('templates');
   const [projectName, setProjectName] = useState('Untitled Project');
   const [isEditingName, setIsEditingName] = useState(false);
   const [showColorMood, setShowColorMood] = useState(false);
@@ -445,6 +445,11 @@ const Dashboard = () => {
     label: 'Moods',
     available: canAccessColorMood
   }, {
+    id: 'background-settings' as const,
+    icon: Palette,
+    label: 'Background',
+    available: true
+  }, {
     id: 'ai-colors' as const,
     icon: Bot,
     label: `AI Colors (${maxAIGenerationsPerMonth - remainingAIGenerations}/${maxAIGenerationsPerMonth})`,
@@ -633,7 +638,6 @@ const Dashboard = () => {
             <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
               {activeSection === 'templates' && <div className="space-y-6">
                   <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
-                  <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
                 </div>}
 
               {activeSection === 'schemes' && <div className="space-y-4">
@@ -645,7 +649,11 @@ const Dashboard = () => {
 
               {activeSection === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
 
-              {activeSection === 'ai-colors' && <AIColorGenerator 
+              {activeSection === 'background-settings' && <div className="space-y-4">
+                  <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
+                </div>}
+
+              {activeSection === 'ai-colors' && <AIColorGenerator
                 isDarkMode={isDarkMode} 
                 onPaletteGenerated={handleAIPaletteGenerated}
                 backgroundSettings={backgroundSettings}
