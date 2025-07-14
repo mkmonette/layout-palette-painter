@@ -601,26 +601,38 @@ const Dashboard = () => {
               </Button>
             </div>
             
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
-              {activeSection === 'templates' && <div className="space-y-6">
-                  <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
-                  <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full">
+              {activeSection === 'templates' && <div className="space-y-6 w-full">
+                  <div className="w-full">
+                    <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
+                  </div>
+                  <div className="w-full">
+                    <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
+                  </div>
                 </div>}
 
-              {activeSection === 'schemes' && <div className="space-y-4">
+              {activeSection === 'schemes' && <div className="space-y-4 w-full">
                   <p className="text-sm text-muted-foreground">
                     Choose a color scheme to generate harmonious palettes.
                   </p>
-                  <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
+                  <div className="w-full">
+                    <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
+                  </div>
                 </div>}
 
-              {activeSection === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
+              {activeSection === 'moods' && <div className="w-full">
+                  <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />
+                </div>}
 
-              {activeSection === 'ai-colors' && <AIColorGenerator isDarkMode={isDarkMode} onPaletteGenerated={handleAIPaletteGenerated} />}
+              {activeSection === 'ai-colors' && <div className="w-full">
+                  <AIColorGenerator isDarkMode={isDarkMode} onPaletteGenerated={handleAIPaletteGenerated} />
+                </div>}
 
-              {activeSection === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
+              {activeSection === 'from-image' && <div className="w-full">
+                  <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                </div>}
 
-              {activeSection === 'admin-presets' && <div className="space-y-4">
+              {activeSection === 'admin-presets' && <div className="space-y-4 w-full">
                   <p className="text-sm text-muted-foreground">
                     Browse and apply professionally curated color palettes.
                   </p>
@@ -628,17 +640,21 @@ const Dashboard = () => {
                     Browse Admin Presets
                   </Button>
                 </div>}
-              {activeSection === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
-              {activeSection === 'settings' && <div className="space-y-4">
+              {activeSection === 'saved-palettes' && <div className="w-full">
+                  <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />
+                </div>}
+              {activeSection === 'settings' && <div className="space-y-4 w-full">
                   <h3 className="text-md font-medium">Application Settings</h3>
                   <p className="text-sm text-muted-foreground">
                     Configure your preferences and account settings.
                   </p>
                   
                   {/* Test Plan Switcher - Development Only */}
-                  <TestPlanSwitcher />
+                  <div className="w-full">
+                    <TestPlanSwitcher />
+                  </div>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-3 w-full">
                     <OpenAIKeyInput onKeySet={() => {}} />
                   </div>
                   <Button variant="outline" className="w-full" onClick={() => navigate('/history')}>
