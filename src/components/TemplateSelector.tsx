@@ -25,6 +25,7 @@ import { CreativeShowcaseTemplate } from '@/components/templates/CreativeShowcas
 import { TechInnovationTemplate } from '@/components/templates/TechInnovationTemplate';
 import { LuxuryBrandTemplate } from '@/components/templates/LuxuryBrandTemplate';
 import { StartupVisionTemplate } from '@/components/templates/StartupVisionTemplate';
+import { ProfessionalHeroTemplate } from '@/components/templates/ProfessionalHeroTemplate';
 interface TemplateSelectorProps {
   selectedTemplate: TemplateType;
   onTemplateChange: (template: TemplateType) => void;
@@ -99,6 +100,7 @@ const proTemplates: Template[] = [
   { id: 'tech-innovation', name: 'Tech Innovation', description: 'Cutting-edge technology template with futuristic design elements', isPro: true },
   { id: 'luxury-brand', name: 'Luxury Brand', description: 'Premium luxury template with sophisticated elegance and refinement', isPro: true },
   { id: 'startup-vision', name: 'Startup Vision', description: 'Dynamic startup template with growth-focused design and innovation', isPro: true },
+  { id: 'professional-hero', name: 'Professional Hero', description: 'Professional business hero section with consultant image and gradient background', isPro: true },
 ];
 const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPalette) => {
   const previewProps = {
@@ -143,6 +145,8 @@ const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPale
         return <LuxuryBrandTemplate colorPalette={colorPalette} />;
       case 'startup-vision':
         return <StartupVisionTemplate colorPalette={colorPalette} />;
+      case 'professional-hero':
+        return <ProfessionalHeroTemplate colorPalette={colorPalette} isDarkMode={false} />;
     default:
       return <ModernHeroTemplate {...previewProps} />;
   }
