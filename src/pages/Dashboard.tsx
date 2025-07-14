@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Shapes, Sun, Moon, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -122,6 +122,7 @@ const Dashboard = () => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [showColorMood, setShowColorMood] = useState(false);
   const [isContextPanelCollapsed, setIsContextPanelCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const {
     remainingAIGenerations,
     maxAIGenerationsPerMonth,
@@ -590,7 +591,7 @@ const Dashboard = () => {
           </div>
 
           {/* Context Panel */}
-          {!isContextPanelCollapsed && <div className="w-80 md:w-80 w-full max-w-80 bg-background border-r flex flex-col">
+          {!isContextPanelCollapsed && <div className="w-full sm:w-80 max-w-full sm:max-w-80 bg-background border-r flex flex-col">
             <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
@@ -676,14 +677,11 @@ const Dashboard = () => {
             {/* Canvas Toolbar */}
             <div style={{
             backgroundColor: '#fef3e0'
-          }} className="h-12 border-b flex items-center justify-between px-4 bg-sky-200">
+          }} className="h-12 border-b flex items-center justify-between px-2 sm:px-4 bg-sky-200">
               <div className="flex items-center space-x-2">
-
-                
-
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(!isContextPanelCollapsed)}>
+                    <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(!isContextPanelCollapsed)} className="hidden sm:flex">
                       {isContextPanelCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
                     </Button>
                   </TooltipTrigger>
@@ -691,14 +689,29 @@ const Dashboard = () => {
                     {isContextPanelCollapsed ? 'Show Panel' : 'Hide Panel'}
                   </TooltipContent>
                 </Tooltip>
-                <span className="text-sm text-muted-foreground">Template Preview</span>
-                <span className="text-xs text-muted-foreground">•</span>
-                <span className="text-xs text-muted-foreground capitalize">
+                
+                {/* Mobile hamburger menu */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="sm:hidden"
+                >
+                  {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                </Button>
+                
+                <span className="text-sm text-muted-foreground hidden sm:block">Template Preview</span>
+                <span className="text-xs text-muted-foreground hidden sm:block">•</span>
+                <span className="text-xs text-muted-foreground capitalize hidden sm:block">
+                  {selectedTemplate.replace('-', ' ')}
+                </span>
+                <span className="text-sm text-muted-foreground sm:hidden">
                   {selectedTemplate.replace('-', ' ')}
                 </span>
               </div>
               
-              <div className="flex items-center space-x-2">
+              {/* Desktop controls */}
+              <div className="hidden sm:flex items-center space-x-2">
                 <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50}>
                   <ZoomOut className="h-4 w-4" />
                 </Button>
@@ -738,16 +751,61 @@ const Dashboard = () => {
                   Fullscreen
                 </Button>
               </div>
+              
+              {/* Mobile zoom controls only */}
+              <div className="flex sm:hidden items-center space-x-1">
+                <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="h-8 w-8 p-0">
+                  <ZoomOut className="h-3 w-3" />
+                </Button>
+                <span className="text-xs text-muted-foreground min-w-8 text-center">{zoomLevel}%</span>
+                <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="h-8 w-8 p-0">
+                  <ZoomIn className="h-3 w-3" />
+                </Button>
+              </div>
             </div>
 
+            {/* Mobile dropdown menu */}
+            {isMobileMenuOpen && (
+              <div className="sm:hidden bg-background border-b border-border p-4 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-xs">
+                    {isGenerating ? <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1" />}
+                    Generate
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-xs">
+                    <Download className="h-3 w-3 mr-1" />
+                    Export PDF
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-xs">
+                    <Save className="h-3 w-3 mr-1" />
+                    Save
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="bg-amber-500 hover:bg-amber-400 text-xs">
+                    <Maximize className="h-3 w-3 mr-1" />
+                    Fullscreen
+                  </Button>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => { setIsContextPanelCollapsed(!isContextPanelCollapsed); setIsMobileMenuOpen(false); }}
+                  className="w-full justify-start text-xs"
+                >
+                  {isContextPanelCollapsed ? <PanelLeftOpen className="h-3 w-3 mr-2" /> : <PanelLeftClose className="h-3 w-3 mr-2" />}
+                  {isContextPanelCollapsed ? 'Show Panel' : 'Hide Panel'}
+                </Button>
+              </div>
+            )}
+
             {/* Canvas */}
-            <div className="flex-1 overflow-auto p-2 flex items-start justify-center bg-sky-200">
-              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full my-5" style={{
+            <div className="flex-1 overflow-auto p-1 sm:p-2 flex items-start justify-center bg-sky-200">
+              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full my-2 sm:my-5" style={{
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
-              width: `min(800px, calc(100vw - ${isContextPanelCollapsed ? '120px' : '440px'}))`,
-              // Fixed width with margins
-              minHeight: '600px' // Minimum height to ensure content is visible
+              width: window.innerWidth < 640 ? 
+                `min(100vw - 32px, calc(100vw - 32px))` : 
+                `min(800px, calc(100vw - ${isContextPanelCollapsed ? '120px' : '440px'}))`,
+              minHeight: '400px' // Responsive minimum height
             }} data-preview-element>
                 <div className="w-full h-auto overflow-visible">
                   <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
