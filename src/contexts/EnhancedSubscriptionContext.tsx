@@ -44,9 +44,9 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       downloads_per_day: 3,
       branded_reports: false,
       auto_generator: false,
-      custom_color_schemes: false,
-      color_mood_options: false,
-      template_dark_mode: false
+      custom_color_schemes: true,
+      color_mood_options: true,
+      template_dark_mode: true
     },
     status: 'active',
     subscribers: 1250,
