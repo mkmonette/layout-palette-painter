@@ -128,7 +128,7 @@ const AdminDashboard = () => {
                   <Menu className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="min-w-[200px] w-auto bg-background border shadow-lg z-50" align="end">
+              <DropdownMenuContent className="w-full bg-background border shadow-lg z-50" align="end" sideOffset={4}>
                 <DropdownMenuItem onClick={() => navigate('/history')} className="cursor-pointer">
                   <History className="h-4 w-4 mr-2" />
                   History
@@ -172,7 +172,7 @@ const AdminDashboard = () => {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full bg-background border shadow-lg z-50" align="start">
+              <DropdownMenuContent className="w-full bg-background border shadow-lg z-50" align="start" sideOffset={4}>
                 <DropdownMenuItem onClick={() => setActiveTab('overview')}>
                   Overview
                 </DropdownMenuItem>
