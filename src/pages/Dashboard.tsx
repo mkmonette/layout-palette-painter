@@ -419,8 +419,6 @@ const Dashboard = () => {
       // Otherwise, set the section and ensure panel is open
       setActiveSection(sectionId);
       setIsContextPanelCollapsed(false);
-      // On mobile, also close the mobile menu
-      setIsMobileMenuOpen(false);
     }
   };
   const sidebarItems = [{
@@ -548,11 +546,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden relative">
+        <div className="flex flex-1 overflow-hidden">
           {/* Left Sidebar */}
           <div style={{
           backgroundColor: '#5b99fe'
-        }} className="w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600 relative z-10">
+        }} className="w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600">
             {sidebarItems.map(item => {
             if (!item.available) return null;
             return <Tooltip key={item.id}>
@@ -593,7 +591,7 @@ const Dashboard = () => {
           </div>
 
           {/* Context Panel */}
-          {!isContextPanelCollapsed && <div className="w-80 sm:w-80 min-w-0 bg-background border-r flex flex-col absolute sm:relative left-16 sm:left-0 top-0 h-full z-20 sm:z-auto shadow-xl sm:shadow-none">
+          {!isContextPanelCollapsed && <div className="w-full sm:w-80 max-w-full sm:max-w-80 bg-background border-r flex flex-col">
             <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
@@ -603,38 +601,26 @@ const Dashboard = () => {
               </Button>
             </div>
             
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full min-w-0">
-              {activeSection === 'templates' && <div className="space-y-6 w-full">
-                  <div className="w-full">
-                    <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
-                  </div>
-                  <div className="w-full">
-                    <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
-                  </div>
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
+              {activeSection === 'templates' && <div className="space-y-6">
+                  <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
+                  <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
                 </div>}
 
-              {activeSection === 'schemes' && <div className="space-y-4 w-full">
+              {activeSection === 'schemes' && <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Choose a color scheme to generate harmonious palettes.
                   </p>
-                  <div className="w-full">
-                    <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
-                  </div>
+                  <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
                 </div>}
 
-              {activeSection === 'moods' && <div className="w-full">
-                  <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />
-                </div>}
+              {activeSection === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
 
-              {activeSection === 'ai-colors' && <div className="w-full">
-                  <AIColorGenerator isDarkMode={isDarkMode} onPaletteGenerated={handleAIPaletteGenerated} />
-                </div>}
+              {activeSection === 'ai-colors' && <AIColorGenerator isDarkMode={isDarkMode} onPaletteGenerated={handleAIPaletteGenerated} />}
 
-              {activeSection === 'from-image' && <div className="w-full">
-                  <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
-                </div>}
+              {activeSection === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
 
-              {activeSection === 'admin-presets' && <div className="space-y-4 w-full">
+              {activeSection === 'admin-presets' && <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Browse and apply professionally curated color palettes.
                   </p>
@@ -642,21 +628,17 @@ const Dashboard = () => {
                     Browse Admin Presets
                   </Button>
                 </div>}
-              {activeSection === 'saved-palettes' && <div className="w-full">
-                  <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />
-                </div>}
-              {activeSection === 'settings' && <div className="space-y-4 w-full">
+              {activeSection === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
+              {activeSection === 'settings' && <div className="space-y-4">
                   <h3 className="text-md font-medium">Application Settings</h3>
                   <p className="text-sm text-muted-foreground">
                     Configure your preferences and account settings.
                   </p>
                   
                   {/* Test Plan Switcher - Development Only */}
-                  <div className="w-full">
-                    <TestPlanSwitcher />
-                  </div>
+                  <TestPlanSwitcher />
                   
-                  <div className="space-y-3 w-full">
+                  <div className="space-y-3">
                     <OpenAIKeyInput onKeySet={() => {}} />
                   </div>
                   <Button variant="outline" className="w-full" onClick={() => navigate('/history')}>
