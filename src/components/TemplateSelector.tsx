@@ -26,6 +26,11 @@ import { TechInnovationTemplate } from '@/components/templates/TechInnovationTem
 import { LuxuryBrandTemplate } from '@/components/templates/LuxuryBrandTemplate';
 import { StartupVisionTemplate } from '@/components/templates/StartupVisionTemplate';
 import { ProfessionalHeroTemplate } from '@/components/templates/ProfessionalHeroTemplate';
+import EcommerceProductShowcaseTemplate from '@/components/templates/EcommerceProductShowcaseTemplate';
+import EcommerceMinimalStoreTemplate from '@/components/templates/EcommerceMinimalStoreTemplate';
+import EcommerceFashionBoutiqueTemplate from '@/components/templates/EcommerceFashionBoutiqueTemplate';
+import EcommerceTechStoreTemplate from '@/components/templates/EcommerceTechStoreTemplate';
+import EcommerceMarketplaceTemplate from '@/components/templates/EcommerceMarketplaceTemplate';
 interface TemplateSelectorProps {
   selectedTemplate: TemplateType;
   onTemplateChange: (template: TemplateType) => void;
@@ -91,6 +96,31 @@ const freeTemplates: Template[] = [{
   name: 'E-commerce Landing',
   description: 'Product-focused e-commerce design',
   isPro: false
+}, {
+  id: 'ecommerce-product-showcase',
+  name: 'Product Showcase',
+  description: 'Feature products with detailed views',
+  isPro: false
+}, {
+  id: 'ecommerce-minimal-store',
+  name: 'Minimal Store',
+  description: 'Clean, minimal e-commerce design',
+  isPro: false
+}, {
+  id: 'ecommerce-fashion-boutique',
+  name: 'Fashion Boutique',
+  description: 'Elegant fashion store template',
+  isPro: false
+}, {
+  id: 'ecommerce-tech-store',
+  name: 'Tech Store',
+  description: 'Electronics and gadgets store',
+  isPro: false
+}, {
+  id: 'ecommerce-marketplace',
+  name: 'Marketplace',
+  description: 'Multi-vendor marketplace design',
+  isPro: false
 }];
 const proTemplates: Template[] = [
   { id: 'pro-cosmetics', name: 'Pro Cosmetics', description: 'Premium beauty and cosmetics template with elegant product showcase', isPro: true },
@@ -131,6 +161,16 @@ const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPale
       return <SaasProductTemplate {...previewProps} />;
     case 'ecommerce-landing':
       return <EcommerceLandingTemplate {...previewProps} />;
+    case 'ecommerce-product-showcase':
+      return <EcommerceProductShowcaseTemplate {...previewProps} />;
+    case 'ecommerce-minimal-store':
+      return <EcommerceMinimalStoreTemplate {...previewProps} />;
+    case 'ecommerce-fashion-boutique':
+      return <EcommerceFashionBoutiqueTemplate {...previewProps} />;
+    case 'ecommerce-tech-store':
+      return <EcommerceTechStoreTemplate {...previewProps} />;
+    case 'ecommerce-marketplace':
+      return <EcommerceMarketplaceTemplate {...previewProps} />;
     case 'pro-cosmetics':
       return <ProCosmeticsTemplate palette={colorPalette} />;
       case 'advanced-hero':

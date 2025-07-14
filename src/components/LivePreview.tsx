@@ -28,6 +28,11 @@ import { TechInnovationTemplate } from '@/components/templates/TechInnovationTem
 import { LuxuryBrandTemplate } from '@/components/templates/LuxuryBrandTemplate';
 import { StartupVisionTemplate } from '@/components/templates/StartupVisionTemplate';
 import { ProfessionalHeroTemplate } from '@/components/templates/ProfessionalHeroTemplate';
+import EcommerceProductShowcaseTemplate from '@/components/templates/EcommerceProductShowcaseTemplate';
+import EcommerceMinimalStoreTemplate from '@/components/templates/EcommerceMinimalStoreTemplate';
+import EcommerceFashionBoutiqueTemplate from '@/components/templates/EcommerceFashionBoutiqueTemplate';
+import EcommerceTechStoreTemplate from '@/components/templates/EcommerceTechStoreTemplate';
+import EcommerceMarketplaceTemplate from '@/components/templates/EcommerceMarketplaceTemplate';
 import { Crown } from 'lucide-react';
 
 interface LivePreviewProps {
@@ -96,6 +101,21 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
         break;
       case 'ecommerce-landing':
         templateComponent = <EcommerceLandingTemplate {...templateProps} />;
+        break;
+      case 'ecommerce-product-showcase':
+        templateComponent = <EcommerceProductShowcaseTemplate {...templateProps} />;
+        break;
+      case 'ecommerce-minimal-store':
+        templateComponent = <EcommerceMinimalStoreTemplate {...templateProps} />;
+        break;
+      case 'ecommerce-fashion-boutique':
+        templateComponent = <EcommerceFashionBoutiqueTemplate {...templateProps} />;
+        break;
+      case 'ecommerce-tech-store':
+        templateComponent = <EcommerceTechStoreTemplate {...templateProps} />;
+        break;
+      case 'ecommerce-marketplace':
+        templateComponent = <EcommerceMarketplaceTemplate {...templateProps} />;
         break;
       case 'pro-cosmetics':
         templateComponent = <ProCosmeticsTemplate palette={colorPalette} />;
