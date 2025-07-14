@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Shapes, Sun, Moon, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -44,6 +45,7 @@ import { validatePaletteContrast, getAccessibleVersion } from '@/utils/contrastC
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
 const Dashboard = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const {
     toast
   } = useToast();
@@ -123,6 +125,11 @@ const Dashboard = () => {
   const [showColorMood, setShowColorMood] = useState(false);
   const [isContextPanelCollapsed, setIsContextPanelCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Set initial panel state based on mobile detection
+  useEffect(() => {
+    setIsContextPanelCollapsed(isMobile);
+  }, [isMobile]);
   const {
     remainingAIGenerations,
     maxAIGenerationsPerMonth,
@@ -802,10 +809,10 @@ const Dashboard = () => {
               <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full my-2 sm:my-5" style={{
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
-              width: window.innerWidth < 640 ? 
-                `min(100vw - 32px, calc(100vw - 32px))` : 
-                `min(800px, calc(100vw - ${isContextPanelCollapsed ? '120px' : '440px'}))`,
-              minHeight: '400px' // Responsive minimum height
+              width: isMobile ? 
+                'calc(100vw - 80px)' : // 64px sidebar + 16px padding
+                `min(800px, calc(100vw - ${isContextPanelCollapsed ? '80px' : '400px'}))`, // 64px sidebar + panel width
+              minHeight: '400px'
             }} data-preview-element>
                 <div className="w-full h-auto overflow-visible">
                   <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
