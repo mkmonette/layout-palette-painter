@@ -35,6 +35,7 @@ import PromptControlPanel from '@/components/admin/PromptControlPanel';
 import PaletteGenerator from '@/components/admin/PaletteGenerator';
 import SavedPalettesManager from '@/components/admin/SavedPalettesManager';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
+import AISettingsWrapper from '@/components/admin/AISettingsWrapper';
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -225,30 +226,7 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="ai-settings">
-            <Tabs defaultValue="openai" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="openai">OpenAI</TabsTrigger>
-                <TabsTrigger value="ai-limits">AI Limits</TabsTrigger>
-                <TabsTrigger value="usage-logs">Usage Logs</TabsTrigger>
-                <TabsTrigger value="prompt-control">Prompt Control</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="openai">
-                <OpenAISettings />
-              </TabsContent>
-              
-              <TabsContent value="ai-limits">
-                <AIGenerationSettings />
-              </TabsContent>
-              
-              <TabsContent value="usage-logs">
-                <OpenAIUsageLogs />
-              </TabsContent>
-              
-              <TabsContent value="prompt-control">
-                <PromptControlPanel />
-              </TabsContent>
-            </Tabs>
+            <AISettingsWrapper />
           </TabsContent>
 
           <TabsContent value="color-preview">
