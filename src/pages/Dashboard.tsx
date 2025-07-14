@@ -593,7 +593,7 @@ const Dashboard = () => {
           </div>
 
           {/* Context Panel */}
-          {!isContextPanelCollapsed && <div className="w-full sm:w-80 min-w-0 bg-background border-r flex flex-col">
+          {!isContextPanelCollapsed && <div className="absolute sm:relative z-20 sm:z-auto top-0 left-16 sm:left-0 w-80 sm:w-80 h-full min-w-0 bg-background border-r flex flex-col shadow-lg sm:shadow-none">
             <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
               <h2 className="text-lg font-semibold text-foreground">
                 {sidebarItems.find(item => item.id === activeSection)?.label}
