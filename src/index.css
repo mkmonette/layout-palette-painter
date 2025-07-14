@@ -8,41 +8,61 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Light Mode - Vibrant & Creative */
+    /* Light Mode - Vibrant & Creative Design System */
     --background: 0 0% 99%;
-    --foreground: 224 36% 14%;
+    --foreground: 215 25% 27%;
 
     --card: 0 0% 100%;
-    --card-foreground: 224 36% 14%;
+    --card-foreground: 215 25% 27%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 36% 14%;
+    --popover-foreground: 215 25% 27%;
 
-    --primary: 239 84% 67%;
+    /* Vibrant Primary Colors */
+    --primary: 263 85% 58%;  /* Rich purple */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 322 81% 72%;
+    --secondary: 337 85% 65%;  /* Vibrant pink */
     --secondary-foreground: 0 0% 100%;
 
     --muted: 220 14% 96%;
     --muted-foreground: 220 13% 46%;
 
-    --accent: 188 94% 43%;
+    --accent: 188 94% 50%;  /* Turquoise accent */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 233 100% 94%;
-    --input: 233 100% 94%;
-    --ring: 244 79% 58%;
+    --border: 215 20% 92%;
+    --input: 215 20% 92%;
+    --ring: 263 85% 58%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    /* Success, Warning, Info for consistent theming */
-    --success: 159 84% 39%;
-    --warning: 45 91% 49%;
-    --info: 188 94% 43%;
+    /* Enhanced Color Palette for Landing */
+    --success: 142 76% 36%;
+    --warning: 45 93% 47%;
+    --info: 188 94% 50%;
+    
+    /* Brand Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(263 85% 58%), hsl(337 85% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(188 94% 50%), hsl(142 76% 36%));
+    --gradient-hero: linear-gradient(135deg, hsl(263 85% 58%) 0%, hsl(337 85% 65%) 50%, hsl(188 94% 50%) 100%);
+    
+    /* Color Palette Samples */
+    --palette-1: 263 85% 58%;  /* Purple */
+    --palette-2: 337 85% 65%;  /* Pink */
+    --palette-3: 188 94% 50%;  /* Turquoise */
+    --palette-4: 142 76% 36%;  /* Green */
+    --palette-5: 45 93% 47%;   /* Orange */
+    --palette-6: 217 91% 60%;  /* Blue */
+    
+    /* Shadows and Effects */
+    --shadow-color: 263 85% 58%;
+    --shadow-soft: 0 4px 16px -4px hsl(var(--shadow-color) / 0.15);
+    --shadow-medium: 0 8px 32px -8px hsl(var(--shadow-color) / 0.2);
+    --shadow-strong: 0 16px 64px -16px hsl(var(--shadow-color) / 0.25);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 224 36% 14%;
@@ -133,12 +153,72 @@ All colors MUST be HSL.
   }
 }
 
+/* Custom Components and Utilities */
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent;
+  }
+  
+  .glass-card {
+    @apply backdrop-blur-lg bg-white/20 border border-white/30;
+  }
+  
+  .floating-palette {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .floating-palette:nth-child(2) {
+    animation-delay: -2s;
+  }
+  
+  .floating-palette:nth-child(3) {
+    animation-delay: -4s;
+  }
+  
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-20px) rotate(2deg); }
+  66% { transform: translateY(-10px) rotate(-1deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
 @layer base {
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-medium;
   }
 }
