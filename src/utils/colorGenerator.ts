@@ -24,6 +24,15 @@ export type ColorSchemeType =
   | 'tetradic'
   | 'random';
 
+export type ColorMode = 'light' | 'midtone' | 'dark';
+
+// Define lightness ranges per mode
+const lightnessRanges = {
+  light: [85, 100],
+  midtone: [45, 65],
+  dark: [10, 25],
+} as const;
+
 // Light mode color palettes
 const lightColorPalettes: ColorPalette[] = [
   // Modern Blue
@@ -152,6 +161,23 @@ const hslToHex = (h: number, s: number, l: number): string => {
   return `#${f(0)}${f(8)}${f(4)}`;
 };
 
+// Enhanced HSL color generation with mode support
+const generateHSLColor = (mode: ColorMode, baseHue?: number, saturationRange: [number, number] = [60, 100]): string => {
+  const [minLightness, maxLightness] = lightnessRanges[mode];
+  const h = baseHue ?? Math.floor(Math.random() * 360);
+  const s = Math.floor(Math.random() * (saturationRange[1] - saturationRange[0])) + saturationRange[0];
+  const l = Math.floor(Math.random() * (maxLightness - minLightness)) + minLightness;
+  return `hsl(${h}, ${s}%, ${l}%)`;
+};
+
+// Helper function to convert HSL string to hex
+const hslStringToHex = (hslString: string): string => {
+  const match = hslString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+  if (!match) return '#000000';
+  const [, h, s, l] = match.map(Number);
+  return hslToHex(h, s, l);
+};
+
 // Helper function to convert hex to HSL
 const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
   const r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -180,12 +206,12 @@ const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
   return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 };
 
-const generateMonochromaticScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+const generateMonochromaticScheme = (baseHue: number, mode: ColorMode): ColorPalette => {
   // Add more variation in saturation and lightness
   const baseSaturation = 60 + Math.floor(Math.random() * 30); // 60-90%
   const saturationVariation = 10 + Math.floor(Math.random() * 15); // 10-25%
   
-  if (isDarkMode) {
+  if (mode === 'dark') {
     const baseLightness = 55 + Math.floor(Math.random() * 15); // 55-70%
     return {
       brand: hslToHex(baseHue, baseSaturation, baseLightness),
@@ -203,6 +229,26 @@ const generateMonochromaticScheme = (baseHue: number, isDarkMode: boolean): Colo
       highlight: hslToHex(baseHue, baseSaturation + 10, 65),
       "input-bg": hslToHex(baseHue, 25, 12),
       "input-text": hslToHex(baseHue, 10, 95)
+    };
+  } else if (mode === 'midtone') {
+    const [minL, maxL] = lightnessRanges.midtone;
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
+    return {
+      brand: hslToHex(baseHue, baseSaturation, baseLightness),
+      accent: hslToHex(baseHue, baseSaturation + saturationVariation, Math.min(maxL, baseLightness + 10)),
+      "button-primary": hslToHex(baseHue, baseSaturation, baseLightness),
+      "button-text": hslToHex(baseHue, 10, 15),
+      "button-secondary": hslToHex(baseHue, 25, Math.max(minL + 15, baseLightness + 20)),
+      "button-secondary-text": hslToHex(baseHue, baseSaturation, baseLightness),
+      "text-primary": hslToHex(baseHue, 20, 20),
+      "text-secondary": hslToHex(baseHue, 15, 35),
+      "section-bg-1": hslToHex(baseHue, 20, Math.max(minL + 25, baseLightness + 15)),
+      "section-bg-2": hslToHex(baseHue, 25, Math.max(minL + 20, baseLightness + 10)),
+      "section-bg-3": hslToHex(baseHue, 30, Math.max(minL + 15, baseLightness + 5)),
+      border: hslToHex(baseHue, 20, Math.max(minL + 10, baseLightness - 5)),
+      highlight: hslToHex(baseHue, baseSaturation - 10, Math.min(maxL, baseLightness + 15)),
+      "input-bg": hslToHex(baseHue, 15, Math.max(minL + 20, baseLightness + 10)),
+      "input-text": hslToHex(baseHue, 25, 20)
     };
   } else {
     const baseLightness = 45 + Math.floor(Math.random() * 15); // 45-60%
@@ -226,12 +272,12 @@ const generateMonochromaticScheme = (baseHue: number, isDarkMode: boolean): Colo
   }
 };
 
-const generateAnalogousScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+const generateAnalogousScheme = (baseHue: number, mode: ColorMode): ColorPalette => {
   const hue1 = baseHue;
   const hue2 = (baseHue + 30) % 360;
   const hue3 = (baseHue + 60) % 360;
   
-  if (isDarkMode) {
+  if (mode === 'dark') {
     return {
       brand: hslToHex(hue1, 70, 60),
       accent: hslToHex(hue3, 80, 65),
@@ -248,6 +294,24 @@ const generateAnalogousScheme = (baseHue: number, isDarkMode: boolean): ColorPal
       highlight: hslToHex(hue2, 65, 55),
       "input-bg": hslToHex(hue1, 25, 12),
       "input-text": hslToHex(0, 0, 95)
+    };
+  } else if (mode === 'midtone') {
+    return {
+      brand: hslToHex(hue1, 75, 55),
+      accent: hslToHex(hue3, 80, 60),
+      "button-primary": hslToHex(hue1, 75, 55),
+      "button-text": hslToHex(hue1, 15, 20),
+      "button-secondary": hslToHex(hue1, 25, 60),
+      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "text-primary": hslToHex(hue1, 35, 25),
+      "text-secondary": hslToHex(hue1, 25, 40),
+      "section-bg-1": hslToHex(hue1, 20, 65),
+      "section-bg-2": hslToHex(hue2, 25, 60),
+      "section-bg-3": hslToHex(hue3, 25, 55),
+      border: hslToHex(hue1, 20, 45),
+      highlight: hslToHex(hue2, 65, 50),
+      "input-bg": hslToHex(hue1, 15, 60),
+      "input-text": hslToHex(hue1, 35, 25)
     };
   } else {
     return {
@@ -270,10 +334,10 @@ const generateAnalogousScheme = (baseHue: number, isDarkMode: boolean): ColorPal
   }
 };
 
-const generateComplementaryScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+const generateComplementaryScheme = (baseHue: number, mode: ColorMode): ColorPalette => {
   const complementaryHue = (baseHue + 180) % 360;
   
-  if (isDarkMode) {
+  if (mode === 'dark') {
     return {
       brand: hslToHex(baseHue, 75, 60),
       accent: hslToHex(complementaryHue, 85, 65),
@@ -290,6 +354,24 @@ const generateComplementaryScheme = (baseHue: number, isDarkMode: boolean): Colo
       highlight: hslToHex(complementaryHue, 70, 55),
       "input-bg": hslToHex(baseHue, 30, 12),
       "input-text": '#F9FAFB'
+    };
+  } else if (mode === 'midtone') {
+    return {
+      brand: hslToHex(baseHue, 80, 55),
+      accent: hslToHex(complementaryHue, 85, 60),
+      "button-primary": hslToHex(baseHue, 80, 55),
+      "button-text": hslToHex(baseHue, 15, 20),
+      "button-secondary": hslToHex(baseHue, 25, 60),
+      "button-secondary-text": hslToHex(baseHue, 80, 50),
+      "text-primary": hslToHex(baseHue, 40, 25),
+      "text-secondary": hslToHex(baseHue, 30, 40),
+      "section-bg-1": hslToHex(baseHue, 20, 65),
+      "section-bg-2": hslToHex(complementaryHue, 25, 60),
+      "section-bg-3": hslToHex(baseHue, 25, 55),
+      border: hslToHex(baseHue, 20, 45),
+      highlight: hslToHex(complementaryHue, 70, 50),
+      "input-bg": hslToHex(baseHue, 15, 60),
+      "input-text": hslToHex(baseHue, 40, 25)
     };
   } else {
     return {
@@ -312,12 +394,12 @@ const generateComplementaryScheme = (baseHue: number, isDarkMode: boolean): Colo
   }
 };
 
-const generateTriadicScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+const generateTriadicScheme = (baseHue: number, mode: ColorMode): ColorPalette => {
   const hue1 = baseHue;
   const hue2 = (baseHue + 120) % 360;
   const hue3 = (baseHue + 240) % 360;
   
-  if (isDarkMode) {
+  if (mode === 'dark') {
     return {
       brand: hslToHex(hue1, 70, 60),
       accent: hslToHex(hue3, 75, 65),
@@ -334,6 +416,24 @@ const generateTriadicScheme = (baseHue: number, isDarkMode: boolean): ColorPalet
       highlight: hslToHex(hue2, 65, 55),
       "input-bg": hslToHex(hue1, 25, 12),
       "input-text": '#F9FAFB'
+    };
+  } else if (mode === 'midtone') {
+    return {
+      brand: hslToHex(hue1, 75, 55),
+      accent: hslToHex(hue3, 80, 60),
+      "button-primary": hslToHex(hue1, 75, 55),
+      "button-text": hslToHex(hue1, 15, 20),
+      "button-secondary": hslToHex(hue1, 25, 60),
+      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "text-primary": hslToHex(hue1, 35, 25),
+      "text-secondary": hslToHex(hue1, 25, 40),
+      "section-bg-1": hslToHex(hue1, 20, 65),
+      "section-bg-2": hslToHex(hue2, 25, 60),
+      "section-bg-3": hslToHex(hue3, 25, 55),
+      border: hslToHex(hue1, 20, 45),
+      highlight: hslToHex(hue2, 65, 50),
+      "input-bg": hslToHex(hue1, 15, 60),
+      "input-text": hslToHex(hue1, 35, 25)
     };
   } else {
     return {
@@ -356,12 +456,12 @@ const generateTriadicScheme = (baseHue: number, isDarkMode: boolean): ColorPalet
   }
 };
 
-const generateTetradicScheme = (baseHue: number, isDarkMode: boolean): ColorPalette => {
+const generateTetradicScheme = (baseHue: number, mode: ColorMode): ColorPalette => {
   const hue1 = baseHue;
   const hue2 = (baseHue + 90) % 360;
   const hue3 = (baseHue + 180) % 360;
   
-  if (isDarkMode) {
+  if (mode === 'dark') {
     return {
       brand: hslToHex(hue1, 70, 60),
       accent: hslToHex(hue3, 75, 65),
@@ -378,6 +478,24 @@ const generateTetradicScheme = (baseHue: number, isDarkMode: boolean): ColorPale
       highlight: hslToHex(hue2, 65, 55),
       "input-bg": hslToHex(hue1, 25, 12),
       "input-text": '#F9FAFB'
+    };
+  } else if (mode === 'midtone') {
+    return {
+      brand: hslToHex(hue1, 75, 55),
+      accent: hslToHex(hue3, 80, 60),
+      "button-primary": hslToHex(hue1, 75, 55),
+      "button-text": hslToHex(hue1, 15, 20),
+      "button-secondary": hslToHex(hue1, 25, 60),
+      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "text-primary": hslToHex(hue1, 35, 25),
+      "text-secondary": hslToHex(hue1, 25, 40),
+      "section-bg-1": hslToHex(hue1, 20, 65),
+      "section-bg-2": hslToHex(hue2, 25, 60),
+      "section-bg-3": hslToHex(hue3, 25, 55),
+      border: hslToHex(hue1, 20, 45),
+      highlight: hslToHex(hue2, 65, 50),
+      "input-bg": hslToHex(hue1, 15, 60),
+      "input-text": hslToHex(hue1, 35, 25)
     };
   } else {
     return {
@@ -400,24 +518,34 @@ const generateTetradicScheme = (baseHue: number, isDarkMode: boolean): ColorPale
   }
 };
 
-export const generateColorPalette = (isDarkMode: boolean = false): ColorPalette => {
-  const palettes = isDarkMode ? darkColorPalettes : lightColorPalettes;
+export const generateColorPalette = (mode: ColorMode = 'light'): ColorPalette => {
+  // For backward compatibility, handle boolean parameter
+  if (typeof mode === 'boolean') {
+    mode = mode ? 'dark' : 'light';
+  }
+  
+  const palettes = mode === 'dark' ? darkColorPalettes : lightColorPalettes;
   const randomIndex = Math.floor(Math.random() * palettes.length);
   return palettes[randomIndex];
 };
 
-export const generateColorScheme = (scheme: ColorSchemeType, isDarkMode: boolean = false): ColorPalette => {
+export const generateColorScheme = (scheme: ColorSchemeType, mode: ColorMode = 'light'): ColorPalette => {
+  // For backward compatibility, handle boolean parameter
+  if (typeof mode === 'boolean') {
+    mode = mode ? 'dark' : 'light';
+  }
+  
   if (scheme === 'random') {
     // Enhanced random generation with more variety
     const randomChoice = Math.random();
     if (randomChoice < 0.3) {
       // 30% chance: Use predefined palettes
-      return generateColorPalette(isDarkMode);
+      return generateColorPalette(mode);
     } else {
       // 70% chance: Generate dynamic schemes
       const schemes: ColorSchemeType[] = ['monochromatic', 'analogous', 'complementary', 'triadic', 'tetradic'];
       const randomScheme = schemes[Math.floor(Math.random() * schemes.length)];
-      return generateColorScheme(randomScheme, isDarkMode);
+      return generateColorScheme(randomScheme, mode);
     }
   }
 
@@ -426,38 +554,42 @@ export const generateColorScheme = (scheme: ColorSchemeType, isDarkMode: boolean
   
   switch (scheme) {
     case 'monochromatic':
-      return generateMonochromaticScheme(baseHue, isDarkMode);
+      return generateMonochromaticScheme(baseHue, mode);
     case 'analogous':
-      return generateAnalogousScheme(baseHue, isDarkMode);
+      return generateAnalogousScheme(baseHue, mode);
     case 'complementary':
-      return generateComplementaryScheme(baseHue, isDarkMode);
+      return generateComplementaryScheme(baseHue, mode);
     case 'triadic':
-      return generateTriadicScheme(baseHue, isDarkMode);
+      return generateTriadicScheme(baseHue, mode);
     case 'tetradic':
-      return generateTetradicScheme(baseHue, isDarkMode);
+      return generateTetradicScheme(baseHue, mode);
     default:
-      return generateColorPalette(isDarkMode);
+      return generateColorPalette(mode);
   }
 };
 
 export const generateColorSchemeWithLocks = (
   scheme: ColorSchemeType, 
-  isDarkMode: boolean = false, 
+  mode: ColorMode | boolean = 'light', 
   currentPalette: ColorPalette,
   lockedColors: Set<keyof ColorPalette>,
   accessibilityMode: boolean = false,
   preserveMoodId?: string | null
 ): ColorPalette => {
+  // For backward compatibility, handle boolean parameter
+  if (typeof mode === 'boolean') {
+    mode = mode ? 'dark' : 'light';
+  }
   if (accessibilityMode) {
-    return generateAccessibleColorScheme(scheme, isDarkMode, currentPalette, lockedColors, preserveMoodId);
+    return generateAccessibleColorScheme(scheme, mode, currentPalette, lockedColors, preserveMoodId);
   }
   
   // If preserving a mood, generate variations based on current palette
   if (preserveMoodId) {
-    return generateMoodVariation(currentPalette, lockedColors, isDarkMode);
+    return generateMoodVariation(currentPalette, lockedColors, mode);
   }
   
-  const newPalette = generateColorScheme(scheme, isDarkMode);
+  const newPalette = generateColorScheme(scheme, mode);
   
   // Preserve locked colors
   const result = { ...newPalette };
@@ -479,7 +611,7 @@ export const generateColorSchemeWithLocks = (
 const generateMoodVariation = (
   currentPalette: ColorPalette,
   lockedColors: Set<keyof ColorPalette>,
-  isDarkMode: boolean = false
+  mode: ColorMode = 'light'
 ): ColorPalette => {
   const result = { ...currentPalette };
   
@@ -511,7 +643,7 @@ const generateMoodVariation = (
  */
 export const generateAccessibleColorScheme = (
   scheme: ColorSchemeType,
-  isDarkMode: boolean = false,
+  mode: ColorMode = 'light',
   currentPalette: ColorPalette,
   lockedColors: Set<keyof ColorPalette>,
   preserveMoodId?: string | null
@@ -522,8 +654,8 @@ export const generateAccessibleColorScheme = (
   while (attempts < maxAttempts) {
     // If preserving mood, generate variations; otherwise use scheme
     const newPalette = preserveMoodId 
-      ? generateMoodVariation(currentPalette, new Set(), isDarkMode)
-      : generateColorScheme(scheme, isDarkMode);
+      ? generateMoodVariation(currentPalette, new Set(), mode)
+      : generateColorScheme(scheme, mode);
     
     // Preserve locked colors
     const result = { ...newPalette };

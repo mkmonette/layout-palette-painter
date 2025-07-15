@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Shapes, Sun, Moon, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -40,9 +40,11 @@ import AIColorGenerator from '@/components/AIColorGenerator';
 import AdminPresetsModal from '@/components/AdminPresetsModal';
 import InlineColorMoods from '@/components/InlineColorMoods';
 import { TestPlanSwitcher } from '@/components/TestPlanSwitcher';
+import ColorModeSelector from '@/components/ColorModeSelector';
 import { initializeOpenAI } from '@/utils/openaiService';
 import { validatePaletteContrast, getAccessibleVersion } from '@/utils/contrastChecker';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
+import { ColorMode } from '@/utils/colorGenerator';
 const Dashboard = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -70,7 +72,7 @@ const Dashboard = () => {
   } = useSavedPalettes();
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [colorMode, setColorMode] = useState<ColorMode>('light');
   const [isDashboardDarkMode, setIsDashboardDarkMode] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
   const [colorPalette, setColorPalette] = useState<ColorPalette>({
@@ -159,11 +161,11 @@ const Dashboard = () => {
   const handleGenerateColors = async () => {
     if (isGenerating) return; // Prevent multiple simultaneous generations
 
-    // Check if trying to generate dark mode colors without pro access
-    if (isDarkMode && !canAccessTemplateDarkMode) {
+    // Check if trying to generate restricted mode colors without pro access
+    if ((colorMode === 'dark' || colorMode === 'midtone') && !canAccessTemplateDarkMode) {
       toast({
         title: "Pro Feature Required",
-        description: "Dark mode color generation requires a Pro subscription. Upgrade to unlock this feature.",
+        description: `${colorMode === 'dark' ? 'Dark' : 'Midtone'} mode color generation requires a Pro subscription.`,
         variant: "destructive"
       });
       return;
@@ -171,7 +173,7 @@ const Dashboard = () => {
     setIsGenerating(true);
     setTimeout(() => {
       try {
-        const newPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, false, selectedMoodId);
+        const newPalette = generateColorSchemeWithLocks(selectedScheme, colorMode, colorPalette, lockedColors, false, selectedMoodId);
         setColorPalette(newPalette);
       } catch (error) {
         // If accessibility mode fails, fall back to regular generation
@@ -182,7 +184,7 @@ const Dashboard = () => {
             variant: "destructive"
           });
           // Generate regular palette as fallback
-          const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, isDarkMode, colorPalette, lockedColors, false, selectedMoodId);
+          const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, colorMode, colorPalette, lockedColors, false, selectedMoodId);
           setColorPalette(fallbackPalette);
         }
       } finally {
@@ -200,34 +202,36 @@ const Dashboard = () => {
     const fixedPalette = autoFixTextContrast(newPalette, colorKey);
     setColorPalette(fixedPalette);
   };
-  const handleModeToggle = (checked: boolean) => {
-    // Dashboard dark mode is always available, but check template dark mode for generation
-    if (checked && !canAccessTemplateDarkMode) {
-      // Allow dashboard dark mode but show warning about template limitations
-      setIsDarkMode(checked);
-      // Add dark class to document for dashboard dark mode
-      if (checked) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+  const handleModeChange = (newMode: ColorMode) => {
+    // Check if trying to use restricted modes without pro access
+    if ((newMode === 'dark' || newMode === 'midtone') && !canAccessTemplateDarkMode) {
       toast({
-        title: "Dashboard Dark Mode Enabled",
-        description: "Upgrade to Pro to generate dark color palettes for templates.",
-        variant: "default"
+        title: "Pro Feature Required",
+        description: `${newMode === 'dark' ? 'Dark' : 'Midtone'} mode color generation requires a Pro subscription.`,
+        variant: "destructive"
       });
       return;
     }
-    setIsDarkMode(checked);
-    // Add/remove dark class for full dark mode (dashboard + templates)
-    if (checked) {
+    
+    setColorMode(newMode);
+    
+    // Update dashboard dark mode based on color mode
+    if (newMode === 'dark') {
       document.documentElement.classList.add('dark');
+      setIsDashboardDarkMode(true);
     } else {
       document.documentElement.classList.remove('dark');
+      setIsDashboardDarkMode(false);
     }
+    
     try {
-      const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, false);
+      const newPalette = generateColorSchemeWithLocks(selectedScheme, newMode, colorPalette, lockedColors, false);
       setColorPalette(newPalette);
+      toast({
+        title: "Color Mode Updated",
+        description: `Generated ${newMode} color palette with proper lightness ranges.`,
+        variant: "default"
+      });
     } catch (error) {
       if (error instanceof Error && error.message.includes('No accessible palette found')) {
         toast({
@@ -353,7 +357,7 @@ const Dashboard = () => {
           colorPalette,
           templateName: selectedTemplate.replace('-', ' '),
           previewElement: livePreviewContainer,
-          isDarkMode,
+          isDarkMode: colorMode === 'dark',
           isPro
         });
       } else {
@@ -361,7 +365,7 @@ const Dashboard = () => {
           colorPalette,
           templateName: selectedTemplate.replace('-', ' '),
           previewElement,
-          isDarkMode,
+          isDarkMode: colorMode === 'dark',
           isPro
         });
       }
@@ -403,21 +407,10 @@ const Dashboard = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [getSavedCount, loadSavedPalettes]);
   if (isFullscreen) {
-    return <FullscreenPreview template={selectedTemplate} colorPalette={colorPalette} selectedScheme={selectedScheme} isDarkMode={isDarkMode} isGenerating={isGenerating} autogenerateCount={autogenerateCount} onClose={() => setIsFullscreen(false)} onGenerateColors={handleGenerateColors} onSchemeChange={handleSchemeChange} onTemplateChange={setSelectedTemplate} onColorChange={(palette, moodId) => {
+    return <FullscreenPreview template={selectedTemplate} colorPalette={colorPalette} selectedScheme={selectedScheme} colorMode={colorMode} isGenerating={isGenerating} autogenerateCount={autogenerateCount} onClose={() => setIsFullscreen(false)} onGenerateColors={handleGenerateColors} onSchemeChange={handleSchemeChange} onTemplateChange={setSelectedTemplate} onColorChange={(palette, moodId) => {
       setColorPalette(palette);
       if (moodId !== undefined) setSelectedMoodId(moodId);
-    }} onTemplateToggle={checked => {
-      // Only generate new template colors, don't affect global dark mode
-      try {
-        const newPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, false);
-        setColorPalette(newPalette);
-        setSelectedMoodId(null);
-      } catch (error) {
-        console.error('Error generating color palette:', error);
-        const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, checked, colorPalette, lockedColors, false, selectedMoodId);
-        setColorPalette(fallbackPalette);
-      }
-    }} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
+    }} onModeChange={handleModeChange} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
   }
   const handleSidebarItemClick = (sectionId: typeof activeSection) => {
     if (activeSection === sectionId && !isContextPanelCollapsed) {
@@ -594,32 +587,19 @@ const Dashboard = () => {
                   });
                   return;
                 }
-                // Template dark mode toggle - only generates new colors, doesn't affect dashboard UI
-                const newTemplateDarkMode = !isDarkMode;
-                setIsDarkMode(newTemplateDarkMode);
-                try {
-                  const newPalette = generateColorSchemeWithLocks(selectedScheme, newTemplateDarkMode, colorPalette, lockedColors, false);
-                  setColorPalette(newPalette);
-                  toast({
-                    title: "Template Colors Updated",
-                    description: `Generated ${newTemplateDarkMode ? 'dark' : 'light'} template colors. Dashboard appearance unchanged.`,
-                    variant: "default"
-                  });
-                } catch (error) {
-                  if (error instanceof Error && error.message.includes('No accessible palette found')) {
-                    toast({
-                      title: "⚠️ No Contrast-Safe Palettes Found",
-                      description: "No contrast-safe palettes found for current settings. Try adjusting mood or scheme.",
-                      variant: "destructive"
-                    });
-                  }
-                }
+                // Template mode toggle - cycles through light -> midtone -> dark
+                const nextMode: ColorMode = colorMode === 'light' ? 'midtone' : colorMode === 'midtone' ? 'dark' : 'light';
+                handleModeChange(nextMode);
               }}>
-                  {isDarkMode ? <Sun className="h-5 w-5 text-white" /> : <Moon className="h-5 w-5 text-white" />}
+                  {colorMode === 'light' ? <Sun className="h-4 w-4" /> : 
+                   colorMode === 'midtone' ? <Sunset className="h-4 w-4" /> : 
+                   <Moon className="h-4 w-4" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                Template {isDarkMode ? 'Light Mode' : 'Dark Mode'} {!canAccessTemplateDarkMode && '(Pro)'}
+                Color Mode: {colorMode === 'light' ? 'Light → Midtone' : 
+                            colorMode === 'midtone' ? 'Midtone → Dark' : 
+                            'Dark → Light'} {!canAccessTemplateDarkMode && '(Pro)'}
               </TooltipContent>
             </Tooltip>
           </div>
@@ -654,7 +634,7 @@ const Dashboard = () => {
                 </div>}
 
               {activeSection === 'ai-colors' && <AIColorGenerator
-                isDarkMode={isDarkMode} 
+                isDarkMode={colorMode === 'dark'} 
                 onPaletteGenerated={handleAIPaletteGenerated}
                 backgroundSettings={backgroundSettings}
               />}

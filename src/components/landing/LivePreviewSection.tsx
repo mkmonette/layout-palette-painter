@@ -32,7 +32,7 @@ const LivePreviewSection = () => {
   const handleGenerateColors = () => {
     setIsGenerating(true);
     setTimeout(() => {
-      const newPalette = generateColorScheme('random', false);
+      const newPalette = generateColorScheme('random', 'light');
       setColorPalette(newPalette);
       setIsGenerating(false);
     }, 800);

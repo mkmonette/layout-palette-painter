@@ -26,7 +26,7 @@ export const generatePaletteBatch = (count: number): GeneratedPalette[] => {
   
   for (let i = 0; i < count; i++) {
     const template = getRandomTemplate();
-    const colorPalette = generateColorScheme('random', false);
+    const colorPalette = generateColorScheme('random', 'light');
     const colors = [
       colorPalette.brand,
       colorPalette.highlight,
