@@ -407,10 +407,10 @@ const Dashboard = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [getSavedCount, loadSavedPalettes]);
   if (isFullscreen) {
-    return <FullscreenPreview template={selectedTemplate} colorPalette={colorPalette} selectedScheme={selectedScheme} colorMode={colorMode} isGenerating={isGenerating} autogenerateCount={autogenerateCount} onClose={() => setIsFullscreen(false)} onGenerateColors={handleGenerateColors} onSchemeChange={handleSchemeChange} onTemplateChange={setSelectedTemplate} onColorChange={(palette, moodId) => {
+    return <FullscreenPreview template={selectedTemplate} colorPalette={colorPalette} selectedScheme={selectedScheme} colorMode={colorMode} isDarkMode={colorMode === 'dark'} isGenerating={isGenerating} autogenerateCount={autogenerateCount} onClose={() => setIsFullscreen(false)} onGenerateColors={handleGenerateColors} onSchemeChange={handleSchemeChange} onTemplateChange={setSelectedTemplate} onColorChange={(palette, moodId) => {
       setColorPalette(palette);
       if (moodId !== undefined) setSelectedMoodId(moodId);
-    }} onModeChange={handleModeChange} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
+    }} onTemplateToggle={(checked: boolean) => {}} onModeChange={handleModeChange} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
   }
   const handleSidebarItemClick = (sectionId: typeof activeSection) => {
     if (activeSection === sectionId && !isContextPanelCollapsed) {

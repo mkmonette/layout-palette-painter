@@ -121,6 +121,7 @@ const Index = () => {
           template={selectedTemplate}
           colorPalette={colorPalette}
           selectedScheme={selectedScheme}
+          colorMode={isDarkMode ? 'dark' : 'light'}
           isDarkMode={isDarkMode}
           isGenerating={isGenerating}
           onClose={() => setIsFullscreen(false)}
@@ -129,6 +130,7 @@ const Index = () => {
           onTemplateChange={setSelectedTemplate}
           onColorChange={(palette) => setColorPalette(palette)}
           onTemplateToggle={handleModeToggle}
+          onModeChange={() => {}}
         />
       );
   }

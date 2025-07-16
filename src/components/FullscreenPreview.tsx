@@ -26,6 +26,7 @@ interface FullscreenPreviewProps {
   template: TemplateType;
   colorPalette: ColorPalette;
   selectedScheme: ColorSchemeType;
+  colorMode: 'light' | 'midtone' | 'dark';
   isDarkMode: boolean;
   isGenerating: boolean;
   autogenerateCount?: number;
@@ -36,6 +37,7 @@ interface FullscreenPreviewProps {
   onTemplateChange: (template: TemplateType) => void;
   onColorChange: (palette: ColorPalette, moodId?: string | null) => void;
   onTemplateToggle: (checked: boolean) => void; // Renamed to be more specific
+  onModeChange: (mode: 'light' | 'midtone' | 'dark') => void;
   onDownloadPDF?: () => void;
   onAutogenerateCountChange?: (count: number) => void;
   onAutoGenerateChange?: (checked: boolean) => void;
@@ -44,6 +46,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   template,
   colorPalette,
   selectedScheme,
+  colorMode,
   isDarkMode,
   isGenerating,
   autogenerateCount = 10,
@@ -54,6 +57,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   onTemplateChange,
   onColorChange,
   onTemplateToggle,
+  onModeChange,
   onDownloadPDF,
   onAutogenerateCountChange,
   onAutoGenerateChange
