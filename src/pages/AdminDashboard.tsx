@@ -19,7 +19,8 @@ import {
   ChevronDown,
   Menu,
   LogOut,
-  History
+  History,
+  Coins
 } from 'lucide-react';
 import AdminOverview from '@/components/admin/AdminOverview';
 import UserManagement from '@/components/admin/UserManagement';
@@ -35,6 +36,7 @@ import PromptControlPanel from '@/components/admin/PromptControlPanel';
 import PaletteGenerator from '@/components/admin/PaletteGenerator';
 import SavedPalettesManager from '@/components/admin/SavedPalettesManager';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
+import CoinCreditSettings from '@/components/admin/CoinCreditSettings';
 
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -83,6 +85,7 @@ const AdminDashboard = () => {
       'analytics': 'Analytics',
       'users': 'Users',
       'subscriptions': 'Plans',
+      'coin-credit': 'Coin Credit',
       'generator': 'Generator',
       'ai-settings': 'AI Settings',
       'color-preview': 'Colors',
@@ -163,11 +166,12 @@ const AdminDashboard = () => {
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           {/* Desktop Tab Navigation */}
-          <TabsList className="hidden md:grid w-full grid-cols-9">
+          <TabsList className="hidden md:grid w-full grid-cols-10">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="subscriptions">Plans</TabsTrigger>
+            <TabsTrigger value="coin-credit">Coin Credit</TabsTrigger>
             <TabsTrigger value="generator">Generator</TabsTrigger>
             <TabsTrigger value="ai-settings">AI Settings</TabsTrigger>
             <TabsTrigger value="color-preview">Colors</TabsTrigger>
@@ -196,6 +200,9 @@ const AdminDashboard = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setActiveTab('subscriptions')}>
                   Plans
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActiveTab('coin-credit')}>
+                  Coin Credit
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setActiveTab('generator')}>
                   Generator
@@ -230,6 +237,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="subscriptions">
             <FeatureManagement />
+          </TabsContent>
+
+          <TabsContent value="coin-credit">
+            <CoinCreditSettings />
           </TabsContent>
 
           <TabsContent value="generator">
