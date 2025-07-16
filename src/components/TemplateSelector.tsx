@@ -325,7 +325,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   return <>
       {/* Filter Buttons - Now at the top */}
       <div className="flex gap-2 mb-6">
-        <Button variant={filter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('all')}>
+        <Button variant={filter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('all')} className="text-xs">
           Show All
         </Button>
         <Button variant={filter === 'free' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('free')} className="text-xs">
