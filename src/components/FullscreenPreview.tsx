@@ -12,6 +12,7 @@ import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import { TemplateType, ColorPalette } from '@/types/template';
+import { ColorMode } from '@/utils/colorGenerator';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { useToast } from '@/hooks/use-toast';
@@ -26,7 +27,7 @@ interface FullscreenPreviewProps {
   template: TemplateType;
   colorPalette: ColorPalette;
   selectedScheme: ColorSchemeType;
-  colorMode: 'light' | 'midtone' | 'dark';
+  colorMode: ColorMode;
   isDarkMode: boolean;
   isGenerating: boolean;
   autogenerateCount?: number;
@@ -37,7 +38,7 @@ interface FullscreenPreviewProps {
   onTemplateChange: (template: TemplateType) => void;
   onColorChange: (palette: ColorPalette, moodId?: string | null) => void;
   onTemplateToggle: (checked: boolean) => void; // Renamed to be more specific
-  onModeChange: (mode: 'light' | 'midtone' | 'dark') => void;
+  onModeChange: (mode: ColorMode) => void;
   onDownloadPDF?: () => void;
   onAutogenerateCountChange?: (count: number) => void;
   onAutoGenerateChange?: (checked: boolean) => void;
