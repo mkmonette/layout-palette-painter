@@ -864,6 +864,16 @@ const Dashboard = () => {
         handleMoodSelect(palette, moodId);
         setShowColorMood(false);
       }} currentPalette={colorPalette} />
+
+        {/* Floating Generate Button */}
+        <Button
+          onClick={handleGenerateColors}
+          disabled={isGenerating}
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50"
+          size="icon"
+        >
+          <Sparkles className="h-6 w-6" />
+        </Button>
       </div>
     </TooltipProvider>;
 };
