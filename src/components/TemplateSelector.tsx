@@ -122,16 +122,47 @@ const freeTemplates: Template[] = [{
   description: 'Multi-vendor marketplace design',
   isPro: false
 }];
-const proTemplates: Template[] = [
-  { id: 'pro-cosmetics', name: 'Pro Cosmetics', description: 'Premium beauty and cosmetics template with elegant product showcase', isPro: true },
-  { id: 'advanced-hero', name: 'Advanced Hero', description: 'Sophisticated header design with premium typography and visual elements', isPro: true },
-  { id: 'modern-executive', name: 'Modern Executive', description: 'Professional business template with strategic design and authority', isPro: true },
-  { id: 'creative-showcase', name: 'Creative Showcase', description: 'Dynamic creative template with artistic layouts and bold visuals', isPro: true },
-  { id: 'tech-innovation', name: 'Tech Innovation', description: 'Cutting-edge technology template with futuristic design elements', isPro: true },
-  { id: 'luxury-brand', name: 'Luxury Brand', description: 'Premium luxury template with sophisticated elegance and refinement', isPro: true },
-  { id: 'startup-vision', name: 'Startup Vision', description: 'Dynamic startup template with growth-focused design and innovation', isPro: true },
-  { id: 'professional-hero', name: 'Professional Hero', description: 'Professional business hero section with consultant image and gradient background', isPro: true },
-];
+const proTemplates: Template[] = [{
+  id: 'pro-cosmetics',
+  name: 'Pro Cosmetics',
+  description: 'Premium beauty and cosmetics template with elegant product showcase',
+  isPro: true
+}, {
+  id: 'advanced-hero',
+  name: 'Advanced Hero',
+  description: 'Sophisticated header design with premium typography and visual elements',
+  isPro: true
+}, {
+  id: 'modern-executive',
+  name: 'Modern Executive',
+  description: 'Professional business template with strategic design and authority',
+  isPro: true
+}, {
+  id: 'creative-showcase',
+  name: 'Creative Showcase',
+  description: 'Dynamic creative template with artistic layouts and bold visuals',
+  isPro: true
+}, {
+  id: 'tech-innovation',
+  name: 'Tech Innovation',
+  description: 'Cutting-edge technology template with futuristic design elements',
+  isPro: true
+}, {
+  id: 'luxury-brand',
+  name: 'Luxury Brand',
+  description: 'Premium luxury template with sophisticated elegance and refinement',
+  isPro: true
+}, {
+  id: 'startup-vision',
+  name: 'Startup Vision',
+  description: 'Dynamic startup template with growth-focused design and innovation',
+  isPro: true
+}, {
+  id: 'professional-hero',
+  name: 'Professional Hero',
+  description: 'Professional business hero section with consultant image and gradient background',
+  isPro: true
+}];
 const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPalette) => {
   const previewProps = {
     colorPalette
@@ -173,20 +204,20 @@ const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPale
       return <EcommerceMarketplaceTemplate {...previewProps} />;
     case 'pro-cosmetics':
       return <ProCosmeticsTemplate palette={colorPalette} />;
-      case 'advanced-hero':
-        return <AdvancedHeroTemplate colorPalette={colorPalette} />;
-      case 'modern-executive':
-        return <ModernExecutiveTemplate colorPalette={colorPalette} />;
-      case 'creative-showcase':
-        return <CreativeShowcaseTemplate colorPalette={colorPalette} />;
-      case 'tech-innovation':
-        return <TechInnovationTemplate colorPalette={colorPalette} />;
-      case 'luxury-brand':
-        return <LuxuryBrandTemplate colorPalette={colorPalette} />;
-      case 'startup-vision':
-        return <StartupVisionTemplate colorPalette={colorPalette} />;
-      case 'professional-hero':
-        return <ProfessionalHeroTemplate colorPalette={colorPalette} isDarkMode={false} />;
+    case 'advanced-hero':
+      return <AdvancedHeroTemplate colorPalette={colorPalette} />;
+    case 'modern-executive':
+      return <ModernExecutiveTemplate colorPalette={colorPalette} />;
+    case 'creative-showcase':
+      return <CreativeShowcaseTemplate colorPalette={colorPalette} />;
+    case 'tech-innovation':
+      return <TechInnovationTemplate colorPalette={colorPalette} />;
+    case 'luxury-brand':
+      return <LuxuryBrandTemplate colorPalette={colorPalette} />;
+    case 'startup-vision':
+      return <StartupVisionTemplate colorPalette={colorPalette} />;
+    case 'professional-hero':
+      return <ProfessionalHeroTemplate colorPalette={colorPalette} isDarkMode={false} />;
     default:
       return <ModernHeroTemplate {...previewProps} />;
   }
@@ -300,7 +331,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         <Button variant={filter === 'free' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('free')} className="text-xs">
           FREE Only
         </Button>
-        <Button variant={filter === 'pro' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('pro')} className="flex items-center gap-2">
+        <Button variant={filter === 'pro' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('pro')} className="flex items-center gap-2 text-xs">
           <Crown className="h-3 w-3" />
           PRO Only
         </Button>
