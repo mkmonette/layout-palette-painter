@@ -19,9 +19,9 @@ import { useToast } from '@/hooks/use-toast';
 
 interface CoinSettings {
   aiColorGeneration: number;
-  freeSubscriptionCoins: number;
-  proSubscriptionCoins: number;
-  enterpriseSubscriptionCoins: number;
+  freeSubscriptionCost: number;
+  proSubscriptionCost: number;
+  enterpriseSubscriptionCost: number;
   coinPurchasePackages: {
     small: { coins: number; price: number };
     medium: { coins: number; price: number };
@@ -34,9 +34,9 @@ const CoinCreditSettings = () => {
   
   const [settings, setSettings] = useState<CoinSettings>({
     aiColorGeneration: 5,
-    freeSubscriptionCoins: 10,
-    proSubscriptionCoins: 100,
-    enterpriseSubscriptionCoins: 500,
+    freeSubscriptionCost: 0,
+    proSubscriptionCost: 100,
+    enterpriseSubscriptionCost: 300,
     coinPurchasePackages: {
       small: { coins: 50, price: 4.99 },
       medium: { coins: 150, price: 12.99 },
@@ -85,7 +85,7 @@ const CoinCreditSettings = () => {
         <div>
           <h2 className="text-2xl font-bold">Coin Credit System</h2>
           <p className="text-muted-foreground">
-            Configure coin costs and subscription rewards
+            Configure coin costs for subscriptions and AI features. Users purchase coins first, then spend them on plans and features.
           </p>
         </div>
       </div>
@@ -124,28 +124,28 @@ const CoinCreditSettings = () => {
         </CardContent>
       </Card>
 
-      {/* Subscription Plan Rewards */}
+      {/* Subscription Plan Costs */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
-            Subscription Plan Rewards
+            Subscription Plan Costs
           </CardTitle>
           <CardDescription>
-            Set how many coins users receive when purchasing subscription plans
+            Set how many coins users need to spend to purchase subscription plans
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="free-coins">Free Plan</Label>
+              <Label htmlFor="free-coins">Free Plan Cost</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="free-coins"
                   type="number"
                   min="0"
-                  value={tempSettings.freeSubscriptionCoins}
-                  onChange={(e) => updateSetting('freeSubscriptionCoins', parseInt(e.target.value) || 0)}
+                  value={tempSettings.freeSubscriptionCost}
+                  onChange={(e) => updateSetting('freeSubscriptionCost', parseInt(e.target.value) || 0)}
                   className="w-24"
                 />
                 <Badge variant="secondary">coins/month</Badge>
@@ -153,14 +153,14 @@ const CoinCreditSettings = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pro-coins">Pro Plan</Label>
+              <Label htmlFor="pro-coins">Pro Plan Cost</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="pro-coins"
                   type="number"
                   min="0"
-                  value={tempSettings.proSubscriptionCoins}
-                  onChange={(e) => updateSetting('proSubscriptionCoins', parseInt(e.target.value) || 0)}
+                  value={tempSettings.proSubscriptionCost}
+                  onChange={(e) => updateSetting('proSubscriptionCost', parseInt(e.target.value) || 0)}
                   className="w-24"
                 />
                 <Badge variant="secondary">coins/month</Badge>
@@ -168,14 +168,14 @@ const CoinCreditSettings = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="enterprise-coins">Enterprise Plan</Label>
+              <Label htmlFor="enterprise-coins">Enterprise Plan Cost</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="enterprise-coins"
                   type="number"
                   min="0"
-                  value={tempSettings.enterpriseSubscriptionCoins}
-                  onChange={(e) => updateSetting('enterpriseSubscriptionCoins', parseInt(e.target.value) || 0)}
+                  value={tempSettings.enterpriseSubscriptionCost}
+                  onChange={(e) => updateSetting('enterpriseSubscriptionCost', parseInt(e.target.value) || 0)}
                   className="w-24"
                 />
                 <Badge variant="secondary">coins/month</Badge>
@@ -311,16 +311,16 @@ const CoinCreditSettings = () => {
               <div className="text-muted-foreground">{settings.aiColorGeneration} coins</div>
             </div>
             <div>
-              <div className="font-medium">Free Plan</div>
-              <div className="text-muted-foreground">{settings.freeSubscriptionCoins} coins/month</div>
+              <div className="font-medium">Free Plan Cost</div>
+              <div className="text-muted-foreground">{settings.freeSubscriptionCost} coins/month</div>
             </div>
             <div>
-              <div className="font-medium">Pro Plan</div>
-              <div className="text-muted-foreground">{settings.proSubscriptionCoins} coins/month</div>
+              <div className="font-medium">Pro Plan Cost</div>
+              <div className="text-muted-foreground">{settings.proSubscriptionCost} coins/month</div>
             </div>
             <div>
-              <div className="font-medium">Enterprise Plan</div>
-              <div className="text-muted-foreground">{settings.enterpriseSubscriptionCoins} coins/month</div>
+              <div className="font-medium">Enterprise Plan Cost</div>
+              <div className="text-muted-foreground">{settings.enterpriseSubscriptionCost} coins/month</div>
             </div>
           </div>
         </CardContent>
