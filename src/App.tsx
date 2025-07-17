@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { EnhancedSubscriptionProvider } from "@/contexts/EnhancedSubscriptionContext";
 import Landing from "./pages/Landing";
+import Studio from "./pages/Studio";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import History from "./pages/History";
@@ -33,6 +34,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/studio" 
+              element={
+                <ProtectedRoute>
+                  <Studio />
                 </ProtectedRoute>
               } 
             />
