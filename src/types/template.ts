@@ -23,7 +23,17 @@ export type TemplateType =
   | 'creative-showcase'
   | 'tech-innovation'
   | 'luxury-brand'
-  | 'startup-vision';
+  | 'startup-vision'
+  | string; // Allow custom template IDs
+
+export interface CustomTemplate {
+  id: string;
+  name: string;
+  preview: string;
+  figmaFileKey: string;
+  createdAt: string;
+  layoutData?: any; // Parsed Figma layout structure
+}
 
 export interface ColorPalette {
   brand: string;

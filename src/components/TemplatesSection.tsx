@@ -11,20 +11,12 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useToast } from '@/hooks/use-toast';
 import TemplateSelector from '@/components/TemplateSelector';
 import { ColorPalette } from '@/utils/colorGenerator';
-import { TemplateType } from '@/types/template';
+import { TemplateType, CustomTemplate } from '@/types/template';
 
 interface TemplatesSectionProps {
   selectedTemplate: TemplateType;
   onTemplateChange: (template: TemplateType) => void;
   colorPalette: ColorPalette;
-}
-
-interface CustomTemplate {
-  id: string;
-  name: string;
-  preview: string;
-  figmaFileKey: string;
-  createdAt: string;
 }
 
 const TemplatesSection: React.FC<TemplatesSectionProps> = ({
@@ -35,6 +27,7 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
   const { isPro } = useFeatureAccess();
   const { toast } = useToast();
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isProUpsellModalOpen, setIsProUpsellModalOpen] = useState(false);
   const [figmaUrl, setFigmaUrl] = useState('');
   const [figmaToken, setFigmaToken] = useState('');
   const [customTemplates, setCustomTemplates] = useState<CustomTemplate[]>([]);
@@ -174,6 +167,30 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
     setEditingName(template.name);
   };
 
+  const handleApplyCustomTemplate = (template: CustomTemplate) => {
+    if (!isPro) {
+      setIsProUpsellModalOpen(true);
+      return;
+    }
+
+    try {
+      // Apply the custom template
+      onTemplateChange(template.id);
+      
+      // Show success message
+      toast({
+        title: "Custom Template Applied!",
+        description: `Now using "${template.name}" template. Colors will regenerate based on your design.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Application Failed",
+        description: "There was an error applying this template. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="space-y-4">
       <Tabs defaultValue="default" className="w-full">
@@ -282,25 +299,22 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
                       </div>
                       
                       <div className="flex items-center gap-1">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => {
-                                // Apply template logic would go here
-                                toast({
-                                  title: "Template Applied",
-                                  description: `Now using ${template.name} template.`,
-                                });
-                              }}
-                              className="h-8 w-8 p-0"
-                            >
-                              <Play className="h-3 w-3" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Apply Template</TooltipContent>
-                        </Tooltip>
+                         <Tooltip>
+                           <TooltipTrigger asChild>
+                             <Button
+                               size="sm"
+                               variant="ghost"
+                               onClick={() => handleApplyCustomTemplate(template)}
+                               disabled={!isPro}
+                               className={`h-8 w-8 p-0 ${!isPro ? 'opacity-50' : ''}`}
+                             >
+                               <Play className="h-3 w-3" />
+                             </Button>
+                           </TooltipTrigger>
+                           <TooltipContent>
+                             {isPro ? 'Apply Template' : 'Pro feature - Upgrade to apply custom templates'}
+                           </TooltipContent>
+                         </Tooltip>
                         
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -382,6 +396,46 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
               </Button>
               <Button onClick={handleImportSubmit}>
                 Import Design
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Pro Upsell Modal */}
+      <Dialog open={isProUpsellModalOpen} onOpenChange={setIsProUpsellModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upgrade to Pro</DialogTitle>
+            <DialogDescription>
+              Custom Templates are only available on the Pro Plan. Upgrade to use your own Figma designs in the color generator.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <h4 className="font-medium text-sm mb-2">Pro Features Include:</h4>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Import unlimited Figma designs</li>
+                <li>• Apply custom templates to color generation</li>
+                <li>• Advanced color generation options</li>
+                <li>• Priority support</li>
+              </ul>
+            </div>
+            
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsProUpsellModalOpen(false)}>
+                Maybe Later
+              </Button>
+              <Button onClick={() => {
+                setIsProUpsellModalOpen(false);
+                // Add upgrade navigation logic here if needed
+                toast({
+                  title: "Upgrade Available",
+                  description: "Contact support to upgrade to Pro plan.",
+                });
+              }}>
+                Upgrade to Pro
               </Button>
             </div>
           </div>
