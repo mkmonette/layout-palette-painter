@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { TemplateType, ColorPalette } from '@/types/template';
+import React, { useMemo } from 'react';
+import { TemplateType, ColorPalette, CustomTemplate } from '@/types/template';
 import { Button } from '@/components/ui/button';
 import TemplateBackground from '@/components/TemplateBackground';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
@@ -33,6 +33,7 @@ import EcommerceMinimalStoreTemplate from '@/components/templates/EcommerceMinim
 import EcommerceFashionBoutiqueTemplate from '@/components/templates/EcommerceFashionBoutiqueTemplate';
 import EcommerceTechStoreTemplate from '@/components/templates/EcommerceTechStoreTemplate';
 import EcommerceMarketplaceTemplate from '@/components/templates/EcommerceMarketplaceTemplate';
+import CustomFigmaTemplate from '@/components/templates/CustomFigmaTemplate';
 import { Crown } from 'lucide-react';
 
 interface LivePreviewProps {
@@ -61,8 +62,35 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
     }
   };
 
+  // Load custom templates from localStorage
+  const customTemplates = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem('customTemplates') || '[]') as CustomTemplate[];
+    } catch {
+      return [];
+    }
+  }, []);
+
   const renderTemplate = () => {
     const templateProps = { colorPalette };
+
+    // Check if this is a custom template
+    if (typeof template === 'string' && template.startsWith('custom-')) {
+      const customTemplate = customTemplates.find(t => t.id === template);
+      if (customTemplate) {
+        return (
+          <TemplateWrapper 
+            colorPalette={colorPalette}
+            backgroundSettings={backgroundSettings}
+          >
+            <CustomFigmaTemplate 
+              colorPalette={colorPalette} 
+              customTemplate={customTemplate} 
+            />
+          </TemplateWrapper>
+        );
+      }
+    }
 
     let templateComponent;
     switch (template) {
