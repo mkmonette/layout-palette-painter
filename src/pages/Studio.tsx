@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TemplateSelector from '@/components/TemplateSelector';
+import TemplatesSection from '@/components/TemplatesSection';
 import ColorControls from '@/components/ColorControls';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
@@ -616,9 +617,13 @@ const Dashboard = () => {
             </div>
             
             <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
-              {activeSection === 'templates' && <div className="space-y-6">
-                  <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
-                </div>}
+              {activeSection === 'templates' && 
+                <TemplatesSection 
+                  selectedTemplate={selectedTemplate} 
+                  onTemplateChange={setSelectedTemplate} 
+                  colorPalette={colorPalette} 
+                />
+              }
 
               {activeSection === 'schemes' && <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
