@@ -39,8 +39,14 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
   // Load templates from localStorage on mount
   useEffect(() => {
     const savedTemplates = JSON.parse(localStorage.getItem('customTemplates') || '[]');
+    console.log('Loading custom templates:', savedTemplates); // Debug log
     setCustomTemplates(savedTemplates);
   }, []);
+
+  // Debug: Log current state
+  useEffect(() => {
+    console.log('Current custom templates state:', customTemplates);
+  }, [customTemplates]);
 
   const fetchFigmaThumbnail = async (fileKey: string, token?: string) => {
     try {
@@ -323,9 +329,23 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
             </Tooltip>
           </div>
 
-          {/* Custom Templates List */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-medium text-muted-foreground">Your Custom Templates</h4>
+           {/* Custom Templates List */}
+           <div className="space-y-4">
+             <div className="flex items-center justify-between">
+               <h4 className="text-sm font-medium text-muted-foreground">
+                 Your Custom Templates
+                 {customTemplates.length > 0 && (
+                   <span className="ml-2 bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-medium">
+                     {customTemplates.length}
+                   </span>
+                 )}
+               </h4>
+               {customTemplates.length > 0 && (
+                 <div className="text-xs text-muted-foreground">
+                   Click "Apply" to use as template
+                 </div>
+               )}
+             </div>
             
              {customTemplates.length === 0 ? (
                <div className="text-center py-12 px-4">
