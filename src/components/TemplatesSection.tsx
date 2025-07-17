@@ -369,114 +369,61 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
             ) : (
               <div className="grid gap-3">
                  {customTemplates.map((template) => (
-                   <Card key={template.id} className="p-4 hover:bg-muted/30 transition-colors">
-                     <div className="flex items-start gap-4">
-                       {/* Enhanced Thumbnail Preview */}
-                       <div className="relative">
-                         <div className="w-16 h-16 bg-gradient-to-br from-muted to-muted/60 rounded-lg border flex items-center justify-center overflow-hidden">
-                           <img 
-                             src={template.thumbnail || template.preview} 
-                             alt={template.name}
-                             className="w-full h-full object-cover rounded-lg"
-                             onError={(e) => {
-                               const img = e.target as HTMLImageElement;
-                               img.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=200&h=200&fit=crop&crop=center";
-                             }}
-                           />
-                         </div>
-                         {/* Version Badge */}
-                         <Badge variant="secondary" className="absolute -top-1 -right-1 text-xs px-1 py-0 h-5">
-                           v{template.version}
-                         </Badge>
-                       </div>
-                       
-                       {/* Template Info */}
-                       <div className="flex-1 min-w-0">
-                         {editingTemplate === template.id ? (
-                           <div className="flex items-center gap-2">
-                             <Input
-                               value={editingName}
-                               onChange={(e) => setEditingName(e.target.value)}
-                               onKeyDown={(e) => {
-                                 if (e.key === 'Enter') {
-                                   handleRenameTemplate(template.id, editingName);
-                                 } else if (e.key === 'Escape') {
-                                   setEditingTemplate(null);
-                                   setEditingName('');
-                                 }
-                               }}
-                               className="h-8 text-sm"
-                               autoFocus
-                             />
-                             <Button
-                               size="sm"
-                               onClick={() => handleRenameTemplate(template.id, editingName)}
-                               className="h-8 px-2"
-                             >
-                               Save
-                             </Button>
-                           </div>
-                         ) : (
-                           <div className="space-y-1">
-                             <h5 className="font-medium text-sm truncate">{template.name}</h5>
-                             <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                               <div className="flex items-center gap-1">
-                                 <Calendar className="h-3 w-3" />
-                                 <span>Created {new Date(template.createdAt).toLocaleDateString()}</span>
-                               </div>
-                               {template.updatedAt && (
-                                 <div className="flex items-center gap-1">
-                                   <RefreshCw className="h-3 w-3" />
-                                   <span>Updated {new Date(template.updatedAt).toLocaleDateString()}</span>
-                                 </div>
-                               )}
+                   <Card key={template.id} className="p-3 hover:bg-muted/30 transition-colors">
+                     <div className="space-y-3">
+                       {/* Template Header with Name and Version */}
+                       <div className="flex items-start justify-between gap-2">
+                         <div className="flex-1 min-w-0">
+                           {editingTemplate === template.id ? (
+                             <div className="flex items-center gap-1">
+                               <Input
+                                 value={editingName}
+                                 onChange={(e) => setEditingName(e.target.value)}
+                                 onKeyDown={(e) => {
+                                   if (e.key === 'Enter') {
+                                     handleRenameTemplate(template.id, editingName);
+                                   } else if (e.key === 'Escape') {
+                                     setEditingTemplate(null);
+                                     setEditingName('');
+                                   }
+                                 }}
+                                 className="h-7 text-sm"
+                                 autoFocus
+                               />
+                               <Button
+                                 size="sm"
+                                 onClick={() => handleRenameTemplate(template.id, editingName)}
+                                 className="h-7 px-2 text-xs"
+                               >
+                                 Save
+                               </Button>
                              </div>
-                             {/* Optional: Display tags if they exist */}
-                             {template.tags && template.tags.length > 0 && (
-                               <div className="flex gap-1 flex-wrap mt-2">
-                                 {template.tags.map((tag, index) => (
-                                   <Badge key={index} variant="outline" className="text-xs px-1 py-0 h-5">
-                                     {tag}
-                                   </Badge>
-                                 ))}
+                           ) : (
+                             <div>
+                               <h5 className="font-medium text-sm truncate">{template.name}</h5>
+                               <div className="flex items-center gap-2 mt-1">
+                                 <Badge variant="secondary" className="text-xs px-1 py-0 h-4">
+                                   v{template.version}
+                                 </Badge>
+                                 <span className="text-xs text-muted-foreground">
+                                   {new Date(template.createdAt).toLocaleDateString()}
+                                 </span>
                                </div>
-                             )}
-                           </div>
-                         )}
-                       </div>
-                       
-                       {/* Action Buttons */}
-                       <div className="flex items-center gap-1">
-                         {/* Primary Apply Button */}
-                         <Tooltip>
-                           <TooltipTrigger asChild>
-                             <Button
-                               size="sm"
-                               onClick={() => handleApplyCustomTemplate(template)}
-                               disabled={!isPro}
-                               className={`h-8 px-3 gap-1 ${!isPro ? 'opacity-50' : ''}`}
-                               variant={isPro ? "default" : "secondary"}
-                             >
-                               <Play className="h-3 w-3" />
-                               Apply
-                             </Button>
-                           </TooltipTrigger>
-                           <TooltipContent>
-                             {isPro ? 'Apply this template to your color generator' : 'Pro feature - Upgrade to apply custom templates'}
-                           </TooltipContent>
-                         </Tooltip>
-
+                             </div>
+                           )}
+                         </div>
+                         
                          {/* More Actions Dropdown */}
                          <DropdownMenu>
                            <DropdownMenuTrigger asChild>
-                             <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                             <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
                                <MoreHorizontal className="h-3 w-3" />
                              </Button>
                            </DropdownMenuTrigger>
-                           <DropdownMenuContent align="end" className="w-48">
+                           <DropdownMenuContent align="end" className="w-40 bg-background border shadow-md z-50">
                              <DropdownMenuItem onClick={() => startEditing(template)}>
                                <Edit2 className="h-3 w-3 mr-2" />
-                               Rename Template
+                               Rename
                              </DropdownMenuItem>
                              
                              <DropdownMenuItem 
@@ -484,7 +431,7 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
                                disabled={!isPro}
                              >
                                <RefreshCw className="h-3 w-3 mr-2" />
-                               Update from Figma
+                               Update
                                {!isPro && <Badge variant="secondary" className="ml-auto text-xs">Pro</Badge>}
                              </DropdownMenuItem>
                              
@@ -495,11 +442,64 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
                                className="text-destructive focus:text-destructive"
                              >
                                <Trash2 className="h-3 w-3 mr-2" />
-                               Delete Template
+                               Delete
                              </DropdownMenuItem>
                            </DropdownMenuContent>
                          </DropdownMenu>
                        </div>
+
+                       {/* Preview Image */}
+                       <div className="relative">
+                         <div className="w-full h-24 bg-gradient-to-br from-muted to-muted/60 rounded-lg border flex items-center justify-center overflow-hidden">
+                           <img 
+                             src={template.thumbnail || template.preview} 
+                             alt={template.name}
+                             className="w-full h-full object-cover rounded-lg"
+                             onError={(e) => {
+                               const img = e.target as HTMLImageElement;
+                               img.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=200&h=200&fit=crop&crop=center";
+                             }}
+                           />
+                         </div>
+                         
+                         {/* Update indicator if updated */}
+                         {template.updatedAt && (
+                           <div className="absolute top-1 right-1">
+                             <div 
+                               className="w-2 h-2 rounded-full bg-green-500"
+                               title={`Updated ${new Date(template.updatedAt).toLocaleDateString()}`}
+                             />
+                           </div>
+                         )}
+                       </div>
+
+                       {/* Apply Button - Full Width */}
+                       <Button
+                         onClick={() => handleApplyCustomTemplate(template)}
+                         disabled={!isPro}
+                         className={`w-full gap-1 ${!isPro ? 'opacity-50' : ''}`}
+                         variant={isPro ? "default" : "secondary"}
+                         size="sm"
+                       >
+                         <Play className="h-3 w-3" />
+                         {isPro ? 'Apply Template' : 'Pro Feature'}
+                       </Button>
+                       
+                       {/* Optional: Display tags if they exist */}
+                       {template.tags && template.tags.length > 0 && (
+                         <div className="flex gap-1 flex-wrap">
+                           {template.tags.slice(0, 2).map((tag, index) => (
+                             <Badge key={index} variant="outline" className="text-xs px-1 py-0 h-4">
+                               {tag}
+                             </Badge>
+                           ))}
+                           {template.tags.length > 2 && (
+                             <Badge variant="outline" className="text-xs px-1 py-0 h-4">
+                               +{template.tags.length - 2}
+                             </Badge>
+                           )}
+                         </div>
+                       )}
                      </div>
                    </Card>
                  ))}
