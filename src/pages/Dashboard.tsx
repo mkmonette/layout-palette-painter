@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Palette, Settings, Users, BarChart3, Coins } from 'lucide-react';
+import { Palette, Settings, Users, BarChart3, Coins, User, UserCog } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +19,16 @@ const menuItems = [
     title: "Go to Studio",
     url: "/studio",
     icon: Palette,
+  },
+  {
+    title: "Profile Settings",
+    url: "#",
+    icon: User,
+  },
+  {
+    title: "Account Settings",
+    url: "#",
+    icon: UserCog,
   },
   {
     title: "Settings",
