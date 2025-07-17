@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Upload, Edit2, Trash2, Play } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -41,39 +41,84 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
   const [editingTemplate, setEditingTemplate] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
 
+  // Load templates from localStorage on mount
+  useEffect(() => {
+    const savedTemplates = JSON.parse(localStorage.getItem('customTemplates') || '[]');
+    setCustomTemplates(savedTemplates);
+  }, []);
+
   const handleFigmaImport = async (fileKey: string, token?: string) => {
     try {
-      // Placeholder for Figma import logic
       toast({
         title: "Import Started",
         description: "Your Figma design is being processed. This may take a few moments.",
       });
+
+      // Make request to Figma API
+      const headers: HeadersInit = {
+        "Content-Type": "application/json"
+      };
+
+      if (token) {
+        headers["X-Figma-Token"] = token;
+      }
+
+      const response = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
+        method: 'GET',
+        headers
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Access denied. Please check your token or make the file public.");
+        } else if (response.status === 404) {
+          throw new Error("File not found. Please check the file key or URL.");
+        } else {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+      }
+
+      const data = await response.json();
       
-      // Simulate import process
-      setTimeout(() => {
-        const newTemplate: CustomTemplate = {
-          id: `custom-${Date.now()}`,
-          name: `Figma Design ${customTemplates.length + 1}`,
-          preview: '/placeholder.svg',
-          figmaFileKey: fileKey,
-          createdAt: new Date().toISOString()
-        };
-        
-        setCustomTemplates(prev => [...prev, newTemplate]);
-        setIsImportModalOpen(false);
-        setFigmaUrl('');
-        setFigmaToken('');
-        
-        toast({
-          title: "Import Successful",
-          description: "Your Figma design has been imported as a custom template.",
-        });
-      }, 2000);
+      // Parse design info
+      const fileName = data.name || `Figma Design ${customTemplates.length + 1}`;
+      const thumbnailUrl = data.thumbnailUrl || '/placeholder.svg';
+      
+      // Validate that it's a design file
+      if (!data.document || !data.document.children) {
+        throw new Error("This doesn't appear to be a valid UI design file.");
+      }
+
+      // Create new template
+      const newTemplate: CustomTemplate = {
+        id: `custom-${Date.now()}`,
+        name: fileName,
+        preview: thumbnailUrl,
+        figmaFileKey: fileKey,
+        createdAt: new Date().toISOString()
+      };
+
+      // Store in localStorage (since no Supabase integration)
+      const existingTemplates = JSON.parse(localStorage.getItem('customTemplates') || '[]');
+      const updatedTemplates = [...existingTemplates, newTemplate];
+      localStorage.setItem('customTemplates', JSON.stringify(updatedTemplates));
+      
+      // Update state
+      setCustomTemplates(prev => [...prev, newTemplate]);
+      setIsImportModalOpen(false);
+      setFigmaUrl('');
+      setFigmaToken('');
+      
+      toast({
+        title: "Import Successful",
+        description: `"${fileName}" has been imported as a custom template.`,
+      });
       
     } catch (error) {
+      console.error('Figma import error:', error);
       toast({
         title: "Import Failed",
-        description: "Failed to import Figma design. Please check your URL and token.",
+        description: error instanceof Error ? error.message : "Failed to import Figma design. Please check your URL and token.",
         variant: "destructive"
       });
     }
@@ -98,13 +143,14 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
   };
 
   const handleRenameTemplate = (templateId: string, newName: string) => {
-    setCustomTemplates(prev => 
-      prev.map(template => 
-        template.id === templateId 
-          ? { ...template, name: newName }
-          : template
-      )
+    const updatedTemplates = customTemplates.map(template => 
+      template.id === templateId 
+        ? { ...template, name: newName }
+        : template
     );
+    
+    setCustomTemplates(updatedTemplates);
+    localStorage.setItem('customTemplates', JSON.stringify(updatedTemplates));
     setEditingTemplate(null);
     setEditingName('');
     toast({
@@ -114,7 +160,9 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
   };
 
   const handleDeleteTemplate = (templateId: string) => {
-    setCustomTemplates(prev => prev.filter(template => template.id !== templateId));
+    const updatedTemplates = customTemplates.filter(template => template.id !== templateId);
+    setCustomTemplates(updatedTemplates);
+    localStorage.setItem('customTemplates', JSON.stringify(updatedTemplates));
     toast({
       title: "Template Deleted",
       description: "Custom template has been removed.",
