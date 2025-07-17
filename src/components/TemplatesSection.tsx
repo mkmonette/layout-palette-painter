@@ -155,10 +155,34 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
       return;
     }
     
-    // Extract file key from URL if it's a full URL
-    const fileKey = figmaUrl.includes('figma.com') 
-      ? figmaUrl.split('/file/')[1]?.split('/')[0] || figmaUrl
-      : figmaUrl;
+    // Extract file key from URL - handle both old and new Figma URL formats
+    let fileKey = figmaUrl.trim();
+    
+    if (figmaUrl.includes('figma.com')) {
+      // Handle new format: figma.com/design/FILEID/...
+      if (figmaUrl.includes('/design/')) {
+        fileKey = figmaUrl.split('/design/')[1]?.split('/')[0];
+      }
+      // Handle old format: figma.com/file/FILEID/...
+      else if (figmaUrl.includes('/file/')) {
+        fileKey = figmaUrl.split('/file/')[1]?.split('/')[0];
+      }
+      
+      // Fallback: try to extract any file ID pattern
+      if (!fileKey) {
+        const match = figmaUrl.match(/\/([A-Za-z0-9]{22,})\//);
+        fileKey = match ? match[1] : figmaUrl;
+      }
+    }
+    
+    if (!fileKey) {
+      toast({
+        title: "Invalid URL",
+        description: "Could not extract file key from the Figma URL. Please check the URL format.",
+        variant: "destructive"
+      });
+      return;
+    }
     
     handleFigmaImport(fileKey, figmaToken);
   };
