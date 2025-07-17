@@ -23,8 +23,7 @@ export type TemplateType =
   | 'creative-showcase'
   | 'tech-innovation'
   | 'luxury-brand'
-  | 'startup-vision'
-  | 'professional-hero';
+  | 'startup-vision';
 
 export interface ColorPalette {
   brand: string;

@@ -27,7 +27,7 @@ import { CreativeShowcaseTemplate } from '@/components/templates/CreativeShowcas
 import { TechInnovationTemplate } from '@/components/templates/TechInnovationTemplate';
 import { LuxuryBrandTemplate } from '@/components/templates/LuxuryBrandTemplate';
 import { StartupVisionTemplate } from '@/components/templates/StartupVisionTemplate';
-import { ProfessionalHeroTemplate } from '@/components/templates/ProfessionalHeroTemplate';
+
 import EcommerceProductShowcaseTemplate from '@/components/templates/EcommerceProductShowcaseTemplate';
 import EcommerceMinimalStoreTemplate from '@/components/templates/EcommerceMinimalStoreTemplate';
 import EcommerceFashionBoutiqueTemplate from '@/components/templates/EcommerceFashionBoutiqueTemplate';
@@ -137,9 +137,6 @@ const LivePreview: React.FC<LivePreviewProps> = ({ template, colorPalette, showS
         break;
       case 'startup-vision':
         templateComponent = <StartupVisionTemplate colorPalette={colorPalette} />;
-        break;
-      case 'professional-hero':
-        templateComponent = <ProfessionalHeroTemplate colorPalette={colorPalette} isDarkMode={false} backgroundSettings={backgroundSettings} />;
         break;
       default:
         templateComponent = <ModernHeroTemplate {...templateProps} />;
