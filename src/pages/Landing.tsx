@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,24 +9,52 @@ import {
   Palette, Zap, Eye, Settings, Crown, Star, ArrowRight, Check, 
   Sparkles, Users, Laptop, Paintbrush, Target, Clock, Shield,
   ChevronRight, PlayCircle, Download, Share2, Wand2, Layers,
-  Heart, TrendingUp, MessageCircle, Mail, Send, Phone, MapPin
+  Heart, TrendingUp, MessageCircle, Mail, Send, Phone, MapPin,
+  Shuffle, RefreshCw, MousePointer, Lightbulb, Monitor, Smartphone
 } from 'lucide-react';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useEnhancedSubscription } from '@/contexts/EnhancedSubscriptionContext';
 import LivePreviewSection from '@/components/landing/LivePreviewSection';
+import PricingSection from '@/components/landing/PricingSection';
+import TestimonialsSection from '@/components/landing/TestimonialsSection';
+import Footer from '@/components/landing/Footer';
+import heroBackground from '@/assets/hero-background.jpg';
+
+// Enhanced Color Palette Component
+const ColorPalette = ({ colors, className = "", size = "sm" }: { 
+  colors: string[], 
+  className?: string,
+  size?: "sm" | "md" | "lg"
+}) => {
+  const sizeClasses = {
+    sm: "w-8 h-8",
+    md: "w-12 h-12", 
+    lg: "w-16 h-16"
+  };
+  
+  return (
+    <div className={`flex space-x-2 ${className}`}>
+      {colors.map((color, i) => (
+        <div 
+          key={i} 
+          className={`${sizeClasses[size]} rounded-xl shadow-lg transition-all duration-300 hover:scale-110 cursor-pointer`}
+          style={{ backgroundColor: color }}
+        />
+      ))}
+    </div>
+  );
+};
 
 // Floating Color Palette Component
 const FloatingPalette = ({ colors, className = "" }: { colors: string[], className?: string }) => (
   <div className={`floating-palette ${className}`}>
-    <div className="flex space-x-1 p-2 bg-white/20 backdrop-blur-lg rounded-lg shadow-lg border border-white/30">
-      {colors.map((color, i) => (
-        <div key={i} className="w-6 h-6 rounded-full" style={{ backgroundColor: color }} />
-      ))}
+    <div className="glass-card p-3 rounded-2xl shadow-xl">
+      <ColorPalette colors={colors} size="md" />
     </div>
   </div>
 );
 
-// Scroll reveal hook
+// Enhanced scroll reveal hook
 const useScrollReveal = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,7 +65,7 @@ const useScrollReveal = () => {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '0px 0px -10% 0px' }
     );
 
     const elements = document.querySelectorAll('.scroll-reveal');
@@ -57,15 +85,14 @@ const Landing = () => {
 
   useScrollReveal();
 
-  const floatingPalettes = [
-    ['#6366f1', '#8b5cf6', '#ec4899', '#06b6d4'],
-    ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
-    ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b'],
+  const vibrantPalettes = [
+    ['hsl(263, 85%, 58%)', 'hsl(337, 85%, 65%)', 'hsl(188, 94%, 50%)', 'hsl(142, 76%, 36%)'],
+    ['hsl(45, 93%, 47%)', 'hsl(217, 91%, 60%)', 'hsl(340, 82%, 52%)', 'hsl(160, 84%, 39%)'],
+    ['hsl(280, 95%, 60%)', 'hsl(320, 90%, 50%)', 'hsl(200, 100%, 45%)', 'hsl(120, 80%, 45%)'],
   ];
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     console.log({ name, email, message });
     setName('');
     setEmail('');
@@ -73,124 +100,143 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background with animated gradient */}
-      <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 animate-gradient-shift" 
-           style={{ backgroundSize: '400% 400%' }} />
-      
+    <div className="min-h-screen relative overflow-hidden bg-background">
       {/* Floating Palettes */}
-      {floatingPalettes.map((palette, i) => (
+      {vibrantPalettes.map((palette, i) => (
         <FloatingPalette 
           key={i}
           colors={palette} 
           className={`absolute z-10 ${
-            i === 0 ? 'top-20 right-20' : 
-            i === 1 ? 'top-1/2 left-10' : 
-            'bottom-20 right-1/3'
+            i === 0 ? 'top-32 right-10 lg:right-20' : 
+            i === 1 ? 'top-1/2 left-4 lg:left-10' : 
+            'bottom-32 right-1/4'
           } hidden lg:block`} 
         />
       ))}
 
-      {/* Navigation */}
-      <nav className="relative z-50 bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-gradient-to-br from-primary to-secondary rounded-xl shadow-lg">
-                <Palette className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold gradient-text">
-                  Palette Painter
-                </h1>
-                <p className="text-xs text-muted-foreground">AI Color Generator</p>
-              </div>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-6">
-              <a href="#features" className="text-foreground/80 hover:text-foreground transition-colors">Features</a>
-              <a href="#how-it-works" className="text-foreground/80 hover:text-foreground transition-colors">How it Works</a>
-              <a href="#pricing" className="text-foreground/80 hover:text-foreground transition-colors">Pricing</a>
-              <a href="#testimonials" className="text-foreground/80 hover:text-foreground transition-colors">Reviews</a>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <Button variant="outline" onClick={() => navigate('/login')} className="hidden sm:flex">
-                Sign In
-              </Button>
-              <Button 
-                className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg"
-                onClick={() => navigate('/register')}
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                Get Started
-              </Button>
-            </div>
-          </div>
+      {/* Header with Background */}
+      <header className="relative">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroBackground})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-secondary/70 to-accent/60" />
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center scroll-reveal">
-            <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 text-sm px-4 py-2">
-              <Crown className="h-3 w-3 mr-2" />
-              AI-Powered Color Generation
-            </Badge>
-            
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              Create <span className="gradient-text">Perfect Color</span>
-              <br />
-              Palettes <span className="gradient-text">Instantly</span>
-            </h1>
-            
-            <p className="text-lg md:text-xl text-foreground/70 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Transform your designs with AI-generated color palettes. Choose from professional templates, 
-              customize every shade, and see live previews in real-time. Perfect for designers, developers, and brands.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-lg px-8 py-6 shadow-lg hover-lift"
-                onClick={() => navigate('/register')}
-              >
-                <Zap className="h-5 w-5 mr-2" />
-                Start Creating Free
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="text-lg px-8 py-6 border-2 hover-lift"
-              >
-                <PlayCircle className="h-5 w-5 mr-2" />
-                Watch Demo
-              </Button>
-            </div>
-            
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold gradient-text mb-2">50K+</div>
-                <p className="text-foreground/60">Happy Designers</p>
+        {/* Navigation */}
+        <nav className="relative z-50 backdrop-blur-lg bg-white/10 border-b border-white/20">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-white/30 rounded-xl blur-sm" />
+                  <div className="relative p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <Palette className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-white">
+                    Palette Painter
+                  </h1>
+                  <p className="text-xs text-white/80">AI Color Generator</p>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold gradient-text mb-2">100+</div>
-                <p className="text-foreground/60">AI Templates</p>
+              
+              <div className="hidden md:flex items-center space-x-6">
+                <a href="#features" className="text-white/90 hover:text-white transition-colors font-medium">Features</a>
+                <a href="#how-it-works" className="text-white/90 hover:text-white transition-colors font-medium">How it Works</a>
+                <a href="#pricing" className="text-white/90 hover:text-white transition-colors font-medium">Pricing</a>
+                <a href="#testimonials" className="text-white/90 hover:text-white transition-colors font-medium">Reviews</a>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold gradient-text mb-2">1M+</div>
-                <p className="text-foreground/60">Palettes Generated</p>
+
+              <div className="flex items-center space-x-3">
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/login')} 
+                  className="hidden sm:flex border-white/30 text-white hover:bg-white/20 hover:border-white/50"
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  className="bg-white text-primary hover:bg-white/90 shadow-xl font-semibold"
+                  onClick={() => navigate('/register')}
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Get Started
+                </Button>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </nav>
+
+        {/* Hero Section */}
+        <section className="relative py-24 lg:py-32">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center scroll-reveal">
+              <Badge className="mb-8 bg-white/20 text-white border-white/30 hover:bg-white/30 text-sm px-6 py-3 backdrop-blur-sm">
+                <Crown className="h-4 w-4 mr-2" />
+                AI-Powered Color Generation
+              </Badge>
+              
+              <h1 className="text-5xl md:text-6xl lg:text-8xl font-bold mb-8 leading-tight text-white">
+                Create Perfect
+                <br />
+                <span className="relative">
+                  Color Palettes
+                  <div className="absolute -bottom-4 left-0 right-0 h-1 bg-white/30 rounded-full" />
+                </span>
+                <br />
+                Instantly
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed font-medium">
+                Transform your designs with AI-generated color palettes. Choose from professional templates, 
+                customize every shade, and see live previews in real-time.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+                <Button 
+                  size="lg" 
+                  className="bg-white text-primary hover:bg-white/90 text-xl px-10 py-6 shadow-2xl font-semibold group"
+                  onClick={() => navigate('/register')}
+                >
+                  <Zap className="h-6 w-6 mr-3 group-hover:animate-pulse" />
+                  Start Creating Free
+                  <ArrowRight className="h-6 w-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="text-xl px-10 py-6 border-2 border-white/50 text-white hover:bg-white/20 hover:border-white font-semibold"
+                >
+                  <PlayCircle className="h-6 w-6 mr-3" />
+                  Watch Demo
+                </Button>
+              </div>
+              
+              {/* Enhanced Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-3xl mx-auto">
+                <div className="text-center scroll-reveal">
+                  <div className="text-5xl font-bold text-white mb-3">50K+</div>
+                  <p className="text-white/80 text-lg font-medium">Happy Designers</p>
+                </div>
+                <div className="text-center scroll-reveal">
+                  <div className="text-5xl font-bold text-white mb-3">100+</div>
+                  <p className="text-white/80 text-lg font-medium">AI Templates</p>
+                </div>
+                <div className="text-center scroll-reveal">
+                  <div className="text-5xl font-bold text-white mb-3">1M+</div>
+                  <p className="text-white/80 text-lg font-medium">Palettes Generated</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </header>
 
       {/* Live Preview Section */}
-      <section className="py-16 relative">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4">
           <div className="scroll-reveal">
             <LivePreviewSection />
@@ -198,47 +244,49 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Pain Points Section */}
-      <section className="py-20 bg-gradient-to-r from-muted/30 to-accent/5">
+      {/* Color Showcase Section */}
+      <section className="py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16 scroll-reveal">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Stop Struggling with <span className="gradient-text">Color Choices</span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+              Endless <span className="gradient-text">Color Combinations</span>
             </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              We solve the most common design challenges that keep you stuck
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Discover vibrant palettes that bring your designs to life
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              {
-                icon: Target,
-                title: "Poor Color Harmony",
-                description: "No more clashing colors or unbalanced palettes"
-              },
-              {
-                icon: Eye,
-                title: "Accessibility Issues",
-                description: "Ensure perfect contrast ratios for all users"
-              },
-              {
-                icon: Clock,
-                title: "Time Wasted",
-                description: "Stop spending hours tweaking colors manually"
-              },
-              {
-                icon: Sparkles,
-                title: "Lack of Inspiration",
-                description: "Get fresh, trending color combinations instantly"
-              }
-            ].map((item, i) => (
-              <Card key={i} className="p-6 hover-lift scroll-reveal border-0 bg-white/60 backdrop-blur-sm">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
-                  <item.icon className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-foreground/70">{item.description}</p>
+              { name: "Vibrant Sunset", colors: ['hsl(45, 93%, 47%)', 'hsl(15, 95%, 55%)', 'hsl(340, 82%, 52%)', 'hsl(280, 95%, 60%)'] },
+              { name: "Ocean Breeze", colors: ['hsl(200, 100%, 45%)', 'hsl(188, 94%, 50%)', 'hsl(160, 84%, 39%)', 'hsl(142, 76%, 36%)'] },
+              { name: "Modern Tech", colors: ['hsl(263, 85%, 58%)', 'hsl(217, 91%, 60%)', 'hsl(280, 95%, 60%)', 'hsl(320, 90%, 50%)'] },
+              { name: "Fresh Garden", colors: ['hsl(120, 80%, 45%)', 'hsl(160, 84%, 39%)', 'hsl(80, 70%, 50%)', 'hsl(40, 85%, 55%)'] },
+              { name: "Cosmic Purple", colors: ['hsl(280, 95%, 60%)', 'hsl(300, 90%, 55%)', 'hsl(320, 90%, 50%)', 'hsl(340, 82%, 52%)'] },
+              { name: "Electric Blue", colors: ['hsl(200, 100%, 45%)', 'hsl(220, 95%, 55%)', 'hsl(240, 90%, 60%)', 'hsl(260, 85%, 65%)'] },
+            ].map((palette, i) => (
+              <Card key={i} className="group hover-lift scroll-reveal bg-card/80 backdrop-blur-sm border-0 shadow-lg overflow-hidden">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-semibold">{palette.name}</CardTitle>
+                    <Button size="sm" variant="ghost" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Heart className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ColorPalette colors={palette.colors} size="lg" className="justify-center mb-4" />
+                  <div className="flex justify-center space-x-2">
+                    <Button size="sm" variant="outline" className="text-xs">
+                      <Download className="h-3 w-3 mr-1" />
+                      Export
+                    </Button>
+                    <Button size="sm" variant="outline" className="text-xs">
+                      <Share2 className="h-3 w-3 mr-1" />
+                      Share
+                    </Button>
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
@@ -246,116 +294,72 @@ const Landing = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20">
+      <section id="how-it-works" className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16 scroll-reveal">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               How It <span className="gradient-text">Works</span>
             </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Create stunning color palettes in just three simple steps
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12">
             {[
               {
                 step: "01",
                 icon: Wand2,
                 title: "Choose Your Style",
-                description: "Select from 100+ professional templates or describe your vision to our AI"
+                description: "Select from 100+ professional templates or describe your vision to our AI",
+                color: "hsl(263, 85%, 58%)"
               },
               {
-                step: "02",
+                step: "02", 
                 icon: Palette,
                 title: "Generate Instantly",
-                description: "Our AI creates perfect color harmonies with accessibility built-in"
+                description: "Our AI creates perfect color harmonies with accessibility built-in",
+                color: "hsl(337, 85%, 65%)"
               },
               {
                 step: "03",
                 icon: Download,
                 title: "Export & Use",
-                description: "Download in any format, copy hex codes, or integrate with your design tools"
+                description: "Download in any format, copy hex codes, or integrate with your design tools",
+                color: "hsl(188, 94%, 50%)"
               }
             ].map((item, i) => (
-              <div key={i} className="text-center scroll-reveal">
+              <div key={i} className="text-center scroll-reveal group">
                 <div className="relative mb-8">
-                  <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                    <item.icon className="h-10 w-10 text-white" />
+                  <div 
+                    className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto shadow-2xl group-hover:scale-110 transition-all duration-300"
+                    style={{ backgroundColor: item.color }}
+                  >
+                    <item.icon className="h-12 w-12 text-white" />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-white text-sm font-bold">
+                  <div 
+                    className="absolute -top-3 -right-3 w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg"
+                    style={{ backgroundColor: item.color }}
+                  >
                     {item.step}
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-4">{item.title}</h3>
-                <p className="text-foreground/70">{item.description}</p>
+                <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
+                <p className="text-muted-foreground text-lg leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Who It's For Section */}
-      <section className="py-20 bg-gradient-to-l from-secondary/5 to-primary/5">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16 scroll-reveal">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Perfect for <span className="gradient-text">Every Creator</span>
-            </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              Whether you're a professional or just starting out, we've got you covered
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Laptop,
-                title: "Web Designers",
-                description: "Create cohesive color schemes for websites and digital products",
-                features: ["Brand consistency", "UI/UX optimization", "Accessibility compliance"]
-              },
-              {
-                icon: Paintbrush,
-                title: "Brand Strategists", 
-                description: "Develop powerful brand identities with psychology-backed colors",
-                features: ["Brand personality", "Market positioning", "Color psychology"]
-              },
-              {
-                icon: Users,
-                title: "Developers",
-                description: "Implement beautiful color systems in your applications",
-                features: ["CSS variables", "Design tokens", "Code export"]
-              }
-            ].map((item, i) => (
-              <Card key={i} className="p-6 hover-lift scroll-reveal border-0 bg-white/60 backdrop-blur-sm">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4">
-                  <item.icon className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-foreground/70 mb-4">{item.description}</p>
-                <ul className="space-y-2">
-                  {item.features.map((feature, j) => (
-                    <li key={j} className="flex items-center text-sm text-foreground/60">
-                      <Check className="h-4 w-4 text-success mr-2" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Features Section */}
-      <section id="features" className="py-20">
+      <section id="features" className="py-20 bg-gradient-to-br from-accent/5 to-primary/5">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16 scroll-reveal">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Powerful <span className="gradient-text">Features</span>
             </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Everything you need to create, customize, and implement perfect color palettes
             </p>
           </div>
@@ -365,40 +369,49 @@ const Landing = () => {
               {
                 icon: Sparkles,
                 title: "AI Generation",
-                description: "Advanced AI creates harmonious color combinations based on color theory principles"
+                description: "Advanced AI creates harmonious color combinations based on color theory principles",
+                color: "hsl(263, 85%, 58%)"
               },
               {
                 icon: Eye,
                 title: "Accessibility Checker", 
-                description: "Built-in WCAG compliance ensures your colors work for everyone"
+                description: "Built-in WCAG compliance ensures your colors work for everyone",
+                color: "hsl(337, 85%, 65%)"
               },
               {
                 icon: Layers,
                 title: "100+ Templates",
-                description: "Professional templates for every industry and design style"
+                description: "Professional templates for every industry and design style",
+                color: "hsl(188, 94%, 50%)"
               },
               {
                 icon: Download,
                 title: "Multiple Export Formats",
-                description: "CSS, Sass, Adobe Swatch, Sketch, Figma, and more"
+                description: "CSS, Sass, Adobe Swatch, Sketch, Figma, and more",
+                color: "hsl(142, 76%, 36%)"
               },
               {
                 icon: Share2,
                 title: "Team Collaboration",
-                description: "Share palettes with your team and collect feedback instantly"
+                description: "Share palettes with your team and collect feedback instantly",
+                color: "hsl(45, 93%, 47%)"
               },
               {
                 icon: TrendingUp,
                 title: "Trending Colors",
-                description: "Stay updated with the latest color trends and popular combinations"
+                description: "Stay updated with the latest color trends and popular combinations",
+                color: "hsl(217, 91%, 60%)"
               }
             ].map((item, i) => (
-              <Card key={i} className="p-6 hover-lift scroll-reveal group border-0 bg-white/60 backdrop-blur-sm">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <item.icon className="h-6 w-6 text-white" />
+              <Card key={i} className="p-8 hover-lift scroll-reveal group bg-card/80 backdrop-blur-sm border-0 shadow-lg">
+                <div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg"
+                  style={{ backgroundColor: item.color }}
+                >
+                  <item.icon className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-foreground/70">{item.description}</p>
+                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
               </Card>
             ))}
           </div>
@@ -406,177 +419,50 @@ const Landing = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-gradient-to-r from-muted/30 to-accent/5">
+      <section id="pricing" className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16 scroll-reveal">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Simple <span className="gradient-text">Pricing</span>
-            </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              Start free, upgrade when you need more power
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Free Plan */}
-            <Card className="p-8 hover-lift scroll-reveal border-2 border-border bg-white/80 backdrop-blur-sm">
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold mb-2">Free</h3>
-                <div className="text-4xl font-bold mb-4">$0<span className="text-lg text-foreground/60">/month</span></div>
-                <p className="text-foreground/70">Perfect for getting started</p>
-              </div>
-              
-              <ul className="space-y-3 mb-8">
-                {[
-                  "10 AI-generated palettes/month",
-                  "Basic templates",
-                  "Standard export formats",
-                  "Community support"
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-center">
-                    <Check className="h-5 w-5 text-success mr-3" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              
-              <Button className="w-full" variant="outline" onClick={() => navigate('/register')}>
-                Get Started Free
-              </Button>
-            </Card>
-
-            {/* Pro Plan */}
-            <Card className="p-8 hover-lift scroll-reveal border-2 border-primary bg-gradient-to-br from-primary/5 to-secondary/5 relative overflow-hidden">
-              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-bl-lg">
-                <span className="text-sm font-semibold">Most Popular</span>
-              </div>
-              
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold mb-2">Pro</h3>
-                <div className="text-4xl font-bold mb-4">$9<span className="text-lg text-foreground/60">/month</span></div>
-                <p className="text-foreground/70">For professional designers</p>
-              </div>
-              
-              <ul className="space-y-3 mb-8">
-                {[
-                  "Unlimited AI generations",
-                  "100+ premium templates",
-                  "Advanced export formats",
-                  "Team collaboration",
-                  "Priority support",
-                  "Custom brand palettes"
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-center">
-                    <Check className="h-5 w-5 text-success mr-3" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              
-              <Button 
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
-                onClick={() => navigate('/register')}
-              >
-                <Crown className="h-4 w-4 mr-2" />
-                Upgrade to Pro
-              </Button>
-            </Card>
+          <div className="scroll-reveal">
+            <PricingSection />
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20">
+      <section id="testimonials" className="py-20 bg-gradient-to-br from-secondary/5 to-accent/5">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16 scroll-reveal">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Loved by <span className="gradient-text">Thousands</span>
-            </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              See what our users are saying about their experience
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Sarah Chen",
-                role: "UI/UX Designer",
-                company: "TechCorp",
-                avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b593?w=150",
-                rating: 5,
-                text: "This tool has revolutionized my design workflow. I can create perfect color palettes in minutes instead of hours."
-              },
-              {
-                name: "Marcus Rivera", 
-                role: "Brand Strategist",
-                company: "Creative Studio",
-                avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
-                rating: 5,
-                text: "The AI understands color psychology better than most humans. It's become essential for all our brand projects."
-              },
-              {
-                name: "Emily Watson",
-                role: "Frontend Developer", 
-                company: "StartupXYZ",
-                avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
-                rating: 5,
-                text: "Finally, a tool that generates accessible color schemes by default. The code export feature is a game-changer."
-              }
-            ].map((testimonial, i) => (
-              <Card key={i} className="p-6 hover-lift scroll-reveal border-0 bg-white/60 backdrop-blur-sm">
-                <div className="flex items-center mb-4">
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full mr-4"
-                  />
-                  <div>
-                    <h4 className="font-semibold">{testimonial.name}</h4>
-                    <p className="text-sm text-foreground/60">{testimonial.role} at {testimonial.company}</p>
-                  </div>
-                </div>
-                
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, j) => (
-                    <Star key={j} className="h-4 w-4 fill-warning text-warning" />
-                  ))}
-                </div>
-                
-                <p className="text-foreground/70 italic">"{testimonial.text}"</p>
-              </Card>
-            ))}
+          <div className="scroll-reveal">
+            <TestimonialsSection />
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-secondary text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-primary via-secondary to-accent relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20" />
-        <div className="relative max-w-7xl mx-auto px-4 text-center">
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
           <div className="scroll-reveal">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Create Amazing Colors?
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+              Ready to Transform Your Designs?
             </h2>
-            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
-              Join thousands of designers and developers who are already creating stunning palettes with our AI
+            <p className="text-xl text-white/90 mb-12 leading-relaxed">
+              Join thousands of designers who create stunning color palettes with AI
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 shadow-lg"
+                className="bg-white text-primary hover:bg-white/90 text-xl px-12 py-6 shadow-2xl font-bold"
                 onClick={() => navigate('/register')}
               >
-                <Sparkles className="h-5 w-5 mr-2" />
-                Start Creating for Free
+                <Sparkles className="h-6 w-6 mr-3" />
+                Start Creating Now
               </Button>
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-white text-white hover:bg-white/10 text-lg px-8 py-6"
+                className="border-2 border-white text-white hover:bg-white/20 text-xl px-12 py-6 font-bold"
+                onClick={() => navigate('/login')}
               >
-                <MessageCircle className="h-5 w-5 mr-2" />
-                Contact Sales
+                Sign In
               </Button>
             </div>
           </div>
@@ -584,91 +470,7 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-foreground text-background">
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            {/* Company Info */}
-            <div className="lg:col-span-2">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="p-3 bg-gradient-to-br from-primary to-secondary rounded-xl">
-                  <Palette className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold">Palette Painter</h3>
-                  <p className="text-sm opacity-70">AI Color Generator</p>
-                </div>
-              </div>
-              <p className="text-background/70 mb-6 max-w-md">
-                Create perfect color palettes with AI. Trusted by designers, developers, and brands worldwide.
-              </p>
-              <div className="flex space-x-4">
-                <div className="w-10 h-10 bg-background/10 rounded-lg flex items-center justify-center hover:bg-background/20 transition-colors cursor-pointer">
-                  <Heart className="h-5 w-5" />
-                </div>
-                <div className="w-10 h-10 bg-background/10 rounded-lg flex items-center justify-center hover:bg-background/20 transition-colors cursor-pointer">
-                  <Share2 className="h-5 w-5" />
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-background/70">
-                <li><a href="#features" className="hover:text-background transition-colors">Features</a></li>
-                <li><a href="#pricing" className="hover:text-background transition-colors">Pricing</a></li>
-                <li><a href="#how-it-works" className="hover:text-background transition-colors">How it Works</a></li>
-                <li><a href="#testimonials" className="hover:text-background transition-colors">Reviews</a></li>
-              </ul>
-            </div>
-
-            {/* Contact Form */}
-            <div>
-              <h4 className="font-semibold mb-4">Get in Touch</h4>
-              <form onSubmit={handleContactSubmit} className="space-y-4">
-                <Input 
-                  placeholder="Your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="bg-background/10 border-background/20 text-background placeholder:text-background/50"
-                />
-                <Input 
-                  type="email"
-                  placeholder="Your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-background/10 border-background/20 text-background placeholder:text-background/50"
-                />
-                <Textarea 
-                  placeholder="Your message"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="bg-background/10 border-background/20 text-background placeholder:text-background/50 h-20"
-                />
-                <Button 
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
-                >
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Message
-                </Button>
-              </form>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="border-t border-background/20 pt-8 flex flex-col md:flex-row items-center justify-between">
-            <p className="text-background/60 text-sm">
-              © 2024 Palette Painter. All rights reserved.
-            </p>
-            <div className="flex space-x-6 text-sm text-background/60 mt-4 md:mt-0">
-              <a href="#" className="hover:text-background transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-background transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-background transition-colors">Support</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
