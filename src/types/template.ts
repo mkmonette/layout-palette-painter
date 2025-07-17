@@ -30,9 +30,13 @@ export interface CustomTemplate {
   id: string;
   name: string;
   preview: string;
+  thumbnail?: string; // Figma thumbnail URL
   figmaFileKey: string;
   createdAt: string;
+  updatedAt?: string;
+  version: number;
   layoutData?: any; // Parsed Figma layout structure
+  tags?: string[]; // Optional organizing tags
 }
 
 export interface ColorPalette {

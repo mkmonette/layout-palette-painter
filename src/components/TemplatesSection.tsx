@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Upload, Edit2, Trash2, Play } from 'lucide-react';
+import { Plus, Upload, Edit2, Trash2, Play, MoreHorizontal, RefreshCw, Calendar, Badge as BadgeIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useToast } from '@/hooks/use-toast';
@@ -39,6 +41,27 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
     const savedTemplates = JSON.parse(localStorage.getItem('customTemplates') || '[]');
     setCustomTemplates(savedTemplates);
   }, []);
+
+  const fetchFigmaThumbnail = async (fileKey: string, token?: string) => {
+    try {
+      const headers: HeadersInit = {};
+      if (token) {
+        headers["X-Figma-Token"] = token;
+      }
+
+      const thumbnailResponse = await fetch(`https://api.figma.com/v1/files/${fileKey}/thumbnail`, {
+        headers
+      });
+
+      if (thumbnailResponse.ok) {
+        const thumbnailData = await thumbnailResponse.json();
+        return thumbnailData.thumbnail || '/placeholder.svg';
+      }
+    } catch (error) {
+      console.warn('Failed to fetch Figma thumbnail:', error);
+    }
+    return '/placeholder.svg';
+  };
 
   const handleFigmaImport = async (fileKey: string, token?: string) => {
     try {
@@ -75,20 +98,25 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
       
       // Parse design info
       const fileName = data.name || `Figma Design ${customTemplates.length + 1}`;
-      const thumbnailUrl = data.thumbnailUrl || '/placeholder.svg';
       
       // Validate that it's a design file
       if (!data.document || !data.document.children) {
         throw new Error("This doesn't appear to be a valid UI design file.");
       }
 
+      // Fetch thumbnail
+      const thumbnailUrl = await fetchFigmaThumbnail(fileKey, token);
+
       // Create new template
       const newTemplate: CustomTemplate = {
         id: `custom-${Date.now()}`,
         name: fileName,
         preview: thumbnailUrl,
+        thumbnail: thumbnailUrl,
         figmaFileKey: fileKey,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        version: 1,
+        layoutData: data.document // Store the layout data
       };
 
       // Store in localStorage (since no Supabase integration)
@@ -191,6 +219,44 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
     }
   };
 
+  const handleUpdateTemplate = async (template: CustomTemplate) => {
+    if (!isPro) {
+      setIsProUpsellModalOpen(true);
+      return;
+    }
+
+    try {
+      toast({
+        title: "Updating Template",
+        description: "Fetching latest version from Figma...",
+      });
+
+      // Re-fetch from Figma with same file key
+      await handleFigmaImport(template.figmaFileKey, figmaToken);
+      
+      // Remove old version and update with new one
+      const updatedTemplates = customTemplates.map(t => 
+        t.id === template.id 
+          ? { ...t, version: t.version + 1, updatedAt: new Date().toISOString() }
+          : t
+      );
+      
+      setCustomTemplates(updatedTemplates);
+      localStorage.setItem('customTemplates', JSON.stringify(updatedTemplates));
+
+      toast({
+        title: "Template Updated",
+        description: `"${template.name}" has been updated to the latest version.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update template from Figma.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="space-y-4">
       <Tabs defaultValue="default" className="w-full">
@@ -237,117 +303,163 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
           <div className="space-y-4">
             <h4 className="text-sm font-medium text-muted-foreground">Your Custom Templates</h4>
             
-            {customTemplates.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Upload className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-sm">No custom templates yet.</p>
-                <p className="text-xs">Import your Figma designs to get started.</p>
-              </div>
+             {customTemplates.length === 0 ? (
+               <div className="text-center py-12 px-4">
+                 <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
+                   <Upload className="h-10 w-10 text-primary/60" />
+                 </div>
+                 <h3 className="text-lg font-medium mb-2">Bring Your Designs to Life</h3>
+                 <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
+                   Import your Figma designs and watch them transform with intelligent color generation. 
+                   Your creativity, enhanced by AI.
+                 </p>
+                 {!isPro && (
+                   <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 mt-6 max-w-sm mx-auto">
+                     <p className="text-sm font-medium text-primary mb-2">✨ Pro Feature</p>
+                     <p className="text-xs text-muted-foreground">
+                       Upgrade to Pro to import unlimited Figma templates and apply them to your color generator.
+                     </p>
+                   </div>
+                 )}
+               </div>
             ) : (
               <div className="grid gap-3">
-                {customTemplates.map((template) => (
-                  <Card key={template.id} className="p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
-                          <img 
-                            src={template.preview} 
-                            alt={template.name}
-                            className="w-full h-full object-cover rounded"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                              (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                            }}
-                          />
-                          <div className="hidden text-xs text-muted-foreground">Preview</div>
-                        </div>
-                        
-                        <div className="flex-1">
-                          {editingTemplate === template.id ? (
-                            <div className="flex items-center gap-2">
-                              <Input
-                                value={editingName}
-                                onChange={(e) => setEditingName(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleRenameTemplate(template.id, editingName);
-                                  } else if (e.key === 'Escape') {
-                                    setEditingTemplate(null);
-                                    setEditingName('');
-                                  }
-                                }}
-                                className="h-8 text-sm"
-                                autoFocus
-                              />
-                              <Button
-                                size="sm"
-                                onClick={() => handleRenameTemplate(template.id, editingName)}
-                                className="h-8 px-2"
-                              >
-                                Save
-                              </Button>
-                            </div>
-                          ) : (
-                            <div>
-                              <h5 className="font-medium text-sm">{template.name}</h5>
-                              <p className="text-xs text-muted-foreground">
-                                Created {new Date(template.createdAt).toLocaleDateString()}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-1">
+                 {customTemplates.map((template) => (
+                   <Card key={template.id} className="p-4 hover:bg-muted/30 transition-colors">
+                     <div className="flex items-start gap-4">
+                       {/* Enhanced Thumbnail Preview */}
+                       <div className="relative">
+                         <div className="w-16 h-16 bg-gradient-to-br from-muted to-muted/60 rounded-lg border flex items-center justify-center overflow-hidden">
+                           <img 
+                             src={template.thumbnail || template.preview} 
+                             alt={template.name}
+                             className="w-full h-full object-cover rounded-lg"
+                             onError={(e) => {
+                               const img = e.target as HTMLImageElement;
+                               img.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=200&h=200&fit=crop&crop=center";
+                             }}
+                           />
+                         </div>
+                         {/* Version Badge */}
+                         <Badge variant="secondary" className="absolute -top-1 -right-1 text-xs px-1 py-0 h-5">
+                           v{template.version}
+                         </Badge>
+                       </div>
+                       
+                       {/* Template Info */}
+                       <div className="flex-1 min-w-0">
+                         {editingTemplate === template.id ? (
+                           <div className="flex items-center gap-2">
+                             <Input
+                               value={editingName}
+                               onChange={(e) => setEditingName(e.target.value)}
+                               onKeyDown={(e) => {
+                                 if (e.key === 'Enter') {
+                                   handleRenameTemplate(template.id, editingName);
+                                 } else if (e.key === 'Escape') {
+                                   setEditingTemplate(null);
+                                   setEditingName('');
+                                 }
+                               }}
+                               className="h-8 text-sm"
+                               autoFocus
+                             />
+                             <Button
+                               size="sm"
+                               onClick={() => handleRenameTemplate(template.id, editingName)}
+                               className="h-8 px-2"
+                             >
+                               Save
+                             </Button>
+                           </div>
+                         ) : (
+                           <div className="space-y-1">
+                             <h5 className="font-medium text-sm truncate">{template.name}</h5>
+                             <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                               <div className="flex items-center gap-1">
+                                 <Calendar className="h-3 w-3" />
+                                 <span>Created {new Date(template.createdAt).toLocaleDateString()}</span>
+                               </div>
+                               {template.updatedAt && (
+                                 <div className="flex items-center gap-1">
+                                   <RefreshCw className="h-3 w-3" />
+                                   <span>Updated {new Date(template.updatedAt).toLocaleDateString()}</span>
+                                 </div>
+                               )}
+                             </div>
+                             {/* Optional: Display tags if they exist */}
+                             {template.tags && template.tags.length > 0 && (
+                               <div className="flex gap-1 flex-wrap mt-2">
+                                 {template.tags.map((tag, index) => (
+                                   <Badge key={index} variant="outline" className="text-xs px-1 py-0 h-5">
+                                     {tag}
+                                   </Badge>
+                                 ))}
+                               </div>
+                             )}
+                           </div>
+                         )}
+                       </div>
+                       
+                       {/* Action Buttons */}
+                       <div className="flex items-center gap-1">
+                         {/* Primary Apply Button */}
                          <Tooltip>
                            <TooltipTrigger asChild>
                              <Button
                                size="sm"
-                               variant="ghost"
                                onClick={() => handleApplyCustomTemplate(template)}
                                disabled={!isPro}
-                               className={`h-8 w-8 p-0 ${!isPro ? 'opacity-50' : ''}`}
+                               className={`h-8 px-3 gap-1 ${!isPro ? 'opacity-50' : ''}`}
+                               variant={isPro ? "default" : "secondary"}
                              >
                                <Play className="h-3 w-3" />
+                               Apply
                              </Button>
                            </TooltipTrigger>
                            <TooltipContent>
-                             {isPro ? 'Apply Template' : 'Pro feature - Upgrade to apply custom templates'}
+                             {isPro ? 'Apply this template to your color generator' : 'Pro feature - Upgrade to apply custom templates'}
                            </TooltipContent>
                          </Tooltip>
-                        
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => startEditing(template)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <Edit2 className="h-3 w-3" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Rename</TooltipContent>
-                        </Tooltip>
-                        
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleDeleteTemplate(template.id)}
-                              className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Delete</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+
+                         {/* More Actions Dropdown */}
+                         <DropdownMenu>
+                           <DropdownMenuTrigger asChild>
+                             <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                               <MoreHorizontal className="h-3 w-3" />
+                             </Button>
+                           </DropdownMenuTrigger>
+                           <DropdownMenuContent align="end" className="w-48">
+                             <DropdownMenuItem onClick={() => startEditing(template)}>
+                               <Edit2 className="h-3 w-3 mr-2" />
+                               Rename Template
+                             </DropdownMenuItem>
+                             
+                             <DropdownMenuItem 
+                               onClick={() => handleUpdateTemplate(template)}
+                               disabled={!isPro}
+                             >
+                               <RefreshCw className="h-3 w-3 mr-2" />
+                               Update from Figma
+                               {!isPro && <Badge variant="secondary" className="ml-auto text-xs">Pro</Badge>}
+                             </DropdownMenuItem>
+                             
+                             <DropdownMenuSeparator />
+                             
+                             <DropdownMenuItem 
+                               onClick={() => handleDeleteTemplate(template.id)}
+                               className="text-destructive focus:text-destructive"
+                             >
+                               <Trash2 className="h-3 w-3 mr-2" />
+                               Delete Template
+                             </DropdownMenuItem>
+                           </DropdownMenuContent>
+                         </DropdownMenu>
+                       </div>
+                     </div>
+                   </Card>
+                 ))}
+               </div>
             )}
           </div>
         </TabsContent>
