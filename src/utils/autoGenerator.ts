@@ -1,6 +1,7 @@
 import { TemplateType } from '@/types/template';
 import { GeneratedPalette, AdminSettings, DEFAULT_ADMIN_SETTINGS } from '@/types/generator';
-import { generateColorScheme } from './colorGenerator';
+import { generateColorScheme, generateColorSchemeWithLocks, ColorMode, ColorPalette } from './colorGenerator';
+import { ColorSchemeType } from '@/components/ColorSchemeSelector';
 
 const TEMPLATES: { id: TemplateType; name: string }[] = [
   { id: 'modern-hero', name: 'Modern Hero' },
@@ -21,7 +22,8 @@ export const getRandomTemplate = (): { id: TemplateType; name: string } => {
   return TEMPLATES[Math.floor(Math.random() * TEMPLATES.length)];
 };
 
-export const generatePaletteBatch = (count: number): GeneratedPalette[] => {
+// Legacy function for backward compatibility
+export const generatePaletteBatchLegacy = (count: number): GeneratedPalette[] => {
   const palettes: GeneratedPalette[] = [];
   
   for (let i = 0; i < count; i++) {
@@ -41,6 +43,74 @@ export const generatePaletteBatch = (count: number): GeneratedPalette[] => {
       colors,
       templateId: template.id,
       templateName: template.name,
+    });
+  }
+  
+  return palettes;
+};
+
+export const generatePaletteBatch = (
+  count: number,
+  selectedTemplate?: TemplateType,
+  selectedScheme?: ColorSchemeType,
+  colorMode?: ColorMode,
+  basePalette?: ColorPalette,
+  selectedMoodId?: string | null
+): GeneratedPalette[] => {
+  // If legacy usage (only count provided), use legacy function
+  if (!selectedTemplate) {
+    return generatePaletteBatchLegacy(count);
+  }
+
+  // New usage with all parameters
+  const palettes: GeneratedPalette[] = [];
+  
+  // Provide defaults if not specified
+  const template = selectedTemplate || 'modern-hero';
+  const scheme = selectedScheme || 'random';
+  const mode = colorMode || 'light';
+  const palette = basePalette || {
+    brand: '#3B82F6',
+    accent: '#F59E0B',
+    "button-primary": '#3B82F6',
+    "button-text": '#FFFFFF',
+    "button-secondary": '#FFFFFF',
+    "button-secondary-text": '#10B981',
+    "text-primary": '#1F2937',
+    "text-secondary": '#6B7280',
+    "section-bg-1": '#FFFFFF',
+    "section-bg-2": '#F9FAFB',
+    "section-bg-3": '#F3F4F6',
+    border: '#E5E7EB',
+    highlight: '#10B981',
+    "input-bg": '#FFFFFF',
+    "input-text": '#1F2937'
+  };
+  
+  for (let i = 0; i < count; i++) {
+    const colorPalette = generateColorSchemeWithLocks(
+      scheme, 
+      mode, 
+      palette, 
+      new Set(), // No locked colors for auto-generation
+      false, 
+      selectedMoodId || undefined
+    );
+    
+    const colors = [
+      colorPalette.brand,
+      colorPalette.highlight,
+      colorPalette.accent,
+      colorPalette["section-bg-1"],
+      colorPalette["text-primary"],
+    ];
+    
+    palettes.push({
+      id: `${Date.now()}-${i}`,
+      timestamp: new Date().toISOString(),
+      colors,
+      templateId: template,
+      templateName: template.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()),
     });
   }
   
