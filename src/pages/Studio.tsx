@@ -714,8 +714,9 @@ const Dashboard = () => {
                     </div>
                     <ScrollArea className={`${
                       item.id === 'templates' ? 'h-32' : 
-                      item.id === 'background-settings' ? 'h-80' : 
-                      item.id === 'schemes' ? 'h-96' :
+                      item.id === 'background-settings' ? 'h-64' : 
+                      item.id === 'schemes' ? 'h-80' :
+                      item.id === 'moods' ? 'h-96' :
                       item.id === 'from-image' ? 'h-40' : 
                       'h-96'
                     }`}>
