@@ -726,7 +726,7 @@ const Dashboard = () => {
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent 
-                                className="w-[800px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
+                                className="w-64 max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
                                 side="right" 
                                 align="start"
                               >
@@ -756,7 +756,7 @@ const Dashboard = () => {
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent 
-                                className="w-[600px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
+                                className="w-64 max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
                                 side="right" 
                                 align="start"
                               >
