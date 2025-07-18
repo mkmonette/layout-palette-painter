@@ -57,11 +57,15 @@ export const generatePaletteBatch = (
   basePalette?: ColorPalette,
   selectedMoodId?: string | null
 ): GeneratedPalette[] => {
+  console.log('generatePaletteBatch called with:', { count, selectedTemplate, selectedScheme, colorMode, basePalette, selectedMoodId });
+  
   // If legacy usage (only count provided), use legacy function
   if (!selectedTemplate) {
+    console.log('Using legacy function (no template provided)');
     return generatePaletteBatchLegacy(count);
   }
 
+  console.log('Using new function with studio settings');
   // New usage with all parameters
   const palettes: GeneratedPalette[] = [];
   
@@ -88,6 +92,8 @@ export const generatePaletteBatch = (
   };
   
   for (let i = 0; i < count; i++) {
+    console.log(`Generating palette ${i + 1} with scheme: ${scheme}, mode: ${mode}, mood: ${selectedMoodId}`);
+    
     const colorPalette = generateColorSchemeWithLocks(
       scheme, 
       mode, 
@@ -96,6 +102,8 @@ export const generatePaletteBatch = (
       false, 
       selectedMoodId || undefined
     );
+    
+    console.log(`Generated palette ${i + 1}:`, colorPalette);
     
     const colors = [
       colorPalette.brand,
