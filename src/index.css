@@ -8,15 +8,15 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Light Mode - Vibrant & Creative Design System */
-    --background: 0 0% 99%;
-    --foreground: 215 25% 27%;
+    /* Light Mode - Vibrant Color Palette Generator Theme */
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 224 71% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 224 71% 4%;
 
     /* Vibrant Primary Colors */
     --primary: 263 85% 58%;  /* Rich purple */
@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --secondary-foreground: 0 0% 100%;
 
     --muted: 220 14% 96%;
-    --muted-foreground: 220 13% 46%;
+    --muted-foreground: 220 9% 46%;
 
     --accent: 188 94% 50%;  /* Turquoise accent */
     --accent-foreground: 0 0% 100%;
@@ -34,23 +34,26 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 20% 92%;
-    --input: 215 20% 92%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
     --ring: 263 85% 58%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* Enhanced Color Palette for Landing */
+    /* Enhanced Color Palette for Generator */
     --success: 142 76% 36%;
     --warning: 45 93% 47%;
     --info: 188 94% 50%;
     
-    /* Brand Gradients */
+    /* Vibrant Color Palette Brand Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(263 85% 58%), hsl(337 85% 65%));
     --gradient-secondary: linear-gradient(135deg, hsl(188 94% 50%), hsl(142 76% 36%));
+    --gradient-accent: linear-gradient(135deg, hsl(45 93% 47%), hsl(217 91% 60%));
+    --gradient-rainbow: linear-gradient(135deg, hsl(263 85% 58%), hsl(337 85% 65%), hsl(188 94% 50%), hsl(142 76% 36%), hsl(45 93% 47%), hsl(217 91% 60%));
     --gradient-hero: linear-gradient(135deg, hsl(263 85% 58%) 0%, hsl(337 85% 65%) 50%, hsl(188 94% 50%) 100%);
+    --gradient-mesh: conic-gradient(from 180deg at 50% 50%, hsl(263 85% 58%), hsl(337 85% 65%), hsl(188 94% 50%), hsl(142 76% 36%), hsl(45 93% 47%), hsl(217 91% 60%), hsl(263 85% 58%));
     
-/* Color Palette Samples */
+    /* Color Palette Samples */
     --palette-1: 263 85% 58%;  /* Purple */
     --palette-2: 337 85% 65%;  /* Pink */
     --palette-3: 188 94% 50%;  /* Turquoise */
@@ -58,11 +61,13 @@ All colors MUST be HSL.
     --palette-5: 45 93% 47%;   /* Orange */
     --palette-6: 217 91% 60%;  /* Blue */
     
-    /* Shadows and Effects */
-    --shadow-color: 263 85% 58%;
-    --shadow-soft: 0 4px 16px -4px hsl(var(--shadow-color) / 0.15);
-    --shadow-medium: 0 8px 32px -8px hsl(var(--shadow-color) / 0.2);
-    --shadow-strong: 0 16px 64px -16px hsl(var(--shadow-color) / 0.25);
+    /* Enhanced Shadows */
+    --shadow-primary: 0 10px 30px -10px hsl(263 85% 58% / 0.3);
+    --shadow-secondary: 0 10px 30px -10px hsl(337 85% 65% / 0.3);
+    --shadow-accent: 0 10px 30px -10px hsl(188 94% 50% / 0.3);
+    --shadow-elegant: 0 20px 60px -20px hsl(263 85% 58% / 0.4);
+    --shadow-glow: 0 0 40px hsl(263 85% 58% / 0.3);
+    --shadow-colorful: 0 25px 50px -12px hsl(263 85% 58% / 0.25), 0 0 0 1px hsl(263 85% 58% / 0.05);
     
     /* Animation variables */
     --animation-bounce-subtle: bounce-subtle 2s ease-in-out infinite;
@@ -82,39 +87,39 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark Mode - Pure Black Shades Only */
-    --background: 0 0% 3%;
-    --foreground: 0 0% 95%;
+    /* Dark Mode - Vibrant Colors for Dark Theme */
+    --background: 224 71% 4%;
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 95%;
+    --card: 224 71% 4%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 0 0% 15%;
+    --primary: 263 85% 58%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 90%;
+    --secondary: 337 85% 65%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 11% 65%;
 
-    --accent: 0 0% 20%;
+    --accent: 188 94% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 0% 25%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 12%;
-    --ring: 0 0% 30%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 263 85% 58%;
 
-    /* Success, Warning, Info - Black shades only */
-    --success: 0 0% 25%;
-    --warning: 0 0% 22%;
-    --info: 0 0% 20%;
+    /* Success, Warning, Info - Vibrant colors for dark */
+    --success: 142 76% 36%;
+    --warning: 45 93% 47%;
+    --info: 188 94% 50%;
 
     --sidebar-background: 0 0% 5%;
     --sidebar-foreground: 0 0% 95%;
@@ -163,15 +168,24 @@ All colors MUST be HSL.
 /* Custom Components and Utilities */
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift;
+  }
+  
+  .gradient-mesh {
+    background: var(--gradient-mesh);
+    @apply animate-gradient-shift bg-[length:400%_400%];
   }
   
   .glass-card {
-    @apply backdrop-blur-lg bg-white/20 border border-white/30;
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg;
+  }
+  
+  .glass-morphism {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
   }
   
   .floating-palette {
-    animation: float 6s ease-in-out infinite;
+    @apply animate-float;
   }
   
   .floating-palette:nth-child(2) {
@@ -183,23 +197,36 @@ All colors MUST be HSL.
   }
   
   .scroll-reveal {
-    opacity: 0;
-    transform: translateY(2rem);
-    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    @apply opacity-0 translate-y-12 transition-all duration-1000 ease-out;
   }
   
   .scroll-reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
+    @apply opacity-100 translate-y-0;
   }
   
   .hover-lift {
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-colorful;
   }
   
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-medium);
+  .palette-showcase {
+    @apply relative overflow-hidden rounded-3xl p-8 transition-all duration-500 hover:scale-105;
+  }
+  
+  .color-orb {
+    @apply w-20 h-20 rounded-full shadow-xl transition-all duration-500 hover:scale-125 hover:shadow-2xl cursor-pointer;
+  }
+  
+  .live-preview-container {
+    @apply relative overflow-hidden rounded-2xl border-2 border-primary/20 shadow-2xl bg-gradient-to-br from-white to-primary/5;
+  }
+  
+  .hero-gradient {
+    background: var(--gradient-hero);
+    @apply animate-gradient-shift bg-[length:400%_400%];
+  }
+  
+  .color-card-hover {
+    @apply transform transition-all duration-300 hover:scale-110 hover:rotate-3 hover:shadow-colorful;
   }
 }
 
