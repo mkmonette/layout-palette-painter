@@ -174,7 +174,31 @@ Return ONLY valid JSON with hex color values. Ensure text colors have sufficient
     }
 
     // Apply contrast checking and fallback corrections
-    const correctedPalette = applyContrastFallback(palette);
+    let correctedPalette = applyContrastFallback(palette);
+
+    // Additional fallback for midtone and light-midtone themes
+    if (request.themeMode === 'midtone' || request.themeMode === 'light-midtone') {
+      const textColorKeys: (keyof ColorPalette)[] = ['text-primary', 'text-secondary', 'button-text', 'button-secondary-text', 'input-text'];
+      
+      textColorKeys.forEach(textKey => {
+        const textColor = correctedPalette[textKey];
+        if (textColor) {
+          try {
+            const lightness = chroma(textColor).get('hsl.l') * 100; // Convert to 0-100 scale
+            
+            // If text color lightness is below 75, override with light fallback
+            if (lightness < 75) {
+              correctedPalette[textKey] = '#ffffff'; // Use white as fallback
+              console.log(`Midtone fallback applied: ${textKey} (${textColor}) -> #ffffff (lightness was ${lightness.toFixed(1)})`);
+            }
+          } catch (error) {
+            console.warn(`Error checking lightness for ${textKey}:`, error);
+            // Fallback to white on error
+            correctedPalette[textKey] = '#ffffff';
+          }
+        }
+      });
+    }
 
     return correctedPalette;
   } catch (error) {
@@ -201,11 +225,16 @@ const buildColorPrompt = (request: OpenAIColorRequest): string => {
     
     let prompt = `Generate a website color palette for the ${themeMode} theme.
 
-- Use lightness values between ${minL} and ${maxL} for the background and accent colors.
-- Include a background color, a text color, a primary accent, and a secondary accent.
-- The text color must be clearly visible and have strong contrast against the background.
-- Avoid generating text colors that are too similar to the background — no low-contrast gray-on-gray or similar-tone combinations.${themeMode === 'midtone' ? '\n- IMPORTANT: Generate light-colored text (white or near-white with lightness 85-95) to ensure readability on midtone backgrounds.' : ''}
-- Return all values in both HEX and HSL formats.`;
+- Use lightness values between ${minL} and ${maxL} for background and accent colors.
+- Include:
+  - A background color
+  - A **light-colored text** (e.g., #ffffff or near-white) to ensure readability
+  - A primary accent color
+  - A secondary accent color
+
+${themeMode === 'midtone' || themeMode === 'light-midtone' ? '- For theme modes \'midtone\' and \'light-midtone\', avoid using dark or mid-tone text colors.' : ''}
+- Ensure there is a strong contrast between background and text.
+- Return all color values in both HEX and HSL.`;
 
     // Add additional characteristics if provided
     if (theme || backgroundStyle || mood || description) {
