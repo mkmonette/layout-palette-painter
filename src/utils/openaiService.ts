@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import chroma from 'chroma-js';
 import { ColorPalette } from './colorGenerator';
 import { logTokenUsage } from './tokenUsageLogger';
 
@@ -24,6 +25,54 @@ export const initializeOpenAI = (apiKey: string) => {
     apiKey,
     dangerouslyAllowBrowser: true
   });
+};
+
+// Contrast checking and fallback correction function
+const applyContrastFallback = (palette: ColorPalette): ColorPalette => {
+  const correctedPalette = { ...palette };
+
+  // Define contrast pairs to check
+  const contrastPairs: Array<{
+    bgKey: keyof ColorPalette;
+    textKey: keyof ColorPalette;
+  }> = [
+    { bgKey: 'section-bg-1', textKey: 'text-primary' },
+    { bgKey: 'section-bg-2', textKey: 'text-secondary' },
+    { bgKey: 'section-bg-3', textKey: 'text-primary' },
+    { bgKey: 'button-primary', textKey: 'button-text' },
+    { bgKey: 'button-secondary', textKey: 'button-secondary-text' },
+    { bgKey: 'input-bg', textKey: 'input-text' },
+  ];
+
+  contrastPairs.forEach(({ bgKey, textKey }) => {
+    const bgColor = correctedPalette[bgKey];
+    const textColor = correctedPalette[textKey];
+
+    if (bgColor && textColor) {
+      try {
+        // Calculate contrast ratio using chroma.js
+        const contrastRatio = chroma.contrast(bgColor, textColor);
+        
+        // If contrast is below 4.5, apply fallback
+        if (contrastRatio < 4.5) {
+          const bgLightness = chroma(bgColor).get('hsl.l') * 100; // Convert to 0-100 scale
+          
+          // Apply fallback text color based on background lightness
+          if (bgLightness > 60) {
+            correctedPalette[textKey] = '#111111'; // Dark text for light backgrounds
+          } else {
+            correctedPalette[textKey] = '#f2f2f2'; // Light text for dark backgrounds
+          }
+
+          console.log(`Contrast correction applied: ${bgKey} (${bgColor}) vs ${textKey} (${textColor}) - ratio: ${contrastRatio.toFixed(2)} -> new text: ${correctedPalette[textKey]}`);
+        }
+      } catch (error) {
+        console.warn(`Error checking contrast for ${bgKey} vs ${textKey}:`, error);
+      }
+    }
+  });
+
+  return correctedPalette;
 };
 
 export const generateAIColorPalette = async (request: OpenAIColorRequest): Promise<ColorPalette> => {
@@ -124,7 +173,10 @@ Return ONLY valid JSON with hex color values. Ensure text colors have sufficient
       }
     }
 
-    return palette;
+    // Apply contrast checking and fallback corrections
+    const correctedPalette = applyContrastFallback(palette);
+
+    return correctedPalette;
   } catch (error) {
     console.error('OpenAI API Error:', error);
     throw new Error('Failed to generate AI color palette. Please try again.');
