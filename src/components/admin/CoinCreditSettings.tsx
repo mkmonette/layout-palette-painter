@@ -18,6 +18,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import CoinPackagesTable from './CoinPackagesTable';
 
 interface CoinPackage {
   id: string;
@@ -123,6 +124,9 @@ const CoinCreditSettings = () => {
           </p>
         </div>
       </div>
+
+      {/* Coin Packages Table Overview */}
+      <CoinPackagesTable />
 
       {/* AI Feature Costs */}
       <Card>
