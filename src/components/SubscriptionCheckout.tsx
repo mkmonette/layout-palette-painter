@@ -185,16 +185,18 @@ const SubscriptionCheckout = () => {
                 
                 <div className="pt-4">
                   <div className="text-4xl font-bold">
-                    {plan.price === 0 ? 'Free' : `$${totalPrice}`}
+                    {plan.price === 0 ? 'Free' : `$${totalPrice.toFixed(2)}`}
                   </div>
                   {plan.price > 0 && (
                     <div className="text-sm text-muted-foreground">
                       per {plan.interval}
-                      {selectedCoinOption && (
-                        <span className="block text-xs">
-                          Plan: ${plan.price} + Coins: ${selectedCoinOption.price}
-                        </span>
-                      )}
+                    </div>
+                  )}
+                  {selectedCoinOption && (
+                    <div className="mt-2 p-2 bg-blue-50 rounded-md border border-blue-200">
+                      <div className="text-sm font-semibold text-blue-700">
+                        Plan: ${plan.price.toFixed(2)} + Coins: ${selectedCoinOption.price.toFixed(2)}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -231,7 +233,7 @@ const SubscriptionCheckout = () => {
                           key={`${option.coins}-${option.price}`} 
                           value={`${option.coins}-${option.price}`}
                         >
-                          {option.coins} coins - ${option.price}
+                          {option.coins} coins - ${option.price.toFixed(2)}
                           {option.bonus && ` (+${option.bonus} bonus)`}
                         </SelectItem>
                       ))}
