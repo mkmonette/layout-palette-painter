@@ -604,6 +604,8 @@ export const generateColorScheme = (scheme: ColorSchemeType, mode: ColorMode = '
     mode = mode ? 'dark' : 'light';
   }
   
+  console.log(`🎨 Generating ${scheme} scheme in ${mode} mode`);
+  
   if (scheme === 'random') {
     // Enhanced random generation with more variety
     const randomChoice = Math.random();
@@ -620,21 +622,39 @@ export const generateColorScheme = (scheme: ColorSchemeType, mode: ColorMode = '
 
   // Add more variation to base hue generation
   const baseHue = Math.floor(Math.random() * 360);
+  console.log(`🌈 Base hue: ${baseHue}°`);
+  
+  let result: ColorPalette;
   
   switch (scheme) {
     case 'monochromatic':
-      return generateMonochromaticScheme(baseHue, mode);
+      result = generateMonochromaticScheme(baseHue, mode);
+      break;
     case 'analogous':
-      return generateAnalogousScheme(baseHue, mode);
+      result = generateAnalogousScheme(baseHue, mode);
+      break;
     case 'complementary':
-      return generateComplementaryScheme(baseHue, mode);
+      result = generateComplementaryScheme(baseHue, mode);
+      break;
     case 'triadic':
-      return generateTriadicScheme(baseHue, mode);
+      result = generateTriadicScheme(baseHue, mode);
+      break;
     case 'tetradic':
-      return generateTetradicScheme(baseHue, mode);
+      result = generateTetradicScheme(baseHue, mode);
+      break;
     default:
-      return generateColorPalette(mode);
+      result = generateColorPalette(mode);
   }
+  
+  console.log(`🎨 Generated ${scheme} palette:`, {
+    brand: result.brand,
+    accent: result.accent,
+    'button-primary': result['button-primary'],
+    'section-bg-2': result['section-bg-2'],
+    'section-bg-3': result['section-bg-3']
+  });
+  
+  return result;
 };
 
 export const generateColorSchemeWithLocks = (
