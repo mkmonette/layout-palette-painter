@@ -83,10 +83,10 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     category: 'access'
   },
   {
-    id: 'dark_mode',
-    name: 'Dark Mode',
-    type: 'boolean',
-    description: 'Access to dark theme interface',
+    id: 'theme_tones',
+    name: 'Theme Tones',
+    type: 'number',
+    description: 'Number of available theme tones (light, midtone, dark variations)',
     category: 'access'
   },
   {

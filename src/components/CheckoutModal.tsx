@@ -126,7 +126,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       'custom_color_schemes',
       'color_mood_options',
       'color_presets',
-      'dark_mode',
+      'theme_tones',
       'decorative_settings',
       'auto_generator',
       'branded_reports'
@@ -149,6 +149,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           featureName = 'Color Presets';
         } else if (key === 'decorative_settings') {
           featureName = 'Decorative Settings';
+        } else if (key === 'theme_tones') {
+          featureName = 'Theme Tones';
         }
         
         if (typeof value === 'number') {

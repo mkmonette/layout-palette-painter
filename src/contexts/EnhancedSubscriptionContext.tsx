@@ -47,7 +47,7 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       custom_color_schemes: true,
       color_mood_options: true,
       color_presets: false,
-      dark_mode: true,
+      theme_tones: 3, // Light, light-midtone, midtone
       decorative_settings: false,
       auto_generator: false,
       branded_reports: false
@@ -71,7 +71,7 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       custom_color_schemes: true,
       color_mood_options: true,
       color_presets: true,
-      dark_mode: true,
+      theme_tones: 5, // All theme tones including dark modes
       decorative_settings: true,
       auto_generator: true,
       branded_reports: true
@@ -95,7 +95,7 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       custom_color_schemes: true,
       color_mood_options: true,
       color_presets: true,
-      dark_mode: true,
+      theme_tones: 5, // All theme tones including dark modes
       decorative_settings: true,
       auto_generator: true,
       branded_reports: true
