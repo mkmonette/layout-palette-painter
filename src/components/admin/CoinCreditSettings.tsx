@@ -13,20 +13,25 @@ import {
   Save,
   RotateCcw,
   Sparkles,
-  Bot
+  Bot,
+  Plus,
+  Trash2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+interface CoinPackage {
+  id: string;
+  coins: number;
+  price: number;
+  bonus?: number;
+}
 
 interface CoinSettings {
   aiColorGeneration: number;
   freeSubscriptionCost: number;
   proSubscriptionCost: number;
   enterpriseSubscriptionCost: number;
-  coinPurchasePackages: {
-    small: { coins: number; price: number };
-    medium: { coins: number; price: number };
-    large: { coins: number; price: number };
-  };
+  coinPackages: CoinPackage[];
 }
 
 const CoinCreditSettings = () => {
@@ -37,18 +42,19 @@ const CoinCreditSettings = () => {
     freeSubscriptionCost: 0,
     proSubscriptionCost: 100,
     enterpriseSubscriptionCost: 300,
-    coinPurchasePackages: {
-      small: { coins: 50, price: 4.99 },
-      medium: { coins: 150, price: 12.99 },
-      large: { coins: 300, price: 24.99 }
-    }
+    coinPackages: [
+      { id: '1', coins: 100, price: 4 },
+      { id: '2', coins: 200, price: 8 },
+      { id: '3', coins: 500, price: 18, bonus: 50 },
+      { id: '4', coins: 1000, price: 35, bonus: 150 },
+      { id: '5', coins: 2000, price: 65, bonus: 400 }
+    ]
   });
 
   const [tempSettings, setTempSettings] = useState<CoinSettings>(settings);
 
   const handleSave = () => {
     setSettings(tempSettings);
-    // In a real app, this would save to the backend
     localStorage.setItem('coin_credit_settings', JSON.stringify(tempSettings));
     toast({
       title: "Settings Saved",
@@ -77,6 +83,34 @@ const CoinCreditSettings = () => {
     setTempSettings(newSettings);
   };
 
+  const addCoinPackage = () => {
+    const newPackage: CoinPackage = {
+      id: Date.now().toString(),
+      coins: 100,
+      price: 4
+    };
+    setTempSettings({
+      ...tempSettings,
+      coinPackages: [...tempSettings.coinPackages, newPackage]
+    });
+  };
+
+  const removeCoinPackage = (id: string) => {
+    setTempSettings({
+      ...tempSettings,
+      coinPackages: tempSettings.coinPackages.filter(pkg => pkg.id !== id)
+    });
+  };
+
+  const updateCoinPackage = (id: string, field: keyof CoinPackage, value: number) => {
+    setTempSettings({
+      ...tempSettings,
+      coinPackages: tempSettings.coinPackages.map(pkg => 
+        pkg.id === id ? { ...pkg, [field]: value } : pkg
+      )
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -85,7 +119,7 @@ const CoinCreditSettings = () => {
         <div>
           <h2 className="text-2xl font-bold">Coin Credit System</h2>
           <p className="text-muted-foreground">
-            Configure coin costs for subscriptions and AI features. Users purchase coins first, then spend them on plans and features.
+            Configure coin costs for subscriptions and AI features. Create unlimited pricing options for coin packages.
           </p>
         </div>
       </div>
@@ -185,7 +219,7 @@ const CoinCreditSettings = () => {
         </CardContent>
       </Card>
 
-      {/* Coin Purchase Packages */}
+      {/* Flexible Coin Purchase Packages */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -193,89 +227,75 @@ const CoinCreditSettings = () => {
             Coin Purchase Packages
           </CardTitle>
           <CardDescription>
-            Configure coin packages that users can purchase directly
+            Create unlimited coin packages with custom quantities and pricing
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Small Package */}
-            <div className="space-y-3 p-4 border rounded-lg">
-              <h4 className="font-medium">Small Package</h4>
-              <div className="space-y-2">
-                <Label htmlFor="small-coins">Coins</Label>
-                <Input
-                  id="small-coins"
-                  type="number"
-                  min="1"
-                  value={tempSettings.coinPurchasePackages.small.coins}
-                  onChange={(e) => updateSetting('coinPurchasePackages.small.coins', parseInt(e.target.value) || 1)}
-                />
+          <div className="space-y-4">
+            {tempSettings.coinPackages.map((pkg, index) => (
+              <div key={pkg.id} className="p-4 border rounded-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">Package {index + 1}</h4>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => removeCoinPackage(pkg.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>Coins</Label>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={pkg.coins}
+                      onChange={(e) => updateCoinPackage(pkg.id, 'coins', parseInt(e.target.value) || 1)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Price ($)</Label>
+                    <Input
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      value={pkg.price}
+                      onChange={(e) => updateCoinPackage(pkg.id, 'price', parseFloat(e.target.value) || 0.01)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Bonus Coins (Optional)</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={pkg.bonus || ''}
+                      placeholder="0"
+                      onChange={(e) => updateCoinPackage(pkg.id, 'bonus', parseInt(e.target.value) || 0)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="text-sm text-muted-foreground">
+                  Total: {pkg.coins + (pkg.bonus || 0)} coins for ${pkg.price.toFixed(2)}
+                  {pkg.bonus && (
+                    <span className="text-green-600 ml-2">
+                      (includes {pkg.bonus} bonus coins)
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="small-price">Price ($)</Label>
-                <Input
-                  id="small-price"
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  value={tempSettings.coinPurchasePackages.small.price}
-                  onChange={(e) => updateSetting('coinPurchasePackages.small.price', parseFloat(e.target.value) || 0.01)}
-                />
-              </div>
-            </div>
-
-            {/* Medium Package */}
-            <div className="space-y-3 p-4 border rounded-lg">
-              <h4 className="font-medium">Medium Package</h4>
-              <div className="space-y-2">
-                <Label htmlFor="medium-coins">Coins</Label>
-                <Input
-                  id="medium-coins"
-                  type="number"
-                  min="1"
-                  value={tempSettings.coinPurchasePackages.medium.coins}
-                  onChange={(e) => updateSetting('coinPurchasePackages.medium.coins', parseInt(e.target.value) || 1)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="medium-price">Price ($)</Label>
-                <Input
-                  id="medium-price"
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  value={tempSettings.coinPurchasePackages.medium.price}
-                  onChange={(e) => updateSetting('coinPurchasePackages.medium.price', parseFloat(e.target.value) || 0.01)}
-                />
-              </div>
-            </div>
-
-            {/* Large Package */}
-            <div className="space-y-3 p-4 border rounded-lg">
-              <h4 className="font-medium">Large Package</h4>
-              <div className="space-y-2">
-                <Label htmlFor="large-coins">Coins</Label>
-                <Input
-                  id="large-coins"
-                  type="number"
-                  min="1"
-                  value={tempSettings.coinPurchasePackages.large.coins}
-                  onChange={(e) => updateSetting('coinPurchasePackages.large.coins', parseInt(e.target.value) || 1)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="large-price">Price ($)</Label>
-                <Input
-                  id="large-price"
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  value={tempSettings.coinPurchasePackages.large.price}
-                  onChange={(e) => updateSetting('coinPurchasePackages.large.price', parseFloat(e.target.value) || 0.01)}
-                />
-              </div>
-            </div>
+            ))}
           </div>
+          
+          <Button onClick={addCoinPackage} variant="outline" className="w-full">
+            <Plus className="h-4 w-4 mr-2" />
+            Add New Package
+          </Button>
         </CardContent>
       </Card>
 
@@ -321,6 +341,26 @@ const CoinCreditSettings = () => {
             <div>
               <div className="font-medium">Enterprise Plan Cost</div>
               <div className="text-muted-foreground">{settings.enterpriseSubscriptionCost} coins/month</div>
+            </div>
+          </div>
+          
+          <Separator />
+          
+          <div>
+            <div className="font-medium mb-2">Coin Packages</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
+              {settings.coinPackages.map((pkg, index) => (
+                <div key={pkg.id} className="p-2 bg-muted rounded">
+                  <div className="font-medium">
+                    {pkg.coins + (pkg.bonus || 0)} coins - ${pkg.price.toFixed(2)}
+                  </div>
+                  {pkg.bonus && (
+                    <div className="text-green-600 text-xs">
+                      +{pkg.bonus} bonus
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </CardContent>

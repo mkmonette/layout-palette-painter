@@ -8,6 +8,13 @@ import { useEnhancedSubscription } from '@/contexts/EnhancedSubscriptionContext'
 import CheckoutModal from './CheckoutModal';
 import { SubscriptionPlan } from '@/types/subscription';
 
+interface CoinPackage {
+  id: string;
+  coins: number;
+  price: number;
+  bonus?: number;
+}
+
 interface CoinOption {
   coins: number;
   price: number;
@@ -27,15 +34,39 @@ const SubscriptionCheckout = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [selectedCoinOptions, setSelectedCoinOptions] = useState<{[planId: string]: CoinOption | null}>({});
+  const [coinPackages, setCoinPackages] = useState<CoinPackage[]>([]);
   
-  // Coin credit options with pricing similar to requested format
-  const coinOptions: CoinOption[] = [
-    { coins: 100, price: 4 },
-    { coins: 200, price: 8 },
-    { coins: 500, price: 18, bonus: 50 }, // 10% bonus
-    { coins: 1000, price: 35, bonus: 150 }, // 15% bonus
-    { coins: 2000, price: 65, bonus: 400 }, // 20% bonus
-  ];
+  // Load coin packages from admin settings
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('coin_credit_settings');
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings);
+        if (parsed.coinPackages) {
+          setCoinPackages(parsed.coinPackages);
+        }
+      } catch (error) {
+        console.error('Error loading coin settings:', error);
+        // Fallback to default packages
+        setCoinPackages([
+          { id: '1', coins: 100, price: 4 },
+          { id: '2', coins: 200, price: 8 },
+          { id: '3', coins: 500, price: 18, bonus: 50 },
+          { id: '4', coins: 1000, price: 35, bonus: 150 },
+          { id: '5', coins: 2000, price: 65, bonus: 400 }
+        ]);
+      }
+    } else {
+      // Default packages if no settings found
+      setCoinPackages([
+        { id: '1', coins: 100, price: 4 },
+        { id: '2', coins: 200, price: 8 },
+        { id: '3', coins: 500, price: 18, bonus: 50 },
+        { id: '4', coins: 1000, price: 35, bonus: 150 },
+        { id: '5', coins: 2000, price: 65, bonus: 400 }
+      ]);
+    }
+  }, []);
 
   const handlePlanSelect = (plan: SubscriptionPlan) => {
     setSelectedPlan(plan);
@@ -46,7 +77,7 @@ const SubscriptionCheckout = () => {
     if (value === 'none') {
       setSelectedCoinOptions(prev => ({ ...prev, [planId]: null }));
     } else {
-      const option = coinOptions.find(opt => `${opt.coins}-${opt.price}` === value);
+      const option = coinPackages.find(opt => `${opt.coins}-${opt.price}` === value);
       if (option) {
         setSelectedCoinOptions(prev => ({ ...prev, [planId]: option }));
       }
@@ -228,7 +259,7 @@ const SubscriptionCheckout = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">No coins</SelectItem>
-                      {coinOptions.map((option) => (
+                      {coinPackages.map((option) => (
                         <SelectItem 
                           key={`${option.coins}-${option.price}`} 
                           value={`${option.coins}-${option.price}`}
