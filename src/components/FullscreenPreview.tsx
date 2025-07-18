@@ -365,7 +365,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         </DialogContent>
       </Dialog>
 
-      {/* Admin Presets Modal */}
+      {/* Color Presets Modal */}
       <AdminPresetsModal isOpen={activeModal === 'admin-presets'} onClose={closeModal} onPresetSelect={palette => {
       onColorChange(palette);
       closeModal();

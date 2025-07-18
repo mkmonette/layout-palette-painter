@@ -541,7 +541,7 @@ const Dashboard = () => {
   }, {
     id: 'admin-presets' as const,
     icon: Shield,
-    label: 'Admin Presets',
+    label: 'Color Presets',
     available: true
   }, {
     id: 'saved-palettes' as const,
@@ -797,7 +797,7 @@ const Dashboard = () => {
                      Browse and apply professionally curated color palettes.
                    </p>
                    <Button onClick={() => setActiveModal('admin-presets')} className="w-full px-2 py-1 rounded-sm">
-                     Browse Admin Presets
+                     Browse Color Presets
                    </Button>
                 </div>}
               {activeSection === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}

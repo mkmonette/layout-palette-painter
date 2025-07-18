@@ -235,7 +235,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
           {presets.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Palette className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No Admin Presets Available</p>
+              <p className="text-lg font-medium">No Color Presets Available</p>
               <p className="text-sm">
                 No color presets have been created by administrators yet.
               </p>

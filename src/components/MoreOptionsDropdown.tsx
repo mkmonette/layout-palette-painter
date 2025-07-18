@@ -83,13 +83,13 @@ const MoreOptionsDropdown: React.FC<MoreOptionsDropdownProps> = ({
             <span>Colors</span>
           </button>
           
-          {/* Admin Presets */}
+          {/* Color Presets */}
           <button
             onClick={() => handleItemClick(onAdminPresetsClick)}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
           >
             <Palette className="h-4 w-4" />
-            <span>Admin Presets</span>
+            <span>Color Presets</span>
           </button>
           
           <Separator />
