@@ -704,12 +704,15 @@ const Dashboard = () => {
                     </Button>
                   </PopoverTrigger>
                    <PopoverContent 
-                     className={`p-4 ${item.id === 'templates' ? 'w-48 max-h-[calc(100vh-40px)] overflow-y-auto' : item.id === 'schemes' || item.id === 'moods' ? 'w-64 max-h-[calc(100vh-40px)] overflow-y-auto' : 'w-64'}`} 
+                     className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' || item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} 
                      side="right" 
                      align="start"
                    >
-                    <div className="space-y-3">
+                    <div className="p-4 border-b border-border">
                       <h3 className="font-medium text-xs">{item.label}</h3>
+                    </div>
+                    <ScrollArea className="max-h-[calc(100vh-120px)]">
+                      <div className="p-4 pt-3">
                       
                       <div className="space-y-2">
                         {item.id === 'templates' && 
@@ -826,7 +829,8 @@ const Dashboard = () => {
                             <TestPlanSwitcher />
                           </div>}
                       </div>
-                    </div>
+                      </div>
+                    </ScrollArea>
                   </PopoverContent>
                 </Popover>;
           })}
