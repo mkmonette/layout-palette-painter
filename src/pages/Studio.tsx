@@ -904,11 +904,11 @@ const Dashboard = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 text-white hover:bg-white/20 rounded-sm">
-                  {colorMode === 'light' ? <Sun className="h-4 w-4 mr-3" /> : 
-                   colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 mr-3" /> :
-                   colorMode === 'midtone' ? <Sunset className="h-4 w-4 mr-3" /> : 
-                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 mr-3" style={{ filter: 'brightness(0.7)' }} /> :
-                   <Moon className="h-4 w-4 mr-3" />}
+                  {colorMode === 'light' ? <Sun className="h-4 w-4 mr-2" /> : 
+                   colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 mr-2" /> :
+                   colorMode === 'midtone' ? <Sunset className="h-4 w-4 mr-2" /> : 
+                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 mr-2" style={{ filter: 'brightness(0.7)' }} /> :
+                   <Moon className="h-4 w-4 mr-2" />}
                   <span className="text-sm text-white">Theme Mode</span>
                 </Button>
               </PopoverTrigger>
@@ -970,7 +970,7 @@ const Dashboard = () => {
                           handleModeChange(mode);
                         }}
                       >
-                        <Icon className="h-4 w-4 mr-3 flex-shrink-0" style={mode === 'midtone-dark' ? { filter: 'brightness(0.7)' } : {}} />
+                        <Icon className="h-4 w-4 mr-2 flex-shrink-0" style={mode === 'midtone-dark' ? { filter: 'brightness(0.7)' } : {}} />
                         <div className="text-left">
                            <div className="font-medium text-xs">{label}</div>
                            <div className="text-[11px] text-muted-foreground">{description}</div>
@@ -1089,19 +1089,19 @@ const Dashboard = () => {
               <div className="sm:hidden bg-background border-b border-border p-4 space-y-2">
                 <div className="grid grid-cols-2 gap-2">
                    <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-[11px] px-2 py-1 rounded-sm">
-                     {isGenerating ? <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1" />}
+                     {isGenerating ? <RefreshCw className="h-3 w-3 mr-2 animate-spin" /> : <Wand2 className="h-3 w-3 mr-2" />}
                      Generate
                    </Button>
                    <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-[11px] px-2 py-1 rounded-sm">
-                     <Download className="h-3 w-3 mr-1" />
+                     <Download className="h-3 w-3 mr-2" />
                      Export PDF
                    </Button>
                    <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-[11px] px-2 py-1 rounded-sm">
-                     <Save className="h-3 w-3 mr-1" />
+                     <Save className="h-3 w-3 mr-2" />
                      Save
                    </Button>
                    <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="bg-amber-500 hover:bg-amber-400 text-[11px] px-2 py-1 rounded-sm">
-                     <Maximize className="h-3 w-3 mr-1" />
+                     <Maximize className="h-3 w-3 mr-2" />
                      Fullscreen
                    </Button>
                 </div>
