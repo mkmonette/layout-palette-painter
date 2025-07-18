@@ -41,12 +41,14 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
     features: {
       pro_templates: false,
       saved_palettes: 3,
+      ai_generations_per_month: 5,
       downloads_per_day: 3,
-      branded_reports: false,
-      auto_generator: false,
+      image_website_generations_per_month: 2,
       custom_color_schemes: true,
       color_mood_options: true,
-      template_dark_mode: true
+      dark_mode: true,
+      auto_generator: false,
+      branded_reports: false
     },
     status: 'active',
     subscribers: 1250,
@@ -58,17 +60,18 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
     price: 9.99,
     interval: 'month',
     description: 'Advanced features for professionals',
-      features: {
-        pro_templates: true,
-        saved_palettes: 50,
-        downloads_per_day: -1, // -1 means unlimited
-        branded_reports: true,
-        auto_generator: true,
-        custom_color_schemes: true,
-        color_mood_options: true,
-        template_dark_mode: true,
-        ai_generations_per_month: 100
-      },
+    features: {
+      pro_templates: true,
+      saved_palettes: 50,
+      ai_generations_per_month: 100,
+      downloads_per_day: -1, // -1 means unlimited
+      image_website_generations_per_month: 50,
+      custom_color_schemes: true,
+      color_mood_options: true,
+      dark_mode: true,
+      auto_generator: true,
+      branded_reports: true
+    },
     status: 'active',
     subscribers: 567,
     revenue: 5664.33
@@ -79,17 +82,18 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
     price: 29.99,
     interval: 'month',
     description: 'Everything in Pro plus priority support',
-      features: {
-        pro_templates: true,
-        saved_palettes: -1, // unlimited
-        downloads_per_day: -1, // unlimited
-        branded_reports: true,
-        auto_generator: true,
-        custom_color_schemes: true,
-        color_mood_options: true,
-        template_dark_mode: true,
-        ai_generations_per_month: 100
-      },
+    features: {
+      pro_templates: true,
+      saved_palettes: -1, // unlimited
+      ai_generations_per_month: -1, // unlimited
+      downloads_per_day: -1, // unlimited
+      image_website_generations_per_month: -1, // unlimited
+      custom_color_schemes: true,
+      color_mood_options: true,
+      dark_mode: true,
+      auto_generator: true,
+      branded_reports: true
+    },
     status: 'active',
     subscribers: 89,
     revenue: 2669.11
