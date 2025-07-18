@@ -370,30 +370,30 @@ const InlineColorMoods: React.FC<InlineColorMoodsProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Search and Controls */}
       <div className="flex gap-2 items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
           <Input
             placeholder="Search moods..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-7 h-7 text-xs"
           />
         </div>
-        <Button onClick={handleRandomMood} variant="outline" className="flex items-center gap-2">
-          <Shuffle className="h-4 w-4" />
-          Random
+        <Button onClick={handleRandomMood} variant="outline" size="sm" className="h-7 px-2 text-xs">
+          <Shuffle className="h-3 w-3" />
         </Button>
       </div>
 
       {/* Category Filter */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-1 flex-wrap">
         <Button
           variant={selectedCategory === null ? "default" : "outline"}
           size="sm"
           onClick={() => setSelectedCategory(null)}
+          className="h-6 px-2 text-xs"
         >
           All
         </Button>
@@ -403,55 +403,60 @@ const InlineColorMoods: React.FC<InlineColorMoodsProps> = ({
             variant={selectedCategory === category ? "default" : "outline"}
             size="sm"
             onClick={() => setSelectedCategory(category)}
+            className="h-6 px-2 text-xs"
           >
-            {category}
+            {category.split(' ')[0]}
           </Button>
         ))}
       </div>
 
-      {/* Mood Grid - 1 Column Layout */}
-      <div className="space-y-3">
+      {/* Mood Grid - Compact Layout */}
+      <div className="space-y-2">
         {filteredMoods.map(mood => (
           <Card
             key={mood.id}
-            className={`p-4 cursor-pointer transition-all duration-200 hover:shadow-md ${
-              selectedMoodId === mood.id ? 'ring-2 ring-primary border-primary' : 'hover:border-primary/50'
+            className={`p-2 cursor-pointer transition-all duration-200 hover:shadow-sm ${
+              selectedMoodId === mood.id ? 'ring-1 ring-primary border-primary' : 'hover:border-primary/50'
             }`}
             onClick={() => handleMoodSelect(mood)}
           >
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{mood.icon}</span>
-                <div>
-                  <h3 className="font-semibold text-sm">{mood.name}</h3>
-                  <Badge variant="outline" className="text-xs">
-                    {mood.category}
-                  </Badge>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <span className="text-sm">{mood.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-xs truncate">{mood.name}</h3>
+                  <div className="flex gap-1 mt-1">
+                    {[mood.palette.brand, mood.palette["button-primary"], mood.palette.accent].map((color, index) => (
+                      <div
+                        key={index}
+                        className="w-2 h-2 rounded-full border border-gray-200"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFavorite(mood.id);
-                }}
-                className="h-6 w-6 p-0"
-              >
-                {favorites.has(mood.id) ? (
-                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                ) : (
-                  <StarOff className="h-3 w-3" />
+              <div className="flex items-center gap-1">
+                {selectedMoodId === mood.id && (
+                  <div className="text-xs text-primary font-medium">✓</div>
                 )}
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mb-2">{mood.description}</p>
-            {renderColorSwatches(mood.palette)}
-            {selectedMoodId === mood.id && (
-              <div className="mt-2 text-xs text-primary font-medium">
-                ✓ Currently Applied
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(mood.id);
+                  }}
+                  className="h-4 w-4 p-0"
+                >
+                  {favorites.has(mood.id) ? (
+                    <Star className="h-2 w-2 fill-yellow-400 text-yellow-400" />
+                  ) : (
+                    <StarOff className="h-2 w-2" />
+                  )}
+                </Button>
               </div>
-            )}
+            </div>
           </Card>
         ))}
       </div>

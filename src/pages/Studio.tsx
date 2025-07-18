@@ -704,7 +704,7 @@ const Dashboard = () => {
                     </Button>
                   </PopoverTrigger>
                    <PopoverContent 
-                     className={`p-4 ${item.id === 'templates' ? 'w-48 max-h-[calc(100vh-40px)] overflow-y-auto' : item.id === 'schemes' ? 'w-64 max-h-[calc(100vh-40px)] overflow-y-auto' : 'w-64'}`} 
+                     className={`p-4 ${item.id === 'templates' ? 'w-48 max-h-[calc(100vh-40px)] overflow-y-auto' : item.id === 'schemes' || item.id === 'moods' ? 'w-64 max-h-[calc(100vh-40px)] overflow-y-auto' : 'w-64'}`} 
                      side="right" 
                      align="start"
                    >
