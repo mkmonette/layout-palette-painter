@@ -151,15 +151,18 @@ const SavedPalettesContent: React.FC<SavedPalettesContentProps> = ({
         <h4 className="font-medium">Save Current Palette</h4>
         
         {/* Current Palette Preview */}
-        <div className="flex items-center gap-3">
-          {Object.entries(currentPalette).map(([key, color]) => (
-            <div key={key} className="flex items-center gap-1">
-              <div 
-                className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
-                style={{ backgroundColor: color }}
-              />
-            </div>
+        <div className="flex flex-wrap items-center gap-2 max-w-full overflow-hidden">
+          {Object.entries(currentPalette).slice(0, 8).map(([key, color]) => (
+            <div 
+              key={key}
+              className="w-5 h-5 rounded-full border border-white shadow-sm flex-shrink-0"
+              style={{ backgroundColor: color }}
+              title={`${key}: ${color}`}
+            />
           ))}
+          {Object.entries(currentPalette).length > 8 && (
+            <span className="text-xs text-muted-foreground">+{Object.entries(currentPalette).length - 8}</span>
+          )}
         </div>
 
         {showSaveForm ? (
