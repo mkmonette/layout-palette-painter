@@ -283,11 +283,151 @@ const EcommerceMarketplaceTemplate: React.FC<EcommerceMarketplaceTemplateProps> 
         </div>
       </section>
 
-      <EcommerceFooter 
-        colorPalette={colorPalette} 
-        brandName="MarketHub" 
-        theme="marketplace" 
-      />
+      {/* Custom Marketplace Footer */}
+      <footer className="pt-16 pb-8" style={{ backgroundColor: colorPalette['section-bg-2'] }}>
+        <div className="max-w-7xl mx-auto px-6">
+          {/* Marketplace Header */}
+          <div className="text-center mb-12">
+            <h3 className="text-4xl font-bold mb-2" style={{ color: colorPalette['text-primary'] }}>
+              MarketHub
+            </h3>
+            <p className="text-lg" style={{ color: colorPalette['text-secondary'] }}>
+              Connect • Discover • Trade
+            </p>
+          </div>
+
+          {/* Five Column Marketplace Layout */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
+            {/* For Buyers */}
+            <div>
+              <h4 className="font-semibold mb-4 pb-2 border-b" style={{ color: colorPalette['text-primary'], borderColor: colorPalette.accent }}>
+                For Buyers
+              </h4>
+              <ul className="space-y-2 text-sm">
+                {['Browse Products', 'Price Comparison', 'Buyer Protection', 'Payment Options'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="flex items-center hover:translate-x-1 transition-transform" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      <span className="w-1 h-1 rounded-full mr-2" style={{ backgroundColor: colorPalette.accent }}></span>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* For Sellers */}
+            <div>
+              <h4 className="font-semibold mb-4 pb-2 border-b" style={{ color: colorPalette['text-primary'], borderColor: colorPalette.accent }}>
+                For Sellers
+              </h4>
+              <ul className="space-y-2 text-sm">
+                {['Start Selling', 'Seller Tools', 'Analytics', 'Marketplace Fees'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="flex items-center hover:translate-x-1 transition-transform" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      <span className="w-1 h-1 rounded-full mr-2" style={{ backgroundColor: colorPalette.accent }}></span>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Categories */}
+            <div>
+              <h4 className="font-semibold mb-4 pb-2 border-b" style={{ color: colorPalette['text-primary'], borderColor: colorPalette.accent }}>
+                Categories
+              </h4>
+              <ul className="space-y-2 text-sm">
+                {['Electronics', 'Fashion', 'Home & Garden', 'Sports & Outdoors'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="flex items-center hover:translate-x-1 transition-transform" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      <span className="w-1 h-1 rounded-full mr-2" style={{ backgroundColor: colorPalette.accent }}></span>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="font-semibold mb-4 pb-2 border-b" style={{ color: colorPalette['text-primary'], borderColor: colorPalette.accent }}>
+                Support
+              </h4>
+              <ul className="space-y-2 text-sm">
+                {['Help Center', 'Contact Us', 'Dispute Resolution', 'Community'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="flex items-center hover:translate-x-1 transition-transform" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      <span className="w-1 h-1 rounded-full mr-2" style={{ backgroundColor: colorPalette.accent }}></span>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* About */}
+            <div>
+              <h4 className="font-semibold mb-4 pb-2 border-b" style={{ color: colorPalette['text-primary'], borderColor: colorPalette.accent }}>
+                About
+              </h4>
+              <ul className="space-y-2 text-sm">
+                {['Our Story', 'Press', 'Careers', 'Investors'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="flex items-center hover:translate-x-1 transition-transform" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      <span className="w-1 h-1 rounded-full mr-2" style={{ backgroundColor: colorPalette.accent }}></span>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Stats Section */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 py-8 border-t border-b" 
+               style={{ borderColor: colorPalette.border }}>
+            {[
+              { label: 'Active Sellers', value: '1M+' },
+              { label: 'Products Listed', value: '50M+' },
+              { label: 'Countries', value: '190+' },
+              { label: 'Daily Transactions', value: '100K+' }
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="text-2xl font-bold mb-1" style={{ color: colorPalette.accent }}>
+                  {stat.value}
+                </div>
+                <div className="text-sm" style={{ color: colorPalette['text-secondary'] }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom Footer */}
+          <div className="flex flex-col lg:flex-row justify-between items-center">
+            <div className="flex items-center space-x-4 mb-4 lg:mb-0">
+              <p style={{ color: colorPalette['text-secondary'] }}>
+                © 2024 MarketHub Inc. All rights reserved.
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center lg:justify-end gap-6">
+              {['Terms of Service', 'Privacy Policy', 'Cookie Policy', 'Accessibility'].map((link) => (
+                <a key={link} href="#" className="text-sm hover:underline" 
+                   style={{ color: colorPalette['text-secondary'] }}>
+                  {link}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -203,11 +203,84 @@ const EcommerceProductShowcaseTemplate: React.FC<EcommerceProductShowcaseTemplat
         </div>
       </section>
 
-      <EcommerceFooter 
-        colorPalette={colorPalette} 
-        brandName="ShopStyle" 
-        theme="standard" 
-      />
+      {/* Custom Product Showcase Footer */}
+      <footer className="pt-16 pb-8" style={{ backgroundColor: colorPalette['section-bg-2'] }}>
+        <div className="max-w-7xl mx-auto px-6">
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Brand Column */}
+            <div className="lg:col-span-2">
+              <h3 className="text-2xl font-bold mb-4" style={{ color: colorPalette['text-primary'] }}>
+                ShopStyle
+              </h3>
+              <p className="mb-6 leading-relaxed" style={{ color: colorPalette['text-secondary'] }}>
+                Discover the latest trends and premium products with our curated collection. 
+                Your style, redefined.
+              </p>
+              <div className="flex space-x-4">
+                {['facebook', 'twitter', 'instagram', 'youtube'].map((social) => (
+                  <div key={social} className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform" 
+                       style={{ backgroundColor: colorPalette.accent }}>
+                    <span className="text-sm font-bold" style={{ color: colorPalette['button-text'] }}>
+                      {social[0].toUpperCase()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-semibold mb-4" style={{ color: colorPalette['text-primary'] }}>
+                Quick Links
+              </h4>
+              <ul className="space-y-2">
+                {['New Arrivals', 'Best Sellers', 'Sale Items', 'Gift Cards'].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="hover:underline transition-colors" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="font-semibold mb-4" style={{ color: colorPalette['text-primary'] }}>
+                Support
+              </h4>
+              <ul className="space-y-2">
+                {['Contact Us', 'Size Guide', 'Returns', 'Track Order'].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="hover:underline transition-colors" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center" 
+               style={{ borderColor: colorPalette.border }}>
+            <p style={{ color: colorPalette['text-secondary'] }}>
+              © 2024 ShopStyle. All rights reserved.
+            </p>
+            <div className="flex space-x-6 mt-4 md:mt-0">
+              {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((link) => (
+                <a key={link} href="#" className="text-sm hover:underline" 
+                   style={{ color: colorPalette['text-secondary'] }}>
+                  {link}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

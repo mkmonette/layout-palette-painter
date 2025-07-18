@@ -178,11 +178,51 @@ const EcommerceMinimalStoreTemplate: React.FC<EcommerceMinimalStoreTemplateProps
         </div>
       </section>
 
-      <EcommerceFooter 
-        colorPalette={colorPalette} 
-        brandName="MINIMAL" 
-        theme="minimal" 
-      />
+      {/* Custom Minimal Footer */}
+      <footer className="py-12 px-6" style={{ backgroundColor: colorPalette['section-bg-1'] }}>
+        <div className="max-w-4xl mx-auto">
+          {/* Centered Layout */}
+          <div className="text-center mb-8">
+            <h3 className="text-3xl font-light tracking-wider mb-3" style={{ color: colorPalette['text-primary'] }}>
+              MINIMAL
+            </h3>
+            <p className="text-sm tracking-wide mb-8" style={{ color: colorPalette['text-secondary'] }}>
+              Less is more. Discover simplicity.
+            </p>
+          </div>
+
+          {/* Single Row Navigation */}
+          <div className="flex flex-wrap justify-center gap-8 mb-8">
+            {['Shop', 'About', 'Journal', 'Contact', 'Care'].map((item) => (
+              <a key={item} href="#" 
+                 className="text-sm tracking-wide hover:opacity-60 transition-opacity" 
+                 style={{ color: colorPalette['text-primary'] }}>
+                {item}
+              </a>
+            ))}
+          </div>
+
+          {/* Minimal Social Icons */}
+          <div className="flex justify-center space-x-6 mb-8">
+            {['IG', 'FB', 'TW'].map((social) => (
+              <div key={social} 
+                   className="w-8 h-8 border border-opacity-30 flex items-center justify-center cursor-pointer hover:bg-opacity-10 transition-colors" 
+                   style={{ borderColor: colorPalette['text-secondary'], backgroundColor: 'transparent' }}>
+                <span className="text-xs" style={{ color: colorPalette['text-secondary'] }}>
+                  {social}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Simple Bottom Line */}
+          <div className="text-center border-t pt-6" style={{ borderColor: colorPalette.border }}>
+            <p className="text-xs tracking-wider" style={{ color: colorPalette['text-secondary'] }}>
+              © MMXXIV MINIMAL STORE
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

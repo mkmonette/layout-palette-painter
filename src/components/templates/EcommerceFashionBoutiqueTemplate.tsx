@@ -236,11 +236,105 @@ const EcommerceFashionBoutiqueTemplate: React.FC<EcommerceFashionBoutiqueTemplat
         </div>
       </section>
 
-      <EcommerceFooter 
-        colorPalette={colorPalette} 
-        brandName="Boutique Chic" 
-        theme="fashion" 
-      />
+      {/* Custom Fashion Boutique Footer */}
+      <footer className="relative overflow-hidden" style={{ backgroundColor: colorPalette['section-bg-2'] }}>
+        {/* Decorative Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="h-full w-full" style={{ 
+            backgroundImage: `repeating-linear-gradient(45deg, ${colorPalette['text-primary']} 0px, ${colorPalette['text-primary']} 1px, transparent 1px, transparent 20px)` 
+          }}></div>
+        </div>
+        
+        <div className="relative max-w-6xl mx-auto px-6 pt-16 pb-8">
+          {/* Elegant Header */}
+          <div className="text-center mb-12">
+            <h3 className="font-serif text-4xl mb-4" style={{ color: colorPalette['text-primary'] }}>
+              Boutique Chic
+            </h3>
+            <div className="w-24 h-px mx-auto mb-4" style={{ backgroundColor: colorPalette.accent }}></div>
+            <p className="text-lg italic" style={{ color: colorPalette['text-secondary'] }}>
+              Where elegance meets contemporary style
+            </p>
+          </div>
+
+          {/* Three Column Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+            {/* Collections */}
+            <div className="text-center">
+              <h4 className="font-serif text-xl mb-6" style={{ color: colorPalette['text-primary'] }}>
+                Collections
+              </h4>
+              <ul className="space-y-3">
+                {['Evening Wear', 'Casual Chic', 'Accessories', 'Seasonal'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="hover:italic transition-all" style={{ color: colorPalette['text-secondary'] }}>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Services */}
+            <div className="text-center">
+              <h4 className="font-serif text-xl mb-6" style={{ color: colorPalette['text-primary'] }}>
+                Services
+              </h4>
+              <ul className="space-y-3">
+                {['Personal Styling', 'Alterations', 'Gift Concierge', 'VIP Experience'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="hover:italic transition-all" style={{ color: colorPalette['text-secondary'] }}>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Connect */}
+            <div className="text-center">
+              <h4 className="font-serif text-xl mb-6" style={{ color: colorPalette['text-primary'] }}>
+                Connect
+              </h4>
+              <div className="space-y-4">
+                <p style={{ color: colorPalette['text-secondary'] }}>
+                  +1 (555) 123-CHIC
+                </p>
+                <p style={{ color: colorPalette['text-secondary'] }}>
+                  hello@boutiquechic.com
+                </p>
+                <div className="flex justify-center space-x-4 mt-6">
+                  {['Pinterest', 'Instagram', 'Facebook'].map((social) => (
+                    <div key={social} className="group">
+                      <div className="w-12 h-12 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all group-hover:scale-110" 
+                           style={{ borderColor: colorPalette.accent, backgroundColor: 'transparent' }}>
+                        <span className="text-xs font-medium" style={{ color: colorPalette.accent }}>
+                          {social[0]}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Section */}
+          <div className="border-t pt-8 text-center" style={{ borderColor: colorPalette.border }}>
+            <p className="mb-4" style={{ color: colorPalette['text-secondary'] }}>
+              © 2024 Boutique Chic • Crafted with love for fashion enthusiasts
+            </p>
+            <div className="flex flex-wrap justify-center gap-6">
+              {['Privacy', 'Terms', 'Size Guide', 'Returns'].map((link) => (
+                <a key={link} href="#" className="text-sm underline hover:no-underline" 
+                   style={{ color: colorPalette['text-secondary'] }}>
+                  {link}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

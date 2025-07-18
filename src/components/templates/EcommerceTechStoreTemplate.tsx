@@ -267,11 +267,127 @@ const EcommerceTechStoreTemplate: React.FC<EcommerceTechStoreTemplateProps> = ({
         </div>
       </section>
 
-      <EcommerceFooter 
-        colorPalette={colorPalette} 
-        brandName="TechVault" 
-        theme="tech" 
-      />
+      {/* Custom Tech Store Footer */}
+      <footer className="relative" style={{ backgroundColor: colorPalette['section-bg-2'] }}>
+        {/* Tech Grid Background */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="h-full w-full" style={{ 
+            backgroundImage: `linear-gradient(${colorPalette['text-primary']} 1px, transparent 1px), linear-gradient(90deg, ${colorPalette['text-primary']} 1px, transparent 1px)`,
+            backgroundSize: '30px 30px'
+          }}></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-6 pt-16 pb-8">
+          {/* Tech Header */}
+          <div className="flex items-center justify-center mb-12">
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-4">
+                <div className="w-8 h-8 border-2 border-l-transparent rounded-full animate-spin mr-3" 
+                     style={{ borderColor: colorPalette.accent, borderLeftColor: 'transparent' }}></div>
+                <h3 className="text-3xl font-bold tracking-tight" style={{ color: colorPalette['text-primary'] }}>
+                  TechVault
+                </h3>
+                <div className="w-2 h-2 rounded-full ml-2" style={{ backgroundColor: colorPalette.accent }}></div>
+              </div>
+              <p className="font-mono text-sm" style={{ color: colorPalette['text-secondary'] }}>
+                // Innovation powered by technology
+              </p>
+            </div>
+          </div>
+
+          {/* Four Column Tech Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Products */}
+            <div>
+              <h4 className="font-bold mb-4 text-sm uppercase tracking-wider" style={{ color: colorPalette.accent }}>
+                Products
+              </h4>
+              <ul className="space-y-2 font-mono text-sm">
+                {['> Laptops', '> Smartphones', '> Gaming', '> Accessories'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="hover:translate-x-2 transition-transform inline-block" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="font-bold mb-4 text-sm uppercase tracking-wider" style={{ color: colorPalette.accent }}>
+                Support
+              </h4>
+              <ul className="space-y-2 font-mono text-sm">
+                {['> Tech Support', '> Warranty', '> Repairs', '> Documentation'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="hover:translate-x-2 transition-transform inline-block" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h4 className="font-bold mb-4 text-sm uppercase tracking-wider" style={{ color: colorPalette.accent }}>
+                Company
+              </h4>
+              <ul className="space-y-2 font-mono text-sm">
+                {['> About Us', '> Careers', '> Press', '> Blog'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="hover:translate-x-2 transition-transform inline-block" 
+                       style={{ color: colorPalette['text-secondary'] }}>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Connect */}
+            <div>
+              <h4 className="font-bold mb-4 text-sm uppercase tracking-wider" style={{ color: colorPalette.accent }}>
+                Connect
+              </h4>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  {['GitHub', 'Discord', 'LinkedIn'].map((platform) => (
+                    <div key={platform} className="w-8 h-8 border flex items-center justify-center cursor-pointer hover:scale-110 transition-transform" 
+                         style={{ borderColor: colorPalette.accent, backgroundColor: 'transparent' }}>
+                      <span className="text-xs font-mono" style={{ color: colorPalette.accent }}>
+                        {platform[0]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="font-mono text-xs" style={{ color: colorPalette['text-secondary'] }}>
+                  support@techvault.com
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Tech Bottom Bar */}
+          <div className="border-t pt-8" style={{ borderColor: colorPalette.border }}>
+            <div className="flex flex-col lg:flex-row justify-between items-center">
+              <div className="font-mono text-sm mb-4 lg:mb-0" style={{ color: colorPalette['text-secondary'] }}>
+                <span style={{ color: colorPalette.accent }}>$</span> Copyright 2024 TechVault.inc --version 1.0.0
+              </div>
+              <div className="flex space-x-6 font-mono text-xs">
+                {['Privacy', 'Terms', 'Security', 'API'].map((link) => (
+                  <a key={link} href="#" className="hover:underline" style={{ color: colorPalette['text-secondary'] }}>
+                    /{link.toLowerCase()}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
