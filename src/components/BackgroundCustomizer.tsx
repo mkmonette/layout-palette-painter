@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
-export type BackgroundStyle = 'wavy-layers' | 'cloudy-blobs' | 'mesh-gradients' | 'flowing-shapes' | 'geometric-patterns';
+export type BackgroundStyle = 'wavy-layers' | 'cloudy-blobs' | 'mesh-gradients' | 'flowing-shapes' | 'geometric-patterns' | 'wavy-lines' | 'organic-blobs' | 'zigzag-chevron' | 'diagonal-stripes' | 'concentric-circles' | 'isometric-cubes' | 'hexagon-mesh' | 'triangles-lowpoly' | 'dotted-grid' | 'radial-burst';
 
 export type BackgroundMode = 'svg' | 'gradient';
 
@@ -44,6 +44,16 @@ const backgroundStyles = [
   { value: 'mesh-gradients', label: 'Mesh Gradients' },
   { value: 'flowing-shapes', label: 'Flowing Shapes' },
   { value: 'geometric-patterns', label: 'Geometric Patterns' },
+  { value: 'wavy-lines', label: 'Wavy Lines' },
+  { value: 'organic-blobs', label: 'Organic Blobs' },
+  { value: 'zigzag-chevron', label: 'Zigzag / Chevron' },
+  { value: 'diagonal-stripes', label: 'Diagonal Stripes' },
+  { value: 'concentric-circles', label: 'Concentric Circles' },
+  { value: 'isometric-cubes', label: 'Isometric Cubes' },
+  { value: 'hexagon-mesh', label: 'Hexagon Mesh' },
+  { value: 'triangles-lowpoly', label: 'Triangles / Low-poly' },
+  { value: 'dotted-grid', label: 'Dotted Grid' },
+  { value: 'radial-burst', label: 'Radial Burst' },
 ] as const;
 
 const backgroundModes = [
@@ -275,6 +285,34 @@ export function BackgroundCustomizer({ settings, onSettingsChange }: BackgroundC
         );
 
       case 'geometric-patterns':
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="pattern-scale" className="text-sm font-medium">
+                Pattern Scale ({settings.patternScale}%)
+              </Label>
+              <Slider
+                id="pattern-scale"
+                value={[settings.patternScale]}
+                onValueChange={([value]) => updateSettings({ patternScale: value })}
+                max={100}
+                step={1}
+                className="w-full"
+              />
+            </div>
+          </div>
+        );
+
+      case 'wavy-lines':
+      case 'organic-blobs':
+      case 'zigzag-chevron':
+      case 'diagonal-stripes':
+      case 'concentric-circles':
+      case 'isometric-cubes':
+      case 'hexagon-mesh':
+      case 'triangles-lowpoly':
+      case 'dotted-grid':
+      case 'radial-burst':
         return (
           <div className="space-y-4">
             <div className="space-y-2">
