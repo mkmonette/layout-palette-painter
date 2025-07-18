@@ -2,11 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check, Crown, Star, Zap, Sparkles, Coins, Plus } from 'lucide-react';
 import { useEnhancedSubscription } from '@/contexts/EnhancedSubscriptionContext';
 import CheckoutModal from './CheckoutModal';
 import { SubscriptionPlan } from '@/types/subscription';
+
+interface CoinOption {
+  coins: number;
+  price: number;
+  bonus?: number;
+}
 
 interface CoinAddon {
   id: string;
@@ -20,49 +26,15 @@ const SubscriptionCheckout = () => {
   const { plans, currentPlan } = useEnhancedSubscription();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
-  const [selectedAddons, setSelectedAddons] = useState<CoinAddon[]>([]);
-  const [coinSettings, setCoinSettings] = useState({
-    small: { coins: 50, price: 4.99 },
-    medium: { coins: 150, price: 12.99 },
-    large: { coins: 300, price: 24.99 }
-  });
-
-  // Load coin settings from localStorage (admin settings)
-  useEffect(() => {
-    const savedSettings = localStorage.getItem('coin_credit_settings');
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings);
-        if (parsed.coinPurchasePackages) {
-          setCoinSettings(parsed.coinPurchasePackages);
-        }
-      } catch (error) {
-        console.error('Error loading coin settings:', error);
-      }
-    }
-  }, []);
-
-  const coinAddons: CoinAddon[] = [
-    {
-      id: 'addon_starter',
-      name: 'Starter Coins',
-      coins: coinSettings.small.coins,
-      price: coinSettings.small.price,
-    },
-    {
-      id: 'addon_popular',
-      name: 'Popular Coins',
-      coins: coinSettings.medium.coins,
-      price: coinSettings.medium.price,
-      bonus: Math.floor(coinSettings.medium.coins * 0.1),
-    },
-    {
-      id: 'addon_premium',
-      name: 'Premium Coins',
-      coins: coinSettings.large.coins,
-      price: coinSettings.large.price,
-      bonus: Math.floor(coinSettings.large.coins * 0.2),
-    }
+  const [selectedCoinOptions, setSelectedCoinOptions] = useState<{[planId: string]: CoinOption | null}>({});
+  
+  // Coin credit options with pricing similar to requested format
+  const coinOptions: CoinOption[] = [
+    { coins: 100, price: 4 },
+    { coins: 200, price: 8 },
+    { coins: 500, price: 18, bonus: 50 }, // 10% bonus
+    { coins: 1000, price: 35, bonus: 150 }, // 15% bonus
+    { coins: 2000, price: 65, bonus: 400 }, // 20% bonus
   ];
 
   const handlePlanSelect = (plan: SubscriptionPlan) => {
@@ -70,18 +42,28 @@ const SubscriptionCheckout = () => {
     setIsCheckoutOpen(true);
   };
 
-  const handleAddonToggle = (addon: CoinAddon, checked: boolean) => {
-    if (checked) {
-      setSelectedAddons(prev => [...prev, addon]);
+  const handleCoinSelection = (planId: string, value: string) => {
+    if (value === 'none') {
+      setSelectedCoinOptions(prev => ({ ...prev, [planId]: null }));
     } else {
-      setSelectedAddons(prev => prev.filter(a => a.id !== addon.id));
+      const option = coinOptions.find(opt => `${opt.coins}-${opt.price}` === value);
+      if (option) {
+        setSelectedCoinOptions(prev => ({ ...prev, [planId]: option }));
+      }
     }
   };
 
-  const getTotalPrice = () => {
-    const planPrice = selectedPlan?.price || 0;
-    const addonsPrice = selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
-    return planPrice + addonsPrice;
+  const getSelectedCoinAddon = (planId: string): CoinAddon | null => {
+    const option = selectedCoinOptions[planId];
+    if (!option) return null;
+    
+    return {
+      id: `coin-addon-${planId}`,
+      name: `${option.coins} Coins${option.bonus ? ` + ${option.bonus} Bonus` : ''}`,
+      coins: option.coins,
+      price: option.price,
+      bonus: option.bonus
+    };
   };
 
   const getPlanIcon = (planName: string) => {
@@ -168,76 +150,128 @@ const SubscriptionCheckout = () => {
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {plans.filter(plan => plan.status === 'active').map((plan) => (
-          <Card 
-            key={plan.id} 
-            className={`relative transition-all duration-200 hover:shadow-lg ${
-              isCurrentPlan(plan) 
-                ? `bg-gradient-to-b ${getPlanGradient(plan.name)} ring-2 ring-primary` 
-                : 'hover:scale-105'
-            }`}
-          >
-            {isCurrentPlan(plan) && (
-              <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary">
-                Current Plan
-              </Badge>
-            )}
-            
-            {plan.name.toLowerCase() === 'pro' && (
-              <Badge className="absolute -top-2 right-4 bg-purple-500">
-                <Sparkles className="h-3 w-3 mr-1" />
-                Popular
-              </Badge>
-            )}
-
-            <CardHeader className="text-center pb-4">
-              <div className="flex justify-center mb-4">
-                {getPlanIcon(plan.name)}
-              </div>
-              <CardTitle className="text-2xl">{plan.name}</CardTitle>
-              <CardDescription className="text-sm">{plan.description}</CardDescription>
+        {plans.filter(plan => plan.status === 'active').map((plan) => {
+          const selectedCoinOption = selectedCoinOptions[plan.id];
+          const totalPrice = plan.price + (selectedCoinOption?.price || 0);
+          
+          return (
+            <Card 
+              key={plan.id} 
+              className={`relative transition-all duration-200 hover:shadow-lg ${
+                isCurrentPlan(plan) 
+                  ? `bg-gradient-to-b ${getPlanGradient(plan.name)} ring-2 ring-primary` 
+                  : 'hover:scale-105'
+              }`}
+            >
+              {isCurrentPlan(plan) && (
+                <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary">
+                  Current Plan
+                </Badge>
+              )}
               
-              <div className="pt-4">
-                <div className="text-4xl font-bold">
-                  {plan.price === 0 ? 'Free' : `$${plan.price}`}
+              {plan.name.toLowerCase() === 'pro' && (
+                <Badge className="absolute -top-2 right-4 bg-purple-500">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Popular
+                </Badge>
+              )}
+
+              <CardHeader className="text-center pb-4">
+                <div className="flex justify-center mb-4">
+                  {getPlanIcon(plan.name)}
                 </div>
-                {plan.price > 0 && (
-                  <div className="text-sm text-muted-foreground">
-                    per {plan.interval}
+                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                <CardDescription className="text-sm">{plan.description}</CardDescription>
+                
+                <div className="pt-4">
+                  <div className="text-4xl font-bold">
+                    {plan.price === 0 ? 'Free' : `$${totalPrice}`}
                   </div>
-                )}
-              </div>
-            </CardHeader>
+                  {plan.price > 0 && (
+                    <div className="text-sm text-muted-foreground">
+                      per {plan.interval}
+                      {selectedCoinOption && (
+                        <span className="block text-xs">
+                          Plan: ${plan.price} + Coins: ${selectedCoinOption.price}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </CardHeader>
 
-            <CardContent className="space-y-4">
-              <ul className="space-y-2">
-                {getFeatureList(plan.features).map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm">
-                    <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2">
+                  {getFeatureList(plan.features).map((feature, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              <div className="pt-4">
-                {isCurrentPlan(plan) ? (
-                  <Button disabled className="w-full">
-                    Current Plan
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={() => handlePlanSelect(plan)}
-                    variant={isUpgrade(plan) ? "default" : "outline"}
-                    className="w-full"
+                {/* Coin Credits Add-on Dropdown */}
+                <div className="pt-2 border-t">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Coins className="h-4 w-4 text-yellow-500" />
+                    <span className="text-sm font-medium">Add Coin Credits</span>
+                  </div>
+                  
+                  <Select
+                    value={selectedCoinOption ? `${selectedCoinOption.coins}-${selectedCoinOption.price}` : 'none'}
+                    onValueChange={(value) => handleCoinSelection(plan.id, value)}
                   >
-                    {plan.price === 0 ? 'Downgrade to Free' : 
-                     isUpgrade(plan) ? `Upgrade to ${plan.name}` : `Switch to ${plan.name}`}
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="No coins selected" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No coins</SelectItem>
+                      {coinOptions.map((option) => (
+                        <SelectItem 
+                          key={`${option.coins}-${option.price}`} 
+                          value={`${option.coins}-${option.price}`}
+                        >
+                          {option.coins} coins - ${option.price}
+                          {option.bonus && ` (+${option.bonus} bonus)`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {selectedCoinOption && (
+                    <div className="mt-2 p-2 bg-yellow-50 rounded text-xs text-yellow-700">
+                      <div className="font-medium">
+                        {selectedCoinOption.coins + (selectedCoinOption.bonus || 0)} total coins
+                      </div>
+                      {selectedCoinOption.bonus && (
+                        <div className="text-green-600">
+                          Includes {selectedCoinOption.bonus} bonus coins!
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4">
+                  {isCurrentPlan(plan) ? (
+                    <Button disabled className="w-full">
+                      Current Plan
+                    </Button>
+                  ) : (
+                    <Button 
+                      onClick={() => handlePlanSelect(plan)}
+                      variant={isUpgrade(plan) ? "default" : "outline"}
+                      className="w-full"
+                    >
+                      {plan.price === 0 ? 'Downgrade to Free' : 
+                       isUpgrade(plan) ? `Upgrade to ${plan.name}` : `Switch to ${plan.name}`}
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Additional Benefits */}
@@ -263,80 +297,13 @@ const SubscriptionCheckout = () => {
         </CardContent>
       </Card>
 
-      {/* Coin Credits Add-ons */}
-      <Card className="bg-gradient-to-r from-yellow-500/5 to-yellow-600/10 border-yellow-200">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Coins className="h-5 w-5 text-yellow-500" />
-            <CardTitle className="text-xl">Add Coin Credits</CardTitle>
-          </div>
-          <CardDescription>
-            Boost your experience with additional coin credits. Use coins for AI generations, premium features, and more.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-3 gap-4">
-            {coinAddons.map((addon) => (
-              <div key={addon.id} className="relative">
-                <Card className={`transition-all duration-200 ${
-                  selectedAddons.some(a => a.id === addon.id) 
-                    ? 'ring-2 ring-yellow-500 bg-yellow-50' 
-                    : 'hover:shadow-md'
-                }`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={addon.id}
-                        checked={selectedAddons.some(a => a.id === addon.id)}
-                        onCheckedChange={(checked) => handleAddonToggle(addon, checked as boolean)}
-                      />
-                      <label htmlFor={addon.id} className="cursor-pointer">
-                        <CardTitle className="text-base">{addon.name}</CardTitle>
-                      </label>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="space-y-2">
-                      <div className="text-2xl font-bold text-yellow-600">
-                        {addon.coins + (addon.bonus || 0)}
-                        <span className="text-sm text-muted-foreground ml-1">coins</span>
-                      </div>
-                      <div className="text-lg font-semibold">
-                        +${addon.price}
-                      </div>
-                      {addon.bonus && (
-                        <div className="text-xs text-green-600 font-medium">
-                          Includes {addon.bonus} bonus coins!
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-          </div>
-          
-          {selectedAddons.length > 0 && (
-            <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-              <div className="text-sm font-medium text-yellow-800">
-                Selected Add-ons: {selectedAddons.length}
-              </div>
-              <div className="text-xs text-yellow-700 mt-1">
-                Additional cost: ${selectedAddons.reduce((sum, addon) => sum + addon.price, 0).toFixed(2)}
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => {
           setIsCheckoutOpen(false);
-          setSelectedAddons([]);
         }}
         selectedPlan={selectedPlan}
-        coinAddons={selectedAddons}
+        coinAddons={selectedPlan ? [getSelectedCoinAddon(selectedPlan.id)].filter(Boolean) : []}
         type="subscription"
       />
     </div>
