@@ -126,6 +126,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           featureName = 'AI Colors per Month';
         } else if (key === 'image_website_generations_per_month') {
           featureName = 'Image/Website Generations per Month';
+        } else if (key === 'pro_templates') {
+          featureName = 'Access to PRO Templates';
         }
         
         if (typeof value === 'number') {

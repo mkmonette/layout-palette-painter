@@ -28,7 +28,7 @@ export interface UserSubscription {
 export const AVAILABLE_FEATURES: FeatureLimit[] = [
   {
     id: 'pro_templates',
-    name: 'Pro Templates',
+    name: 'Access to PRO Templates',
     type: 'boolean',
     description: 'Access to premium design templates',
     category: 'access'
@@ -41,6 +41,13 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     category: 'usage'
   },
   {
+    id: 'ai_generations_per_month',
+    name: 'AI Colors per Month',
+    type: 'number',
+    description: 'Maximum number of AI-powered color generations per month',
+    category: 'usage'
+  },
+  {
     id: 'downloads_per_day',
     name: 'Downloads per Day',
     type: 'number',
@@ -48,18 +55,11 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     category: 'usage'
   },
   {
-    id: 'branded_reports',
-    name: 'Branded Professional Reports',
-    type: 'boolean',
-    description: 'Access to professional branded PDF reports',
-    category: 'access'
-  },
-  {
-    id: 'auto_generator',
-    name: 'Auto Generator',
-    type: 'boolean',
-    description: 'Access to AI-powered automatic color generation',
-    category: 'access'
+    id: 'image_website_generations_per_month',
+    name: 'Image/Website Generations per Month',
+    type: 'number',
+    description: 'Maximum number of color generations from images or websites per month',
+    category: 'usage'
   },
   {
     id: 'custom_color_schemes',
@@ -83,17 +83,17 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     category: 'access'
   },
   {
-    id: 'ai_generations_per_month',
-    name: 'AI Colors per Month',
-    type: 'number',
-    description: 'Maximum number of AI-powered color generations per month',
-    category: 'usage'
+    id: 'auto_generator',
+    name: 'Auto Generator',
+    type: 'boolean',
+    description: 'Access to AI-powered automatic color generation',
+    category: 'access'
   },
   {
-    id: 'image_website_generations_per_month',
-    name: 'Image/Website Generations per Month',
-    type: 'number',
-    description: 'Maximum number of color generations from images or websites per month',
-    category: 'usage'
+    id: 'branded_reports',
+    name: 'Branded Professional Reports',
+    type: 'boolean',
+    description: 'Access to professional branded PDF reports',
+    category: 'access'
   }
 ];
