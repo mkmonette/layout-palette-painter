@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, ShoppingCart, Star, Sparkles } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
+import EcommerceFooter from './EcommerceFooter';
 
 interface EcommerceFashionBoutiqueTemplateProps {
   colorPalette: ColorPalette;
@@ -127,35 +128,73 @@ const EcommerceFashionBoutiqueTemplate: React.FC<EcommerceFashionBoutiqueTemplat
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { name: "Silk Midi Dress", price: "$189", rating: 4.8, image: "photo-1595777457583-95e059d581b8" },
-              { name: "Cashmere Sweater", price: "$149", rating: 4.9, image: "photo-1583743089695-4b816a340f82" },
-              { name: "Leather Handbag", price: "$299", rating: 4.7, image: "photo-1548036328-c9fa89d128fa" },
-              { name: "Pearl Earrings", price: "$89", rating: 5.0, image: "photo-1515562141207-7a88fb7ce338" }
+              { name: "Silk Midi Dress", price: "$189", originalPrice: "$249", rating: 4.8, image: "photo-1595777457583-95e059d581b8", isNew: true },
+              { name: "Cashmere Sweater", price: "$149", originalPrice: "$199", rating: 4.9, image: "photo-1583743089695-4b816a340f82", isNew: false },
+              { name: "Leather Handbag", price: "$299", originalPrice: "$399", rating: 4.7, image: "photo-1548036328-c9fa89d128fa", isNew: false },
+              { name: "Pearl Earrings", price: "$89", originalPrice: "$119", rating: 5.0, image: "photo-1515562141207-7a88fb7ce338", isNew: true }
             ].map((product, index) => (
-              <div key={index} className="group">
-                <div className="aspect-[3/4] rounded-lg overflow-hidden mb-4 relative">
+              <div key={index} className="group cursor-pointer">
+                <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4 relative shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
                   <img 
-                    src={`https://images.unsplash.com/${product.image}?w=300&h=400&fit=crop`}
+                    src={`https://images.unsplash.com/${product.image}?w=350&h=450&fit=crop`}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <Heart className="absolute top-3 right-3 h-5 w-5 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'white' }} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 space-y-2">
+                    {product.isNew && (
+                      <span className="px-2 py-1 text-xs font-medium rounded-full" 
+                            style={{ backgroundColor: colorPalette.highlight, color: colorPalette['button-text'] }}>
+                        New
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                    <div className="flex flex-col space-y-3">
+                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
+                              style={{ backgroundColor: `${colorPalette['section-bg-1']}90` }}>
+                        <Heart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      </button>
+                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
+                              style={{ backgroundColor: `${colorPalette['section-bg-1']}90` }}>
+                        <ShoppingCart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium" style={{ color: colorPalette['text-primary'] }}>{product.name}</h4>
+                
+                <div className="space-y-3">
+                  <h4 className="font-serif text-lg" style={{ color: colorPalette['text-primary'] }}>
+                    {product.name}
+                  </h4>
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-3 w-3 fill-current" style={{ color: colorPalette.highlight }} />
+                        <Star key={i} className="h-4 w-4 fill-current" 
+                              style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
                       ))}
                     </div>
-                    <span className="text-xs" style={{ color: colorPalette['text-secondary'] }}>({product.rating})</span>
+                    <span className="text-sm font-medium" style={{ color: colorPalette['text-secondary'] }}>
+                      ({product.rating})
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold" style={{ color: colorPalette.brand }}>{product.price}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xl font-semibold" style={{ color: colorPalette.brand }}>
+                        {product.price}
+                      </span>
+                      <span className="text-sm line-through opacity-75" style={{ color: colorPalette['text-secondary'] }}>
+                        {product.originalPrice}
+                      </span>
+                    </div>
                     <Button 
                       size="sm"
-                      style={{ backgroundColor: colorPalette['button-secondary'], color: colorPalette['button-secondary-text'] }}
+                      className="font-medium hover:scale-105 transition-transform shadow-md"
+                      style={{ backgroundColor: colorPalette['button-primary'], color: colorPalette['button-text'] }}
                     >
                       Add to Cart
                     </Button>
@@ -196,6 +235,12 @@ const EcommerceFashionBoutiqueTemplate: React.FC<EcommerceFashionBoutiqueTemplat
           </div>
         </div>
       </section>
+
+      <EcommerceFooter 
+        colorPalette={colorPalette} 
+        brandName="Boutique Chic" 
+        theme="fashion" 
+      />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Star, ShoppingCart, Heart, Eye } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
+import EcommerceFooter from './EcommerceFooter';
 
 interface EcommerceProductShowcaseTemplateProps {
   colorPalette: ColorPalette;
@@ -108,28 +109,61 @@ const EcommerceProductShowcaseTemplate: React.FC<EcommerceProductShowcaseTemplat
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { name: "Smart Watch", price: "$199", image: "photo-1523275335684-37898b6baf30" },
-              { name: "Laptop Stand", price: "$89", image: "photo-1527864550417-7fd91fc51a46" },
-              { name: "Bluetooth Speaker", price: "$149", image: "photo-1608043152269-423dbba4e7e1" },
-              { name: "Phone Case", price: "$29", image: "photo-1556656793-08538906a9f8" }
+              { name: "Smart Watch", price: "$199", originalPrice: "$249", rating: 4.8, image: "photo-1523275335684-37898b6baf30" },
+              { name: "Laptop Stand", price: "$89", originalPrice: "$119", rating: 4.6, image: "photo-1527864550417-7fd91fc51a46" },
+              { name: "Bluetooth Speaker", price: "$149", originalPrice: "$199", rating: 4.9, image: "photo-1608043152269-423dbba4e7e1" },
+              { name: "Phone Case", price: "$29", originalPrice: "$39", rating: 4.5, image: "photo-1556656793-08538906a9f8" }
             ].map((product, index) => (
-              <div key={index} className="group cursor-pointer">
-                <div className="rounded-xl overflow-hidden mb-4" style={{ backgroundColor: colorPalette['section-bg-1'] }}>
+              <div key={index} className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" 
+                   style={{ backgroundColor: colorPalette['section-bg-1'], borderColor: colorPalette.border }}>
+                <div className="relative overflow-hidden">
                   <img 
-                    src={`https://images.unsplash.com/${product.image}?w=300&h=300&fit=crop`}
+                    src={`https://images.unsplash.com/${product.image}?w=350&h=350&fit=crop`}
                     alt={product.name}
-                    className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="flex flex-col space-y-2">
+                      <button className="p-2 rounded-full shadow-lg hover:scale-110 transition-transform" 
+                              style={{ backgroundColor: colorPalette['section-bg-1'] }}>
+                        <Heart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      </button>
+                      <button className="p-2 rounded-full shadow-lg hover:scale-110 transition-transform" 
+                              style={{ backgroundColor: colorPalette['section-bg-1'] }}>
+                        <Eye className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-medium" 
+                       style={{ backgroundColor: colorPalette.highlight, color: colorPalette['button-text'] }}>
+                    Sale
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="font-semibold" style={{ color: colorPalette['text-primary'] }}>{product.name}</h4>
+                <div className="p-4 space-y-3">
+                  <h4 className="font-semibold text-lg leading-snug" style={{ color: colorPalette['text-primary'] }}>
+                    {product.name}
+                  </h4>
+                  <div className="flex items-center space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-current" 
+                            style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
+                    ))}
+                    <span className="text-sm ml-2" style={{ color: colorPalette['text-secondary'] }}>
+                      ({product.rating})
+                    </span>
+                  </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold" style={{ color: colorPalette.brand }}>{product.price}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xl font-bold" style={{ color: colorPalette.brand }}>{product.price}</span>
+                      <span className="text-sm line-through" style={{ color: colorPalette['text-secondary'] }}>{product.originalPrice}</span>
+                    </div>
                     <Button 
                       size="sm"
-                      style={{ backgroundColor: colorPalette['button-secondary'], color: colorPalette['button-secondary-text'] }}
+                      className="hover:scale-105 transition-transform shadow-lg"
+                      style={{ backgroundColor: colorPalette['button-primary'], color: colorPalette['button-text'] }}
                     >
-                      Add to Cart
+                      <ShoppingCart className="h-4 w-4 mr-1" />
+                      Add
                     </Button>
                   </div>
                 </div>
@@ -168,6 +202,12 @@ const EcommerceProductShowcaseTemplate: React.FC<EcommerceProductShowcaseTemplat
           </div>
         </div>
       </section>
+
+      <EcommerceFooter 
+        colorPalette={colorPalette} 
+        brandName="ShopStyle" 
+        theme="standard" 
+      />
     </div>
   );
 };

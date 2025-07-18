@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, User, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Search, User, ShoppingBag, ArrowRight, Star } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
+import EcommerceFooter from './EcommerceFooter';
 
 interface EcommerceMinimalStoreTemplateProps {
   colorPalette: ColorPalette;
@@ -101,22 +102,46 @@ const EcommerceMinimalStoreTemplate: React.FC<EcommerceMinimalStoreTemplateProps
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { name: "Ceramic Vase", price: "$89", image: "photo-1578662996442-48f60103fc96" },
-              { name: "Oak Chair", price: "$299", image: "photo-1506439773649-6e0eb8cfb237" },
-              { name: "Table Lamp", price: "$149", image: "photo-1507003211169-0a1dd7228f2d" },
-              { name: "Throw Pillow", price: "$45", image: "photo-1555041469-a586c61ea9bc" }
+              { name: "Ceramic Vase", price: "$89", rating: 4.7, image: "photo-1578662996442-48f60103fc96" },
+              { name: "Oak Chair", price: "$299", rating: 4.9, image: "photo-1506439773649-6e0eb8cfb237" },
+              { name: "Table Lamp", price: "$149", rating: 4.6, image: "photo-1507003211169-0a1dd7228f2d" },
+              { name: "Throw Pillow", price: "$45", rating: 4.5, image: "photo-1555041469-a586c61ea9bc" }
             ].map((product, index) => (
-              <div key={index} className="group">
-                <div className="aspect-square overflow-hidden mb-4">
+              <div key={index} className="group cursor-pointer">
+                <div className="aspect-square overflow-hidden mb-6 relative rounded-lg shadow-sm hover:shadow-xl transition-all duration-500">
                   <img 
-                    src={`https://images.unsplash.com/${product.image}?w=300&h=300&fit=crop`}
+                    src={`https://images.unsplash.com/${product.image}?w=400&h=400&fit=crop`}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                  <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Button 
+                      size="sm"
+                      className="w-full backdrop-blur-sm"
+                      style={{ 
+                        backgroundColor: `${colorPalette['button-primary']}CC`,
+                        color: colorPalette['button-text'],
+                        border: `1px solid ${colorPalette.border}`
+                      }}
+                    >
+                      Add to Cart
+                    </Button>
+                  </div>
                 </div>
-                <div className="text-center space-y-2">
-                  <h4 className="font-light" style={{ color: colorPalette['text-primary'] }}>{product.name}</h4>
-                  <p className="text-sm" style={{ color: colorPalette.brand }}>{product.price}</p>
+                <div className="text-center space-y-3">
+                  <h4 className="font-light text-lg" style={{ color: colorPalette['text-primary'] }}>
+                    {product.name}
+                  </h4>
+                  <div className="flex items-center justify-center space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3 w-3 fill-current" 
+                            style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
+                    ))}
+                  </div>
+                  <p className="text-lg font-light" style={{ color: colorPalette.brand }}>
+                    {product.price}
+                  </p>
                 </div>
               </div>
             ))}
@@ -152,6 +177,12 @@ const EcommerceMinimalStoreTemplate: React.FC<EcommerceMinimalStoreTemplateProps
           </div>
         </div>
       </section>
+
+      <EcommerceFooter 
+        colorPalette={colorPalette} 
+        brandName="MINIMAL" 
+        theme="minimal" 
+      />
     </div>
   );
 };

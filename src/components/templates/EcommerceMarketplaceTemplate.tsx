@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, MapPin, Star, ShoppingCart, Store, Users, TrendingUp } from 'lucide-react';
+import { Search, MapPin, Star, ShoppingCart, Store, Users, TrendingUp, Heart, Eye } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
+import EcommerceFooter from './EcommerceFooter';
 
 interface EcommerceMarketplaceTemplateProps {
   colorPalette: ColorPalette;
@@ -171,28 +172,78 @@ const EcommerceMarketplaceTemplate: React.FC<EcommerceMarketplaceTemplateProps> 
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             {[
-              { name: "Wireless Earbuds", price: "$79", seller: "TechStore", rating: 4.5, image: "photo-1572569511254-d8f925fe2cbb" },
-              { name: "Smart Watch", price: "$199", seller: "GadgetHub", rating: 4.7, image: "photo-1523275335684-37898b6baf30" },
-              { name: "Laptop Backpack", price: "$45", seller: "BagWorld", rating: 4.3, image: "photo-1553062407-98eeb64c6a62" },
-              { name: "Coffee Maker", price: "$129", seller: "HomeEssentials", rating: 4.6, image: "photo-1559056199-641a0ac8b55e" },
-              { name: "Running Shoes", price: "$89", seller: "SportGear", rating: 4.8, image: "photo-1542291026-7eec264c27ff" }
+              { name: "Wireless Earbuds", price: "$79", originalPrice: "$99", seller: "TechStore", rating: 4.5, reviews: 1234, image: "photo-1572569511254-d8f925fe2cbb", freeShipping: true },
+              { name: "Smart Watch", price: "$199", originalPrice: "$249", seller: "GadgetHub", rating: 4.7, reviews: 856, image: "photo-1523275335684-37898b6baf30", freeShipping: true },
+              { name: "Laptop Backpack", price: "$45", originalPrice: "$65", seller: "BagWorld", rating: 4.3, reviews: 567, image: "photo-1553062407-98eeb64c6a62", freeShipping: false },
+              { name: "Coffee Maker", price: "$129", originalPrice: "$159", seller: "HomeEssentials", rating: 4.6, reviews: 342, image: "photo-1559056199-641a0ac8b55e", freeShipping: true },
+              { name: "Running Shoes", price: "$89", originalPrice: "$119", seller: "SportGear", rating: 4.8, reviews: 923, image: "photo-1542291026-7eec264c27ff", freeShipping: true }
             ].map((product, index) => (
-              <div key={index} className="group border rounded-lg overflow-hidden hover:shadow-lg transition-shadow" style={{ borderColor: colorPalette.border, backgroundColor: colorPalette['section-bg-1'] }}>
-                <div className="aspect-square overflow-hidden">
+              <div key={index} className="group border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer" 
+                   style={{ borderColor: colorPalette.border, backgroundColor: colorPalette['section-bg-1'] }}>
+                <div className="aspect-square overflow-hidden relative">
                   <img 
-                    src={`https://images.unsplash.com/${product.image}?w=250&h=250&fit=crop`}
+                    src={`https://images.unsplash.com/${product.image}?w=280&h=280&fit=crop`}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  
+                  {/* Discount Badge */}
+                  <div className="absolute top-2 left-2 px-2 py-1 text-xs font-bold rounded-full" 
+                       style={{ backgroundColor: colorPalette.highlight, color: colorPalette['button-text'] }}>
+                    {Math.round(((parseFloat(product.originalPrice.slice(1)) - parseFloat(product.price.slice(1))) / parseFloat(product.originalPrice.slice(1))) * 100)}% OFF
+                  </div>
+                  
+                  {/* Free Shipping Badge */}
+                  {product.freeShipping && (
+                    <div className="absolute top-2 right-2 px-2 py-1 text-xs font-medium rounded-full" 
+                         style={{ backgroundColor: colorPalette.accent, color: colorPalette['button-text'] }}>
+                      Free Ship
+                    </div>
+                  )}
+                  
+                  {/* Action Buttons */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="flex space-x-3">
+                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
+                              style={{ backgroundColor: `${colorPalette['section-bg-1']}DD` }}>
+                        <Heart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      </button>
+                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
+                              style={{ backgroundColor: `${colorPalette['section-bg-1']}DD` }}>
+                        <Eye className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      </button>
+                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
+                              style={{ backgroundColor: colorPalette['button-primary'], color: colorPalette['button-text'] }}>
+                        <ShoppingCart className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="p-4 space-y-2">
-                  <h4 className="font-medium text-sm" style={{ color: colorPalette['text-primary'] }}>{product.name}</h4>
-                  <p className="text-lg font-bold" style={{ color: colorPalette.brand }}>{product.price}</p>
+                
+                <div className="p-4 space-y-3">
+                  <h4 className="font-semibold text-sm leading-snug" style={{ color: colorPalette['text-primary'] }}>
+                    {product.name}
+                  </h4>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg font-bold" style={{ color: colorPalette.brand }}>
+                      {product.price}
+                    </span>
+                    <span className="text-xs line-through" style={{ color: colorPalette['text-secondary'] }}>
+                      {product.originalPrice}
+                    </span>
+                  </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span style={{ color: colorPalette['text-secondary'] }}>by {product.seller}</span>
+                    <span className="font-medium" style={{ color: colorPalette['text-secondary'] }}>
+                      by {product.seller}
+                    </span>
                     <div className="flex items-center space-x-1">
                       <Star className="h-3 w-3 fill-current" style={{ color: colorPalette.highlight }} />
-                      <span style={{ color: colorPalette['text-secondary'] }}>{product.rating}</span>
+                      <span className="font-medium" style={{ color: colorPalette['text-secondary'] }}>
+                        {product.rating}
+                      </span>
+                      <span style={{ color: colorPalette['text-secondary'] }}>
+                        ({product.reviews})
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -231,6 +282,12 @@ const EcommerceMarketplaceTemplate: React.FC<EcommerceMarketplaceTemplateProps> 
           </div>
         </div>
       </section>
+
+      <EcommerceFooter 
+        colorPalette={colorPalette} 
+        brandName="MarketHub" 
+        theme="marketplace" 
+      />
     </div>
   );
 };

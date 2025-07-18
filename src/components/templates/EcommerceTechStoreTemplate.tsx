@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Smartphone, Laptop, Headphones, Watch, ShoppingCart, Star, Zap } from 'lucide-react';
+import { Smartphone, Laptop, Headphones, Watch, ShoppingCart, Star, Zap, Heart, Eye } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
+import EcommerceFooter from './EcommerceFooter';
 
 interface EcommerceTechStoreTemplateProps {
   colorPalette: ColorPalette;
@@ -135,39 +136,97 @@ const EcommerceTechStoreTemplate: React.FC<EcommerceTechStoreTemplateProps> = ({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { name: "iPhone 15 Pro", price: "$999", rating: 4.9, image: "photo-1592750475338-74b7b21085ab", badge: "Best Seller" },
-              { name: "MacBook Air M2", price: "$1199", rating: 4.8, image: "photo-1517336714731-489689fd1ca8", badge: "New" },
-              { name: "AirPods Pro", price: "$249", rating: 4.7, image: "photo-1606220945770-b5b6c2c55bf1", badge: "Popular" },
-              { name: "Apple Watch", price: "$399", rating: 4.9, image: "photo-1579586337278-3f436f25d4d6", badge: "Featured" }
+              { name: "iPhone 15 Pro", price: "$999", originalPrice: "$1099", rating: 4.9, image: "photo-1592750475338-74b7b21085ab", badge: "Best Seller", discount: "9%" },
+              { name: "MacBook Air M2", price: "$1199", originalPrice: "$1299", rating: 4.8, image: "photo-1517336714731-489689fd1ca8", badge: "New", discount: "8%" },
+              { name: "AirPods Pro", price: "$249", originalPrice: "$279", rating: 4.7, image: "photo-1606220945770-b5b6c2c55bf1", badge: "Popular", discount: "11%" },
+              { name: "Apple Watch", price: "$399", originalPrice: "$449", rating: 4.9, image: "photo-1579586337278-3f436f25d4d6", badge: "Featured", discount: "11%" }
             ].map((product, index) => (
-              <div key={index} className="group border rounded-xl overflow-hidden hover:shadow-lg transition-shadow" style={{ borderColor: colorPalette.border, backgroundColor: colorPalette['section-bg-1'] }}>
+              <div key={index} className="group border rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 cursor-pointer" 
+                   style={{ borderColor: colorPalette.border, backgroundColor: colorPalette['section-bg-1'] }}>
                 <div className="aspect-square overflow-hidden relative">
                   <img 
-                    src={`https://images.unsplash.com/${product.image}?w=300&h=300&fit=crop`}
+                    src={`https://images.unsplash.com/${product.image}?w=350&h=350&fit=crop`}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-700"
                   />
-                  <div className="absolute top-3 left-3 px-2 py-1 text-xs rounded" style={{ backgroundColor: colorPalette.highlight, color: colorPalette['button-text'] }}>
-                    {product.badge}
+                  
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 space-y-2">
+                    <span className="px-3 py-1 text-xs font-bold rounded-full" 
+                          style={{ backgroundColor: colorPalette.highlight, color: colorPalette['button-text'] }}>
+                      {product.badge}
+                    </span>
+                    <div className="px-2 py-1 text-xs font-medium rounded-full" 
+                         style={{ backgroundColor: colorPalette.accent, color: colorPalette['button-text'] }}>
+                      -{product.discount}
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 space-y-2">
+                    <button className="p-2 rounded-full backdrop-blur-md shadow-lg hover:scale-110 transition-transform" 
+                            style={{ backgroundColor: `${colorPalette['section-bg-1']}CC` }}>
+                      <Heart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                    </button>
+                    <button className="p-2 rounded-full backdrop-blur-md shadow-lg hover:scale-110 transition-transform" 
+                            style={{ backgroundColor: `${colorPalette['section-bg-1']}CC` }}>
+                      <Eye className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                    </button>
+                  </div>
+                  
+                  {/* Quick Add Button */}
+                  <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                    <Button 
+                      size="sm"
+                      className="w-full backdrop-blur-md shadow-lg font-medium"
+                      style={{ 
+                        backgroundColor: `${colorPalette['button-primary']}CC`,
+                        color: colorPalette['button-text'],
+                        borderColor: colorPalette.border
+                      }}
+                    >
+                      <Zap className="h-4 w-4 mr-2" />
+                      Quick Add
+                    </Button>
                   </div>
                 </div>
-                <div className="p-4 space-y-3">
-                  <h4 className="font-semibold" style={{ color: colorPalette['text-primary'] }}>{product.name}</h4>
+                
+                <div className="p-5 space-y-4">
+                  <h4 className="font-bold text-lg" style={{ color: colorPalette['text-primary'] }}>
+                    {product.name}
+                  </h4>
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-current" style={{ color: colorPalette.highlight }} />
+                        <Star key={i} className="h-4 w-4 fill-current" 
+                              style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
                       ))}
                     </div>
-                    <span className="text-sm" style={{ color: colorPalette['text-secondary'] }}>({product.rating})</span>
+                    <span className="text-sm font-medium" style={{ color: colorPalette['text-secondary'] }}>
+                      ({product.rating})
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold" style={{ color: colorPalette.brand }}>{product.price}</span>
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl font-bold" style={{ color: colorPalette.brand }}>
+                          {product.price}
+                        </span>
+                        <span className="text-sm line-through" style={{ color: colorPalette['text-secondary'] }}>
+                          {product.originalPrice}
+                        </span>
+                      </div>
+                      <p className="text-xs" style={{ color: colorPalette['text-secondary'] }}>
+                        Free shipping
+                      </p>
+                    </div>
                     <Button 
                       size="sm"
+                      className="hover:scale-105 transition-transform shadow-md"
                       style={{ backgroundColor: colorPalette['button-secondary'], color: colorPalette['button-secondary-text'] }}
                     >
-                      Add to Cart
+                      <ShoppingCart className="h-4 w-4 mr-1" />
+                      Add
                     </Button>
                   </div>
                 </div>
@@ -207,6 +266,12 @@ const EcommerceTechStoreTemplate: React.FC<EcommerceTechStoreTemplateProps> = ({
           </div>
         </div>
       </section>
+
+      <EcommerceFooter 
+        colorPalette={colorPalette} 
+        brandName="TechVault" 
+        theme="tech" 
+      />
     </div>
   );
 };
