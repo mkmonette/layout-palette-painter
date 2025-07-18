@@ -263,7 +263,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                 </TabsList>
               </div>
 
-              <ScrollArea className="h-[60vh]">
+              <ScrollArea className="flex-1 max-h-[calc(90vh-280px)]">
                 <TabsContent value="settings" className="p-6 pt-4">
                   <div className="space-y-6">
                     {/* Controls */}
