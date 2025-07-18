@@ -129,21 +129,14 @@ const Dashboard = () => {
     gradientDirection: 'horizontal'
   });
 
-  // New state for sidebar sections
-  const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'background-settings' | 'ai-colors' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings' | 'test-plans'>('templates');
   const [isEditingName, setIsEditingName] = useState(false);
   const [showColorMood, setShowColorMood] = useState(false);
-  const [isContextPanelCollapsed, setIsContextPanelCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showPDFExportModal, setShowPDFExportModal] = useState(false);
   const [showAutoGenerateConfirmModal, setShowAutoGenerateConfirmModal] = useState(false);
   const [showAutoGenerateResultsModal, setShowAutoGenerateResultsModal] = useState(false);
   const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
 
-  // Set initial panel state based on mobile detection
-  useEffect(() => {
-    setIsContextPanelCollapsed(isMobile);
-  }, [isMobile]);
   const {
     remainingAIGenerations,
     maxAIGenerationsPerMonth,
@@ -535,16 +528,6 @@ const Dashboard = () => {
       if (moodId !== undefined) setSelectedMoodId(moodId);
     }} onTemplateToggle={(checked: boolean) => {}} onModeChange={handleModeChange} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
   }
-  const handleSidebarItemClick = (sectionId: typeof activeSection) => {
-    if (activeSection === sectionId && !isContextPanelCollapsed) {
-      // If clicking the same active section and panel is open, close it
-      setIsContextPanelCollapsed(true);
-    } else {
-      // Otherwise, set the section and ensure panel is open
-      setActiveSection(sectionId);
-      setIsContextPanelCollapsed(false);
-    }
-  };
   const sidebarItems = [{
     id: 'templates' as const,
     icon: Layout,
@@ -685,17 +668,114 @@ const Dashboard = () => {
         }} className="w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600">
             {sidebarItems.map(item => {
             if (!item.available) return null;
-            return <Tooltip key={item.id}>
-                  <TooltipTrigger asChild>
-                    <Button variant={activeSection === item.id ? "default" : "ghost"} size="sm" className="w-8 h-8 p-1 relative text-white hover:bg-white/20 rounded-sm" onClick={() => handleSidebarItemClick(item.id)}>
+            return <Popover key={item.id}>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-8 h-8 p-1 relative text-white hover:bg-white/20 rounded-sm">
                       <item.icon className="h-5 w-5 text-white" />
                       {item.isPro && <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
                           <Sparkles className="h-2 w-2 text-blue-600" />
                         </div>}
                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">{item.label}</TooltipContent>
-                </Tooltip>;
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" side="right" align="start">
+                    <div className="flex flex-col h-96">
+                      <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
+                        <h2 className="text-base font-semibold text-foreground">
+                          {item.label}
+                        </h2>
+                      </div>
+                      
+                      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
+                        {item.id === 'templates' && 
+                          <TemplatesSection 
+                            selectedTemplate={selectedTemplate} 
+                            onTemplateChange={setSelectedTemplate} 
+                            colorPalette={colorPalette} 
+                          />
+                        }
+
+                        {item.id === 'schemes' && <div className="space-y-4">
+                             <p className="text-xs text-muted-foreground">
+                               Choose a color scheme to generate harmonious palettes.
+                             </p>
+                            <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
+                          </div>}
+
+                        {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
+
+                        {item.id === 'background-settings' && <div className="space-y-4">
+                            <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
+                          </div>}
+
+                        {item.id === 'ai-colors' && <AIColorGenerator
+                          isDarkMode={colorMode === 'dark'} 
+                          onPaletteGenerated={handleAIPaletteGenerated}
+                          backgroundSettings={backgroundSettings}
+                        />}
+
+                        {item.id === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
+
+                        {item.id === 'admin-presets' && <div className="space-y-4">
+                             <p className="text-xs text-muted-foreground">
+                               Browse and apply professionally curated color palettes.
+                             </p>
+                             <Button onClick={() => setActiveModal('admin-presets')} className="w-full px-2 py-1 rounded-sm">
+                               Browse Color Presets
+                             </Button>
+                          </div>}
+                          
+                        {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
+                        
+                        {item.id === 'settings' && <div className="space-y-4">
+                             <h3 className="text-sm font-medium">Application Settings</h3>
+                             <p className="text-xs text-muted-foreground">
+                               Configure your preferences and account settings.
+                             </p>
+                           
+                           <div className="space-y-3">
+                             <OpenAIKeyInput onKeySet={() => {}} />
+                           </div>
+                             <Button variant="outline" className="w-full px-2 py-1 rounded-sm" onClick={() => navigate('/history')}>
+                               View History
+                             </Button>
+                          </div>}
+
+                        {item.id === 'test-plans' && <div className="space-y-4">
+                             <h3 className="text-sm font-medium">Test Plan Switcher</h3>
+                             <p className="text-xs text-muted-foreground">
+                               Simulate different subscription plans for testing UI features. 
+                               This override is temporary and only affects the current session.
+                             </p>
+                            <TestPlanSwitcher />
+                          </div>}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="p-4 border-t space-y-2 bg-sky-200">
+                        {/* Main Generate Buttons - Responsive Layout */}
+                        <div className="grid grid-cols-1 gap-2">
+                          <Button onClick={handleGenerateColors} className="w-full text-[11px] sm:text-xs h-8 sm:h-9 whitespace-normal leading-tight px-2 py-1 rounded-sm" disabled={isGenerating}>
+                            {isGenerating ? <RefreshCw className="mr-1 h-3 w-3 sm:h-4 sm:w-4 animate-spin flex-shrink-0" /> : <Wand2 className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />}
+                            Generate Colors
+                          </Button>
+                          
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                               <Button onClick={canUseAIGeneration ? () => {} : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-[11px] h-8 sm:h-9 whitespace-normal leading-tight bg-amber-500 hover:bg-amber-400 text-slate-950 font-medium sm:text-xs px-2 py-1 rounded-sm">
+                                 <Bot className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                 AI Colors {!canUseAIGeneration && '🔒 PRO'}
+                               </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Use AI to generate palettes based on mood or theme
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>;
           })}
 
             {/* Template Theme Mode Selector */}
@@ -789,104 +869,6 @@ const Dashboard = () => {
             </Popover>
           </div>
 
-          {/* Context Panel */}
-          {!isContextPanelCollapsed && <div className="w-80 min-w-80 max-w-80 bg-background border-r flex flex-col">
-            <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
-               <h2 className="text-base font-semibold text-foreground">
-                 {sidebarItems.find(item => item.id === activeSection)?.label}
-               </h2>
-               <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(true)} className="h-6 w-6 p-1 rounded-sm">
-                 <PanelLeftClose className="h-4 w-4" />
-               </Button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
-              {activeSection === 'templates' && 
-                <TemplatesSection 
-                  selectedTemplate={selectedTemplate} 
-                  onTemplateChange={setSelectedTemplate} 
-                  colorPalette={colorPalette} 
-                />
-              }
-
-              {activeSection === 'schemes' && <div className="space-y-4">
-                   <p className="text-xs text-muted-foreground">
-                     Choose a color scheme to generate harmonious palettes.
-                   </p>
-                  <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
-                </div>}
-
-              {activeSection === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
-
-              {activeSection === 'background-settings' && <div className="space-y-4">
-                  <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
-                </div>}
-
-              {activeSection === 'ai-colors' && <AIColorGenerator
-                isDarkMode={colorMode === 'dark'} 
-                onPaletteGenerated={handleAIPaletteGenerated}
-                backgroundSettings={backgroundSettings}
-              />}
-
-              {activeSection === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
-
-              {activeSection === 'admin-presets' && <div className="space-y-4">
-                   <p className="text-xs text-muted-foreground">
-                     Browse and apply professionally curated color palettes.
-                   </p>
-                   <Button onClick={() => setActiveModal('admin-presets')} className="w-full px-2 py-1 rounded-sm">
-                     Browse Color Presets
-                   </Button>
-                </div>}
-              {activeSection === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
-              {activeSection === 'settings' && <div className="space-y-4">
-                   <h3 className="text-sm font-medium">Application Settings</h3>
-                   <p className="text-xs text-muted-foreground">
-                     Configure your preferences and account settings.
-                   </p>
-                  
-                  <div className="space-y-3">
-                    <OpenAIKeyInput onKeySet={() => {}} />
-                  </div>
-                   <Button variant="outline" className="w-full px-2 py-1 rounded-sm" onClick={() => navigate('/history')}>
-                     View History
-                   </Button>
-                </div>}
-
-              {activeSection === 'test-plans' && <div className="space-y-4">
-                   <h3 className="text-sm font-medium">Test Plan Switcher</h3>
-                   <p className="text-xs text-muted-foreground">
-                     Simulate different subscription plans for testing UI features. 
-                     This override is temporary and only affects the current session.
-                   </p>
-                  <TestPlanSwitcher />
-                </div>}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="p-4 border-t space-y-2 bg-sky-200">
-              {/* Main Generate Buttons - Responsive Layout */}
-              <div className="grid grid-cols-1 gap-2">
-                <Button onClick={handleGenerateColors} className="w-full text-[11px] sm:text-xs h-8 sm:h-9 whitespace-normal leading-tight px-2 py-1 rounded-sm" disabled={isGenerating}>
-                  {isGenerating ? <RefreshCw className="mr-1 h-3 w-3 sm:h-4 sm:w-4 animate-spin flex-shrink-0" /> : <Wand2 className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />}
-                  Generate Colors
-                </Button>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                     <Button onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-[11px] h-8 sm:h-9 whitespace-normal leading-tight bg-amber-500 hover:bg-amber-400 text-slate-950 font-medium sm:text-xs px-2 py-1 rounded-sm">
-                       <Bot className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                       AI Colors {!canUseAIGeneration && '🔒 PRO'}
-                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Use AI to generate palettes based on mood or theme
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              
-            </div>
-            </div>}
 
           {/* Main Canvas Area */}
           <div className="flex-1 flex flex-col bg-muted/30">
@@ -894,17 +876,7 @@ const Dashboard = () => {
             <div style={{
             backgroundColor: '#fef3e0'
           }} className="h-12 border-b flex items-center justify-between px-2 sm:px-4 bg-sky-200">
-              <div className="flex items-center space-x-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                     <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(!isContextPanelCollapsed)} className="hidden sm:flex px-1 py-1 rounded-sm">
-                       {isContextPanelCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {isContextPanelCollapsed ? 'Show Panel' : 'Hide Panel'}
-                  </TooltipContent>
-                </Tooltip>
+               <div className="flex items-center space-x-2">
                 
                 {/* Mobile hamburger menu */}
                 <Button 
@@ -1010,15 +982,6 @@ const Dashboard = () => {
                      Fullscreen
                    </Button>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => { setIsContextPanelCollapsed(!isContextPanelCollapsed); setIsMobileMenuOpen(false); }}
-                  className="w-full justify-start text-[11px] px-2 py-1 rounded-sm"
-                >
-                  {isContextPanelCollapsed ? <PanelLeftOpen className="h-3 w-3 mr-2" /> : <PanelLeftClose className="h-3 w-3 mr-2" />}
-                  {isContextPanelCollapsed ? 'Show Panel' : 'Hide Panel'}
-                </Button>
               </div>
             )}
 
@@ -1029,7 +992,7 @@ const Dashboard = () => {
               transformOrigin: 'top center',
               width: isMobile ? 
                 'calc(100vw - 16px)' : // Full width minus equal margins (8px each side)
-                `calc(100vw - ${isContextPanelCollapsed ? '104px' : '424px'})`, // Sidebar + panel width + equal margins (40px total)
+                'calc(100vw - 104px)', // Sidebar width + equal margins (40px total)
               minHeight: '400px'
             }} data-preview-element>
                 <div className="w-full h-auto overflow-visible">
