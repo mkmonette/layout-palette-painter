@@ -252,9 +252,9 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
             </Button>
           </div>
 
-          <div className="flex-1 overflow-hidden">
-            <Tabs defaultValue="settings" className="h-full">
-              <div className="px-6 pt-4">
+          <div className="flex-1 flex flex-col min-h-0">
+            <Tabs defaultValue="settings" className="flex-1 flex flex-col">
+              <div className="px-6 pt-4 flex-shrink-0">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="settings">Settings</TabsTrigger>
                   <TabsTrigger value="palettes" disabled={generatedPalettes.length === 0}>
@@ -263,149 +263,151 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                 </TabsList>
               </div>
 
-              <ScrollArea className="flex-1 max-h-[calc(90vh-200px)]">
-                <TabsContent value="settings" className="p-6 pt-4">
-                  <div className="space-y-6">
-                    {/* Controls */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h3 className="text-sm font-medium mb-3">Template Selection</h3>
-                        <TemplateSelector
-                          selectedTemplate={selectedTemplate}
-                          onTemplateChange={setSelectedTemplate}
-                          colorPalette={colorPalette}
-                        />
-                      </div>
-                      
-                      <div>
-                        <h3 className="text-sm font-medium mb-3">Generation Settings</h3>
-                        <div className="space-y-3">
-                          <div>
-                            <label className="text-xs font-medium text-gray-600 mb-1 block">
-                              Number of Palettes
-                            </label>
-                            <Select
-                              value={autogenerateCount.toString()}
-                              onValueChange={(value) => setAutogenerateCount(parseInt(value))}
-                            >
-                              <SelectTrigger className="h-8">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="5">5 palettes</SelectItem>
-                                <SelectItem value="10">10 palettes</SelectItem>
-                                <SelectItem value="15">15 palettes</SelectItem>
-                                <SelectItem value="20">20 palettes</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          
-                          <div>
-                            <label className="text-xs font-medium text-gray-600 mb-1 block">
-                              Color Scheme
-                            </label>
-                            <ColorSchemeSelector
-                              selectedScheme={selectedScheme}
-                              onSchemeChange={setSelectedScheme}
-                              onGenerateScheme={() => {}}
-                              isGenerating={false}
-                            />
+              <div className="flex-1 min-h-0">
+                <ScrollArea className="h-full">
+                  <TabsContent value="settings" className="p-6 pt-4">
+                    <div className="space-y-6">
+                      {/* Controls */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h3 className="text-sm font-medium mb-3">Template Selection</h3>
+                          <TemplateSelector
+                            selectedTemplate={selectedTemplate}
+                            onTemplateChange={setSelectedTemplate}
+                            colorPalette={colorPalette}
+                          />
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-sm font-medium mb-3">Generation Settings</h3>
+                          <div className="space-y-3">
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1 block">
+                                Number of Palettes
+                              </label>
+                              <Select
+                                value={autogenerateCount.toString()}
+                                onValueChange={(value) => setAutogenerateCount(parseInt(value))}
+                              >
+                                <SelectTrigger className="h-8">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="5">5 palettes</SelectItem>
+                                  <SelectItem value="10">10 palettes</SelectItem>
+                                  <SelectItem value="15">15 palettes</SelectItem>
+                                  <SelectItem value="20">20 palettes</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1 block">
+                                Color Scheme
+                              </label>
+                              <ColorSchemeSelector
+                                selectedScheme={selectedScheme}
+                                onSchemeChange={setSelectedScheme}
+                                onGenerateScheme={() => {}}
+                                isGenerating={false}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </TabsContent>
+                  </TabsContent>
 
-                <TabsContent value="palettes" className="p-6 pt-4">
-                  <div className="flex justify-end mb-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setGeneratedPalettes([]);
-                        setSelectedPaletteIndex(null);
-                      }}
-                    >
-                      <RotateCcw className="h-4 w-4 mr-2" />
-                      New Settings
-                    </Button>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {generatedPalettes.map((palette, index) => (
-                      <Card
-                        key={palette.id}
-                        className={`cursor-pointer transition-all hover:shadow-lg ${
-                          selectedPaletteIndex === index
-                            ? 'border-blue-500 bg-blue-50 shadow-lg'
-                            : 'hover:border-gray-300'
-                        }`}
-                        onClick={() => setSelectedPaletteIndex(index)}
+                  <TabsContent value="palettes" className="p-6 pt-4">
+                    <div className="flex justify-end mb-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setGeneratedPalettes([]);
+                          setSelectedPaletteIndex(null);
+                        }}
                       >
-                        <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white relative">
-                          <div 
-                            className="absolute inset-0 scale-[0.2] origin-top-left" 
-                            style={{ width: '500%', height: '500%' }}
-                            data-palette-preview
-                          >
-                            <LivePreview
-                              template={palette.templateId as TemplateType}
-                              colorPalette={convertToColorPalette(palette)}
-                              backgroundSettings={backgroundSettings}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="p-3">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium text-sm">{palette.templateName}</h4>
-                            <Badge variant="outline" className="text-xs">
-                              {getDaysRemaining(palette.timestamp)}d
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex items-center gap-1 mb-3">
-                            {palette.colors.slice(0, 5).map((color, colorIndex) => (
-                              <div
-                                key={colorIndex}
-                                className="w-4 h-4 rounded border border-gray-200"
-                                style={{ backgroundColor: color }}
+                        <RotateCcw className="h-4 w-4 mr-2" />
+                        New Settings
+                      </Button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {generatedPalettes.map((palette, index) => (
+                        <Card
+                          key={palette.id}
+                          className={`cursor-pointer transition-all hover:shadow-lg ${
+                            selectedPaletteIndex === index
+                              ? 'border-blue-500 bg-blue-50 shadow-lg'
+                              : 'hover:border-gray-300'
+                          }`}
+                          onClick={() => setSelectedPaletteIndex(index)}
+                        >
+                          <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white relative">
+                            <div 
+                              className="absolute inset-0 scale-[0.2] origin-top-left" 
+                              style={{ width: '500%', height: '500%' }}
+                              data-palette-preview
+                            >
+                              <LivePreview
+                                template={palette.templateId as TemplateType}
+                                colorPalette={convertToColorPalette(palette)}
+                                backgroundSettings={backgroundSettings}
                               />
-                            ))}
+                            </div>
                           </div>
                           
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleSavePalette(palette);
-                              }}
-                              className="flex-1 text-xs"
-                            >
-                              <Save className="h-3 w-3 mr-1" />
-                              Save
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDownloadPDF();
-                              }}
-                              className="text-xs"
-                            >
-                              <Download className="h-3 w-3" />
-                            </Button>
+                          <div className="p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-medium text-sm">{palette.templateName}</h4>
+                              <Badge variant="outline" className="text-xs">
+                                {getDaysRemaining(palette.timestamp)}d
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center gap-1 mb-3">
+                              {palette.colors.slice(0, 5).map((color, colorIndex) => (
+                                <div
+                                  key={colorIndex}
+                                  className="w-4 h-4 rounded border border-gray-200"
+                                  style={{ backgroundColor: color }}
+                                />
+                              ))}
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSavePalette(palette);
+                                }}
+                                className="flex-1 text-xs"
+                              >
+                                <Save className="h-3 w-3 mr-1" />
+                                Save
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDownloadPDF();
+                                }}
+                                className="text-xs"
+                              >
+                                <Download className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </TabsContent>
-              </ScrollArea>
+                        </Card>
+                      ))}
+                    </div>
+                  </TabsContent>
+                </ScrollArea>
+              </div>
             </Tabs>
           </div>
         </DialogContent>
