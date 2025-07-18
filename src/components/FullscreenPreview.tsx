@@ -16,7 +16,8 @@ import { ColorMode } from '@/utils/colorGenerator';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { useToast } from '@/hooks/use-toast';
-import ImageColorGenerator from '@/components/ImageColorGenerator';
+import ImageUploadGenerator from '@/components/ImageUploadGenerator';
+import WebsiteColorGenerator from '@/components/WebsiteColorGenerator';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
@@ -333,16 +334,33 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5" />
-              Color Mood
+              Generate from Image
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
-              <ImageColorGenerator onPaletteGenerated={palette => {
-              onColorChange(palette);
-              closeModal();
-            }} isGenerating={isGenerating} setIsGenerating={() => {}} // Read-only in fullscreen
-            />
+            <div className="p-4 space-y-4">
+              <div className="space-y-3">
+                <h3 className="font-medium text-sm">Upload Image</h3>
+                <ImageUploadGenerator 
+                  onPaletteGenerated={palette => {
+                    onColorChange(palette);
+                    closeModal();
+                  }} 
+                  isGenerating={isGenerating} 
+                  setIsGenerating={() => {}} // Read-only in fullscreen
+                />
+              </div>
+              <div className="space-y-3">
+                <h3 className="font-medium text-sm">Website URL</h3>
+                <WebsiteColorGenerator 
+                  onPaletteGenerated={palette => {
+                    onColorChange(palette);
+                    closeModal();
+                  }} 
+                  isGenerating={isGenerating} 
+                  setIsGenerating={() => {}} // Read-only in fullscreen
+                />
+              </div>
             </div>
           </ScrollArea>
         </DialogContent>

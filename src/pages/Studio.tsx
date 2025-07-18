@@ -34,7 +34,8 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import PlanSelector from '@/components/PlanSelector';
-import ImageColorGenerator from '@/components/ImageColorGenerator';
+import ImageUploadGenerator from '@/components/ImageUploadGenerator';
+import WebsiteColorGenerator from '@/components/WebsiteColorGenerator';
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 import BackgroundCustomizer from '@/components/BackgroundCustomizer';
@@ -793,7 +794,59 @@ const Dashboard = () => {
                           </div>}
 
 
-                        {item.id === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
+                        {item.id === 'from-image' && 
+                          <div className="space-y-2">
+                            <p className="text-xs text-muted-foreground">
+                              Extract color palettes from images or websites.
+                            </p>
+                            
+                            {/* Upload Image Popover */}
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                                  <span className="text-xs">📷 Upload Image</span>
+                                </Button>
+                              </PopoverTrigger>
+                               <PopoverContent 
+                                 className="w-64 p-4" 
+                                 side="right" 
+                                 align="start"
+                               >
+                                <div className="space-y-3">
+                                  <h3 className="font-medium text-xs">Upload Image</h3>
+                                  <ImageUploadGenerator 
+                                    onPaletteGenerated={setColorPalette} 
+                                    isGenerating={isGenerating} 
+                                    setIsGenerating={setIsGenerating} 
+                                  />
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            
+                            {/* Website URL Popover */}
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                                  <span className="text-xs">🌐 Website URL</span>
+                                </Button>
+                              </PopoverTrigger>
+                               <PopoverContent 
+                                 className="w-64 p-4" 
+                                 side="right" 
+                                 align="start"
+                               >
+                                <div className="space-y-3">
+                                  <h3 className="font-medium text-xs">Website URL</h3>
+                                  <WebsiteColorGenerator 
+                                    onPaletteGenerated={setColorPalette} 
+                                    isGenerating={isGenerating} 
+                                    setIsGenerating={setIsGenerating} 
+                                  />
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                        }
 
                          {item.id === 'admin-presets' && <div className="space-y-2">
                               <p className="text-xs text-muted-foreground">
