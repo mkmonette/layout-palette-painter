@@ -588,7 +588,7 @@ const Dashboard = () => {
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" className="text-white border-[rgba(43,43,43,0.5)] hover:text-white hover:border-white/70 bg-gray-950 hover:bg-gray-800">
+                <Button variant="outline" size="sm" className="text-white border-[rgba(43,43,43,0.5)] hover:text-white hover:border-white/70 bg-gray-950 hover:bg-gray-800 px-2 py-1 rounded-sm">
                   <Share className="h-4 w-4 mr-2" />
                   Share
                 </Button>
@@ -597,7 +597,7 @@ const Dashboard = () => {
               {/* Dashboard Dark Mode Toggle */}
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-white hover:bg-white/20 hover:text-white" onClick={() => {
+                   <Button variant="ghost" size="sm" className="w-8 h-8 p-1 text-white hover:bg-white/20 hover:text-white rounded-sm" onClick={() => {
                   // Dashboard dark mode toggle - only affects dashboard UI
                   const newDashboardDarkMode = !isDashboardDarkMode;
                   setIsDashboardDarkMode(newDashboardDarkMode);
@@ -649,7 +649,7 @@ const Dashboard = () => {
             if (!item.available) return null;
             return <Tooltip key={item.id}>
                   <TooltipTrigger asChild>
-                    <Button variant={activeSection === item.id ? "default" : "ghost"} size="sm" className="w-10 h-10 p-0 relative text-white hover:bg-white/20" onClick={() => handleSidebarItemClick(item.id)}>
+                    <Button variant={activeSection === item.id ? "default" : "ghost"} size="sm" className="w-8 h-8 p-1 relative text-white hover:bg-white/20 rounded-sm" onClick={() => handleSidebarItemClick(item.id)}>
                       <item.icon className="h-5 w-5 text-white" />
                       {item.isPro && <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
                           <Sparkles className="h-2 w-2 text-blue-600" />
@@ -664,7 +664,7 @@ const Dashboard = () => {
             <div className="flex-1" />
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-white hover:bg-white/20">
+                <Button variant="ghost" size="sm" className="w-8 h-8 p-1 text-white hover:bg-white/20 rounded-sm">
                   {colorMode === 'light' ? <Sun className="h-4 w-4" /> : 
                    colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4" /> :
                    colorMode === 'midtone' ? <Sunset className="h-4 w-4" /> : 
@@ -713,13 +713,13 @@ const Dashboard = () => {
                         available: canAccessTemplateDarkMode 
                       }
                     ].map(({ mode, label, description, icon: Icon, available }) => (
-                      <Button
-                        key={mode}
-                        variant={colorMode === mode ? "default" : "outline"}
-                        size="sm"
-                        className="justify-start h-auto p-3 relative"
-                        disabled={!available}
-                        onClick={() => {
+                       <Button
+                         key={mode}
+                         variant={colorMode === mode ? "default" : "outline"}
+                         size="sm"
+                         className="justify-start h-auto px-2 py-1 relative rounded-sm"
+                         disabled={!available}
+                         onClick={() => {
                           if (!available) {
                             setUpsellModal({
                               isOpen: true,
@@ -757,9 +757,9 @@ const Dashboard = () => {
                <h2 className="text-base font-semibold text-foreground">
                  {sidebarItems.find(item => item.id === activeSection)?.label}
                </h2>
-              <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(true)} className="h-8 w-8 p-0">
-                <PanelLeftClose className="h-4 w-4" />
-              </Button>
+               <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(true)} className="h-6 w-6 p-1 rounded-sm">
+                 <PanelLeftClose className="h-4 w-4" />
+               </Button>
             </div>
             
             <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
@@ -796,9 +796,9 @@ const Dashboard = () => {
                    <p className="text-xs text-muted-foreground">
                      Browse and apply professionally curated color palettes.
                    </p>
-                  <Button onClick={() => setActiveModal('admin-presets')} className="w-full">
-                    Browse Admin Presets
-                  </Button>
+                   <Button onClick={() => setActiveModal('admin-presets')} className="w-full px-2 py-1 rounded-sm">
+                     Browse Admin Presets
+                   </Button>
                 </div>}
               {activeSection === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
               {activeSection === 'settings' && <div className="space-y-4">
@@ -810,9 +810,9 @@ const Dashboard = () => {
                   <div className="space-y-3">
                     <OpenAIKeyInput onKeySet={() => {}} />
                   </div>
-                  <Button variant="outline" className="w-full" onClick={() => navigate('/history')}>
-                    View History
-                  </Button>
+                   <Button variant="outline" className="w-full px-2 py-1 rounded-sm" onClick={() => navigate('/history')}>
+                     View History
+                   </Button>
                 </div>}
 
               {activeSection === 'test-plans' && <div className="space-y-4">
@@ -829,17 +829,17 @@ const Dashboard = () => {
             <div className="p-4 border-t space-y-2 bg-sky-200">
               {/* Main Generate Buttons - Responsive Layout */}
               <div className="grid grid-cols-1 gap-2">
-                <Button onClick={handleGenerateColors} className="w-full text-[11px] sm:text-xs h-9 sm:h-10 whitespace-normal leading-tight" disabled={isGenerating}>
+                <Button onClick={handleGenerateColors} className="w-full text-[11px] sm:text-xs h-8 sm:h-9 whitespace-normal leading-tight px-2 py-1 rounded-sm" disabled={isGenerating}>
                   {isGenerating ? <RefreshCw className="mr-1 h-3 w-3 sm:h-4 sm:w-4 animate-spin flex-shrink-0" /> : <Wand2 className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />}
                   Generate Colors
                 </Button>
                 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-[11px] h-9 sm:h-10 whitespace-normal leading-tight bg-amber-500 hover:bg-amber-400 text-slate-950 font-medium sm:text-xs">
-                      <Bot className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                      AI Colors {!canUseAIGeneration && '🔒 PRO'}
-                    </Button>
+                     <Button onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-[11px] h-8 sm:h-9 whitespace-normal leading-tight bg-amber-500 hover:bg-amber-400 text-slate-950 font-medium sm:text-xs px-2 py-1 rounded-sm">
+                       <Bot className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                       AI Colors {!canUseAIGeneration && '🔒 PRO'}
+                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
                     Use AI to generate palettes based on mood or theme
@@ -859,9 +859,9 @@ const Dashboard = () => {
               <div className="flex items-center space-x-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(!isContextPanelCollapsed)} className="hidden sm:flex">
-                      {isContextPanelCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-                    </Button>
+                     <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(!isContextPanelCollapsed)} className="hidden sm:flex px-1 py-1 rounded-sm">
+                       {isContextPanelCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
                     {isContextPanelCollapsed ? 'Show Panel' : 'Hide Panel'}
@@ -873,7 +873,7 @@ const Dashboard = () => {
                   variant="ghost" 
                   size="sm" 
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="sm:hidden"
+                  className="sm:hidden px-1 py-1 rounded-sm"
                 >
                   {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
                 </Button>
@@ -890,41 +890,41 @@ const Dashboard = () => {
               
               {/* Desktop controls */}
               <div className="hidden sm:flex items-center space-x-2">
-                <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50}>
-                  <ZoomOut className="h-4 w-4" />
-                </Button>
+                 <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-1 py-1 rounded-sm">
+                   <ZoomOut className="h-4 w-4" />
+                 </Button>
                 <span className="text-xs text-muted-foreground min-w-12 text-center">{zoomLevel}%</span>
-                <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200}>
-                  <ZoomIn className="h-4 w-4" />
-                </Button>
+                 <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-1 py-1 rounded-sm">
+                   <ZoomIn className="h-4 w-4" />
+                 </Button>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white">
-                      {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
-                      Auto Generate
-                    </Button>
+                     <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-sm">
+                       {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
+                       Auto Generate
+                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Generate new color palette</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Export PDF
-                    </Button>
+                     <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="px-2 py-1 rounded-sm">
+                       <Download className="h-4 w-4 mr-2" />
+                       Export PDF
+                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Export color palette as PDF</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="sm" onClick={handleSave}>
-                      <Save className="h-4 w-4 mr-2" />
-                      Save
-                    </Button>
+                     <Button variant="outline" size="sm" onClick={handleSave} className="px-2 py-1 rounded-sm">
+                       <Save className="h-4 w-4 mr-2" />
+                       Save
+                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Save current palette</TooltipContent>
                 </Tooltip>
-                <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="bg-amber-500 hover:bg-amber-400">
+                <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="bg-amber-500 hover:bg-amber-400 px-2 py-1 rounded-sm">
                   <Maximize className="h-4 w-4 mr-2" />
                   Fullscreen
                 </Button>
@@ -932,13 +932,13 @@ const Dashboard = () => {
               
               {/* Mobile zoom controls only */}
               <div className="flex sm:hidden items-center space-x-1">
-                <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="h-8 w-8 p-0">
-                  <ZoomOut className="h-3 w-3" />
-                </Button>
+                 <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="h-6 w-6 p-1 rounded-sm">
+                   <ZoomOut className="h-3 w-3" />
+                 </Button>
                 <span className="text-[11px] text-muted-foreground min-w-8 text-center">{zoomLevel}%</span>
-                <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="h-8 w-8 p-0">
-                  <ZoomIn className="h-3 w-3" />
-                </Button>
+                 <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="h-6 w-6 p-1 rounded-sm">
+                   <ZoomIn className="h-3 w-3" />
+                 </Button>
               </div>
             </div>
 
@@ -946,28 +946,28 @@ const Dashboard = () => {
             {isMobileMenuOpen && (
               <div className="sm:hidden bg-background border-b border-border p-4 space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-[11px]">
-                    {isGenerating ? <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1" />}
-                    Generate
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-[11px]">
-                    <Download className="h-3 w-3 mr-1" />
-                    Export PDF
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-[11px]">
-                    <Save className="h-3 w-3 mr-1" />
-                    Save
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="bg-amber-500 hover:bg-amber-400 text-[11px]">
-                    <Maximize className="h-3 w-3 mr-1" />
-                    Fullscreen
-                  </Button>
+                   <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-[11px] px-2 py-1 rounded-sm">
+                     {isGenerating ? <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1" />}
+                     Generate
+                   </Button>
+                   <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-[11px] px-2 py-1 rounded-sm">
+                     <Download className="h-3 w-3 mr-1" />
+                     Export PDF
+                   </Button>
+                   <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-[11px] px-2 py-1 rounded-sm">
+                     <Save className="h-3 w-3 mr-1" />
+                     Save
+                   </Button>
+                   <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="bg-amber-500 hover:bg-amber-400 text-[11px] px-2 py-1 rounded-sm">
+                     <Maximize className="h-3 w-3 mr-1" />
+                     Fullscreen
+                   </Button>
                 </div>
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => { setIsContextPanelCollapsed(!isContextPanelCollapsed); setIsMobileMenuOpen(false); }}
-                  className="w-full justify-start text-[11px]"
+                  className="w-full justify-start text-[11px] px-2 py-1 rounded-sm"
                 >
                   {isContextPanelCollapsed ? <PanelLeftOpen className="h-3 w-3 mr-2" /> : <PanelLeftClose className="h-3 w-3 mr-2" />}
                   {isContextPanelCollapsed ? 'Show Panel' : 'Hide Panel'}
@@ -1031,10 +1031,10 @@ const Dashboard = () => {
         <Button
           onClick={handleGenerateColors}
           disabled={isGenerating}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50"
+          className="fixed bottom-6 right-6 h-12 w-12 rounded-sm shadow-lg hover:shadow-xl transition-all duration-200 z-50 p-2"
           size="icon"
         >
-          <Sparkles className="h-6 w-6" />
+          <Sparkles className="h-5 w-5" />
         </Button>
       </div>
     </TooltipProvider>;
