@@ -8,7 +8,7 @@ import { generateColorScheme } from '@/utils/colorGenerator';
 import { TemplateType, ColorPalette } from '@/types/template';
 
 const LivePreviewSection = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('bold-landing');
   const [colorPalette, setColorPalette] = useState<ColorPalette>({
     brand: 'hsl(263, 85%, 58%)',
     accent: 'hsl(188, 94%, 50%)',
@@ -38,10 +38,10 @@ const LivePreviewSection = () => {
   };
 
   const templates: { id: TemplateType; name: string; description: string }[] = [
-    { id: 'modern-hero', name: 'Modern Hero', description: 'Clean & professional' },
+    { id: 'bold-landing', name: 'Bold Landing', description: 'Powerful & impactful' },
     { id: 'creative-portfolio', name: 'Creative Portfolio', description: 'Artistic & bold' },
-    { id: 'tech-startup', name: 'Tech Startup', description: 'Innovative & sleek' },
-    { id: 'saas-product', name: 'SaaS Product', description: 'Business-focused' }
+    { id: 'gradient-hero', name: 'Gradient Hero', description: 'Modern & vibrant' },
+    { id: 'split-screen', name: 'Split Screen', description: 'Balanced & engaging' }
   ];
 
   return (
@@ -119,11 +119,11 @@ const LivePreviewSection = () => {
           </div>
 
           {/* Enhanced Live Preview */}
-          <div className="relative bg-gradient-to-br from-white to-primary/5">
+          <div className="relative bg-gradient-to-br from-white to-primary/5 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/5 to-secondary/5 pointer-events-none" />
             <div className="relative">
-              {/* Preview Scale Container */}
-              <div className="transform scale-75 lg:scale-90 origin-top w-[133.33%] lg:w-[111.11%] h-auto">
+              {/* Preview Container - Full width display */}
+              <div className="w-full max-w-none">
                 <LivePreview
                   template={selectedTemplate}
                   colorPalette={colorPalette}
