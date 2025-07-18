@@ -11,7 +11,7 @@ import Studio from "./pages/Studio";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import History from "./pages/History";
-import AutoGenerate from "./pages/AutoGenerate";
+
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -60,14 +60,6 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <History />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/autogenerate" 
-              element={
-                <ProtectedRoute>
-                  <AutoGenerate />
                 </ProtectedRoute>
               } 
             />

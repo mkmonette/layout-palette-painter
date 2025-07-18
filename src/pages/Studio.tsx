@@ -48,6 +48,7 @@ import { initializeOpenAI } from '@/utils/openaiService';
 import { validatePaletteContrast, getAccessibleVersion } from '@/utils/contrastChecker';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
 import { ColorMode } from '@/utils/colorGenerator';
+import AutoGenerateModal from '@/components/AutoGenerateModal';
 const Dashboard = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -132,6 +133,7 @@ const Dashboard = () => {
   const [isContextPanelCollapsed, setIsContextPanelCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showPDFExportModal, setShowPDFExportModal] = useState(false);
+  const [showAutoGenerateModal, setShowAutoGenerateModal] = useState(false);
 
   // Set initial panel state based on mobile detection
   useEffect(() => {
@@ -897,15 +899,24 @@ const Dashboard = () => {
                  <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-1 py-1 rounded-sm">
                    <ZoomIn className="h-4 w-4" />
                  </Button>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                     <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-sm">
-                       {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
-                       Auto Generate
-                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Generate new color palette</TooltipContent>
-                </Tooltip>
+                 <Tooltip>
+                   <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-sm">
+                        {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
+                        Generate
+                      </Button>
+                   </TooltipTrigger>
+                   <TooltipContent>Generate new color palette</TooltipContent>
+                 </Tooltip>
+                 <Tooltip>
+                   <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" onClick={() => setShowAutoGenerateModal(true)} disabled={!canAccessAutoGenerator} className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded-sm">
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Auto Generate
+                      </Button>
+                   </TooltipTrigger>
+                   <TooltipContent>Generate multiple color palettes</TooltipContent>
+                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                      <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="px-2 py-1 rounded-sm">
@@ -1016,7 +1027,7 @@ const Dashboard = () => {
         setShowColorMood(false);
       }} currentPalette={colorPalette} />
 
-        {/* PDF Export Modal */}
+         {/* PDF Export Modal */}
         <PDFExportModal
           isOpen={showPDFExportModal}
           onClose={() => setShowPDFExportModal(false)}
@@ -1025,6 +1036,13 @@ const Dashboard = () => {
           isPro={isPro}
           colorPalette={colorPalette}
           templateName={selectedTemplate}
+        />
+
+        {/* Auto Generate Modal */}
+        <AutoGenerateModal
+          isOpen={showAutoGenerateModal}
+          onClose={() => setShowAutoGenerateModal(false)}
+          backgroundSettings={backgroundSettings}
         />
 
         {/* Floating Generate Button */}
