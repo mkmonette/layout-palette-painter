@@ -114,30 +114,32 @@ const AutoGenerateConfirmModal: React.FC<AutoGenerateConfirmModalProps> = ({
             )}
           </div>
 
-          <div className="flex gap-2 pt-4">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="flex-1"
-              disabled={isGenerating}
-            >
-              Cancel
-            </Button>
-            {hasGeneratedPalettes && (
+          <div className="space-y-3 pt-4">
+            <div className="flex gap-2">
               <Button
                 variant="outline"
-                onClick={onShowGeneratedPalettes}
+                onClick={onClose}
                 className="flex-1"
                 disabled={isGenerating}
               >
-                <Eye className="h-4 w-4 mr-2" />
-                Generated Palettes
+                Cancel
               </Button>
-            )}
+              {hasGeneratedPalettes && (
+                <Button
+                  variant="outline"
+                  onClick={onShowGeneratedPalettes}
+                  className="flex-1"
+                  disabled={isGenerating}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  Generated Palettes
+                </Button>
+              )}
+            </div>
             <Button
               onClick={handleGenerate}
               disabled={isGenerating}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               {isGenerating ? (
                 <>
