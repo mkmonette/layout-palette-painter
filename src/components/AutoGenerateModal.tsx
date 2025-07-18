@@ -233,7 +233,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
               <Button
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-14 my-5"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-14"
               >
                 {isGenerating ? (
                   <>
@@ -252,7 +252,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
 
           <div className="flex-1 overflow-hidden">
             <Tabs defaultValue="settings" className="h-full">
-              <div className="px-6 pt-2">
+              <div className="px-6 pt-0">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="settings">Settings</TabsTrigger>
                   <TabsTrigger value="palettes" disabled={generatedPalettes.length === 0}>
