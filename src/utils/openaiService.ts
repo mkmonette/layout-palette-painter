@@ -204,7 +204,7 @@ const buildColorPrompt = (request: OpenAIColorRequest): string => {
 - Use lightness values between ${minL} and ${maxL} for the background and accent colors.
 - Include a background color, a text color, a primary accent, and a secondary accent.
 - The text color must be clearly visible and have strong contrast against the background.
-- Avoid generating text colors that are too similar to the background — no low-contrast gray-on-gray or similar-tone combinations.
+- Avoid generating text colors that are too similar to the background — no low-contrast gray-on-gray or similar-tone combinations.${themeMode === 'midtone' ? '\n- IMPORTANT: Generate light-colored text (white or near-white with lightness 85-95) to ensure readability on midtone backgrounds.' : ''}
 - Return all values in both HEX and HSL formats.`;
 
     // Add additional characteristics if provided
