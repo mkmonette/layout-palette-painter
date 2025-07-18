@@ -693,13 +693,14 @@ const Dashboard = () => {
           {/* Left Sidebar */}
           <div style={{
           backgroundColor: '#5b99fe'
-        }} className="w-16 border-r flex flex-col items-center py-4 space-y-2 bg-sky-600">
+        }} className="w-48 border-r flex flex-col py-4 space-y-2 bg-sky-600">
             {sidebarItems.map(item => {
             if (!item.available) return null;
             return <Popover key={item.id}>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-8 h-8 p-1 relative text-white hover:bg-white/20 rounded-sm">
-                       <item.icon className="h-5 w-5 text-white" />
+                    <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 relative text-white hover:bg-white/20 rounded-sm">
+                      <item.icon className="h-4 w-4 text-white mr-3 flex-shrink-0" />
+                      <span className="text-sm text-white truncate">{item.label}</span>
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-64 p-4" side="right" align="start">
@@ -771,15 +772,16 @@ const Dashboard = () => {
           })}
 
             {/* Template Theme Mode Selector */}
-            <div className="flex-1" />
+            <div className="px-3 mt-auto">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-8 h-8 p-1 text-white hover:bg-white/20 rounded-sm">
-                  {colorMode === 'light' ? <Sun className="h-4 w-4" /> : 
-                   colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4" /> :
-                   colorMode === 'midtone' ? <Sunset className="h-4 w-4" /> : 
-                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4" style={{ filter: 'brightness(0.7)' }} /> :
-                   <Moon className="h-4 w-4" />}
+                <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 text-white hover:bg-white/20 rounded-sm">
+                  {colorMode === 'light' ? <Sun className="h-4 w-4 mr-3" /> : 
+                   colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 mr-3" /> :
+                   colorMode === 'midtone' ? <Sunset className="h-4 w-4 mr-3" /> : 
+                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 mr-3" style={{ filter: 'brightness(0.7)' }} /> :
+                   <Moon className="h-4 w-4 mr-3" />}
+                  <span className="text-sm text-white">Theme Mode</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64 p-4" side="right" align="end">
@@ -859,6 +861,7 @@ const Dashboard = () => {
                 </div>
               </PopoverContent>
             </Popover>
+            </div>
           </div>
 
 
@@ -984,7 +987,7 @@ const Dashboard = () => {
               transformOrigin: 'top center',
               width: isMobile ? 
                 'calc(100vw - 16px)' : // Full width minus equal margins (8px each side)
-                'calc(100vw - 104px)', // Sidebar width + equal margins (40px total)
+                'calc(100vw - 232px)', // Sidebar width + equal margins (40px total)
               minHeight: '400px'
             }} data-preview-element>
                 <div className="w-full h-auto overflow-visible">
