@@ -703,17 +703,23 @@ const Dashboard = () => {
                       <span className="text-sm text-white truncate">{item.label}</span>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 p-4" side="right" align="start">
+                  <PopoverContent 
+                    className={`p-4 ${item.id === 'templates' ? 'w-[800px] max-h-[calc(100vh-40px)] overflow-y-auto' : 'w-64'}`} 
+                    side="right" 
+                    align="start"
+                  >
                     <div className="space-y-3">
                       <h3 className="font-medium text-xs">{item.label}</h3>
                       
                       <div className="space-y-2">
                         {item.id === 'templates' && 
-                          <TemplatesSection 
-                            selectedTemplate={selectedTemplate} 
-                            onTemplateChange={setSelectedTemplate} 
-                            colorPalette={colorPalette} 
-                          />
+                          <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
+                            <TemplatesSection 
+                              selectedTemplate={selectedTemplate} 
+                              onTemplateChange={setSelectedTemplate} 
+                              colorPalette={colorPalette} 
+                            />
+                          </div>
                         }
 
                         {item.id === 'schemes' && <div className="space-y-4">
