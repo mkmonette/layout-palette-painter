@@ -216,41 +216,39 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-6xl max-h-[98vh] p-0">
           <DialogHeader className="p-6 pb-4">
-            <DialogTitle className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-                <Sparkles className="h-5 w-5 text-white" />
+            <DialogTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    AutoGenerate Colors
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Generate multiple color palettes for your selected template
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  AutoGenerate Colors
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Generate multiple color palettes for your selected template
-                </p>
-              </div>
+              <Button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Generating {autogenerateCount} Palettes...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate {autogenerateCount} Palettes
+                  </>
+                )}
+              </Button>
             </DialogTitle>
           </DialogHeader>
-
-          {/* Generate Button at Top */}
-          <div className="px-6 py-1 border-b">
-            <Button
-              onClick={handleGenerate}
-              disabled={isGenerating}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-            >
-              {isGenerating ? (
-                <>
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                  Generating {autogenerateCount} Palettes...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Generate {autogenerateCount} Palettes
-                </>
-              )}
-            </Button>
-          </div>
 
           <div className="flex-1 overflow-hidden">
             <Tabs defaultValue="settings" className="h-full">
