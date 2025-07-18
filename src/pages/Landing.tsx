@@ -136,7 +136,6 @@ const Landing = () => {
                   <h1 className="text-xl font-bold gradient-text">
                     Palette Painter
                   </h1>
-                  <p className="text-xs text-muted-foreground">AI Color Generator</p>
                 </div>
               </div>
               

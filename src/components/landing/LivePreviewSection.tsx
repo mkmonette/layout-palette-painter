@@ -76,21 +76,20 @@ const LivePreviewSection = () => {
                   </div>
                   <h3 className="text-lg font-semibold">Choose Template:</h3>
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-2xl">
                   {templates.map((template) => (
                     <Button
                       key={template.id}
                       variant={selectedTemplate === template.id ? "default" : "outline"}
                       size="sm"
                       onClick={() => setSelectedTemplate(template.id)}
-                      className={`h-auto p-4 flex flex-col items-start text-left transition-all duration-300 ${
+                      className={`h-auto p-3 flex flex-col items-center text-center transition-all duration-300 ${
                         selectedTemplate === template.id 
                           ? 'bg-primary text-primary-foreground shadow-lg scale-105' 
                           : 'hover:bg-primary/10 hover:border-primary/30'
                       }`}
                     >
                       <div className="font-medium text-sm">{template.name}</div>
-                      <div className="text-xs opacity-70 mt-1">{template.description}</div>
                     </Button>
                   ))}
                 </div>
