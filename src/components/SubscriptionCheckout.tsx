@@ -153,6 +153,10 @@ const SubscriptionCheckout = () => {
           featureName = 'Image/Website Generations per Month';
         } else if (key === 'pro_templates') {
           featureName = 'Access to PRO Templates';
+        } else if (key === 'color_presets') {
+          featureName = 'Color Presets';
+        } else if (key === 'decorative_settings') {
+          featureName = 'Decorative Settings';
         }
         
         if (typeof value === 'number') {
