@@ -711,7 +711,7 @@ const Dashboard = () => {
                     <div className="p-4 border-b border-border">
                       <h3 className="font-medium text-xs">{item.label}</h3>
                     </div>
-                    <ScrollArea className="max-h-[calc(100vh-100px)]">
+                    <ScrollArea className="h-96">
                       <div className="p-4 pt-3">
                       
                       <div className="space-y-2">
