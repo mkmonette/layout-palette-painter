@@ -125,7 +125,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       'image_website_generations_per_month',
       'custom_color_schemes',
       'color_mood_options',
+      'color_presets',
       'dark_mode',
+      'decorative_settings',
       'auto_generator',
       'branded_reports'
     ];

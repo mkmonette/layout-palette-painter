@@ -46,7 +46,9 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       image_website_generations_per_month: 2,
       custom_color_schemes: true,
       color_mood_options: true,
+      color_presets: false,
       dark_mode: true,
+      decorative_settings: false,
       auto_generator: false,
       branded_reports: false
     },
@@ -68,7 +70,9 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       image_website_generations_per_month: 50,
       custom_color_schemes: true,
       color_mood_options: true,
+      color_presets: true,
       dark_mode: true,
+      decorative_settings: true,
       auto_generator: true,
       branded_reports: true
     },
@@ -90,7 +94,9 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       image_website_generations_per_month: -1, // unlimited
       custom_color_schemes: true,
       color_mood_options: true,
+      color_presets: true,
       dark_mode: true,
+      decorative_settings: true,
       auto_generator: true,
       branded_reports: true
     },

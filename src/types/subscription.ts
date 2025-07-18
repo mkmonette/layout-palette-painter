@@ -76,10 +76,24 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     category: 'access'
   },
   {
+    id: 'color_presets',
+    name: 'Color Presets',
+    type: 'boolean',
+    description: 'Access to professionally curated color presets',
+    category: 'access'
+  },
+  {
     id: 'dark_mode',
     name: 'Dark Mode',
     type: 'boolean',
     description: 'Access to dark theme interface',
+    category: 'access'
+  },
+  {
+    id: 'decorative_settings',
+    name: 'Decorative Settings',
+    type: 'boolean',
+    description: 'Access to decorative template customizations',
     category: 'access'
   },
   {
