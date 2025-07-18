@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, RefreshCw } from 'lucide-react';
+import { Sparkles, RefreshCw, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { TemplateType } from '@/types/template';
@@ -15,6 +15,8 @@ interface AutoGenerateConfirmModalProps {
   autogenerateCount: number;
   colorPalette: ColorPalette;
   onGenerate: () => void;
+  onShowGeneratedPalettes: () => void;
+  hasGeneratedPalettes: boolean;
 }
 
 const AutoGenerateConfirmModal: React.FC<AutoGenerateConfirmModalProps> = ({
@@ -25,7 +27,9 @@ const AutoGenerateConfirmModal: React.FC<AutoGenerateConfirmModalProps> = ({
   selectedMoodId,
   autogenerateCount,
   colorPalette,
-  onGenerate
+  onGenerate,
+  onShowGeneratedPalettes,
+  hasGeneratedPalettes
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -119,6 +123,17 @@ const AutoGenerateConfirmModal: React.FC<AutoGenerateConfirmModalProps> = ({
             >
               Cancel
             </Button>
+            {hasGeneratedPalettes && (
+              <Button
+                variant="outline"
+                onClick={onShowGeneratedPalettes}
+                className="flex-1"
+                disabled={isGenerating}
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Generated Palettes
+              </Button>
+            )}
             <Button
               onClick={handleGenerate}
               disabled={isGenerating}

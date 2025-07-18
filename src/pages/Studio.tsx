@@ -1081,6 +1081,11 @@ const Dashboard = () => {
           autogenerateCount={autogenerateCount}
           colorPalette={colorPalette}
           onGenerate={handleAutoGenerate}
+          onShowGeneratedPalettes={() => {
+            setShowAutoGenerateConfirmModal(false);
+            setShowAutoGenerateResultsModal(true);
+          }}
+          hasGeneratedPalettes={generatedPalettes.length > 0}
         />
 
         <AutoGenerateResultsModal
