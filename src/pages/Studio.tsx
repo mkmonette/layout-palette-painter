@@ -712,7 +712,13 @@ const Dashboard = () => {
                     <div className="p-4 border-b border-border">
                       <h3 className="font-medium text-xs">{item.label}</h3>
                     </div>
-                    <ScrollArea className="h-96">
+                    <ScrollArea className={`${
+                      item.id === 'templates' ? 'h-32' : 
+                      item.id === 'background-settings' ? 'h-80' : 
+                      item.id === 'schemes' ? 'h-96' :
+                      item.id === 'from-image' ? 'h-40' : 
+                      'h-96'
+                    }`}>
                       <div className="p-4 pt-3">
                       
                       <div className="space-y-2">
