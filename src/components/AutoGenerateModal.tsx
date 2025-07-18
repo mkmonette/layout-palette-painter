@@ -232,7 +232,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
           </DialogHeader>
 
           {/* Generate Button at Top */}
-          <div className="px-6 pb-4 border-b">
+          <div className="px-6 py-1 border-b">
             <Button
               onClick={handleGenerate}
               disabled={isGenerating}
