@@ -88,5 +88,12 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     type: 'number',
     description: 'Maximum number of AI-powered color generations per month',
     category: 'usage'
+  },
+  {
+    id: 'image_website_generations_per_month',
+    name: 'Image/Website Generations per Month',
+    type: 'number',
+    description: 'Maximum number of color generations from images or websites per month',
+    category: 'usage'
   }
 ];

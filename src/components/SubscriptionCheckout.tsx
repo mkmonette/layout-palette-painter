@@ -114,7 +114,15 @@ const SubscriptionCheckout = () => {
     return Object.entries(features)
       .filter(([_, value]) => value !== false)
       .map(([key, value]) => {
-        const featureName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        let featureName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        
+        // Custom display names for specific features
+        if (key === 'ai_generations_per_month') {
+          featureName = 'AI Colors per Month';
+        } else if (key === 'image_website_generations_per_month') {
+          featureName = 'Image/Website Generations per Month';
+        }
+        
         if (typeof value === 'number') {
           return value === -1 ? `Unlimited ${featureName}` : `${value} ${featureName}`;
         }

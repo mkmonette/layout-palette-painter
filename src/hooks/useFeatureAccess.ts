@@ -33,6 +33,11 @@ export const useFeatureAccess = () => {
     remainingAIGenerations: getUsageRemaining('ai_generations_per_month'),
     canUseAIGeneration: hasFeatureAccess('auto_generator') && getUsageRemaining('ai_generations_per_month') > 0,
     
+    // Image/Website Generations
+    maxImageWebsiteGenerationsPerMonth: getFeatureLimit('image_website_generations_per_month'),
+    remainingImageWebsiteGenerations: getUsageRemaining('image_website_generations_per_month'),
+    canUseImageWebsiteGeneration: getUsageRemaining('image_website_generations_per_month') > 0,
+    
     // Custom Color Schemes
     canAccessColorSchemes: hasFeatureAccess('custom_color_schemes'),
     
