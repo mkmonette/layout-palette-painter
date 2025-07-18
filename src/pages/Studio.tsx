@@ -703,11 +703,11 @@ const Dashboard = () => {
                       <span className="text-sm text-white truncate">{item.label}</span>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent 
-                    className={`p-4 ${item.id === 'templates' ? 'w-[800px] max-h-[calc(100vh-40px)] overflow-y-auto' : 'w-64'}`} 
-                    side="right" 
-                    align="start"
-                  >
+                   <PopoverContent 
+                     className={`p-4 ${item.id === 'templates' ? 'w-48 max-h-[calc(100vh-40px)] overflow-y-auto' : 'w-64'}`} 
+                     side="right" 
+                     align="start"
+                   >
                     <div className="space-y-3">
                       <h3 className="font-medium text-xs">{item.label}</h3>
                       
@@ -725,11 +725,11 @@ const Dashboard = () => {
                                   <span className="text-xs">🟦 Default Templates</span>
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent 
-                                className="w-64 max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                side="right" 
-                                align="start"
-                              >
+                               <PopoverContent 
+                                 className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
+                                 side="right" 
+                                 align="start"
+                               >
                                 <div className="space-y-3">
                                   <h3 className="font-medium text-xs">Default Templates</h3>
                                   <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
@@ -755,11 +755,11 @@ const Dashboard = () => {
                                   <span className="text-xs">🟩 Custom Templates</span>
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent 
-                                className="w-64 max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                side="right" 
-                                align="start"
-                              >
+                               <PopoverContent 
+                                 className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
+                                 side="right" 
+                                 align="start"
+                               >
                                 <div className="space-y-3">
                                   <h3 className="font-medium text-xs">Custom Templates</h3>
                                   <div className="max-h-[calc(100vh-120px)] overflow-y-auto">

@@ -330,8 +330,8 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         </Button>
       </div>
 
-      {/* 1 Column Template Grid */}
-      <div className="grid grid-cols-1 gap-2">
+      {/* 2 Column Template Grid */}
+      <div className="grid grid-cols-2 gap-2">
         {allTemplates.map(renderTemplateCard)}
       </div>
 
