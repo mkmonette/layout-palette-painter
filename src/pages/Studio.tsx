@@ -792,30 +792,30 @@ const Dashboard = () => {
 
                         {item.id === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
 
-                        {item.id === 'admin-presets' && <div className="space-y-4">
-                             <p className="text-xs text-muted-foreground">
-                               Browse and apply professionally curated color palettes.
-                             </p>
-                             <Button onClick={() => setActiveModal('admin-presets')} className="w-full px-2 py-1 rounded-sm">
-                               Browse Color Presets
-                             </Button>
-                          </div>}
+                         {item.id === 'admin-presets' && <div className="space-y-2">
+                              <p className="text-xs text-muted-foreground">
+                                Browse professionally curated color palettes.
+                              </p>
+                              <Button onClick={() => setActiveModal('admin-presets')} className="w-full h-6 px-2 text-xs rounded-sm">
+                                Browse Presets
+                              </Button>
+                           </div>}
                           
                         {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
                         
-                        {item.id === 'settings' && <div className="space-y-4">
-                             <h3 className="text-sm font-medium">Application Settings</h3>
-                             <p className="text-xs text-muted-foreground">
-                               Configure your preferences and account settings.
-                             </p>
-                           
-                           <div className="space-y-3">
-                             <OpenAIKeyInput onKeySet={() => {}} />
-                           </div>
-                             <Button variant="outline" className="w-full px-2 py-1 rounded-sm" onClick={() => navigate('/history')}>
-                               View History
-                             </Button>
-                          </div>}
+                         {item.id === 'settings' && <div className="space-y-2">
+                              <h3 className="text-xs font-medium">Settings</h3>
+                              <p className="text-xs text-muted-foreground">
+                                Configure preferences and account.
+                              </p>
+                            
+                            <div className="space-y-2">
+                              <OpenAIKeyInput onKeySet={() => {}} />
+                            </div>
+                              <Button variant="outline" className="w-full h-6 px-2 text-xs rounded-sm" onClick={() => navigate('/history')}>
+                                View History
+                              </Button>
+                           </div>}
 
                         {item.id === 'test-plans' && <div className="space-y-4">
                              <h3 className="text-sm font-medium">Test Plan Switcher</h3>

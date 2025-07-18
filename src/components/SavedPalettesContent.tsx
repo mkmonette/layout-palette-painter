@@ -125,69 +125,64 @@ const SavedPalettesContent: React.FC<SavedPalettesContentProps> = ({
   const remainingSlots = MAX_PALETTES - savedPalettes.length;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium mb-2">Saved Palettes</h3>
-        <p className="text-sm text-muted-foreground">
-          Manage your saved color palettes and apply them to templates.
-        </p>
-      </div>
-
+    <div className="space-y-3">
       {/* Status Indicator */}
-      <div className="p-3 bg-muted rounded-lg text-center">
+      <div className="p-2 bg-muted rounded text-center">
         {savedPalettes.length === 0 ? (
-          <p className="text-muted-foreground">📭 No saved palettes yet.</p>
+          <p className="text-xs text-muted-foreground">No saved palettes yet</p>
         ) : savedPalettes.length >= MAX_PALETTES ? (
-          <p className="text-destructive">❗ You've reached the limit. Upgrade to save more palettes.</p>
+          <p className="text-xs text-destructive">Limit reached ({MAX_PALETTES})</p>
         ) : (
-          <p className="text-green-600">
-            ✅ You've saved {savedPalettes.length} out of {MAX_PALETTES} palettes ({remainingSlots} remaining).
+          <p className="text-xs text-green-600">
+            {savedPalettes.length}/{MAX_PALETTES} saved
           </p>
         )}
       </div>
 
       {/* Save Current Palette Section */}
-      <div className="border rounded-lg p-4 space-y-4">
-        <h4 className="font-medium">Save Current Palette</h4>
+      <div className="border rounded p-2 space-y-2">
+        <h4 className="text-xs font-medium">Save Current</h4>
         
         {/* Current Palette Preview */}
-        <div className="flex flex-wrap items-center gap-2 max-w-full overflow-hidden">
-          {Object.entries(currentPalette).slice(0, 8).map(([key, color]) => (
+        <div className="flex flex-wrap items-center gap-1 max-w-full overflow-hidden">
+          {Object.entries(currentPalette).slice(0, 6).map(([key, color]) => (
             <div 
               key={key}
-              className="w-5 h-5 rounded-full border border-white shadow-sm flex-shrink-0"
+              className="w-3 h-3 rounded-full border border-white shadow-sm flex-shrink-0"
               style={{ backgroundColor: color }}
               title={`${key}: ${color}`}
             />
           ))}
-          {Object.entries(currentPalette).length > 8 && (
-            <span className="text-xs text-muted-foreground">+{Object.entries(currentPalette).length - 8}</span>
+          {Object.entries(currentPalette).length > 6 && (
+            <span className="text-xs text-muted-foreground">+{Object.entries(currentPalette).length - 6}</span>
           )}
         </div>
 
         {showSaveForm ? (
-          <div className="space-y-3">
+          <div className="space-y-2">
             <input
               type="text"
-              placeholder="Enter palette name..."
+              placeholder="Palette name..."
               value={paletteName}
               onChange={(e) => setPaletteName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-2 py-1 text-xs border rounded focus:outline-none focus:ring-1 focus:ring-primary"
               onKeyDown={(e) => e.key === 'Enter' && savePalette()}
             />
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <Button 
                 onClick={savePalette}
                 disabled={!canSave}
                 size="sm"
+                className="h-6 text-xs flex-1"
               >
-                <Save className="h-4 w-4 mr-2" />
+                <Save className="h-3 w-3 mr-1" />
                 Save
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setShowSaveForm(false)}
                 size="sm"
+                className="h-6 text-xs px-2"
               >
                 Cancel
               </Button>
@@ -198,66 +193,40 @@ const SavedPalettesContent: React.FC<SavedPalettesContentProps> = ({
             onClick={() => setShowSaveForm(true)}
             disabled={!canSave}
             size="sm"
-            className="w-full"
+            className="w-full h-6 text-xs"
           >
-            <Save className="h-4 w-4 mr-2" />
-            {canSave ? 'Save Current Palette' : 'Save Limit Reached'}
+            <Save className="h-3 w-3 mr-1" />
+            {canSave ? 'Save Current' : 'Limit Reached'}
           </Button>
         )}
       </div>
 
       {/* Saved Palettes List */}
       {savedPalettes.length > 0 && (
-        <div className="space-y-4">
-          <h4 className="font-medium">Your Saved Palettes</h4>
-          <ScrollArea className="h-[400px]">
-            <div className="grid grid-cols-1 gap-4 pr-4">
+        <div className="space-y-2">
+          <h4 className="text-xs font-medium">Saved ({savedPalettes.length})</h4>
+          <ScrollArea className="h-[300px]">
+            <div className="space-y-2 pr-2">
               {savedPalettes.map((palette) => (
-                <div key={palette.id} className="border rounded-lg overflow-hidden bg-card shadow-sm hover:shadow-md transition-shadow">
-                  {/* Template Preview */}
-                  <div className="border-b bg-muted">
-                    <div className="h-32 relative overflow-hidden">
-                      <div className="absolute inset-0 transform scale-25 origin-top-left w-[400%] h-[400%]">
-                        <LivePreview
-                          template={palette.template || 'modern-hero'}
-                          colorPalette={palette}
-                          backgroundSettings={{ 
-                            enabled: false, 
-                            mode: 'svg', 
-                            style: 'wavy-layers', 
-                            waveHeight: 50, 
-                            blobSize: 50, 
-                            meshIntensity: 50, 
-                            patternScale: 50, 
-                            opacity: 0.3,
-                            gradientFillType: 'gradient',
-                            gradientStartColor: 'section-bg-1',
-                            gradientEndColor: 'accent',
-                            gradientDirection: 'horizontal'
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-3">
-                    <div className="flex items-start justify-between mb-2">
+                <div key={palette.id} className="border rounded bg-card shadow-sm">
+                  <div className="p-2">
+                    <div className="flex items-start justify-between mb-1">
                       <div className="min-w-0 flex-1">
-                        <h5 className="font-medium text-sm truncate">{palette.name}</h5>
-                        <p className="text-xs text-muted-foreground capitalize">
-                          {(palette.template || 'modern-hero').replace('-', ' ')} Template
+                        <h5 className="text-xs font-medium truncate">{palette.name}</h5>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {(palette.template || 'modern-hero').replace('-', ' ')}
                         </p>
                       </div>
                     </div>
                     
                     {/* Color Swatches */}
                     <div className="flex items-center gap-1 mb-2">
-                      {Object.entries(palette).map(([key, color]) => {
+                      {Object.entries(palette).slice(0, 6).map(([key, color]) => {
                         if (key === 'id' || key === 'name' || key === 'savedAt' || key === 'template') return null;
                         return (
                           <div 
                             key={key}
-                            className="w-4 h-4 rounded-full border border-white shadow-sm"
+                            className="w-2 h-2 rounded-full border border-white shadow-sm"
                             style={{ backgroundColor: color }}
                             title={`${key}: ${color}`}
                           />
@@ -271,24 +240,20 @@ const SavedPalettesContent: React.FC<SavedPalettesContentProps> = ({
                         variant="outline"
                         size="sm"
                         onClick={() => applyPalette(palette)}
-                        className="flex-1 text-xs"
+                        className="flex-1 text-xs h-6"
                       >
-                        <Palette className="h-3 w-3 mr-1" />
+                        <Palette className="h-2 w-2 mr-1" />
                         Apply
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => deletePalette(palette.id)}
-                        className="px-2"
+                        className="px-1 h-6"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className="h-2 w-2" />
                       </Button>
                     </div>
-                    
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {new Date(palette.savedAt).toLocaleDateString()}
-                    </p>
                   </div>
                 </div>
               ))}

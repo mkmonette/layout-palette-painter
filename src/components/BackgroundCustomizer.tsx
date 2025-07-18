@@ -377,107 +377,91 @@ export function BackgroundCustomizer({ settings, onSettingsChange }: BackgroundC
   };
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-semibold">Background Settings</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Enable Toggle */}
-        <div className="flex items-center justify-between">
-          <Label htmlFor="enable-background" className="text-sm font-medium">
-            Enable Decorative Background
-          </Label>
-          <Switch
-            id="enable-background"
-            checked={settings.enabled}
-            onCheckedChange={(enabled) => updateSettings({ enabled })}
-          />
-        </div>
+    <div className="space-y-3">
+      {/* Enable Toggle */}
+      <div className="flex items-center justify-between">
+        <Label htmlFor="enable-background" className="text-xs font-medium">
+          Enable Background
+        </Label>
+        <Switch
+          id="enable-background"
+          checked={settings.enabled}
+          onCheckedChange={(enabled) => updateSettings({ enabled })}
+        />
+      </div>
 
-        {settings.enabled && (
-          <>
-            <Separator />
-            
-            {/* Background Mode Dropdown */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Background Mode</Label>
-              <Select
-                value={settings.mode}
-                onValueChange={(mode: BackgroundMode) => updateSettings({ mode })}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a mode" />
-                </SelectTrigger>
-                <SelectContent>
-                  {backgroundModes.map((mode) => (
-                    <SelectItem key={mode.value} value={mode.value}>
-                      {mode.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+      {settings.enabled && (
+        <>
+          {/* Background Mode Dropdown */}
+          <div className="space-y-2">
+            <Label className="text-xs font-medium">Mode</Label>
+            <Select
+              value={settings.mode}
+              onValueChange={(mode: BackgroundMode) => updateSettings({ mode })}
+            >
+              <SelectTrigger className="w-full h-7 text-xs">
+                <SelectValue placeholder="Select mode" />
+              </SelectTrigger>
+              <SelectContent>
+                {backgroundModes.map((mode) => (
+                  <SelectItem key={mode.value} value={mode.value} className="text-xs">
+                    {mode.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            <Separator />
+          {/* SVG Background Controls */}
+          {settings.mode === 'svg' && (
+            <>
+              {/* Background Style Dropdown */}
+              <div className="space-y-2">
+                <Label className="text-xs font-medium">Style</Label>
+                <Select
+                  value={settings.style}
+                  onValueChange={(style: BackgroundStyle) => updateSettings({ style })}
+                >
+                  <SelectTrigger className="w-full h-7 text-xs">
+                    <SelectValue placeholder="Select style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {backgroundStyles.map((style) => (
+                      <SelectItem key={style.value} value={style.value} className="text-xs">
+                        {style.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {/* SVG Background Controls */}
-            {settings.mode === 'svg' && (
-              <>
-                {/* Background Style Dropdown */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Background Style</Label>
-                  <Select
-                    value={settings.style}
-                    onValueChange={(style: BackgroundStyle) => updateSettings({ style })}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a style" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {backgroundStyles.map((style) => (
-                        <SelectItem key={style.value} value={style.value}>
-                          {style.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              {/* Style-specific sliders */}
+              {renderStyleSliders()}
+            </>
+          )}
 
-                <Separator />
+          {/* Gradient Background Controls */}
+          {settings.mode === 'gradient' && renderGradientControls()}
 
-                {/* Style-specific sliders */}
-                {renderStyleSliders()}
-              </>
-            )}
-
-            {/* Gradient Background Controls */}
-            {settings.mode === 'gradient' && (
-              <>
-                {renderGradientControls()}
-                <Separator />
-              </>
-            )}
-
-            {/* Opacity Slider - Always shown when enabled */}
-            <div className="space-y-2">
-              <Label htmlFor="opacity" className="text-sm font-medium">
-                Opacity ({Math.round(settings.opacity * 100)}%)
-              </Label>
-              <Slider
-                id="opacity"
-                value={[settings.opacity]}
-                onValueChange={([value]) => updateSettings({ opacity: value })}
-                min={0}
-                max={1}
-                step={0.01}
-                className="w-full"
-              />
-            </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
+          {/* Opacity Slider - Always shown when enabled */}
+          <div className="space-y-2">
+            <Label htmlFor="opacity" className="text-xs font-medium">
+              Opacity ({Math.round(settings.opacity * 100)}%)
+            </Label>
+            <Slider
+              id="opacity"
+              value={[settings.opacity]}
+              onValueChange={([value]) => updateSettings({ opacity: value })}
+              min={0}
+              max={1}
+              step={0.01}
+              className="w-full"
+            />
+          </div>
+        </>
+      )}
+    </div>
   );
-}
+};
 
 export default BackgroundCustomizer;
