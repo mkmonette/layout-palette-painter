@@ -214,7 +214,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+        <DialogContent className="max-w-6xl h-[90vh] p-0 flex flex-col overflow-hidden">
           <DialogHeader className="p-6 pb-4">
             <DialogTitle className="flex items-center gap-3">
               <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
@@ -263,7 +263,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                 </TabsList>
               </div>
 
-              <ScrollArea className="h-[60vh]">
+              <ScrollArea className="flex-1 max-h-[calc(90vh-200px)]">
                 <TabsContent value="settings" className="p-6 pt-4">
                   <div className="space-y-6">
                     {/* Controls */}
