@@ -48,7 +48,10 @@ import { initializeOpenAI } from '@/utils/openaiService';
 import { validatePaletteContrast, getAccessibleVersion } from '@/utils/contrastChecker';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
 import { ColorMode } from '@/utils/colorGenerator';
-import AutoGenerateModal from '@/components/AutoGenerateModal';
+import AutoGenerateConfirmModal from '@/components/AutoGenerateConfirmModal';
+import AutoGenerateResultsModal from '@/components/AutoGenerateResultsModal';
+import { generatePaletteBatch } from '@/utils/autoGenerator';
+import { GeneratedPalette } from '@/types/generator';
 const Dashboard = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -133,7 +136,9 @@ const Dashboard = () => {
   const [isContextPanelCollapsed, setIsContextPanelCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showPDFExportModal, setShowPDFExportModal] = useState(false);
-  const [showAutoGenerateModal, setShowAutoGenerateModal] = useState(false);
+  const [showAutoGenerateConfirmModal, setShowAutoGenerateConfirmModal] = useState(false);
+  const [showAutoGenerateResultsModal, setShowAutoGenerateResultsModal] = useState(false);
+  const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
 
   // Set initial panel state based on mobile detection
   useEffect(() => {
@@ -322,6 +327,24 @@ const Dashboard = () => {
   };
   const handleAIPaletteGenerated = (aiPalette: ColorPalette) => {
     setColorPalette(aiPalette);
+  };
+
+  const handleAutoGenerate = () => {
+    // Generate palettes using current studio settings
+    const newPalettes = generatePaletteBatch(autogenerateCount).map(palette => ({
+      ...palette,
+      templateId: selectedTemplate,
+      templateName: selectedTemplate.replace('-', ' ')
+    }));
+    
+    setGeneratedPalettes(newPalettes);
+    setShowAutoGenerateConfirmModal(false);
+    setShowAutoGenerateResultsModal(true);
+    
+    toast({
+      title: "Palettes Generated!",
+      description: `Generated ${autogenerateCount} color palettes for ${selectedTemplate.replace('-', ' ')}`,
+    });
   };
   const handleSave = () => {
     const success = savePalette(colorPalette, selectedTemplate);
@@ -910,7 +933,7 @@ const Dashboard = () => {
                  </Tooltip>
                  <Tooltip>
                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded-sm">
+                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded-sm">
                         <Sparkles className="h-4 w-4 mr-2" />
                         Auto Generate
                       </Button>
@@ -1038,11 +1061,28 @@ const Dashboard = () => {
           templateName={selectedTemplate}
         />
 
-        {/* Auto Generate Modal */}
-        <AutoGenerateModal
-          isOpen={showAutoGenerateModal}
-          onClose={() => setShowAutoGenerateModal(false)}
+        {/* Auto Generate Modals */}
+        <AutoGenerateConfirmModal
+          isOpen={showAutoGenerateConfirmModal}
+          onClose={() => setShowAutoGenerateConfirmModal(false)}
+          selectedTemplate={selectedTemplate}
+          selectedScheme={selectedScheme}
+          selectedMoodId={selectedMoodId}
+          autogenerateCount={autogenerateCount}
+          colorPalette={colorPalette}
+          onGenerate={handleAutoGenerate}
+        />
+
+        <AutoGenerateResultsModal
+          isOpen={showAutoGenerateResultsModal}
+          onClose={() => setShowAutoGenerateResultsModal(false)}
+          generatedPalettes={generatedPalettes}
           backgroundSettings={backgroundSettings}
+          onApplyPalette={setColorPalette}
+          onRegenerateClick={() => {
+            setShowAutoGenerateResultsModal(false);
+            setShowAutoGenerateConfirmModal(true);
+          }}
         />
 
         {/* Floating Generate Button */}
