@@ -16,7 +16,10 @@ import {
   Coins,
   Palette,
   Bot,
-  Eye
+  Eye,
+  Plug,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 import { 
   Sidebar,
@@ -45,6 +48,7 @@ import PaletteGenerator from '@/components/admin/PaletteGenerator';
 import SavedPalettesManager from '@/components/admin/SavedPalettesManager';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 import CoinCreditSettings from '@/components/admin/CoinCreditSettings';
+import PaymentGatewaySettings from '@/components/admin/PaymentGatewaySettings';
 
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -70,6 +74,7 @@ interface AdminSidebarProps {
 
 const AdminSidebar = ({ activeTab, setActiveTab }: AdminSidebarProps) => {
   const navigate = useNavigate();
+  const [integrationsOpen, setIntegrationsOpen] = useState(false);
 
   const handleLogout = () => {
     logoutUser();
@@ -102,6 +107,42 @@ const AdminSidebar = ({ activeTab, setActiveTab }: AdminSidebarProps) => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Integrations</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  onClick={() => setIntegrationsOpen(!integrationsOpen)}
+                  className="w-full justify-between"
+                >
+                  <div className="flex items-center">
+                    <Plug className="h-4 w-4" />
+                    <span>Integrations</span>
+                  </div>
+                  {integrationsOpen ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              {integrationsOpen && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={() => setActiveTab('payment-gateway')}
+                    isActive={activeTab === 'payment-gateway'}
+                    className="w-full justify-start ml-6"
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    <span>Payment Gateway</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -258,6 +299,8 @@ const AdminDashboard = () => {
                 </TabsContent>
               </Tabs>
             )}
+
+            {activeTab === 'payment-gateway' && <PaymentGatewaySettings />}
 
             {activeTab === 'settings' && <AdminSettings />}
           </main>
