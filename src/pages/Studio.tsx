@@ -1002,7 +1002,7 @@ const Dashboard = () => {
               transformOrigin: 'top center',
               width: isMobile ? 
                 'calc(100vw - 16px)' : // Full width minus right sidebar and margins
-                'calc(100vw - 432px)', // Left sidebar (200px) + right sidebar (200px) + margins (32px)
+                'calc(100vw - 400px)', // Left sidebar (192px) + right sidebar (192px) + margins (16px)
               minHeight: '400px'
             }} data-preview-element>
 
@@ -1036,11 +1036,11 @@ const Dashboard = () => {
             </div>
 
             {/* Right Sidebar */}
-            <div className="w-60 bg-background border-l border-border flex flex-col">
+            <div className="w-48 bg-background border-l border-border flex flex-col">
               {/* Sidebar Header */}
-              <div className="p-4 border-b border-border">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium">Preview Controls</span>
+              <div className="p-3 border-b border-border">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium">Controls</span>
                   {/* Mobile hamburger menu for right sidebar */}
                   <Button 
                     variant="ghost" 
@@ -1054,37 +1054,37 @@ const Dashboard = () => {
                 
                 {/* Template Info */}
                 <div className="space-y-1">
-                  <span className="text-xs text-muted-foreground">Template Preview</span>
-                  <div className="text-sm font-medium capitalize">
+                  <span className="text-xs text-muted-foreground">Template</span>
+                  <div className="text-xs font-medium capitalize">
                     {selectedTemplate.replace('-', ' ')}
                   </div>
                 </div>
               </div>
 
               {/* Sidebar Content */}
-              <div className="flex-1 p-4 space-y-4">
+              <div className="flex-1 p-3 space-y-3">
                 {/* Zoom Controls */}
                 <div className="space-y-2">
                   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Zoom</span>
                   <div className="flex items-center justify-between">
-                    <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-2 py-1 rounded-sm">
-                      <ZoomOut className="h-4 w-4" />
+                    <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-1 py-1 rounded-sm">
+                      <ZoomOut className="h-3 w-3" />
                     </Button>
-                    <span className="text-sm font-medium min-w-12 text-center">{zoomLevel}%</span>
-                    <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-2 py-1 rounded-sm">
-                      <ZoomIn className="h-4 w-4" />
+                    <span className="text-xs font-medium text-center">{zoomLevel}%</span>
+                    <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-1 py-1 rounded-sm">
+                      <ZoomIn className="h-3 w-3" />
                     </Button>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Actions</span>
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-sm">
-                        {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
+                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full bg-green-500 hover:bg-green-600 text-white px-2 py-1.5 rounded-sm text-xs">
+                        {isGenerating ? <RefreshCw className="h-3 w-3 mr-1.5 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1.5" />}
                         Generate
                       </Button>
                     </TooltipTrigger>
@@ -1093,9 +1093,9 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="w-full bg-purple-500 hover:bg-purple-600 text-white px-3 py-2 rounded-sm">
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        Auto Generate
+                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="w-full bg-purple-500 hover:bg-purple-600 text-white px-2 py-1.5 rounded-sm text-xs">
+                        <Sparkles className="h-3 w-3 mr-1.5" />
+                        Auto Gen
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Generate multiple color palettes</TooltipContent>
@@ -1103,8 +1103,8 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="w-full px-3 py-2 rounded-sm">
-                        <Download className="h-4 w-4 mr-2" />
+                      <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="w-full px-2 py-1.5 rounded-sm text-xs">
+                        <Download className="h-3 w-3 mr-1.5" />
                         Export PDF
                       </Button>
                     </TooltipTrigger>
@@ -1113,16 +1113,16 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleSave} className="w-full px-3 py-2 rounded-sm">
-                        <Save className="h-4 w-4 mr-2" />
+                      <Button variant="outline" size="sm" onClick={handleSave} className="w-full px-2 py-1.5 rounded-sm text-xs">
+                        <Save className="h-3 w-3 mr-1.5" />
                         Save
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Save current palette</TooltipContent>
                   </Tooltip>
                   
-                  <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full bg-amber-500 hover:bg-amber-400 px-3 py-2 rounded-sm">
-                    <Maximize className="h-4 w-4 mr-2" />
+                  <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full bg-amber-500 hover:bg-amber-400 px-2 py-1.5 rounded-sm text-xs">
+                    <Maximize className="h-3 w-3 mr-1.5" />
                     Fullscreen
                   </Button>
                 </div>
