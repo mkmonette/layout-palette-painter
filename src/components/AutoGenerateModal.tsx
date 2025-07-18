@@ -214,7 +214,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-6xl max-h-[98vh] p-0">
+        <DialogContent className="max-w-6xl h-[calc(100vh-40px)] my-5 p-0">
           <DialogHeader className="p-6 pb-4">
             <DialogTitle className="flex items-center justify-between my-0">
               <div className="flex items-center gap-3">
