@@ -371,34 +371,6 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
           </svg>
         );
 
-      case 'glowing-rings':
-        return (
-          <svg {...baseProps} viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="glow-gradient">
-                <stop offset="0%" stopColor={colorPalette.brand} stopOpacity="0.9" />
-                <stop offset="70%" stopColor={colorPalette.accent} stopOpacity="0.3" />
-                <stop offset="100%" stopColor={colorPalette.highlight} stopOpacity="0.1" />
-              </radialGradient>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="8" />
-              </filter>
-            </defs>
-            {Array.from({ length: 4 }, (_, i) => (
-              <circle
-                key={i}
-                cx={300 + i * 200}
-                cy={200 + (i % 2) * 400}
-                r={60 * settings.patternScale / 50}
-                fill="none"
-                stroke="url(#glow-gradient)"
-                strokeWidth="3"
-                filter="url(#glow)"
-                opacity={0.8}
-              />
-            ))}
-          </svg>
-        );
 
       case 'digital-grid':
         const digitalScale = settings.patternScale / 50;
@@ -467,20 +439,6 @@ const TemplateBackground: React.FC<TemplateBackgroundProps> = ({ settings, child
           </svg>
         );
 
-      case 'paper-texture':
-        const paperScale = settings.patternScale / 50;
-        return (
-          <svg {...baseProps} viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="paper-texture" x="0" y="0" width={4 * paperScale} height={4 * paperScale} patternUnits="userSpaceOnUse">
-                <circle cx={2 * paperScale} cy={2 * paperScale} r={0.5 * paperScale} fill={colorPalette.brand} opacity="0.1" />
-                <circle cx={1 * paperScale} cy={3 * paperScale} r={0.3 * paperScale} fill={colorPalette.accent} opacity="0.08" />
-                <circle cx={3 * paperScale} cy={1 * paperScale} r={0.4 * paperScale} fill={colorPalette.highlight} opacity="0.09" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#paper-texture)" />
-          </svg>
-        );
 
       case 'repeating-symbols':
         const symbolScale = settings.patternScale / 50;
