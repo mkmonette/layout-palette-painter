@@ -38,16 +38,38 @@ const CoinPackagesTable = () => {
 
   const loadCoinPackages = () => {
     const savedSettings = localStorage.getItem('coin_credit_settings');
+    console.log('Loading coin settings:', savedSettings); // Debug log
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        if (parsed.coinPackages) {
+        console.log('Parsed settings:', parsed); // Debug log
+        if (parsed.coinPackages && Array.isArray(parsed.coinPackages)) {
           setCoinPackages(parsed.coinPackages);
+          console.log('Loaded coin packages:', parsed.coinPackages); // Debug log
+        } else {
+          console.log('No coinPackages found in settings, using defaults'); // Debug log
+          setDefaultPackages();
         }
       } catch (error) {
         console.error('Error loading coin settings:', error);
+        setDefaultPackages();
       }
+    } else {
+      console.log('No saved settings found, using defaults'); // Debug log
+      setDefaultPackages();
     }
+  };
+
+  const setDefaultPackages = () => {
+    const defaultPackages = [
+      { id: '1', coins: 100, price: 4 },
+      { id: '2', coins: 200, price: 8 },
+      { id: '3', coins: 500, price: 18, bonus: 50 },
+      { id: '4', coins: 1000, price: 35, bonus: 150 },
+      { id: '5', coins: 2000, price: 65, bonus: 400 }
+    ];
+    setCoinPackages(defaultPackages);
+    console.log('Set default packages:', defaultPackages); // Debug log
   };
 
   const calculateValue = (pkg: CoinPackage) => {
