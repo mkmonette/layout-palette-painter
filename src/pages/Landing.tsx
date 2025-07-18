@@ -352,12 +352,12 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Key Features / Benefits Section */}
       <section id="features" className="py-20 bg-gradient-to-br from-accent/5 to-primary/5">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16 scroll-reveal">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Powerful <span className="gradient-text">Features</span>
+              Key <span className="gradient-text">Features & Benefits</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Everything you need to create, customize, and implement perfect color palettes
@@ -368,38 +368,38 @@ const Landing = () => {
             {[
               {
                 icon: Sparkles,
-                title: "AI Generation",
-                description: "Advanced AI creates harmonious color combinations based on color theory principles",
+                title: "AI-Powered Generation",
+                description: "Advanced AI creates harmonious color combinations based on color theory principles, saving you hours of manual work",
                 color: "hsl(263, 85%, 58%)"
               },
               {
                 icon: Eye,
-                title: "Accessibility Checker", 
-                description: "Built-in WCAG compliance ensures your colors work for everyone",
+                title: "Accessibility Built-In", 
+                description: "Automatic WCAG compliance checking ensures your colors work for everyone, including users with visual impairments",
                 color: "hsl(337, 85%, 65%)"
               },
               {
                 icon: Layers,
-                title: "100+ Templates",
-                description: "Professional templates for every industry and design style",
+                title: "100+ Professional Templates",
+                description: "Ready-to-use templates for every industry and design style, from corporate to creative",
                 color: "hsl(188, 94%, 50%)"
               },
               {
                 icon: Download,
-                title: "Multiple Export Formats",
-                description: "CSS, Sass, Adobe Swatch, Sketch, Figma, and more",
+                title: "Universal Export Formats",
+                description: "Export to CSS, Sass, Adobe Swatch, Sketch, Figma, and more - works with any design tool",
                 color: "hsl(142, 76%, 36%)"
               },
               {
                 icon: Share2,
                 title: "Team Collaboration",
-                description: "Share palettes with your team and collect feedback instantly",
+                description: "Share palettes with your team, collect feedback, and maintain brand consistency across projects",
                 color: "hsl(45, 93%, 47%)"
               },
               {
-                icon: TrendingUp,
-                title: "Trending Colors",
-                description: "Stay updated with the latest color trends and popular combinations",
+                icon: Clock,
+                title: "Save 80% Time",
+                description: "Generate perfect palettes in seconds instead of spending hours tweaking colors manually",
                 color: "hsl(217, 91%, 60%)"
               }
             ].map((item, i) => (
@@ -410,6 +410,65 @@ const Landing = () => {
                 >
                   <item.icon className="h-8 w-8 text-white" />
                 </div>
+                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases / Who It's For Section */}
+      <section className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-16 scroll-reveal">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Perfect for <span className="gradient-text">Every Creative</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Whether you're a seasoned professional or just starting out, our AI color generator adapts to your needs
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: Paintbrush,
+                title: "Graphic Designers",
+                description: "Create cohesive brand identities and stunning visual designs with perfect color harmony",
+                users: "25K+",
+                color: "hsl(263, 85%, 58%)"
+              },
+              {
+                icon: Monitor,
+                title: "Web Developers",
+                description: "Build beautiful websites and apps with accessible color schemes that enhance user experience",
+                users: "18K+",
+                color: "hsl(337, 85%, 65%)"
+              },
+              {
+                icon: Users,
+                title: "Marketing Teams",
+                description: "Maintain brand consistency across campaigns while exploring fresh, on-trend color combinations",
+                users: "12K+",
+                color: "hsl(188, 94%, 50%)"
+              },
+              {
+                icon: Lightbulb,
+                title: "Creative Students",
+                description: "Learn color theory while creating professional-quality palettes for your design projects",
+                users: "8K+",
+                color: "hsl(142, 76%, 36%)"
+              }
+            ].map((item, i) => (
+              <Card key={i} className="p-8 text-center hover-lift scroll-reveal group bg-card/80 backdrop-blur-sm border-0 shadow-lg">
+                <div 
+                  className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg"
+                  style={{ backgroundColor: item.color }}
+                >
+                  <item.icon className="h-10 w-10 text-white" />
+                </div>
+                <div className="text-3xl font-bold mb-2" style={{ color: item.color }}>{item.users}</div>
                 <h3 className="text-xl font-bold mb-3">{item.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{item.description}</p>
               </Card>
@@ -432,6 +491,56 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="scroll-reveal">
             <TestimonialsSection />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQs Section */}
+      <section className="py-20 bg-background">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-16 scroll-reveal">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Frequently Asked <span className="gradient-text">Questions</span>
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Everything you need to know about our AI color palette generator
+            </p>
+          </div>
+          
+          <div className="scroll-reveal">
+            <div className="space-y-6">
+              {[
+                {
+                  question: "How does the AI color generation work?",
+                  answer: "Our AI analyzes millions of successful color combinations and applies color theory principles to generate harmonious palettes. It considers factors like contrast ratios, accessibility standards, and current design trends to create professional-quality results."
+                },
+                {
+                  question: "Can I use the generated palettes commercially?",
+                  answer: "Yes! All palettes generated with Palette Painter can be used for commercial projects without any restrictions. We provide full commercial licenses for all our Pro and Enterprise users."
+                },
+                {
+                  question: "What export formats are supported?",
+                  answer: "We support all major design formats including CSS, Sass, SCSS, Adobe Swatch Exchange (.ase), Sketch, Figma, PNG, SVG, and more. You can also copy hex codes, RGB values, or HSL values directly."
+                },
+                {
+                  question: "Is there a limit to how many palettes I can create?",
+                  answer: "Free users get 10 AI generations per month. Pro users get unlimited generations, advanced features, and priority support. Enterprise users get everything plus team collaboration tools and custom integrations."
+                },
+                {
+                  question: "How accurate is the accessibility checking?",
+                  answer: "Our accessibility checker follows WCAG 2.1 guidelines and automatically calculates contrast ratios for text readability. It ensures your colors meet AA and AAA compliance standards for web accessibility."
+                },
+                {
+                  question: "Can I customize the generated palettes?",
+                  answer: "Absolutely! Every generated palette can be fine-tuned. Adjust individual colors, change saturation and brightness, add or remove colors, and see real-time previews of how your changes affect the overall harmony."
+                }
+              ].map((faq, i) => (
+                <Card key={i} className="p-8 bg-card/80 backdrop-blur-sm border-0 shadow-lg">
+                  <h3 className="text-xl font-bold mb-4 text-foreground">{faq.question}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>
