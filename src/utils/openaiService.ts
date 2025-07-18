@@ -8,6 +8,7 @@ interface OpenAIColorRequest {
   backgroundStyle?: string;
   description?: string;
   isDarkMode?: boolean;
+  themeMode?: 'light' | 'light-midtone' | 'midtone' | 'midtone-dark' | 'dark';
   backgroundSettings?: {
     enabled: boolean;
     mode: 'svg' | 'gradient';
@@ -131,8 +132,60 @@ Return ONLY valid JSON with hex color values. Ensure text colors have sufficient
 };
 
 const buildColorPrompt = (request: OpenAIColorRequest): string => {
-  const { mood, theme, backgroundStyle, description, isDarkMode, backgroundSettings } = request;
+  const { mood, theme, backgroundStyle, description, isDarkMode, themeMode, backgroundSettings } = request;
   
+  // Define lightness mapping for theme modes
+  const lightnessMap = {
+    light: [85, 100],
+    'light-midtone': [70, 84],
+    midtone: [45, 65],
+    'midtone-dark': [30, 44],
+    dark: [10, 25]
+  };
+
+  // If themeMode is specified, use the new template with lightness ranges
+  if (themeMode && lightnessMap[themeMode]) {
+    const [minL, maxL] = lightnessMap[themeMode];
+    
+    let prompt = `Generate a website color palette for the ${themeMode} theme.
+
+- Use lightness values between ${minL} and ${maxL} for the background and accent colors.
+- Include a background color, a text color, a primary accent, and a secondary accent.
+- The text color must be clearly visible and have strong contrast against the background.
+- Avoid generating text colors that are too similar to the background — no low-contrast gray-on-gray or similar-tone combinations.
+- Return all values in both HEX and HSL formats.`;
+
+    // Add additional characteristics if provided
+    if (theme || backgroundStyle || mood || description) {
+      prompt += '\n\nAdditional characteristics:';
+      if (theme) prompt += `\n- Theme: ${theme}`;
+      if (backgroundStyle) prompt += `\n- Background Style: ${backgroundStyle}`;
+      if (backgroundSettings?.enabled && backgroundSettings.mode === 'svg' && backgroundSettings.style) {
+        prompt += `\n- Background Type: ${backgroundSettings.style} with ${Math.round((backgroundSettings.opacity || 0.3) * 100)}% opacity`;
+      } else if (backgroundSettings?.enabled && backgroundSettings.mode === 'gradient') {
+        prompt += `\n- Background Type: Gradient background with ${Math.round((backgroundSettings.opacity || 0.3) * 100)}% opacity`;
+      }
+      if (mood) prompt += `\n- Mood: ${mood}`;
+      if (description) prompt += `\n- Description: ${description}`;
+    }
+
+    // Check if high contrast enforcement is enabled in admin settings
+    const adminSettings = localStorage.getItem('openai_admin_settings');
+    if (adminSettings) {
+      try {
+        const settings = JSON.parse(adminSettings);
+        if (settings.enforceHighContrast) {
+          prompt += `\n- Ensure text colors have high contrast against their background colors for readability.`;
+        }
+      } catch (error) {
+        console.warn('Error parsing admin settings for high contrast enforcement:', error);
+      }
+    }
+
+    return prompt;
+  }
+
+  // Fallback to the original prompt format if no themeMode is specified
   let prompt = `Generate a ${isDarkMode ? 'dark mode' : 'light mode'} color palette`;
   
   if (theme || backgroundStyle || mood || description) {
