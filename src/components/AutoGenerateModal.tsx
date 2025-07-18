@@ -315,46 +315,6 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                       </div>
                     </div>
 
-                    {/* Live Preview */}
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-medium">Live Preview</h3>
-                        <div className="flex items-center gap-2">
-                          <label className="text-xs text-gray-600">Zoom:</label>
-                          <Select
-                            value={zoomLevel.toString()}
-                            onValueChange={(value) => setZoomLevel(parseInt(value))}
-                          >
-                            <SelectTrigger className="w-20 h-6 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="50">50%</SelectItem>
-                              <SelectItem value="75">75%</SelectItem>
-                              <SelectItem value="100">100%</SelectItem>
-                              <SelectItem value="125">125%</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      
-                      <div className="border rounded-lg bg-white overflow-hidden" style={{ height: '400px' }}>
-                        <div 
-                          className="origin-top-left transition-transform duration-200"
-                          style={{ 
-                            transform: `scale(${zoomLevel / 100})`,
-                            width: `${10000 / zoomLevel}%`,
-                            height: `${40000 / zoomLevel}px`
-                          }}
-                        >
-                          <LivePreview
-                            template={selectedTemplate}
-                            colorPalette={colorPalette}
-                            backgroundSettings={backgroundSettings}
-                          />
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </TabsContent>
 
@@ -384,17 +344,15 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                         }`}
                         onClick={() => setSelectedPaletteIndex(index)}
                       >
-                        <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white relative">
-                          <div 
-                            className="absolute inset-0 scale-[0.2] origin-top-left" 
-                            style={{ width: '500%', height: '500%' }}
-                            data-palette-preview
-                          >
-                            <LivePreview
-                              template={palette.templateId as TemplateType}
-                              colorPalette={convertToColorPalette(palette)}
-                              backgroundSettings={backgroundSettings}
-                            />
+                        <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white p-4">
+                          <div className="grid grid-cols-5 gap-1 h-full">
+                            {palette.colors.map((color, colorIndex) => (
+                              <div
+                                key={colorIndex}
+                                className="rounded"
+                                style={{ backgroundColor: color }}
+                              />
+                            ))}
                           </div>
                         </div>
                         
