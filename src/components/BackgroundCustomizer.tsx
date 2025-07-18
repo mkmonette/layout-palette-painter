@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
-export type BackgroundStyle = 'wavy-layers' | 'cloudy-blobs' | 'mesh-gradients' | 'flowing-shapes' | 'geometric-patterns' | 'wavy-lines' | 'organic-blobs' | 'zigzag-chevron' | 'diagonal-stripes' | 'concentric-circles' | 'isometric-cubes' | 'hexagon-mesh' | 'triangles-lowpoly' | 'dotted-grid' | 'radial-burst';
+export type BackgroundStyle = 'wavy-layers' | 'cloudy-blobs' | 'mesh-gradients' | 'flowing-shapes' | 'geometric-patterns' | 'wavy-lines' | 'organic-blobs' | 'zigzag-chevron' | 'diagonal-stripes' | 'concentric-circles' | 'isometric-cubes' | 'hexagon-mesh' | 'triangles-lowpoly' | 'dotted-grid' | 'radial-burst' | 'circuit-board' | 'data-flow' | 'matrix-dots' | 'glowing-rings' | 'digital-grid' | 'pixel-noise' | 'soft-shapes' | 'paper-texture' | 'repeating-symbols' | 'diagonal-hatch' | 'rounded-grid' | 'brush-strokes' | 'paint-splatter' | 'ink-blot' | 'watercolor' | 'hand-drawn' | 'stained-glass' | 'wave-divider' | 'slant-diagonal' | 'curved-overlay' | 'notched-corners' | 'blob-separator';
 
 export type BackgroundMode = 'svg' | 'gradient';
 
@@ -54,6 +54,28 @@ const backgroundStyles = [
   { value: 'triangles-lowpoly', label: 'Triangles / Low-poly' },
   { value: 'dotted-grid', label: 'Dotted Grid' },
   { value: 'radial-burst', label: 'Radial Burst' },
+  { value: 'circuit-board', label: 'Circuit Board Lines' },
+  { value: 'data-flow', label: 'Data Flow Lines' },
+  { value: 'matrix-dots', label: 'Matrix Dots' },
+  { value: 'glowing-rings', label: 'Glowing Rings' },
+  { value: 'digital-grid', label: 'Digital Grid Mesh' },
+  { value: 'pixel-noise', label: 'Pixel Noise' },
+  { value: 'soft-shapes', label: 'Soft Triangles/Squares' },
+  { value: 'paper-texture', label: 'Paper Texture' },
+  { value: 'repeating-symbols', label: 'Repeating X/+' },
+  { value: 'diagonal-hatch', label: 'Diagonal Hatch' },
+  { value: 'rounded-grid', label: 'Rounded Grid' },
+  { value: 'brush-strokes', label: 'Brush Strokes' },
+  { value: 'paint-splatter', label: 'Paint Splatter' },
+  { value: 'ink-blot', label: 'Ink Blot' },
+  { value: 'watercolor', label: 'Watercolor Textures' },
+  { value: 'hand-drawn', label: 'Hand-drawn Lines' },
+  { value: 'stained-glass', label: 'Stained Glass Shards' },
+  { value: 'wave-divider', label: 'Wave Divider' },
+  { value: 'slant-diagonal', label: 'Slant Diagonal' },
+  { value: 'curved-overlay', label: 'Curved Top Overlay' },
+  { value: 'notched-corners', label: 'Notched Corners' },
+  { value: 'blob-separator', label: 'Blob Section Separator' },
 ] as const;
 
 const backgroundModes = [
@@ -313,6 +335,28 @@ export function BackgroundCustomizer({ settings, onSettingsChange }: BackgroundC
       case 'triangles-lowpoly':
       case 'dotted-grid':
       case 'radial-burst':
+      case 'circuit-board':
+      case 'data-flow':
+      case 'matrix-dots':
+      case 'glowing-rings':
+      case 'digital-grid':
+      case 'pixel-noise':
+      case 'soft-shapes':
+      case 'paper-texture':
+      case 'repeating-symbols':
+      case 'diagonal-hatch':
+      case 'rounded-grid':
+      case 'brush-strokes':
+      case 'paint-splatter':
+      case 'ink-blot':
+      case 'watercolor':
+      case 'hand-drawn':
+      case 'stained-glass':
+      case 'wave-divider':
+      case 'slant-diagonal':
+      case 'curved-overlay':
+      case 'notched-corners':
+      case 'blob-separator':
         return (
           <div className="space-y-4">
             <div className="space-y-2">
