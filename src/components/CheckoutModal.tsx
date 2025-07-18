@@ -20,6 +20,13 @@ interface CheckoutModalProps {
     price: number;
     name: string;
   } | null;
+  coinAddons?: {
+    id: string;
+    name: string;
+    coins: number;
+    price: number;
+    bonus?: number;
+  }[];
   type: 'subscription' | 'coins';
 }
 
@@ -36,6 +43,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   onClose,
   selectedPlan,
   coinPackage,
+  coinAddons = [],
   type
 }) => {
   const { toast } = useToast();
@@ -67,9 +75,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       
       // Mock successful payment
       if (type === 'subscription' && selectedPlan) {
+        const totalCoinAddons = coinAddons.reduce((sum, addon) => sum + addon.coins + (addon.bonus || 0), 0);
+        const baseMessage = `Welcome to ${selectedPlan.name}! Your subscription is now active.`;
+        const coinMessage = totalCoinAddons > 0 ? ` Plus ${totalCoinAddons} coins have been added to your account.` : '';
+        
         toast({
           title: "Subscription Activated!",
-          description: `Welcome to ${selectedPlan.name}! Your subscription is now active.`,
+          description: baseMessage + coinMessage,
         });
       } else if (type === 'coins' && coinPackage) {
         toast({
@@ -113,6 +125,17 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         }
         return featureName;
       });
+  };
+
+  const getTotalPrice = () => {
+    let total = 0;
+    if (type === 'subscription' && selectedPlan) {
+      total += selectedPlan.price;
+    } else if (type === 'coins' && coinPackage) {
+      total += coinPackage.price;
+    }
+    total += coinAddons.reduce((sum, addon) => sum + addon.price, 0);
+    return total;
   };
 
   return (
@@ -174,13 +197,37 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </div>
               )}
 
+              {/* Coin Add-ons */}
+              {coinAddons.length > 0 && (
+                <>
+                  <Separator />
+                  <div>
+                    <div className="font-medium mb-2 flex items-center gap-2">
+                      <Coins className="h-4 w-4 text-yellow-500" />
+                      Coin Add-ons
+                    </div>
+                    <div className="space-y-2">
+                      {coinAddons.map((addon) => (
+                        <div key={addon.id} className="flex items-center justify-between text-sm">
+                          <div>
+                            <span className="font-medium">{addon.name}</span>
+                            <span className="text-muted-foreground ml-2">
+                              ({addon.coins + (addon.bonus || 0)} coins)
+                            </span>
+                          </div>
+                          <span className="font-medium">+${addon.price.toFixed(2)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
               <Separator />
 
               <div className="flex items-center justify-between font-semibold">
                 <span>Total</span>
-                <span>
-                  ${type === 'subscription' ? selectedPlan?.price.toFixed(2) : coinPackage?.price.toFixed(2)}
-                </span>
+                <span>${getTotalPrice().toFixed(2)}</span>
               </div>
 
               {/* Plan Features (for subscription) */}
@@ -255,7 +302,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
               ) : (
                 <>
                   <CreditCard className="h-4 w-4 mr-2" />
-                  Pay ${type === 'subscription' ? selectedPlan?.price.toFixed(2) : coinPackage?.price.toFixed(2)}
+                  Pay ${getTotalPrice().toFixed(2)}
                 </>
               )}
             </Button>

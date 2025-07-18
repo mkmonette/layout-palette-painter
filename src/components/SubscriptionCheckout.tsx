@@ -1,20 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Crown, Star, Zap, Sparkles } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Check, Crown, Star, Zap, Sparkles, Coins, Plus } from 'lucide-react';
 import { useEnhancedSubscription } from '@/contexts/EnhancedSubscriptionContext';
 import CheckoutModal from './CheckoutModal';
 import { SubscriptionPlan } from '@/types/subscription';
+
+interface CoinAddon {
+  id: string;
+  name: string;
+  coins: number;
+  price: number;
+  bonus?: number;
+}
 
 const SubscriptionCheckout = () => {
   const { plans, currentPlan } = useEnhancedSubscription();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
+  const [selectedAddons, setSelectedAddons] = useState<CoinAddon[]>([]);
+  const [coinSettings, setCoinSettings] = useState({
+    small: { coins: 50, price: 4.99 },
+    medium: { coins: 150, price: 12.99 },
+    large: { coins: 300, price: 24.99 }
+  });
+
+  // Load coin settings from localStorage (admin settings)
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('coin_credit_settings');
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings);
+        if (parsed.coinPurchasePackages) {
+          setCoinSettings(parsed.coinPurchasePackages);
+        }
+      } catch (error) {
+        console.error('Error loading coin settings:', error);
+      }
+    }
+  }, []);
+
+  const coinAddons: CoinAddon[] = [
+    {
+      id: 'addon_starter',
+      name: 'Starter Coins',
+      coins: coinSettings.small.coins,
+      price: coinSettings.small.price,
+    },
+    {
+      id: 'addon_popular',
+      name: 'Popular Coins',
+      coins: coinSettings.medium.coins,
+      price: coinSettings.medium.price,
+      bonus: Math.floor(coinSettings.medium.coins * 0.1),
+    },
+    {
+      id: 'addon_premium',
+      name: 'Premium Coins',
+      coins: coinSettings.large.coins,
+      price: coinSettings.large.price,
+      bonus: Math.floor(coinSettings.large.coins * 0.2),
+    }
+  ];
 
   const handlePlanSelect = (plan: SubscriptionPlan) => {
     setSelectedPlan(plan);
     setIsCheckoutOpen(true);
+  };
+
+  const handleAddonToggle = (addon: CoinAddon, checked: boolean) => {
+    if (checked) {
+      setSelectedAddons(prev => [...prev, addon]);
+    } else {
+      setSelectedAddons(prev => prev.filter(a => a.id !== addon.id));
+    }
+  };
+
+  const getTotalPrice = () => {
+    const planPrice = selectedPlan?.price || 0;
+    const addonsPrice = selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
+    return planPrice + addonsPrice;
   };
 
   const getPlanIcon = (planName: string) => {
@@ -171,10 +238,80 @@ const SubscriptionCheckout = () => {
         </CardContent>
       </Card>
 
+      {/* Coin Credits Add-ons */}
+      <Card className="bg-gradient-to-r from-yellow-500/5 to-yellow-600/10 border-yellow-200">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Coins className="h-5 w-5 text-yellow-500" />
+            <CardTitle className="text-xl">Add Coin Credits</CardTitle>
+          </div>
+          <CardDescription>
+            Boost your experience with additional coin credits. Use coins for AI generations, premium features, and more.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-3 gap-4">
+            {coinAddons.map((addon) => (
+              <div key={addon.id} className="relative">
+                <Card className={`transition-all duration-200 ${
+                  selectedAddons.some(a => a.id === addon.id) 
+                    ? 'ring-2 ring-yellow-500 bg-yellow-50' 
+                    : 'hover:shadow-md'
+                }`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={addon.id}
+                        checked={selectedAddons.some(a => a.id === addon.id)}
+                        onCheckedChange={(checked) => handleAddonToggle(addon, checked as boolean)}
+                      />
+                      <label htmlFor={addon.id} className="cursor-pointer">
+                        <CardTitle className="text-base">{addon.name}</CardTitle>
+                      </label>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-2">
+                      <div className="text-2xl font-bold text-yellow-600">
+                        {addon.coins + (addon.bonus || 0)}
+                        <span className="text-sm text-muted-foreground ml-1">coins</span>
+                      </div>
+                      <div className="text-lg font-semibold">
+                        +${addon.price}
+                      </div>
+                      {addon.bonus && (
+                        <div className="text-xs text-green-600 font-medium">
+                          Includes {addon.bonus} bonus coins!
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </div>
+          
+          {selectedAddons.length > 0 && (
+            <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+              <div className="text-sm font-medium text-yellow-800">
+                Selected Add-ons: {selectedAddons.length}
+              </div>
+              <div className="text-xs text-yellow-700 mt-1">
+                Additional cost: ${selectedAddons.reduce((sum, addon) => sum + addon.price, 0).toFixed(2)}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       <CheckoutModal
         isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
+        onClose={() => {
+          setIsCheckoutOpen(false);
+          setSelectedAddons([]);
+        }}
         selectedPlan={selectedPlan}
+        coinAddons={selectedAddons}
         type="subscription"
       />
     </div>
