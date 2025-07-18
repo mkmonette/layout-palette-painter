@@ -127,88 +127,38 @@ const CoinPackagesTable = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>#</TableHead>
-                  <TableHead>Package</TableHead>
-                  <TableHead>Base Coins</TableHead>
-                  <TableHead>Bonus Coins</TableHead>
-                  <TableHead>Total Coins</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Value per Coin</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Coins</TableHead>
+                  <TableHead>Price ($)</TableHead>
+                  <TableHead>Bonus Coins (Optional)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {coinPackages.map((pkg, index) => {
-                  const totalCoins = pkg.coins + (pkg.bonus || 0);
-                  const popularity = getPopularityBadge(index);
-                  
-                  return (
-                    <TableRow key={pkg.id}>
-                      <TableCell className="font-medium">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <div className="p-2 bg-yellow-100 rounded-full">
-                            <Coins className="h-4 w-4 text-yellow-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">Package {index + 1}</div>
-                            {popularity && (
-                              <Badge 
-                                className={`text-white text-xs ${popularity.color}`}
-                              >
-                                {popularity.label}
-                              </Badge>
-                            )}
-                          </div>
+                {coinPackages.map((pkg, index) => (
+                  <TableRow key={pkg.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Coins className="h-4 w-4 text-yellow-500" />
+                        <span className="font-medium">{pkg.coins.toLocaleString()}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <DollarSign className="h-4 w-4 text-green-600" />
+                        <span className="font-semibold">{pkg.price.toFixed(2)}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {pkg.bonus ? (
+                        <div className="flex items-center gap-1 text-green-600">
+                          <Gift className="h-4 w-4" />
+                          <span className="font-medium">+{pkg.bonus.toLocaleString()}</span>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Coins className="h-3 w-3 text-muted-foreground" />
-                          <span className="font-medium">{pkg.coins.toLocaleString()}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {pkg.bonus ? (
-                          <div className="flex items-center gap-1 text-green-600">
-                            <Gift className="h-3 w-3" />
-                            <span className="font-medium">+{pkg.bonus.toLocaleString()}</span>
-                          </div>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Coins className="h-3 w-3 text-primary" />
-                          <span className="font-bold text-primary">
-                            {totalCoins.toLocaleString()}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="h-3 w-3 text-green-600" />
-                          <span className="font-semibold">
-                            {formatCurrency(pkg.price)}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm font-mono">
-                          ${calculateValue(pkg)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-green-600 border-green-200">
-                          Active
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>
