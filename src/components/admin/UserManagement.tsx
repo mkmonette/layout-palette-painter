@@ -34,7 +34,8 @@ const UserManagement = () => {
       status: "active",
       subscription: "Pro",
       joinDate: "2024-01-15",
-      lastActive: "2 hours ago"
+      lastActive: "2 hours ago",
+      coins: 1250
     },
     {
       id: 2,
@@ -43,7 +44,8 @@ const UserManagement = () => {
       status: "active",
       subscription: "Basic",
       joinDate: "2024-02-10",
-      lastActive: "1 day ago"
+      lastActive: "1 day ago",
+      coins: 850
     },
     {
       id: 3,
@@ -52,7 +54,8 @@ const UserManagement = () => {
       status: "suspended",
       subscription: "None",
       joinDate: "2024-01-05",
-      lastActive: "1 week ago"
+      lastActive: "1 week ago",
+      coins: 0
     },
     {
       id: 4,
@@ -61,7 +64,8 @@ const UserManagement = () => {
       status: "active",
       subscription: "Enterprise",
       joinDate: "2023-12-20",
-      lastActive: "5 minutes ago"
+      lastActive: "5 minutes ago",
+      coins: 3500
     }
   ];
 
@@ -129,6 +133,7 @@ const UserManagement = () => {
                 <TableHead>User</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Subscription</TableHead>
+                <TableHead>Coins</TableHead>
                 <TableHead>Join Date</TableHead>
                 <TableHead>Last Active</TableHead>
                 <TableHead>Actions</TableHead>
@@ -145,6 +150,11 @@ const UserManagement = () => {
                   </TableCell>
                   <TableCell>{getStatusBadge(user.status)}</TableCell>
                   <TableCell>{getSubscriptionBadge(user.subscription)}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="font-mono">
+                      {user.coins.toLocaleString()}
+                    </Badge>
+                  </TableCell>
                   <TableCell>{user.joinDate}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{user.lastActive}</TableCell>
                   <TableCell>
