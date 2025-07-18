@@ -35,7 +35,7 @@ interface ColorPreset {
   originalPalette: ColorPalette;
   scheme?: string;
   mood?: string;
-  mode?: 'light' | 'dark';
+  mode?: string;
 }
 
 interface SavedPalettesManagerProps {
@@ -43,7 +43,7 @@ interface SavedPalettesManagerProps {
   onApplyPreset: (palette: ColorPalette) => void;
   currentScheme?: string;
   currentMood?: string;
-  currentMode?: 'light' | 'dark';
+  currentMode?: string;
 }
 
 const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({ 

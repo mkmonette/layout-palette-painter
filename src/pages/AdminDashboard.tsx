@@ -190,7 +190,7 @@ const AdminDashboard = () => {
   // Palette generation state
   const [currentScheme, setCurrentScheme] = useState('random');
   const [currentMood, setCurrentMood] = useState('');
-  const [currentMode, setCurrentMode] = useState<'light' | 'dark'>('light');
+  const [currentMode, setCurrentMode] = useState<string>('light');
   
   // Mock current palette - in real implementation this would come from state management
   const [currentPalette, setCurrentPalette] = useState({

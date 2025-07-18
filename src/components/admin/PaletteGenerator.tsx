@@ -29,10 +29,10 @@ interface PaletteGeneratorProps {
   onApplyPreset: (palette: ColorPalette) => void;
   currentScheme?: string;
   currentMood?: string;
-  currentMode?: 'light' | 'dark';
+  currentMode?: string;
   onSchemeChange?: (scheme: string) => void;
   onMoodChange?: (mood: string) => void;
-  onModeChange?: (mode: 'light' | 'dark') => void;
+  onModeChange?: (mode: string) => void;
 }
 
 const COLOR_ROLE_CATEGORIES = {
@@ -63,7 +63,7 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
   const [generationPrompt, setGenerationPrompt] = useState('');
   const [selectedMood, setSelectedMood] = useState(currentMood || '');
   const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>((currentScheme as ColorSchemeType) || 'random');
-  const [isDarkMode, setIsDarkMode] = useState(currentMode === 'dark');
+  const [selectedThemeTone, setSelectedThemeTone] = useState(currentMode || 'light');
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Save preset state
@@ -105,7 +105,7 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
         if (selectedMood && selectedMood !== 'none') {
           enhancedPrompt += ` that feels ${selectedMood}`;
         }
-        if (isDarkMode) {
+        if (selectedThemeTone === 'dark' || selectedThemeTone === 'dark-midtone') {
           enhancedPrompt += ` and is optimized for a dark theme`;
         } else {
           enhancedPrompt += ` and is optimized for a light theme`;
@@ -120,7 +120,7 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
       const aiPalette = await generateAIColorPalette({
         mood: selectedMood,
         description: enhancedPrompt,
-        isDarkMode
+        isDarkMode: selectedThemeTone === 'dark' || selectedThemeTone === 'dark-midtone'
       });
       
       setWorkingPalette(aiPalette);
@@ -153,7 +153,7 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
     setWorkingPalette(currentPalette);
     setGenerationPrompt('');
     setSelectedMood('');
-    setIsDarkMode(false);
+    setSelectedThemeTone('light');
   };
 
   // Save current palette as preset
@@ -195,7 +195,7 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
       originalPalette: { ...workingPalette },
       scheme: selectedScheme !== 'random' ? selectedScheme : undefined,
       mood: selectedMood || undefined,
-      mode: isDarkMode ? 'dark' : 'light'
+      mode: selectedThemeTone
     };
 
     const updatedPresets = [...existingPresets, newPreset];
@@ -277,18 +277,25 @@ const PaletteGenerator: React.FC<PaletteGeneratorProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label>Theme Mode</Label>
-              <div className="flex items-center space-x-2">
-                <Sun className="h-4 w-4" />
-                <Switch
-                  checked={isDarkMode}
-                  onCheckedChange={(checked) => {
-                    setIsDarkMode(checked);
-                    onModeChange?.(checked ? 'dark' : 'light');
-                  }}
-                />
-                <Moon className="h-4 w-4" />
-              </div>
+              <Label>Theme Tone</Label>
+              <Select 
+                value={selectedThemeTone} 
+                onValueChange={(value) => {
+                  setSelectedThemeTone(value);
+                  onModeChange?.(value);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select theme tone" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Light</SelectItem>
+                  <SelectItem value="light-midtone">Light-Midtone</SelectItem>
+                  <SelectItem value="midtone">Midtone</SelectItem>
+                  <SelectItem value="dark-midtone">Dark-Midtone</SelectItem>
+                  <SelectItem value="dark">Dark</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
