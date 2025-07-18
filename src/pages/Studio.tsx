@@ -28,7 +28,8 @@ import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import SavedPalettesContent from '@/components/SavedPalettesContent';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
-import { generateColorPalettePDF } from '@/utils/pdfGenerator';
+import { generateColorPalettePDF, generateBasicColorPalettePDF } from '@/utils/pdfGenerator';
+import PDFExportModal from '@/components/PDFExportModal';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
@@ -108,6 +109,7 @@ const Dashboard = () => {
   });
   const [lockedColors, setLockedColors] = useState<Set<keyof ColorPalette>>(new Set());
   const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
+  const projectName = 'Color Palette Project';
   const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
     enabled: false,
     mode: 'svg',
@@ -125,11 +127,11 @@ const Dashboard = () => {
 
   // New state for sidebar sections
   const [activeSection, setActiveSection] = useState<'templates' | 'schemes' | 'moods' | 'background-settings' | 'ai-colors' | 'from-image' | 'admin-presets' | 'saved-palettes' | 'settings' | 'test-plans'>('templates');
-  const [projectName, setProjectName] = useState('Untitled Project');
   const [isEditingName, setIsEditingName] = useState(false);
   const [showColorMood, setShowColorMood] = useState(false);
   const [isContextPanelCollapsed, setIsContextPanelCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showPDFExportModal, setShowPDFExportModal] = useState(false);
 
   // Set initial panel state based on mobile detection
   useEffect(() => {
@@ -335,7 +337,7 @@ const Dashboard = () => {
       });
     }
   };
-  const handleDownloadPDF = async () => {
+  const handleDownloadPDF = () => {
     if (!canDownload()) {
       setUpsellModal({
         isOpen: true,
@@ -343,6 +345,12 @@ const Dashboard = () => {
       });
       return;
     }
+    setShowPDFExportModal(true);
+  };
+
+  const handleBasicPDFExport = async () => {
+    setShowPDFExportModal(false);
+    
     if (!incrementDownload()) {
       toast({
         title: "Download Limit Reached",
@@ -351,10 +359,10 @@ const Dashboard = () => {
       });
       return;
     }
+    
     try {
       const previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
       if (!previewElement) {
-        // Fallback to finding the live preview container
         const livePreviewContainer = document.querySelector('.min-h-full.transition-transform') as HTMLElement;
         if (!livePreviewContainer) {
           toast({
@@ -364,12 +372,77 @@ const Dashboard = () => {
           });
           return;
         }
+        
+        await generateBasicColorPalettePDF({
+          colorPalette,
+          templateName: selectedTemplate.replace('-', ' '),
+          previewElement: livePreviewContainer,
+          isDarkMode: colorMode === 'dark'
+        });
+      } else {
+        await generateBasicColorPalettePDF({
+          colorPalette,
+          templateName: selectedTemplate.replace('-', ' '),
+          previewElement,
+          isDarkMode: colorMode === 'dark'
+        });
+      }
+      
+      const remaining = getRemainingDownloads();
+      toast({
+        title: "Basic PDF Downloaded",
+        description: `Basic color palette PDF has been downloaded. ${remaining === Infinity ? 'Unlimited' : remaining} downloads remaining today.`
+      });
+    } catch (error) {
+      console.error('Basic PDF generation failed:', error);
+      toast({
+        title: "Download Failed",
+        description: "Failed to generate basic PDF. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleProfessionalPDFExport = async () => {
+    setShowPDFExportModal(false);
+    
+    if (!isPro) {
+      setUpsellModal({
+        isOpen: true,
+        templateName: 'Professional PDF reports'
+      });
+      return;
+    }
+
+    if (!incrementDownload()) {
+      toast({
+        title: "Download Limit Reached",
+        description: "You've reached your daily download limit.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      const previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
+      if (!previewElement) {
+        const livePreviewContainer = document.querySelector('.min-h-full.transition-transform') as HTMLElement;
+        if (!livePreviewContainer) {
+          toast({
+            title: "Error",
+            description: "Could not find template preview to capture.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
         await generateColorPalettePDF({
           colorPalette,
           templateName: selectedTemplate.replace('-', ' '),
           previewElement: livePreviewContainer,
           isDarkMode: colorMode === 'dark',
-          isPro
+          isPro: true,
+          projectName
         });
       } else {
         await generateColorPalettePDF({
@@ -377,19 +450,20 @@ const Dashboard = () => {
           templateName: selectedTemplate.replace('-', ' '),
           previewElement,
           isDarkMode: colorMode === 'dark',
-          isPro
+          isPro: true,
+          projectName
         });
       }
-      const remaining = getRemainingDownloads();
+      
       toast({
-        title: "PDF Downloaded",
-        description: isPro ? "Professional color palette PDF has been downloaded." : `PDF downloaded. ${remaining === Infinity ? 'Unlimited' : remaining} downloads remaining today.`
+        title: "Professional PDF Downloaded",
+        description: "Professional color palette PDF with accessibility analysis has been downloaded."
       });
     } catch (error) {
-      console.error('PDF generation failed:', error);
+      console.error('Professional PDF generation failed:', error);
       toast({
         title: "Download Failed",
-        description: "Failed to generate PDF. Please try again.",
+        description: "Failed to generate professional PDF. Please try again.",
         variant: "destructive"
       });
     }
@@ -493,9 +567,9 @@ const Dashboard = () => {
       }}>
           <div className="flex items-center justify-between px-4 h-full bg-blue-700">
             <div className="flex items-center space-x-4">
-              {isEditingName ? <input type="text" value={projectName} onChange={e => setProjectName(e.target.value)} onBlur={() => setIsEditingName(false)} onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)} className="bg-transparent text-white font-medium text-lg outline-none border-b border-white/50 placeholder-white/70" autoFocus /> : <h1 className="text-lg font-medium text-white cursor-pointer hover:text-white/80" onClick={() => setIsEditingName(true)}>
-                  {projectName}
-                </h1>}
+              <h1 className="text-lg font-medium text-white">
+                Color Palette Generator
+              </h1>
             </div>
 
             <div className="flex items-center space-x-4">
@@ -941,6 +1015,17 @@ const Dashboard = () => {
         handleMoodSelect(palette, moodId);
         setShowColorMood(false);
       }} currentPalette={colorPalette} />
+
+        {/* PDF Export Modal */}
+        <PDFExportModal
+          isOpen={showPDFExportModal}
+          onClose={() => setShowPDFExportModal(false)}
+          onBasicExport={handleBasicPDFExport}
+          onProfessionalExport={handleProfessionalPDFExport}
+          isPro={isPro}
+          colorPalette={colorPalette}
+          templateName={selectedTemplate}
+        />
 
         {/* Floating Generate Button */}
         <Button

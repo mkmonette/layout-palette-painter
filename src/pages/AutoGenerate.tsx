@@ -20,7 +20,8 @@ import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSe
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
 import { generateColorScheme, generateColorSchemeWithLocks } from '@/utils/colorGenerator';
-import { generateColorPalettePDF } from '@/utils/pdfGenerator';
+import { generateColorPalettePDF, generateBasicColorPalettePDF } from '@/utils/pdfGenerator';
+import PDFExportModal from '@/components/PDFExportModal';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
@@ -85,6 +86,7 @@ const AutoGenerate = () => {
   const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
   const [selectedPaletteIndex, setSelectedPaletteIndex] = useState<number | null>(null);
   const [adminSettings] = useState(getAdminSettings());
+  const [showPDFExportModal, setShowPDFExportModal] = useState(false);
   const [upsellModal, setUpsellModal] = useState<{ isOpen: boolean; feature: string }>({ isOpen: false, feature: '' });
   const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
     enabled: false,
@@ -246,42 +248,89 @@ const AutoGenerate = () => {
     });
   };
 
-  const handleDownloadPDF = async () => {
+  const handleDownloadPDF = () => {
     if (!canDownload()) {
       setUpsellModal({ isOpen: true, feature: 'PDF downloads' });
+      return;
+    }
+    setShowPDFExportModal(true);
+  };
+
+  const handleBasicPDFExport = async () => {
+    setShowPDFExportModal(false);
+    
+    if (!incrementDownload()) {
+      toast({
+        title: "Download Limit Reached",
+        description: "You've reached your daily download limit. Upgrade to Pro for unlimited downloads.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      const currentPalette = selectedPaletteIndex !== null ? convertToColorPalette(generatedPalettes[selectedPaletteIndex]) : colorPalette;
+      const templateName = allTemplates.find(t => t.id === selectedTemplate)?.name || selectedTemplate;
+      
+      const previewElement = document.querySelector('[data-autogen-preview]') as HTMLElement;
+      if (!previewElement) {
+        toast({
+          title: "Error", 
+          description: "Could not find template preview to capture.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      await generateBasicColorPalettePDF({
+        colorPalette: currentPalette,
+        templateName,
+        previewElement,
+        isDarkMode
+      });
+      
+      const remaining = getRemainingDownloads();
+      toast({
+        title: "Basic PDF Downloaded",
+        description: `Basic color palette PDF has been downloaded. ${remaining === Infinity ? 'Unlimited' : remaining} downloads remaining today.`
+      });
+    } catch (error) {
+      console.error('Basic PDF generation failed:', error);
+      toast({
+        title: "Download Failed",
+        description: "Failed to generate basic PDF. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleProfessionalPDFExport = async () => {
+    setShowPDFExportModal(false);
+    
+    if (!isPro) {
+      setUpsellModal({ isOpen: true, feature: 'Professional PDF reports' });
       return;
     }
 
     if (!incrementDownload()) {
       toast({
         title: "Download Limit Reached",
-        description: "You've reached your daily download limit. Upgrade to Pro for unlimited downloads.",
-        variant: "destructive",
+        description: "You've reached your daily download limit.",
+        variant: "destructive"
       });
       return;
     }
-
-    const currentPalette = selectedPaletteIndex !== null ? convertToColorPalette(generatedPalettes[selectedPaletteIndex]) : colorPalette;
-    const templateName = allTemplates.find(t => t.id === selectedTemplate)?.name || selectedTemplate;
     
     try {
-      // Find the preview element for the selected palette or use the current template
-      let previewElement: HTMLElement;
+      const currentPalette = selectedPaletteIndex !== null ? convertToColorPalette(generatedPalettes[selectedPaletteIndex]) : colorPalette;
+      const templateName = allTemplates.find(t => t.id === selectedTemplate)?.name || selectedTemplate;
       
-      if (selectedPaletteIndex !== null) {
-        // Find the specific palette card preview
-        const paletteCards = document.querySelectorAll('[data-palette-preview]');
-        previewElement = paletteCards[selectedPaletteIndex] as HTMLElement;
-      } else {
-        // Fallback to any preview element
-        previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
-      }
-      
+      const previewElement = document.querySelector('[data-autogen-preview]') as HTMLElement;
       if (!previewElement) {
         toast({
           title: "Error",
-          description: "Could not find template preview to capture.",
-          variant: "destructive",
+          description: "Could not find template preview to capture.", 
+          variant: "destructive"
         });
         return;
       }
@@ -291,21 +340,20 @@ const AutoGenerate = () => {
         templateName,
         previewElement,
         isDarkMode,
-        isPro,
+        isPro: true,
+        projectName: 'Auto-Generated Palette'
       });
       
-      const remaining = getRemainingDownloads();
       toast({
-        title: "PDF Downloaded",
-        description: isPro ? "Professional color palette PDF has been downloaded." : 
-          `PDF downloaded. ${remaining === Infinity ? 'Unlimited' : remaining} downloads remaining today.`,
+        title: "Professional PDF Downloaded",
+        description: "Professional color palette PDF with accessibility analysis has been downloaded."
       });
     } catch (error) {
-      console.error('PDF generation failed:', error);
+      console.error('Professional PDF generation failed:', error);
       toast({
         title: "Download Failed",
-        description: "Failed to generate PDF. Please try again.",
-        variant: "destructive",
+        description: "Failed to generate professional PDF. Please try again.",
+        variant: "destructive"
       });
     }
   };
@@ -752,7 +800,18 @@ const AutoGenerate = () => {
         }}
       />
 
-      {/* Pro Upsell Modal */}
+        {/* PDF Export Modal */}
+        <PDFExportModal
+          isOpen={showPDFExportModal}
+          onClose={() => setShowPDFExportModal(false)}
+          onBasicExport={handleBasicPDFExport}
+          onProfessionalExport={handleProfessionalPDFExport}
+          isPro={isPro}
+          colorPalette={selectedPaletteIndex !== null ? convertToColorPalette(generatedPalettes[selectedPaletteIndex]) : colorPalette}
+          templateName={selectedTemplate}
+        />
+
+        {/* Pro Upsell Modal */}
       <ProUpsellModal
         isOpen={upsellModal.isOpen}
         onClose={() => setUpsellModal({ isOpen: false, feature: '' })}

@@ -91,6 +91,95 @@ const captureTemplateScreenshot = async (element: HTMLElement): Promise<string> 
   }
 };
 
+// Basic PDF generator for free users
+export const generateBasicColorPalettePDF = async ({
+  colorPalette,
+  templateName,
+  previewElement,
+  isDarkMode
+}: Omit<PDFGenerationOptions, 'isPro' | 'projectName'>): Promise<void> => {
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.width;
+  const pageHeight = pdf.internal.pageSize.height;
+  const margin = 20;
+
+  // Title
+  pdf.setFontSize(20);
+  pdf.setTextColor(40, 40, 40);
+  pdf.text('Basic PDF Report', margin, margin + 15);
+
+  // Subtitle
+  pdf.setFontSize(12);
+  pdf.setTextColor(100, 100, 100);
+  pdf.text(`Template: ${templateName} • Mode: ${isDarkMode ? 'Dark' : 'Light'}`, margin, margin + 25);
+  pdf.text(`Generated: ${new Date().toLocaleDateString()}`, margin, margin + 32);
+
+  let yPos = margin + 50;
+
+  // Color palette section
+  pdf.setFontSize(16);
+  pdf.setTextColor(40, 40, 40);
+  pdf.text('Color Palette', margin, yPos);
+  yPos += 15;
+
+  // Color swatches
+  const colors = [
+    { name: 'Brand', value: colorPalette.brand },
+    { name: 'Highlight', value: colorPalette.highlight },
+    { name: 'Accent', value: colorPalette.accent },
+    { name: 'Background', value: colorPalette["section-bg-1"] },
+    { name: 'Primary Text', value: colorPalette["text-primary"] },
+    { name: 'Secondary Text', value: colorPalette["text-secondary"] },
+  ];
+
+  colors.forEach((color) => {
+    const rgb = hexToRgb(color.value);
+    
+    // Color swatch
+    pdf.setFillColor(rgb.r, rgb.g, rgb.b);
+    pdf.rect(margin, yPos - 5, 15, 8, 'F');
+    
+    // Color details
+    pdf.setFontSize(10);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text(color.name, margin + 20, yPos);
+    pdf.text(color.value.toUpperCase(), margin + 80, yPos);
+    pdf.text(`RGB(${rgb.r}, ${rgb.g}, ${rgb.b})`, margin + 120, yPos);
+    
+    yPos += 12;
+  });
+
+  // Template preview
+  yPos += 20;
+  pdf.setFontSize(16);
+  pdf.setTextColor(40, 40, 40);
+  pdf.text('Template Preview', margin, yPos);
+  yPos += 15;
+
+  try {
+    const screenshotDataUrl = await captureTemplateScreenshot(previewElement);
+    const maxWidth = pageWidth - (margin * 2);
+    const availableHeight = pageHeight - yPos - margin - 20;
+    
+    pdf.addImage(screenshotDataUrl, 'PNG', margin, yPos, maxWidth, Math.min(availableHeight, 100));
+    
+  } catch (error) {
+    console.error('Failed to capture template screenshot:', error);
+    pdf.setFontSize(10);
+    pdf.setTextColor(150, 150, 150);
+    pdf.text('Screenshot capture failed', margin, yPos);
+  }
+
+  // Footer
+  pdf.setFontSize(8);
+  pdf.setTextColor(150, 150, 150);
+  pdf.text('Generated with Palette Generator - Upgrade to Pro for professional reports', margin, pageHeight - 10);
+
+  // Save the PDF
+  const fileName = `basic-color-palette-${templateName.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.pdf`;
+  pdf.save(fileName);
+};
+
 export const generateColorPalettePDF = async ({
   colorPalette,
   templateName,
