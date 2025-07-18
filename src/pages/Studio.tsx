@@ -246,6 +246,15 @@ const Dashboard = () => {
   };
   const handleSchemeChange = (scheme: ColorSchemeType) => {
     setSelectedScheme(scheme);
+    // Automatically generate colors with the new scheme
+    setTimeout(() => {
+      try {
+        const newPalette = generateColorSchemeWithLocks(scheme, colorMode, colorPalette, lockedColors, false, selectedMoodId);
+        setColorPalette(newPalette);
+      } catch (error) {
+        console.error('Error generating color scheme:', error);
+      }
+    }, 100);
   };
   const handleFullscreenToggle = () => {
     setIsFullscreen(!isFullscreen);
