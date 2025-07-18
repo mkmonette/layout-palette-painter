@@ -235,7 +235,40 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
               <div className="p-6 pt-0">
                 {generatedPalettes.length > 0 ? (
                   <div>
-                    <h3 className="text-lg font-semibold mb-6">Generated Palettes</h3>
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-lg font-semibold">Generated Palettes</h3>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setGeneratedPalettes([]);
+                            setSelectedPaletteIndex(null);
+                          }}
+                        >
+                          <RotateCcw className="h-4 w-4 mr-2" />
+                          New Settings
+                        </Button>
+                        <Button
+                          onClick={handleGenerate}
+                          disabled={isGenerating}
+                          size="sm"
+                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                        >
+                          {isGenerating ? (
+                            <>
+                              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="h-4 w-4 mr-2" />
+                              Generate Again
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {generatedPalettes.map((palette, index) => (
                         <Card
