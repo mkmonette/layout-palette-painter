@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TemplateType, ColorPalette, Template } from '@/types/template';
 import { GeneratedPalette } from '@/types/generator';
 import { generatePaletteBatch, getAdminSettings } from '@/utils/autoGenerator';
@@ -230,119 +231,40 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
             </DialogTitle>
           </DialogHeader>
 
+          {/* Generate Button at Top */}
+          <div className="px-6 pb-4 border-b">
+            <Button
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            >
+              {isGenerating ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  Generating {autogenerateCount} Palettes...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Generate {autogenerateCount} Palettes
+                </>
+              )}
+            </Button>
+          </div>
+
           <div className="flex-1 overflow-hidden">
-            <ScrollArea className="h-[70vh]">
-              <div className="p-6 pt-0">
-                {generatedPalettes.length > 0 ? (
-                  <div>
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-lg font-semibold">Generated Palettes</h3>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setGeneratedPalettes([]);
-                            setSelectedPaletteIndex(null);
-                          }}
-                        >
-                          <RotateCcw className="h-4 w-4 mr-2" />
-                          New Settings
-                        </Button>
-                        <Button
-                          onClick={handleGenerate}
-                          disabled={isGenerating}
-                          size="sm"
-                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                        >
-                          {isGenerating ? (
-                            <>
-                              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                              Generating...
-                            </>
-                          ) : (
-                            <>
-                              <Sparkles className="h-4 w-4 mr-2" />
-                              Generate Again
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {generatedPalettes.map((palette, index) => (
-                        <Card
-                          key={palette.id}
-                          className={`cursor-pointer transition-all hover:shadow-lg ${
-                            selectedPaletteIndex === index
-                              ? 'border-blue-500 bg-blue-50 shadow-lg'
-                              : 'hover:border-gray-300'
-                          }`}
-                          onClick={() => setSelectedPaletteIndex(index)}
-                        >
-                          <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white relative">
-                            <div 
-                              className="absolute inset-0 scale-[0.2] origin-top-left" 
-                              style={{ width: '500%', height: '500%' }}
-                              data-palette-preview
-                            >
-                              <LivePreview
-                                template={palette.templateId as TemplateType}
-                                colorPalette={convertToColorPalette(palette)}
-                                backgroundSettings={backgroundSettings}
-                              />
-                            </div>
-                          </div>
-                          
-                          <div className="p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-medium text-sm">{palette.templateName}</h4>
-                              <Badge variant="outline" className="text-xs">
-                                {getDaysRemaining(palette.timestamp)}d
-                              </Badge>
-                            </div>
-                            
-                            <div className="flex items-center gap-1 mb-3">
-                              {palette.colors.slice(0, 5).map((color, colorIndex) => (
-                                <div
-                                  key={colorIndex}
-                                  className="w-4 h-4 rounded border border-gray-200"
-                                  style={{ backgroundColor: color }}
-                                />
-                              ))}
-                            </div>
-                            
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleSavePalette(palette);
-                                }}
-                                className="flex-1 text-xs"
-                              >
-                                <Save className="h-3 w-3 mr-1" />
-                                Save
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDownloadPDF();
-                                }}
-                                className="text-xs"
-                              >
-                                <Download className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
+            <Tabs defaultValue="settings" className="h-full">
+              <div className="px-6 pt-4">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="settings">Settings</TabsTrigger>
+                  <TabsTrigger value="palettes" disabled={generatedPalettes.length === 0}>
+                    Generated Palettes ({generatedPalettes.length})
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <ScrollArea className="h-[60vh]">
+                <TabsContent value="settings" className="p-6 pt-4">
                   <div className="space-y-6">
                     {/* Controls */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -358,18 +280,6 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                       <div>
                         <h3 className="text-sm font-medium mb-3">Generation Settings</h3>
                         <div className="space-y-3">
-                          <div>
-                            <label className="text-xs font-medium text-gray-600 mb-1 block">
-                              Color Scheme
-                            </label>
-                            <ColorSchemeSelector
-                              selectedScheme={selectedScheme}
-                              onSchemeChange={setSelectedScheme}
-                              onGenerateScheme={() => {}}
-                              isGenerating={false}
-                            />
-                          </div>
-                          
                           <div>
                             <label className="text-xs font-medium text-gray-600 mb-1 block">
                               Number of Palettes
@@ -389,35 +299,155 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                               </SelectContent>
                             </Select>
                           </div>
+                          
+                          <div>
+                            <label className="text-xs font-medium text-gray-600 mb-1 block">
+                              Color Scheme
+                            </label>
+                            <ColorSchemeSelector
+                              selectedScheme={selectedScheme}
+                              onSchemeChange={setSelectedScheme}
+                              onGenerateScheme={() => {}}
+                              isGenerating={false}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Generate Button */}
-                    <div className="flex justify-center pt-4">
-                      <Button
-                        onClick={handleGenerate}
-                        disabled={isGenerating}
-                        size="lg"
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                      >
-                        {isGenerating ? (
-                          <>
-                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                            Generating...
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="h-4 w-4 mr-2" />
-                            Generate {autogenerateCount} Palettes
-                          </>
-                        )}
-                      </Button>
+                    {/* Live Preview */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-medium">Live Preview</h3>
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs text-gray-600">Zoom:</label>
+                          <Select
+                            value={zoomLevel.toString()}
+                            onValueChange={(value) => setZoomLevel(parseInt(value))}
+                          >
+                            <SelectTrigger className="w-20 h-6 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="50">50%</SelectItem>
+                              <SelectItem value="75">75%</SelectItem>
+                              <SelectItem value="100">100%</SelectItem>
+                              <SelectItem value="125">125%</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="border rounded-lg bg-white overflow-hidden" style={{ height: '400px' }}>
+                        <div 
+                          className="origin-top-left transition-transform duration-200"
+                          style={{ 
+                            transform: `scale(${zoomLevel / 100})`,
+                            width: `${10000 / zoomLevel}%`,
+                            height: `${40000 / zoomLevel}px`
+                          }}
+                        >
+                          <LivePreview
+                            template={selectedTemplate}
+                            colorPalette={colorPalette}
+                            backgroundSettings={backgroundSettings}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                )}
-              </div>
-            </ScrollArea>
+                </TabsContent>
+
+                <TabsContent value="palettes" className="p-6 pt-4">
+                  <div className="flex justify-end mb-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setGeneratedPalettes([]);
+                        setSelectedPaletteIndex(null);
+                      }}
+                    >
+                      <RotateCcw className="h-4 w-4 mr-2" />
+                      New Settings
+                    </Button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {generatedPalettes.map((palette, index) => (
+                      <Card
+                        key={palette.id}
+                        className={`cursor-pointer transition-all hover:shadow-lg ${
+                          selectedPaletteIndex === index
+                            ? 'border-blue-500 bg-blue-50 shadow-lg'
+                            : 'hover:border-gray-300'
+                        }`}
+                        onClick={() => setSelectedPaletteIndex(index)}
+                      >
+                        <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white relative">
+                          <div 
+                            className="absolute inset-0 scale-[0.2] origin-top-left" 
+                            style={{ width: '500%', height: '500%' }}
+                            data-palette-preview
+                          >
+                            <LivePreview
+                              template={palette.templateId as TemplateType}
+                              colorPalette={convertToColorPalette(palette)}
+                              backgroundSettings={backgroundSettings}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="p-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-medium text-sm">{palette.templateName}</h4>
+                            <Badge variant="outline" className="text-xs">
+                              {getDaysRemaining(palette.timestamp)}d
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 mb-3">
+                            {palette.colors.slice(0, 5).map((color, colorIndex) => (
+                              <div
+                                key={colorIndex}
+                                className="w-4 h-4 rounded border border-gray-200"
+                                style={{ backgroundColor: color }}
+                              />
+                            ))}
+                          </div>
+                          
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSavePalette(palette);
+                              }}
+                              className="flex-1 text-xs"
+                            >
+                              <Save className="h-3 w-3 mr-1" />
+                              Save
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownloadPDF();
+                              }}
+                              className="text-xs"
+                            >
+                              <Download className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+              </ScrollArea>
+            </Tabs>
           </div>
         </DialogContent>
       </Dialog>
