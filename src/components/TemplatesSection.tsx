@@ -512,17 +512,17 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <Tabs defaultValue="default" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="default">🟦 Default</TabsTrigger>
           <TabsTrigger value="custom">🟩 Custom</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="default" className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Choose from our built-in professional templates.
-          </p>
+        <TabsContent value="default" className="space-y-2">
+           <p className="text-xs text-muted-foreground">
+             Choose from our built-in professional templates.
+           </p>
           <TemplateSelector 
             selectedTemplate={selectedTemplate} 
             onTemplateChange={onTemplateChange} 
@@ -530,7 +530,7 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
           />
         </TabsContent>
         
-        <TabsContent value="custom" className="space-y-4">
+        <TabsContent value="custom" className="space-y-2">
           {/* Import Button */}
           <div className="flex justify-end">
             <Tooltip>
@@ -554,47 +554,47 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
           </div>
 
            {/* Custom Templates List */}
-           <div className="space-y-4">
+            <div className="space-y-2">
              <div className="flex items-center justify-between">
-               <h4 className="text-sm font-medium text-muted-foreground">
+               <h4 className="text-xs font-medium text-muted-foreground">
                  Your Custom Templates
                  {customTemplates.length > 0 && (
-                   <span className="ml-2 bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-medium">
+                   <span className="ml-2 bg-primary/10 text-primary px-1.5 py-0.5 rounded-full text-[10px] font-medium">
                      {customTemplates.length}
                    </span>
                  )}
                </h4>
                {customTemplates.length > 0 && (
-                 <div className="text-xs text-muted-foreground">
+                 <div className="text-[10px] text-muted-foreground">
                    Click "Apply" to use as template
                  </div>
                )}
              </div>
             
              {customTemplates.length === 0 ? (
-               <div className="text-center py-12 px-4">
-                 <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
-                   <Upload className="h-10 w-10 text-primary/60" />
+               <div className="text-center py-8 px-4">
+                 <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
+                   <Upload className="h-8 w-8 text-primary/60" />
                  </div>
-                 <h3 className="text-lg font-medium mb-2">Bring Your Designs to Life</h3>
-                 <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
-                   Import your Figma designs and watch them transform with intelligent color generation. 
-                   Your creativity, enhanced by AI.
-                 </p>
+                  <h3 className="text-base font-medium mb-2">Bring Your Designs to Life</h3>
+                  <p className="text-xs text-muted-foreground mb-3 max-w-md mx-auto">
+                    Import your Figma designs and watch them transform with intelligent color generation. 
+                    Your creativity, enhanced by AI.
+                  </p>
                  {!isPro && (
-                   <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 mt-6 max-w-sm mx-auto">
-                     <p className="text-sm font-medium text-primary mb-2">✨ Pro Feature</p>
-                     <p className="text-xs text-muted-foreground">
-                       Upgrade to Pro to import unlimited Figma templates and apply them to your color generator.
-                     </p>
-                   </div>
+                    <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-3 mt-4 max-w-sm mx-auto">
+                      <p className="text-xs font-medium text-primary mb-1">✨ Pro Feature</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        Upgrade to Pro to import unlimited Figma templates and apply them to your color generator.
+                      </p>
+                    </div>
                  )}
                </div>
             ) : (
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                  {customTemplates.map((template) => (
-                   <Card key={template.id} className="p-3 hover:bg-muted/30 transition-colors">
-                     <div className="space-y-3">
+                    <Card key={template.id} className="p-2 hover:bg-muted/30 transition-colors">
+                      <div className="space-y-2">
                        {/* Template Header with Name and Version */}
                        <div className="flex items-start justify-between gap-2">
                          <div className="flex-1 min-w-0">
@@ -611,28 +611,28 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
                                      setEditingName('');
                                    }
                                  }}
-                                 className="h-7 text-sm"
+                                 className="h-6 text-xs"
                                  autoFocus
                                />
                                <Button
-                                 size="sm"
-                                 onClick={() => handleRenameTemplate(template.id, editingName)}
-                                 className="h-7 px-2 text-xs"
-                               >
+                                  size="sm"
+                                  onClick={() => handleRenameTemplate(template.id, editingName)}
+                                  className="h-6 px-2 text-[10px]"
+                                >
                                  Save
                                </Button>
                              </div>
                            ) : (
                              <div>
-                               <h5 className="font-medium text-sm truncate">{template.name}</h5>
-                               <div className="flex items-center gap-2 mt-1">
-                                 <Badge variant="secondary" className="text-xs px-1 py-0 h-4">
-                                   v{template.version}
-                                 </Badge>
-                                 <span className="text-xs text-muted-foreground">
-                                   {new Date(template.createdAt).toLocaleDateString()}
-                                 </span>
-                               </div>
+                                <h5 className="font-medium text-xs truncate">{template.name}</h5>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <Badge variant="secondary" className="text-[10px] px-1 py-0 h-3">
+                                    v{template.version}
+                                  </Badge>
+                                  <span className="text-[10px] text-muted-foreground">
+                                    {new Date(template.createdAt).toLocaleDateString()}
+                                  </span>
+                                </div>
                              </div>
                            )}
                          </div>
@@ -640,7 +640,7 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
                          {/* More Actions Dropdown */}
                          <DropdownMenu>
                            <DropdownMenuTrigger asChild>
-                             <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                             <Button size="sm" variant="ghost" className="h-5 w-5 p-0">
                                <MoreHorizontal className="h-3 w-3" />
                              </Button>
                            </DropdownMenuTrigger>
@@ -656,7 +656,7 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
                              >
                                <RefreshCw className="h-3 w-3 mr-2" />
                                Update
-                               {!isPro && <Badge variant="secondary" className="ml-auto text-xs">Pro</Badge>}
+                               {!isPro && <Badge variant="secondary" className="ml-auto text-[10px]">Pro</Badge>}
                              </DropdownMenuItem>
                              
                              <DropdownMenuSeparator />
@@ -674,7 +674,7 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
 
                        {/* Preview Image */}
                        <div className="relative">
-                         <div className="w-full h-24 bg-gradient-to-br from-muted to-muted/60 rounded-lg border flex items-center justify-center overflow-hidden">
+                         <div className="w-full h-20 bg-gradient-to-br from-muted to-muted/60 rounded-lg border flex items-center justify-center overflow-hidden">
                            <img 
                              src={template.thumbnail || template.preview} 
                              alt={template.name}
@@ -713,12 +713,12 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
                        {template.tags && template.tags.length > 0 && (
                          <div className="flex gap-1 flex-wrap">
                            {template.tags.slice(0, 2).map((tag, index) => (
-                             <Badge key={index} variant="outline" className="text-xs px-1 py-0 h-4">
+                             <Badge key={index} variant="outline" className="text-[10px] px-1 py-0 h-3">
                                {tag}
                              </Badge>
                            ))}
                            {template.tags.length > 2 && (
-                             <Badge variant="outline" className="text-xs px-1 py-0 h-4">
+                             <Badge variant="outline" className="text-[10px] px-1 py-0 h-3">
                                +{template.tags.length - 2}
                              </Badge>
                            )}
@@ -794,8 +794,8 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
           
           <div className="space-y-4">
             <div className="bg-muted/30 p-4 rounded-lg">
-              <h4 className="font-medium text-sm mb-2">Pro Features Include:</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
+              <h4 className="font-medium text-xs mb-2">Pro Features Include:</h4>
+              <ul className="text-xs text-muted-foreground space-y-1">
                 <li>• Import unlimited Figma designs</li>
                 <li>• Apply custom templates to color generation</li>
                 <li>• Advanced color generation options</li>
