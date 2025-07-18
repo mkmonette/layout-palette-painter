@@ -993,100 +993,22 @@ const Dashboard = () => {
           </div>
 
 
-          {/* Main Canvas Area */}
-          <div className="flex-1 flex flex-col bg-muted/30">
-            {/* Canvas Toolbar */}
-            <div style={{
-            backgroundColor: '#fef3e0'
-          }} className="h-12 border-b flex items-center justify-between px-2 sm:px-4 bg-sky-200">
-               <div className="flex items-center space-x-2">
-                
-                {/* Mobile hamburger menu */}
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="sm:hidden px-1 py-1 rounded-sm"
-                >
-                  {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                </Button>
-                
-                 <span className="text-xs text-muted-foreground hidden sm:block">Template Preview</span>
-                 <span className="text-[11px] text-muted-foreground hidden sm:block">•</span>
-                 <span className="text-[11px] text-muted-foreground capitalize hidden sm:block">
-                   {selectedTemplate.replace('-', ' ')}
-                 </span>
-                 <span className="text-xs text-muted-foreground sm:hidden">
-                   {selectedTemplate.replace('-', ' ')}
-                 </span>
-              </div>
-              
-              {/* Desktop controls */}
-              <div className="hidden sm:flex items-center space-x-2">
-                 <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-1 py-1 rounded-sm">
-                   <ZoomOut className="h-4 w-4" />
-                 </Button>
-                <span className="text-xs text-muted-foreground min-w-12 text-center">{zoomLevel}%</span>
-                 <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-1 py-1 rounded-sm">
-                   <ZoomIn className="h-4 w-4" />
-                 </Button>
-                 <Tooltip>
-                   <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-sm">
-                        {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
-                        Generate
-                      </Button>
-                   </TooltipTrigger>
-                   <TooltipContent>Generate new color palette</TooltipContent>
-                 </Tooltip>
-                 <Tooltip>
-                   <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded-sm">
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        Auto Generate
-                      </Button>
-                   </TooltipTrigger>
-                   <TooltipContent>Generate multiple color palettes</TooltipContent>
-                 </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                     <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="px-2 py-1 rounded-sm">
-                       <Download className="h-4 w-4 mr-2" />
-                       Export PDF
-                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Export color palette as PDF</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                     <Button variant="outline" size="sm" onClick={handleSave} className="px-2 py-1 rounded-sm">
-                       <Save className="h-4 w-4 mr-2" />
-                       Save
-                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Save current palette</TooltipContent>
-                </Tooltip>
-                <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="bg-amber-500 hover:bg-amber-400 px-2 py-1 rounded-sm">
-                  <Maximize className="h-4 w-4 mr-2" />
-                  Fullscreen
-                </Button>
-              </div>
-              
-              {/* Mobile zoom controls only */}
-              <div className="flex sm:hidden items-center space-x-1">
-                 <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="h-6 w-6 p-1 rounded-sm">
-                   <ZoomOut className="h-3 w-3" />
-                 </Button>
-                <span className="text-[11px] text-muted-foreground min-w-8 text-center">{zoomLevel}%</span>
-                 <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="h-6 w-6 p-1 rounded-sm">
-                   <ZoomIn className="h-3 w-3" />
-                 </Button>
-              </div>
-            </div>
+          {/* Main Content Area with Right Sidebar */}
+          <div className="flex-1 flex bg-muted/30">
+            {/* Canvas */}
+            <div className="flex-1 overflow-auto flex items-start justify-center bg-sky-200">
+              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
+              transform: `scale(${zoomLevel / 100})`,
+              transformOrigin: 'top center',
+              width: isMobile ? 
+                'calc(100vw - 16px)' : // Full width minus right sidebar and margins
+                'calc(100vw - 432px)', // Left sidebar (200px) + right sidebar (200px) + margins (32px)
+              minHeight: '400px'
+            }} data-preview-element>
 
             {/* Mobile dropdown menu */}
             {isMobileMenuOpen && (
-              <div className="sm:hidden bg-background border-b border-border p-4 space-y-2">
+              <div className="sm:hidden absolute top-0 left-0 right-0 bg-background border-b border-border p-4 space-y-2 z-50">
                 <div className="grid grid-cols-2 gap-2">
                    <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-[11px] px-2 py-1 rounded-sm">
                      {isGenerating ? <RefreshCw className="h-3 w-3 mr-2 animate-spin" /> : <Wand2 className="h-3 w-3 mr-2" />}
@@ -1107,19 +1029,102 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-
-            {/* Canvas */}
-            <div className="flex-1 overflow-auto flex items-start justify-center bg-sky-200">
-              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
-              transform: `scale(${zoomLevel / 100})`,
-              transformOrigin: 'top center',
-              width: isMobile ? 
-                'calc(100vw - 16px)' : // Full width minus equal margins (8px each side)
-                'calc(100vw - 232px)', // Sidebar width + equal margins (40px total)
-              minHeight: '400px'
-            }} data-preview-element>
                 <div className="w-full h-auto overflow-visible">
                   <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
+                </div>
+              </div>
+            </div>
+
+            {/* Right Sidebar */}
+            <div className="w-60 bg-background border-l border-border flex flex-col">
+              {/* Sidebar Header */}
+              <div className="p-4 border-b border-border">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-medium">Preview Controls</span>
+                  {/* Mobile hamburger menu for right sidebar */}
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="sm:hidden px-1 py-1 rounded-sm"
+                  >
+                    {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                  </Button>
+                </div>
+                
+                {/* Template Info */}
+                <div className="space-y-1">
+                  <span className="text-xs text-muted-foreground">Template Preview</span>
+                  <div className="text-sm font-medium capitalize">
+                    {selectedTemplate.replace('-', ' ')}
+                  </div>
+                </div>
+              </div>
+
+              {/* Sidebar Content */}
+              <div className="flex-1 p-4 space-y-4">
+                {/* Zoom Controls */}
+                <div className="space-y-2">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Zoom</span>
+                  <div className="flex items-center justify-between">
+                    <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-2 py-1 rounded-sm">
+                      <ZoomOut className="h-4 w-4" />
+                    </Button>
+                    <span className="text-sm font-medium min-w-12 text-center">{zoomLevel}%</span>
+                    <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-2 py-1 rounded-sm">
+                      <ZoomIn className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Actions</span>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-sm">
+                        {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
+                        Generate
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Generate new color palette</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="w-full bg-purple-500 hover:bg-purple-600 text-white px-3 py-2 rounded-sm">
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Auto Generate
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Generate multiple color palettes</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="w-full px-3 py-2 rounded-sm">
+                        <Download className="h-4 w-4 mr-2" />
+                        Export PDF
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Export color palette as PDF</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" onClick={handleSave} className="w-full px-3 py-2 rounded-sm">
+                        <Save className="h-4 w-4 mr-2" />
+                        Save
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Save current palette</TooltipContent>
+                  </Tooltip>
+                  
+                  <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full bg-amber-500 hover:bg-amber-400 px-3 py-2 rounded-sm">
+                    <Maximize className="h-4 w-4 mr-2" />
+                    Fullscreen
+                  </Button>
                 </div>
               </div>
             </div>
