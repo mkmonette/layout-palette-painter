@@ -286,17 +286,17 @@ const generateAnalogousScheme = (baseHue: number, mode: ColorMode): ColorPalette
     return {
       brand: hslToHex(hue1, 70, baseLightness),
       accent: hslToHex(hue3, 80, Math.min(maxL, baseLightness + 5)),
-      "button-primary": hslToHex(hue1, 70, baseLightness),
+      "button-primary": hslToHex(hue2, 70, baseLightness), // Use hue2 for variation
       "button-text": hslToHex(hue1, 25, Math.max(5, minL - 10)),
-      "button-secondary": hslToHex(hue1, 30, Math.min(maxL, baseLightness + 10)),
+      "button-secondary": hslToHex(hue3, 30, Math.min(maxL, baseLightness + 10)), // Use hue3
       "button-secondary-text": hslToHex(hue1, 70, baseLightness),
       "text-primary": hslToHex(0, 0, Math.min(95, maxL + 25)),
-      "text-secondary": hslToHex(hue1, 20, Math.min(85, maxL + 15)),
+      "text-secondary": hslToHex(hue2, 20, Math.min(85, maxL + 15)), // Use hue2
       "section-bg-1": hslToHex(hue1, 25, Math.max(5, minL - 5)),
       "section-bg-2": hslToHex(hue2, 25, Math.max(8, minL)),
       "section-bg-3": hslToHex(hue3, 25, Math.max(12, minL + 5)),
-      border: hslToHex(hue1, 20, Math.min(maxL, baseLightness + 5)),
-      highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 10)),
+      border: hslToHex(hue2, 20, Math.min(maxL, baseLightness + 5)), // Use hue2
+      highlight: hslToHex(hue3, 65, Math.min(maxL, baseLightness + 10)), // Use hue3
       "input-bg": hslToHex(hue1, 25, Math.max(8, minL)),
       "input-text": hslToHex(0, 0, Math.min(95, maxL + 25))
     };
@@ -305,17 +305,17 @@ const generateAnalogousScheme = (baseHue: number, mode: ColorMode): ColorPalette
     return {
       brand: hslToHex(hue1, 75, baseLightness),
       accent: hslToHex(hue3, 80, Math.min(maxL, baseLightness + 5)),
-      "button-primary": hslToHex(hue1, 75, baseLightness),
+      "button-primary": hslToHex(hue2, 75, baseLightness), // Use hue2
       "button-text": hslToHex(hue1, 15, Math.max(15, minL - 25)),
-      "button-secondary": hslToHex(hue1, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary": hslToHex(hue3, 25, Math.min(maxL, baseLightness + 15)), // Use hue3
       "button-secondary-text": hslToHex(hue1, 75, Math.max(minL - 5, baseLightness - 5)),
       "text-primary": hslToHex(hue1, 35, Math.max(15, minL - 20)),
-      "text-secondary": hslToHex(hue1, 25, Math.max(25, minL - 10)),
+      "text-secondary": hslToHex(hue2, 25, Math.max(25, minL - 10)), // Use hue2
       "section-bg-1": hslToHex(hue1, 20, Math.min(maxL, baseLightness + 20)),
       "section-bg-2": hslToHex(hue2, 25, Math.min(maxL, baseLightness + 15)),
       "section-bg-3": hslToHex(hue3, 25, Math.min(maxL, baseLightness + 10)),
-      border: hslToHex(hue1, 20, Math.max(minL + 5, baseLightness - 10)),
-      highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 5)),
+      border: hslToHex(hue2, 20, Math.max(minL + 5, baseLightness - 10)), // Use hue2
+      highlight: hslToHex(hue3, 65, Math.min(maxL, baseLightness + 5)), // Use hue3
       "input-bg": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 15)),
       "input-text": hslToHex(hue1, 35, Math.max(15, minL - 20))
     };
@@ -325,17 +325,17 @@ const generateAnalogousScheme = (baseHue: number, mode: ColorMode): ColorPalette
     return {
       brand: hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       accent: hslToHex(hue3, 80, Math.max(35, baseLightness - 30)),
-      "button-primary": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
+      "button-primary": hslToHex(hue2, 75, Math.max(30, baseLightness - 35)), // Use hue2
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary": hslToHex(hue3, 15, Math.min(maxL, baseLightness + 5)), // Use hue3
       "button-secondary-text": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "text-primary": hslToHex(hue1, 40, 15),
-      "text-secondary": hslToHex(hue1, 30, 45),
+      "text-secondary": hslToHex(hue2, 30, 45), // Use hue2
       "section-bg-1": '#FFFFFF',
       "section-bg-2": hslToHex(hue2, 20, Math.min(maxL, baseLightness - 2)),
       "section-bg-3": hslToHex(hue3, 20, Math.min(maxL, baseLightness - 5)),
-      border: hslToHex(hue1, 15, Math.max(minL + 5, baseLightness - 15)),
-      highlight: hslToHex(hue2, 70, Math.max(35, baseLightness - 30)),
+      border: hslToHex(hue2, 15, Math.max(minL + 5, baseLightness - 15)), // Use hue2
+      highlight: hslToHex(hue3, 70, Math.max(35, baseLightness - 30)), // Use hue3
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(hue1, 40, 15)
     };
@@ -343,66 +343,67 @@ const generateAnalogousScheme = (baseHue: number, mode: ColorMode): ColorPalette
 };
 
 const generateComplementaryScheme = (baseHue: number, mode: ColorMode): ColorPalette => {
-  const complementaryHue = (baseHue + 180) % 360;
+  const hue1 = baseHue;
+  const hue2 = (baseHue + 180) % 360; // Complementary hue
   const [minL, maxL] = lightnessRanges[mode];
   
   if (mode === 'dark' || mode === 'midtone-dark') {
     const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(baseHue, 75, baseLightness),
-      accent: hslToHex(complementaryHue, 85, Math.min(maxL, baseLightness + 5)),
-      "button-primary": hslToHex(baseHue, 75, baseLightness),
-      "button-text": hslToHex(baseHue, 30, Math.max(5, minL - 10)),
-      "button-secondary": hslToHex(baseHue, 30, Math.min(maxL, baseLightness + 10)),
-      "button-secondary-text": hslToHex(baseHue, 75, baseLightness),
+      brand: hslToHex(hue1, 75, baseLightness),
+      accent: hslToHex(hue2, 85, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(hue2, 75, baseLightness), // Use complementary hue
+      "button-text": hslToHex(hue1, 30, Math.max(5, minL - 10)),
+      "button-secondary": hslToHex(hue1, 30, Math.min(maxL, baseLightness + 10)),
+      "button-secondary-text": hslToHex(hue2, 75, baseLightness), // Use complementary hue
       "text-primary": '#F9FAFB',
-      "text-secondary": hslToHex(baseHue, 25, Math.min(85, maxL + 15)),
-      "section-bg-1": hslToHex(baseHue, 30, Math.max(5, minL - 5)),
-      "section-bg-2": hslToHex(complementaryHue, 25, Math.max(8, minL)),
-      "section-bg-3": hslToHex(baseHue, 35, Math.max(12, minL + 5)),
-      border: hslToHex(baseHue, 20, Math.min(maxL, baseLightness + 5)),
-      highlight: hslToHex(complementaryHue, 70, Math.min(maxL, baseLightness + 10)),
-      "input-bg": hslToHex(baseHue, 30, Math.max(8, minL)),
+      "text-secondary": hslToHex(hue2, 25, Math.min(85, maxL + 15)), // Use complementary hue
+      "section-bg-1": hslToHex(hue1, 30, Math.max(5, minL - 5)),
+      "section-bg-2": hslToHex(hue2, 25, Math.max(8, minL)), // Use complementary hue
+      "section-bg-3": hslToHex(hue1, 35, Math.max(12, minL + 5)),
+      border: hslToHex(hue2, 20, Math.min(maxL, baseLightness + 5)), // Use complementary hue
+      highlight: hslToHex(hue2, 70, Math.min(maxL, baseLightness + 10)),
+      "input-bg": hslToHex(hue1, 30, Math.max(8, minL)),
       "input-text": '#F9FAFB'
     };
   } else if (mode === 'midtone' || mode === 'light-midtone') {
     const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(baseHue, 80, baseLightness),
-      accent: hslToHex(complementaryHue, 85, Math.min(maxL, baseLightness + 5)),
-      "button-primary": hslToHex(baseHue, 80, baseLightness),
-      "button-text": hslToHex(baseHue, 15, Math.max(15, minL - 25)),
-      "button-secondary": hslToHex(baseHue, 25, Math.min(maxL, baseLightness + 15)),
-      "button-secondary-text": hslToHex(baseHue, 80, Math.max(minL - 5, baseLightness - 5)),
-      "text-primary": hslToHex(baseHue, 40, Math.max(15, minL - 20)),
-      "text-secondary": hslToHex(baseHue, 30, Math.max(25, minL - 10)),
-      "section-bg-1": hslToHex(baseHue, 20, Math.min(maxL, baseLightness + 20)),
-      "section-bg-2": hslToHex(complementaryHue, 25, Math.min(maxL, baseLightness + 15)),
-      "section-bg-3": hslToHex(baseHue, 25, Math.min(maxL, baseLightness + 10)),
-      border: hslToHex(baseHue, 20, Math.max(minL + 5, baseLightness - 10)),
-      highlight: hslToHex(complementaryHue, 70, Math.min(maxL, baseLightness + 5)),
-      "input-bg": hslToHex(baseHue, 15, Math.min(maxL, baseLightness + 15)),
-      "input-text": hslToHex(baseHue, 40, Math.max(15, minL - 20))
+      brand: hslToHex(hue1, 80, baseLightness),
+      accent: hslToHex(hue2, 85, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(hue2, 80, baseLightness), // Use complementary hue
+      "button-text": hslToHex(hue1, 15, Math.max(15, minL - 25)),
+      "button-secondary": hslToHex(hue1, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary-text": hslToHex(hue2, 80, Math.max(minL - 5, baseLightness - 5)), // Use complementary hue
+      "text-primary": hslToHex(hue1, 40, Math.max(15, minL - 20)),
+      "text-secondary": hslToHex(hue2, 30, Math.max(25, minL - 10)), // Use complementary hue
+      "section-bg-1": hslToHex(hue1, 20, Math.min(maxL, baseLightness + 20)),
+      "section-bg-2": hslToHex(hue2, 25, Math.min(maxL, baseLightness + 15)), // Use complementary hue
+      "section-bg-3": hslToHex(hue1, 25, Math.min(maxL, baseLightness + 10)),
+      border: hslToHex(hue2, 20, Math.max(minL + 5, baseLightness - 10)), // Use complementary hue
+      highlight: hslToHex(hue2, 70, Math.min(maxL, baseLightness + 5)),
+      "input-bg": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 15)),
+      "input-text": hslToHex(hue1, 40, Math.max(15, minL - 20))
     };
   } else {
     // Light mode
     const baseLightness = minL + Math.floor(Math.random() * (maxL - minL - 20)) + 10;
     return {
-      brand: hslToHex(baseHue, 80, Math.max(30, baseLightness - 35)),
-      accent: hslToHex(complementaryHue, 85, Math.max(35, baseLightness - 30)),
-      "button-primary": hslToHex(baseHue, 80, Math.max(30, baseLightness - 35)),
+      brand: hslToHex(hue1, 80, Math.max(30, baseLightness - 35)),
+      accent: hslToHex(hue2, 85, Math.max(35, baseLightness - 30)),
+      "button-primary": hslToHex(hue2, 80, Math.max(30, baseLightness - 35)), // Use complementary hue
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(baseHue, 15, Math.min(maxL, baseLightness + 5)),
-      "button-secondary-text": hslToHex(baseHue, 80, Math.max(30, baseLightness - 35)),
-      "text-primary": hslToHex(baseHue, 50, 15),
-      "text-secondary": hslToHex(baseHue, 35, 45),
+      "button-secondary": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary-text": hslToHex(hue2, 80, Math.max(30, baseLightness - 35)), // Use complementary hue
+      "text-primary": hslToHex(hue1, 50, 15),
+      "text-secondary": hslToHex(hue2, 35, 45), // Use complementary hue
       "section-bg-1": '#FFFFFF',
-      "section-bg-2": hslToHex(complementaryHue, 20, Math.min(maxL, baseLightness - 2)),
-      "section-bg-3": hslToHex(baseHue, 20, Math.min(maxL, baseLightness - 5)),
-      border: hslToHex(baseHue, 15, Math.max(minL + 5, baseLightness - 15)),
-      highlight: hslToHex(complementaryHue, 75, Math.max(35, baseLightness - 30)),
+      "section-bg-2": hslToHex(hue2, 20, Math.min(maxL, baseLightness - 2)), // Use complementary hue
+      "section-bg-3": hslToHex(hue1, 20, Math.min(maxL, baseLightness - 5)),
+      border: hslToHex(hue2, 15, Math.max(minL + 5, baseLightness - 15)), // Use complementary hue
+      highlight: hslToHex(hue2, 75, Math.max(35, baseLightness - 30)),
       "input-bg": '#FFFFFF',
-      "input-text": hslToHex(baseHue, 50, 15)
+      "input-text": hslToHex(hue1, 50, 15)
     };
   }
 };
@@ -418,16 +419,16 @@ const generateTriadicScheme = (baseHue: number, mode: ColorMode): ColorPalette =
     return {
       brand: hslToHex(hue1, 70, baseLightness),
       accent: hslToHex(hue3, 75, Math.min(maxL, baseLightness + 5)),
-      "button-primary": hslToHex(hue1, 70, baseLightness),
+      "button-primary": hslToHex(hue2, 70, baseLightness), // Use hue2 for variation
       "button-text": hslToHex(hue1, 25, Math.max(5, minL - 10)),
-      "button-secondary": hslToHex(hue1, 30, Math.min(maxL, baseLightness + 10)),
+      "button-secondary": hslToHex(hue3, 30, Math.min(maxL, baseLightness + 10)), // Use hue3
       "button-secondary-text": hslToHex(hue1, 70, baseLightness),
       "text-primary": '#F9FAFB',
-      "text-secondary": hslToHex(hue1, 20, Math.min(85, maxL + 15)),
+      "text-secondary": hslToHex(hue2, 20, Math.min(85, maxL + 15)), // Use hue2
       "section-bg-1": hslToHex(hue1, 25, Math.max(5, minL - 5)),
       "section-bg-2": hslToHex(hue2, 25, Math.max(8, minL)),
       "section-bg-3": hslToHex(hue3, 25, Math.max(12, minL + 5)),
-      border: hslToHex(hue1, 20, Math.min(maxL, baseLightness + 5)),
+      border: hslToHex(hue3, 20, Math.min(maxL, baseLightness + 5)), // Use hue3
       highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 10)),
       "input-bg": hslToHex(hue1, 25, Math.max(8, minL)),
       "input-text": '#F9FAFB'
@@ -437,16 +438,16 @@ const generateTriadicScheme = (baseHue: number, mode: ColorMode): ColorPalette =
     return {
       brand: hslToHex(hue1, 75, baseLightness),
       accent: hslToHex(hue3, 80, Math.min(maxL, baseLightness + 5)),
-      "button-primary": hslToHex(hue1, 75, baseLightness),
+      "button-primary": hslToHex(hue2, 75, baseLightness), // Use hue2
       "button-text": hslToHex(hue1, 15, Math.max(15, minL - 25)),
-      "button-secondary": hslToHex(hue1, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary": hslToHex(hue3, 25, Math.min(maxL, baseLightness + 15)), // Use hue3
       "button-secondary-text": hslToHex(hue1, 75, Math.max(minL - 5, baseLightness - 5)),
       "text-primary": hslToHex(hue1, 35, Math.max(15, minL - 20)),
-      "text-secondary": hslToHex(hue1, 25, Math.max(25, minL - 10)),
+      "text-secondary": hslToHex(hue2, 25, Math.max(25, minL - 10)), // Use hue2
       "section-bg-1": hslToHex(hue1, 20, Math.min(maxL, baseLightness + 20)),
       "section-bg-2": hslToHex(hue2, 25, Math.min(maxL, baseLightness + 15)),
       "section-bg-3": hslToHex(hue3, 25, Math.min(maxL, baseLightness + 10)),
-      border: hslToHex(hue1, 20, Math.max(minL + 5, baseLightness - 10)),
+      border: hslToHex(hue3, 20, Math.max(minL + 5, baseLightness - 10)), // Use hue3
       highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 5)),
       "input-bg": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 15)),
       "input-text": hslToHex(hue1, 35, Math.max(15, minL - 20))
@@ -457,16 +458,16 @@ const generateTriadicScheme = (baseHue: number, mode: ColorMode): ColorPalette =
     return {
       brand: hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       accent: hslToHex(hue3, 80, Math.max(35, baseLightness - 30)),
-      "button-primary": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
+      "button-primary": hslToHex(hue2, 75, Math.max(30, baseLightness - 35)), // Use hue2
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary": hslToHex(hue3, 15, Math.min(maxL, baseLightness + 5)), // Use hue3
       "button-secondary-text": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "text-primary": hslToHex(hue1, 40, 15),
-      "text-secondary": hslToHex(hue1, 30, 45),
+      "text-secondary": hslToHex(hue2, 30, 45), // Use hue2
       "section-bg-1": '#FFFFFF',
       "section-bg-2": hslToHex(hue2, 20, Math.min(maxL, baseLightness - 2)),
       "section-bg-3": hslToHex(hue3, 20, Math.min(maxL, baseLightness - 5)),
-      border: hslToHex(hue1, 15, Math.max(minL + 5, baseLightness - 15)),
+      border: hslToHex(hue3, 15, Math.max(minL + 5, baseLightness - 15)), // Use hue3
       highlight: hslToHex(hue2, 70, Math.max(35, baseLightness - 30)),
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(hue1, 40, 15)
