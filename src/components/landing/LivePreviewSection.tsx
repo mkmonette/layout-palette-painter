@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Palette, RefreshCw, Eye, Zap, Sparkles, Play, Wand2, Monitor } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Palette, RefreshCw, Eye, Zap, Sparkles, Play, Wand2, Monitor, Settings } from 'lucide-react';
 import LivePreview from '@/components/LivePreview';
-import { generateColorScheme } from '@/utils/colorGenerator';
+import { generateColorScheme, ColorMode } from '@/utils/colorGenerator';
 import { TemplateType, ColorPalette } from '@/types/template';
+import ColorModeSelector from '@/components/ColorModeSelector';
+import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
+import ColorMoodSelector from '@/components/ColorMoodSelector';
 
 const LivePreviewSection = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('bold-landing');
@@ -27,14 +31,23 @@ const LivePreviewSection = () => {
     "input-text": 'hsl(224, 71%, 4%)'
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
+  const [selectedMode, setSelectedMode] = useState<ColorMode>('light');
+  const [showControls, setShowControls] = useState(false);
+  const [showMoodSelector, setShowMoodSelector] = useState(false);
 
   const handleGenerateColors = () => {
     setIsGenerating(true);
     setTimeout(() => {
-      const newPalette = generateColorScheme('random', 'light');
+      const newPalette = generateColorScheme(selectedScheme, selectedMode);
       setColorPalette(newPalette);
       setIsGenerating(false);
     }, 1200);
+  };
+
+  const handleMoodSelect = (palette: ColorPalette) => {
+    setColorPalette(palette);
+    setShowMoodSelector(false);
   };
 
   const templates: { id: TemplateType; name: string; description: string }[] = [
@@ -96,22 +109,33 @@ const LivePreviewSection = () => {
               </div>
               
               <div className="flex flex-col items-center gap-4">
-                <Button
-                  onClick={handleGenerateColors}
-                  disabled={isGenerating}
-                  size="lg"
-                  className="hero-gradient border-0 text-white shadow-xl font-semibold px-8 py-4 group"
-                >
-                  {isGenerating ? (
-                    <RefreshCw className="h-5 w-5 mr-3 animate-spin" />
-                  ) : (
-                    <Wand2 className="h-5 w-5 mr-3 group-hover:animate-pulse" />
-                  )}
-                  {isGenerating ? 'Generating...' : 'Generate New Colors'}
-                  {!isGenerating && <Sparkles className="h-4 w-4 ml-2" />}
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    onClick={handleGenerateColors}
+                    disabled={isGenerating}
+                    size="lg"
+                    className="hero-gradient border-0 text-white shadow-xl font-semibold px-8 py-4 group"
+                  >
+                    {isGenerating ? (
+                      <RefreshCw className="h-5 w-5 mr-3 animate-spin" />
+                    ) : (
+                      <Wand2 className="h-5 w-5 mr-3 group-hover:animate-pulse" />
+                    )}
+                    {isGenerating ? 'Generating...' : 'Generate New Colors'}
+                    {!isGenerating && <Sparkles className="h-4 w-4 ml-2" />}
+                  </Button>
+                  <Button
+                    onClick={() => setShowControls(true)}
+                    variant="outline"
+                    size="lg"
+                    className="px-6 py-4 border-primary/30 hover:bg-primary/10"
+                  >
+                    <Settings className="h-5 w-5 mr-2" />
+                    Customize
+                  </Button>
+                </div>
                 <p className="text-xs text-muted-foreground text-center">
-                  Watch colors transform in real-time
+                  Generate colors or customize with advanced controls
                 </p>
               </div>
             </div>
@@ -208,6 +232,68 @@ const LivePreviewSection = () => {
           </div>
         </Card>
       </div>
+
+      {/* Controls Modal */}
+      <Dialog open={showControls} onOpenChange={setShowControls}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Color Generation Controls
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4">
+            {/* Color Mode Selector */}
+            <div className="space-y-4">
+              <ColorModeSelector
+                selectedMode={selectedMode}
+                onModeChange={setSelectedMode}
+              />
+              
+              <div className="pt-4 border-t">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-sm font-medium">Color Moods</h3>
+                  <Button
+                    onClick={() => {
+                      setShowMoodSelector(true);
+                      setShowControls(false);
+                    }}
+                    variant="outline"
+                    size="sm"
+                  >
+                    Browse Moods
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Choose from predefined color moods for instant inspiration
+                </p>
+              </div>
+            </div>
+
+            {/* Color Scheme Selector */}
+            <div>
+              <ColorSchemeSelector
+                selectedScheme={selectedScheme}
+                onSchemeChange={setSelectedScheme}
+                onGenerateScheme={() => {
+                  setShowControls(false);
+                  handleGenerateColors();
+                }}
+                isGenerating={isGenerating}
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Color Mood Selector */}
+      <ColorMoodSelector
+        isOpen={showMoodSelector}
+        onClose={() => setShowMoodSelector(false)}
+        onMoodSelect={handleMoodSelect}
+        currentPalette={colorPalette}
+      />
     </section>
   );
 };
