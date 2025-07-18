@@ -712,184 +712,189 @@ const Dashboard = () => {
                     <div className="p-4 border-b border-border">
                       <h3 className="font-medium text-xs">{item.label}</h3>
                     </div>
-                    <ScrollArea className={`${
-                      item.id === 'templates' ? 'h-32' : 
-                      item.id === 'background-settings' ? 'h-80' : 
-                      item.id === 'schemes' ? 'h-96' :
-                      item.id === 'from-image' ? 'h-40' : 
-                      'h-96'
-                    }`}>
-                      <div className="p-4 pt-3">
-                      
-                      <div className="space-y-2">
-                        {item.id === 'templates' && 
-                          <div className="space-y-2">
-                            <p className="text-xs text-muted-foreground">
-                              Choose from built-in templates or your custom imports.
-                            </p>
-                            
-                            {/* Default Templates Popover */}
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                  <span className="text-xs">🟦 Default Templates</span>
-                                </Button>
-                              </PopoverTrigger>
-                               <PopoverContent 
-                                 className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                 side="right" 
-                                 align="start"
-                               >
-                                <div className="space-y-3">
-                                  <h3 className="font-medium text-xs">Default Templates</h3>
-                                  <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
-                                    <div className="space-y-2">
-                                      <p className="text-xs text-muted-foreground">
-                                        Choose from our built-in professional templates.
-                                      </p>
-                                      <TemplateSelector 
-                                        selectedTemplate={selectedTemplate} 
-                                        onTemplateChange={setSelectedTemplate} 
-                                        colorPalette={colorPalette} 
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                            
-                            {/* Custom Templates Popover */}
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                  <span className="text-xs">🟩 Custom Templates</span>
-                                </Button>
-                              </PopoverTrigger>
-                               <PopoverContent 
-                                 className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                 side="right" 
-                                 align="start"
-                               >
-                                <div className="space-y-3">
-                                  <h3 className="font-medium text-xs">Custom Templates</h3>
-                                  <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
-                                    <TemplatesSection 
-                                      selectedTemplate={selectedTemplate} 
-                                      onTemplateChange={setSelectedTemplate} 
-                                      colorPalette={colorPalette} 
-                                      showOnlyCustom={true}
-                                    />
-                                  </div>
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                        }
+                     {item.id === 'templates' ? (
+                       // No ScrollArea for templates - just natural height
+                       <div className="h-fit">
+                         <div className="p-4 pt-3">
+                           <div className="space-y-2">
+                             <div className="space-y-2">
+                               <p className="text-xs text-muted-foreground">
+                                 Choose from built-in templates or your custom imports.
+                               </p>
+                               
+                               {/* Default Templates Popover */}
+                               <Popover>
+                                 <PopoverTrigger asChild>
+                                   <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                                     <span className="text-xs">🟦 Default Templates</span>
+                                   </Button>
+                                 </PopoverTrigger>
+                                  <PopoverContent 
+                                    className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
+                                    side="right" 
+                                    align="start"
+                                  >
+                                   <div className="space-y-3">
+                                     <h3 className="font-medium text-xs">Default Templates</h3>
+                                     <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
+                                       <div className="space-y-2">
+                                         <p className="text-xs text-muted-foreground">
+                                           Choose from our built-in professional templates.
+                                         </p>
+                                         <TemplateSelector 
+                                           selectedTemplate={selectedTemplate} 
+                                           onTemplateChange={setSelectedTemplate} 
+                                           colorPalette={colorPalette} 
+                                         />
+                                       </div>
+                                     </div>
+                                   </div>
+                                 </PopoverContent>
+                               </Popover>
+                               
+                               {/* Custom Templates Popover */}
+                               <Popover>
+                                 <PopoverTrigger asChild>
+                                   <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                                     <span className="text-xs">🟩 Custom Templates</span>
+                                   </Button>
+                                 </PopoverTrigger>
+                                  <PopoverContent 
+                                    className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
+                                    side="right" 
+                                    align="start"
+                                  >
+                                   <div className="space-y-3">
+                                     <h3 className="font-medium text-xs">Custom Templates</h3>
+                                     <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
+                                       <TemplatesSection 
+                                         selectedTemplate={selectedTemplate} 
+                                         onTemplateChange={setSelectedTemplate} 
+                                         colorPalette={colorPalette} 
+                                         showOnlyCustom={true}
+                                       />
+                                     </div>
+                                   </div>
+                                 </PopoverContent>
+                               </Popover>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     ) : (
+                       // ScrollArea for other menu items
+                       <ScrollArea className={`${
+                         item.id === 'background-settings' ? 'h-80' : 
+                         item.id === 'schemes' ? 'h-96' :
+                         item.id === 'from-image' ? 'h-40' : 
+                         'h-96'
+                       }`}>
+                         <div className="p-4 pt-3">
+                           <div className="space-y-2">
+                             {item.id === 'schemes' && <div className="space-y-4">
+                                  <p className="text-xs text-muted-foreground">
+                                    Choose a color scheme to generate harmonious palettes.
+                                  </p>
+                                 <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
+                               </div>}
 
-                        {item.id === 'schemes' && <div className="space-y-4">
-                             <p className="text-xs text-muted-foreground">
-                               Choose a color scheme to generate harmonious palettes.
-                             </p>
-                            <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
-                          </div>}
+                             {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
 
-                        {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
+                             {item.id === 'background-settings' && <div className="space-y-4">
+                                 <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
+                               </div>}
 
-                        {item.id === 'background-settings' && <div className="space-y-4">
-                            <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
-                          </div>}
+                             {item.id === 'from-image' && 
+                               <div className="space-y-2">
+                                 <p className="text-xs text-muted-foreground">
+                                   Extract color palettes from images or websites.
+                                 </p>
+                                 
+                                 {/* Upload Image Popover */}
+                                 <Popover>
+                                   <PopoverTrigger asChild>
+                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                                       <span className="text-xs">📷 Upload Image</span>
+                                     </Button>
+                                   </PopoverTrigger>
+                                    <PopoverContent 
+                                      className="w-64 p-4" 
+                                      side="right" 
+                                      align="start"
+                                    >
+                                     <div className="space-y-3">
+                                       <h3 className="font-medium text-xs">Upload Image</h3>
+                                       <ImageUploadGenerator 
+                                         onPaletteGenerated={setColorPalette} 
+                                         isGenerating={isGenerating} 
+                                         setIsGenerating={setIsGenerating} 
+                                       />
+                                     </div>
+                                   </PopoverContent>
+                                 </Popover>
+                                 
+                                 {/* Website URL Popover */}
+                                 <Popover>
+                                   <PopoverTrigger asChild>
+                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                                       <span className="text-xs">🌐 Website URL</span>
+                                     </Button>
+                                   </PopoverTrigger>
+                                    <PopoverContent 
+                                      className="w-64 p-4" 
+                                      side="right" 
+                                      align="start"
+                                    >
+                                     <div className="space-y-3">
+                                       <h3 className="font-medium text-xs">Website URL</h3>
+                                       <WebsiteColorGenerator 
+                                         onPaletteGenerated={setColorPalette} 
+                                         isGenerating={isGenerating} 
+                                         setIsGenerating={setIsGenerating} 
+                                       />
+                                     </div>
+                                   </PopoverContent>
+                                 </Popover>
+                               </div>
+                             }
 
+                              {item.id === 'admin-presets' && <div className="space-y-2">
+                                   <p className="text-xs text-muted-foreground">
+                                     Browse professionally curated color palettes.
+                                   </p>
+                                   <Button onClick={() => setActiveModal('admin-presets')} className="w-full h-6 px-2 text-xs rounded-sm">
+                                     Browse Presets
+                                   </Button>
+                                </div>}
+                               
+                             {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
+                             
+                              {item.id === 'settings' && <div className="space-y-2">
+                                   <h3 className="text-xs font-medium">Settings</h3>
+                                   <p className="text-xs text-muted-foreground">
+                                     Configure preferences and account.
+                                   </p>
+                                 
+                                 <div className="space-y-2">
+                                   <OpenAIKeyInput onKeySet={() => {}} />
+                                 </div>
+                                   <Button variant="outline" className="w-full h-6 px-2 text-xs rounded-sm" onClick={() => navigate('/history')}>
+                                     View History
+                                   </Button>
+                                </div>}
 
-                        {item.id === 'from-image' && 
-                          <div className="space-y-2">
-                            <p className="text-xs text-muted-foreground">
-                              Extract color palettes from images or websites.
-                            </p>
-                            
-                            {/* Upload Image Popover */}
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                  <span className="text-xs">📷 Upload Image</span>
-                                </Button>
-                              </PopoverTrigger>
-                               <PopoverContent 
-                                 className="w-64 p-4" 
-                                 side="right" 
-                                 align="start"
-                               >
-                                <div className="space-y-3">
-                                  <h3 className="font-medium text-xs">Upload Image</h3>
-                                  <ImageUploadGenerator 
-                                    onPaletteGenerated={setColorPalette} 
-                                    isGenerating={isGenerating} 
-                                    setIsGenerating={setIsGenerating} 
-                                  />
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                            
-                            {/* Website URL Popover */}
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                  <span className="text-xs">🌐 Website URL</span>
-                                </Button>
-                              </PopoverTrigger>
-                               <PopoverContent 
-                                 className="w-64 p-4" 
-                                 side="right" 
-                                 align="start"
-                               >
-                                <div className="space-y-3">
-                                  <h3 className="font-medium text-xs">Website URL</h3>
-                                  <WebsiteColorGenerator 
-                                    onPaletteGenerated={setColorPalette} 
-                                    isGenerating={isGenerating} 
-                                    setIsGenerating={setIsGenerating} 
-                                  />
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                        }
-
-                         {item.id === 'admin-presets' && <div className="space-y-2">
-                              <p className="text-xs text-muted-foreground">
-                                Browse professionally curated color palettes.
-                              </p>
-                              <Button onClick={() => setActiveModal('admin-presets')} className="w-full h-6 px-2 text-xs rounded-sm">
-                                Browse Presets
-                              </Button>
-                           </div>}
-                          
-                        {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
-                        
-                         {item.id === 'settings' && <div className="space-y-2">
-                              <h3 className="text-xs font-medium">Settings</h3>
-                              <p className="text-xs text-muted-foreground">
-                                Configure preferences and account.
-                              </p>
-                            
-                            <div className="space-y-2">
-                              <OpenAIKeyInput onKeySet={() => {}} />
-                            </div>
-                              <Button variant="outline" className="w-full h-6 px-2 text-xs rounded-sm" onClick={() => navigate('/history')}>
-                                View History
-                              </Button>
-                           </div>}
-
-                        {item.id === 'test-plans' && <div className="space-y-4">
-                             <h3 className="text-sm font-medium">Test Plan Switcher</h3>
-                             <p className="text-xs text-muted-foreground">
-                               Simulate different subscription plans for testing UI features. 
-                               This override is temporary and only affects the current session.
-                             </p>
-                            <TestPlanSwitcher />
-                          </div>}
-                      </div>
-                      </div>
-                    </ScrollArea>
+                             {item.id === 'test-plans' && <div className="space-y-4">
+                                  <h3 className="text-sm font-medium">Test Plan Switcher</h3>
+                                  <p className="text-xs text-muted-foreground">
+                                    Simulate different subscription plans for testing UI features. 
+                                    This override is temporary and only affects the current session.
+                                  </p>
+                                 <TestPlanSwitcher />
+                               </div>}
+                           </div>
+                         </div>
+                       </ScrollArea>
+                     )}
                   </PopoverContent>
                 </Popover>;
           })}
