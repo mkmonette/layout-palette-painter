@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useToast } from '@/hooks/use-toast';
 import TemplateSelector from '@/components/TemplateSelector';
+import SubscriptionModal from './SubscriptionModal';
 import { ColorPalette } from '@/utils/colorGenerator';
 import { TemplateType, CustomTemplate } from '@/types/template';
 
@@ -238,6 +239,7 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
   const { toast } = useToast();
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isProUpsellModalOpen, setIsProUpsellModalOpen] = useState(false);
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
   const [figmaUrl, setFigmaUrl] = useState('');
   const [figmaToken, setFigmaToken] = useState('');
   const [customTemplates, setCustomTemplates] = useState<CustomTemplate[]>([]);
@@ -807,11 +809,7 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
               </Button>
               <Button onClick={() => {
                 setIsProUpsellModalOpen(false);
-                // Add upgrade navigation logic here if needed
-                toast({
-                  title: "Upgrade Available",
-                  description: "Contact support to upgrade to Pro plan.",
-                });
+                setIsSubscriptionModalOpen(true);
               }}>
                 Upgrade to Pro
               </Button>
@@ -819,6 +817,11 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
           </div>
         </DialogContent>
       </Dialog>
+
+      <SubscriptionModal 
+        isOpen={isSubscriptionModalOpen}
+        onClose={() => setIsSubscriptionModalOpen(false)}
+      />
     </div>
   );
 };
