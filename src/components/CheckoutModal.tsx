@@ -116,9 +116,24 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const getFeatureList = (features: Record<string, boolean | number>) => {
-    return Object.entries(features)
-      .filter(([_, value]) => value !== false)
-      .map(([key, value]) => {
+    // Define the order of features to display
+    const featureOrder = [
+      'pro_templates',
+      'saved_palettes', 
+      'ai_generations_per_month',
+      'downloads_per_day',
+      'image_website_generations_per_month',
+      'custom_color_schemes',
+      'color_mood_options',
+      'dark_mode',
+      'auto_generator',
+      'branded_reports'
+    ];
+
+    return featureOrder
+      .filter(key => features[key] !== false && features[key] !== undefined)
+      .map(key => {
+        const value = features[key];
         let featureName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         
         // Custom display names for specific features
