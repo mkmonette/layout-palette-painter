@@ -14,6 +14,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import ProfileSettings from '@/components/ProfileSettings';
+import AccountSettings from '@/components/AccountSettings';
 
 const menuItems = [
   {
@@ -108,14 +109,7 @@ const DashboardContent = ({ activeItem }: { activeItem: string }) => {
     case 'profile':
       return <ProfileSettings />;
     case 'account':
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-6">Account Settings</h2>
-          <div className="bg-card p-6 rounded-lg border shadow-sm">
-            <p className="text-muted-foreground">Account settings content coming soon...</p>
-          </div>
-        </div>
-      );
+      return <AccountSettings />;
     case 'settings':
       return (
         <div>
