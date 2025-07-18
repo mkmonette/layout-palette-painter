@@ -24,12 +24,14 @@ export type ColorSchemeType =
   | 'tetradic'
   | 'random';
 
-export type ColorMode = 'light' | 'midtone' | 'dark';
+export type ColorMode = 'light' | 'light-midtone' | 'midtone' | 'midtone-dark' | 'dark';
 
 // Define lightness ranges per mode
 const lightnessRanges = {
   light: [85, 100],
+  'light-midtone': [70, 84],
   midtone: [45, 65],
+  'midtone-dark': [30, 44],
   dark: [10, 25],
 } as const;
 

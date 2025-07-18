@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TemplateSelector from '@/components/TemplateSelector';
@@ -576,33 +577,102 @@ const Dashboard = () => {
                 </Tooltip>;
           })}
 
-            {/* Template Dark Mode Toggle */}
+            {/* Template Theme Mode Selector */}
             <div className="flex-1" />
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-white hover:bg-white/20" onClick={() => {
-                if (!canAccessTemplateDarkMode) {
-                  setUpsellModal({
-                    isOpen: true,
-                    templateName: 'Template dark mode'
-                  });
-                  return;
-                }
-                // Template mode toggle - cycles through light -> midtone -> dark
-                const nextMode: ColorMode = colorMode === 'light' ? 'midtone' : colorMode === 'midtone' ? 'dark' : 'light';
-                handleModeChange(nextMode);
-              }}>
-                  {colorMode === 'light' ? <Sun className="h-4 w-4" /> : 
-                   colorMode === 'midtone' ? <Sunset className="h-4 w-4" /> : 
-                   <Moon className="h-4 w-4" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                Color Mode: {colorMode === 'light' ? 'Light → Midtone' : 
-                            colorMode === 'midtone' ? 'Midtone → Dark' : 
-                            'Dark → Light'} {!canAccessTemplateDarkMode && '(Pro)'}
-              </TooltipContent>
-            </Tooltip>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-white hover:bg-white/20">
+                      {colorMode === 'light' ? <Sun className="h-4 w-4" /> : 
+                       colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4" /> :
+                       colorMode === 'midtone' ? <Sunset className="h-4 w-4" /> : 
+                       colorMode === 'midtone-dark' ? <Moon className="h-4 w-4" style={{ filter: 'brightness(0.7)' }} /> :
+                       <Moon className="h-4 w-4" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    Theme Mode: {colorMode} {!canAccessTemplateDarkMode && '(Pro)'}
+                  </TooltipContent>
+                </Tooltip>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-4" side="right" align="end">
+                <div className="space-y-3">
+                  <h3 className="font-medium text-sm">Choose Theme Mode</h3>
+                  <div className="grid gap-2">
+                    {[
+                      { 
+                        mode: 'light' as ColorMode, 
+                        label: 'Light', 
+                        description: 'Lightness 85-100', 
+                        icon: Sun,
+                        available: true 
+                      },
+                      { 
+                        mode: 'light-midtone' as ColorMode, 
+                        label: 'Light Midtone', 
+                        description: 'Lightness 70-84', 
+                        icon: CloudSun,
+                        available: canAccessTemplateDarkMode 
+                      },
+                      { 
+                        mode: 'midtone' as ColorMode, 
+                        label: 'Midtone', 
+                        description: 'Lightness 45-65', 
+                        icon: Sunset,
+                        available: canAccessTemplateDarkMode 
+                      },
+                      { 
+                        mode: 'midtone-dark' as ColorMode, 
+                        label: 'Midtone Dark', 
+                        description: 'Lightness 30-44', 
+                        icon: Moon,
+                        available: canAccessTemplateDarkMode 
+                      },
+                      { 
+                        mode: 'dark' as ColorMode, 
+                        label: 'Dark', 
+                        description: 'Lightness 10-25', 
+                        icon: Moon,
+                        available: canAccessTemplateDarkMode 
+                      }
+                    ].map(({ mode, label, description, icon: Icon, available }) => (
+                      <Button
+                        key={mode}
+                        variant={colorMode === mode ? "default" : "outline"}
+                        size="sm"
+                        className="justify-start h-auto p-3 relative"
+                        disabled={!available}
+                        onClick={() => {
+                          if (!available) {
+                            setUpsellModal({
+                              isOpen: true,
+                              templateName: 'Template dark mode'
+                            });
+                            return;
+                          }
+                          handleModeChange(mode);
+                        }}
+                      >
+                        <Icon className="h-4 w-4 mr-3 flex-shrink-0" style={mode === 'midtone-dark' ? { filter: 'brightness(0.7)' } : {}} />
+                        <div className="text-left">
+                          <div className="font-medium text-sm">{label}</div>
+                          <div className="text-xs text-muted-foreground">{description}</div>
+                        </div>
+                        {!available && (
+                          <Badge variant="secondary" className="ml-auto text-xs px-1 py-0">
+                            Pro
+                          </Badge>
+                        )}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="text-xs text-muted-foreground pt-2 border-t">
+                    Theme modes control the lightness range of generated colors
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Context Panel */}
