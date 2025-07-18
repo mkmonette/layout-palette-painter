@@ -47,7 +47,11 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       custom_color_schemes: true,
       color_mood_options: true,
       color_presets: false,
-      theme_tones: 3, // Light, light-midtone, midtone
+      theme_tone_light: true,
+      theme_tone_light_midtone: true,
+      theme_tone_midtone: true,
+      theme_tone_dark_midtone: false,
+      theme_tone_dark: false,
       decorative_settings: false,
       auto_generator: false,
       branded_reports: false
@@ -71,7 +75,11 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       custom_color_schemes: true,
       color_mood_options: true,
       color_presets: true,
-      theme_tones: 5, // All theme tones including dark modes
+      theme_tone_light: true,
+      theme_tone_light_midtone: true,
+      theme_tone_midtone: true,
+      theme_tone_dark_midtone: true,
+      theme_tone_dark: true,
       decorative_settings: true,
       auto_generator: true,
       branded_reports: true
@@ -95,7 +103,11 @@ const DEFAULT_PLANS: SubscriptionPlan[] = [
       custom_color_schemes: true,
       color_mood_options: true,
       color_presets: true,
-      theme_tones: 5, // All theme tones including dark modes
+      theme_tone_light: true,
+      theme_tone_light_midtone: true,
+      theme_tone_midtone: true,
+      theme_tone_dark_midtone: true,
+      theme_tone_dark: true,
       decorative_settings: true,
       auto_generator: true,
       branded_reports: true

@@ -134,7 +134,11 @@ const SubscriptionCheckout = () => {
       'custom_color_schemes',
       'color_mood_options',
       'color_presets',
-      'theme_tones',
+      'theme_tone_light',
+      'theme_tone_light_midtone', 
+      'theme_tone_midtone',
+      'theme_tone_dark_midtone',
+      'theme_tone_dark',
       'decorative_settings',
       'auto_generator',
       'branded_reports'
@@ -157,8 +161,16 @@ const SubscriptionCheckout = () => {
           featureName = 'Color Presets';
         } else if (key === 'decorative_settings') {
           featureName = 'Decorative Settings';
-        } else if (key === 'theme_tones') {
-          featureName = 'Theme Tones';
+        } else if (key === 'theme_tone_light') {
+          featureName = 'Light Theme';
+        } else if (key === 'theme_tone_light_midtone') {
+          featureName = 'Light-Midtone Theme';
+        } else if (key === 'theme_tone_midtone') {
+          featureName = 'Midtone Theme';
+        } else if (key === 'theme_tone_dark_midtone') {
+          featureName = 'Dark-Midtone Theme';
+        } else if (key === 'theme_tone_dark') {
+          featureName = 'Dark Theme';
         }
         
         if (typeof value === 'number') {

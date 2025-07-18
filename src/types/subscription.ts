@@ -83,10 +83,38 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     category: 'access'
   },
   {
-    id: 'theme_tones',
-    name: 'Theme Tones',
-    type: 'number',
-    description: 'Number of available theme tones (Light, Light-Midtone, Midtone, Dark-Midtone, Dark)',
+    id: 'theme_tone_light',
+    name: 'Light Theme',
+    type: 'boolean',
+    description: 'Access to light theme tone',
+    category: 'access'
+  },
+  {
+    id: 'theme_tone_light_midtone',
+    name: 'Light-Midtone Theme',
+    type: 'boolean',
+    description: 'Access to light-midtone theme tone',
+    category: 'access'
+  },
+  {
+    id: 'theme_tone_midtone',
+    name: 'Midtone Theme',
+    type: 'boolean',
+    description: 'Access to midtone theme tone',
+    category: 'access'
+  },
+  {
+    id: 'theme_tone_dark_midtone',
+    name: 'Dark-Midtone Theme',
+    type: 'boolean',
+    description: 'Access to dark-midtone theme tone',
+    category: 'access'
+  },
+  {
+    id: 'theme_tone_dark',
+    name: 'Dark Theme',
+    type: 'boolean',
+    description: 'Access to dark theme tone',
     category: 'access'
   },
   {
