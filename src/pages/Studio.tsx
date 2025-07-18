@@ -567,9 +567,9 @@ const Dashboard = () => {
       }}>
           <div className="flex items-center justify-between px-4 h-full bg-blue-700">
             <div className="flex items-center space-x-4">
-              <h1 className="text-lg font-medium text-white">
-                Color Palette Generator
-              </h1>
+               <h1 className="text-base font-medium text-white">
+                 Color Palette Generator
+               </h1>
             </div>
 
             <div className="flex items-center space-x-4">
@@ -674,7 +674,7 @@ const Dashboard = () => {
               </PopoverTrigger>
               <PopoverContent className="w-64 p-4" side="right" align="end">
                 <div className="space-y-3">
-                  <h3 className="font-medium text-sm">Choose Theme Mode</h3>
+                  <h3 className="font-medium text-xs">Choose Theme Mode</h3>
                   <div className="grid gap-2">
                     {[
                       { 
@@ -732,20 +732,20 @@ const Dashboard = () => {
                       >
                         <Icon className="h-4 w-4 mr-3 flex-shrink-0" style={mode === 'midtone-dark' ? { filter: 'brightness(0.7)' } : {}} />
                         <div className="text-left">
-                          <div className="font-medium text-sm">{label}</div>
-                          <div className="text-xs text-muted-foreground">{description}</div>
+                           <div className="font-medium text-xs">{label}</div>
+                           <div className="text-[11px] text-muted-foreground">{description}</div>
                         </div>
                         {!available && (
-                          <Badge variant="secondary" className="ml-auto text-xs px-1 py-0">
-                            Pro
-                          </Badge>
+                           <Badge variant="secondary" className="ml-auto text-[11px] px-1 py-0">
+                             Pro
+                           </Badge>
                         )}
                       </Button>
                     ))}
                   </div>
-                  <div className="text-xs text-muted-foreground pt-2 border-t">
-                    Theme modes control the lightness range of generated colors
-                  </div>
+                   <div className="text-[11px] text-muted-foreground pt-2 border-t">
+                     Theme modes control the lightness range of generated colors
+                   </div>
                 </div>
               </PopoverContent>
             </Popover>
@@ -754,9 +754,9 @@ const Dashboard = () => {
           {/* Context Panel */}
           {!isContextPanelCollapsed && <div className="w-80 min-w-80 max-w-80 bg-background border-r flex flex-col">
             <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
-              <h2 className="text-lg font-semibold text-foreground">
-                {sidebarItems.find(item => item.id === activeSection)?.label}
-              </h2>
+               <h2 className="text-base font-semibold text-foreground">
+                 {sidebarItems.find(item => item.id === activeSection)?.label}
+               </h2>
               <Button variant="ghost" size="sm" onClick={() => setIsContextPanelCollapsed(true)} className="h-8 w-8 p-0">
                 <PanelLeftClose className="h-4 w-4" />
               </Button>
@@ -772,9 +772,9 @@ const Dashboard = () => {
               }
 
               {activeSection === 'schemes' && <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    Choose a color scheme to generate harmonious palettes.
-                  </p>
+                   <p className="text-xs text-muted-foreground">
+                     Choose a color scheme to generate harmonious palettes.
+                   </p>
                   <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
                 </div>}
 
@@ -793,19 +793,19 @@ const Dashboard = () => {
               {activeSection === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
 
               {activeSection === 'admin-presets' && <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    Browse and apply professionally curated color palettes.
-                  </p>
+                   <p className="text-xs text-muted-foreground">
+                     Browse and apply professionally curated color palettes.
+                   </p>
                   <Button onClick={() => setActiveModal('admin-presets')} className="w-full">
                     Browse Admin Presets
                   </Button>
                 </div>}
               {activeSection === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
               {activeSection === 'settings' && <div className="space-y-4">
-                  <h3 className="text-md font-medium">Application Settings</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Configure your preferences and account settings.
-                  </p>
+                   <h3 className="text-sm font-medium">Application Settings</h3>
+                   <p className="text-xs text-muted-foreground">
+                     Configure your preferences and account settings.
+                   </p>
                   
                   <div className="space-y-3">
                     <OpenAIKeyInput onKeySet={() => {}} />
@@ -816,11 +816,11 @@ const Dashboard = () => {
                 </div>}
 
               {activeSection === 'test-plans' && <div className="space-y-4">
-                  <h3 className="text-md font-medium">Test Plan Switcher</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Simulate different subscription plans for testing UI features. 
-                    This override is temporary and only affects the current session.
-                  </p>
+                   <h3 className="text-sm font-medium">Test Plan Switcher</h3>
+                   <p className="text-xs text-muted-foreground">
+                     Simulate different subscription plans for testing UI features. 
+                     This override is temporary and only affects the current session.
+                   </p>
                   <TestPlanSwitcher />
                 </div>}
             </div>
@@ -829,14 +829,14 @@ const Dashboard = () => {
             <div className="p-4 border-t space-y-2 bg-sky-200">
               {/* Main Generate Buttons - Responsive Layout */}
               <div className="grid grid-cols-1 gap-2">
-                <Button onClick={handleGenerateColors} className="w-full text-xs sm:text-sm h-9 sm:h-10 whitespace-normal leading-tight" disabled={isGenerating}>
+                <Button onClick={handleGenerateColors} className="w-full text-[11px] sm:text-xs h-9 sm:h-10 whitespace-normal leading-tight" disabled={isGenerating}>
                   {isGenerating ? <RefreshCw className="mr-1 h-3 w-3 sm:h-4 sm:w-4 animate-spin flex-shrink-0" /> : <Wand2 className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />}
                   Generate Colors
                 </Button>
                 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-xs h-9 sm:h-10 whitespace-normal leading-tight bg-amber-500 hover:bg-amber-400 text-slate-950 font-medium sm:text-sm">
+                    <Button onClick={canUseAIGeneration ? () => setActiveSection('ai-colors') : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-[11px] h-9 sm:h-10 whitespace-normal leading-tight bg-amber-500 hover:bg-amber-400 text-slate-950 font-medium sm:text-xs">
                       <Bot className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                       AI Colors {!canUseAIGeneration && '🔒 PRO'}
                     </Button>
@@ -878,14 +878,14 @@ const Dashboard = () => {
                   {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
                 </Button>
                 
-                <span className="text-sm text-muted-foreground hidden sm:block">Template Preview</span>
-                <span className="text-xs text-muted-foreground hidden sm:block">•</span>
-                <span className="text-xs text-muted-foreground capitalize hidden sm:block">
-                  {selectedTemplate.replace('-', ' ')}
-                </span>
-                <span className="text-sm text-muted-foreground sm:hidden">
-                  {selectedTemplate.replace('-', ' ')}
-                </span>
+                 <span className="text-xs text-muted-foreground hidden sm:block">Template Preview</span>
+                 <span className="text-[11px] text-muted-foreground hidden sm:block">•</span>
+                 <span className="text-[11px] text-muted-foreground capitalize hidden sm:block">
+                   {selectedTemplate.replace('-', ' ')}
+                 </span>
+                 <span className="text-xs text-muted-foreground sm:hidden">
+                   {selectedTemplate.replace('-', ' ')}
+                 </span>
               </div>
               
               {/* Desktop controls */}
@@ -893,7 +893,7 @@ const Dashboard = () => {
                 <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50}>
                   <ZoomOut className="h-4 w-4" />
                 </Button>
-                <span className="text-sm text-muted-foreground min-w-12 text-center">{zoomLevel}%</span>
+                <span className="text-xs text-muted-foreground min-w-12 text-center">{zoomLevel}%</span>
                 <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200}>
                   <ZoomIn className="h-4 w-4" />
                 </Button>
@@ -935,7 +935,7 @@ const Dashboard = () => {
                 <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="h-8 w-8 p-0">
                   <ZoomOut className="h-3 w-3" />
                 </Button>
-                <span className="text-xs text-muted-foreground min-w-8 text-center">{zoomLevel}%</span>
+                <span className="text-[11px] text-muted-foreground min-w-8 text-center">{zoomLevel}%</span>
                 <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="h-8 w-8 p-0">
                   <ZoomIn className="h-3 w-3" />
                 </Button>
@@ -946,19 +946,19 @@ const Dashboard = () => {
             {isMobileMenuOpen && (
               <div className="sm:hidden bg-background border-b border-border p-4 space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-xs">
+                  <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-[11px]">
                     {isGenerating ? <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1" />}
                     Generate
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-xs">
+                  <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-[11px]">
                     <Download className="h-3 w-3 mr-1" />
                     Export PDF
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-xs">
+                  <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-[11px]">
                     <Save className="h-3 w-3 mr-1" />
                     Save
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="bg-amber-500 hover:bg-amber-400 text-xs">
+                  <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="bg-amber-500 hover:bg-amber-400 text-[11px]">
                     <Maximize className="h-3 w-3 mr-1" />
                     Fullscreen
                   </Button>
@@ -967,7 +967,7 @@ const Dashboard = () => {
                   variant="ghost" 
                   size="sm" 
                   onClick={() => { setIsContextPanelCollapsed(!isContextPanelCollapsed); setIsMobileMenuOpen(false); }}
-                  className="w-full justify-start text-xs"
+                  className="w-full justify-start text-[11px]"
                 >
                   {isContextPanelCollapsed ? <PanelLeftOpen className="h-3 w-3 mr-2" /> : <PanelLeftClose className="h-3 w-3 mr-2" />}
                   {isContextPanelCollapsed ? 'Show Panel' : 'Hide Panel'}

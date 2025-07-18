@@ -35,9 +35,9 @@ const ColorControls: React.FC<ColorControlsProps> = ({
         return (
           <div key={key} className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor={key} className="text-sm font-medium text-gray-700">
-                {colorLabels[key as keyof ColorPalette]}
-              </Label>
+               <Label htmlFor={key} className="text-xs font-medium text-gray-700">
+                 {colorLabels[key as keyof ColorPalette]}
+               </Label>
               {onToggleLock && (
                 <Button
                   type="button"
@@ -69,7 +69,7 @@ const ColorControls: React.FC<ColorControlsProps> = ({
                   type="text"
                   value={value}
                   onChange={(e) => onColorChange(key as keyof ColorPalette, e.target.value)}
-                  className="text-xs font-mono"
+                  className="text-[11px] font-mono"
                   placeholder="#000000"
                   disabled={isLocked}
                 />
