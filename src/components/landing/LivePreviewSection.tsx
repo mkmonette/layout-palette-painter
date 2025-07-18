@@ -127,7 +127,7 @@ const LivePreviewSection = () => {
                 <LivePreview
                   template={selectedTemplate}
                   colorPalette={colorPalette}
-                  showSaveButton={true}
+                  showSaveButton={false}
                   backgroundSettings={{ 
                     enabled: false, 
                     mode: 'svg', 
