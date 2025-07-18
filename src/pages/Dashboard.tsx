@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Palette, Settings, Users, BarChart3, Coins, User, UserCog } from 'lucide-react';
+import { Palette, Settings, Users, BarChart3, Coins, User, UserCog, Save, TrendingUp } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/sidebar";
 import ProfileSettings from '@/components/ProfileSettings';
 import AccountSettings from '@/components/AccountSettings';
+import SavedPalettes from '@/components/SavedPalettes';
+import Usage from '@/components/Usage';
 
 const menuItems = [
   {
@@ -22,6 +24,18 @@ const menuItems = [
     url: "/studio",
     icon: Palette,
     id: "studio"
+  },
+  {
+    title: "Saved Palettes",
+    url: "#",
+    icon: Save,
+    id: "palettes"
+  },
+  {
+    title: "Usage",
+    url: "#",
+    icon: TrendingUp,
+    id: "usage"
   },
   {
     title: "Profile Settings",
@@ -106,6 +120,10 @@ function DashboardSidebar({ activeItem, onItemClick }: DashboardSidebarProps) {
 
 const DashboardContent = ({ activeItem }: { activeItem: string }) => {
   switch (activeItem) {
+    case 'palettes':
+      return <SavedPalettes />;
+    case 'usage':
+      return <Usage />;
     case 'profile':
       return <ProfileSettings />;
     case 'account':
