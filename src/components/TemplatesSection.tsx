@@ -21,6 +21,78 @@ interface TemplatesSectionProps {
   colorPalette: ColorPalette;
 }
 
+// Common section names to identify in Figma designs
+const SECTION_NAMES = [
+  'header', 'hero', 'about', 'features', 'services', 'testimonials', 
+  'cta', 'call-to-action', 'footer', 'contact', 'pricing', 'team',
+  'gallery', 'portfolio', 'faq', 'blog', 'news'
+];
+
+// Parse Figma document structure to identify sections
+const parseFigmaDesignStructure = (document: any) => {
+  const sections: any[] = [];
+  
+  if (!document || !document.children) {
+    return sections;
+  }
+
+  // Traverse all top-level frames and child nodes
+  const traverseNodes = (nodes: any[], parentName = '') => {
+    nodes.forEach((node: any) => {
+      if (node.type === 'FRAME' || node.type === 'COMPONENT' || node.type === 'COMPONENT_SET') {
+        const nodeName = node.name.toLowerCase();
+        
+        // Check if this frame matches any common section names (case-insensitive)
+        const matchedSection = SECTION_NAMES.find(sectionName => 
+          nodeName.includes(sectionName) || 
+          sectionName.includes(nodeName.replace(/\s+/g, ''))
+        );
+
+        if (matchedSection) {
+          sections.push({
+            id: node.id,
+            name: node.name,
+            type: matchedSection,
+            originalName: node.name,
+            nodeData: node,
+            order: sections.length
+          });
+        } else {
+          // If no match found but it's a significant frame, add as generic section
+          if (node.absoluteBoundingBox && 
+              node.absoluteBoundingBox.width > 200 && 
+              node.absoluteBoundingBox.height > 100) {
+            sections.push({
+              id: node.id,
+              name: node.name,
+              type: 'section',
+              originalName: node.name,
+              nodeData: node,
+              order: sections.length
+            });
+          }
+        }
+      }
+      
+      // Recursively traverse child nodes
+      if (node.children && node.children.length > 0) {
+        traverseNodes(node.children, node.name);
+      }
+    });
+  };
+
+  traverseNodes(document.children);
+  
+  // Sort sections by their Y position if available (top to bottom)
+  sections.sort((a, b) => {
+    const aY = a.nodeData.absoluteBoundingBox?.y || 0;
+    const bY = b.nodeData.absoluteBoundingBox?.y || 0;
+    return aY - bY;
+  });
+
+  return sections;
+};
+
 const TemplatesSection: React.FC<TemplatesSectionProps> = ({
   selectedTemplate,
   onTemplateChange,
@@ -110,6 +182,17 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
         throw new Error("This doesn't appear to be a valid UI design file.");
       }
 
+      // Parse full design structure
+      const parsedSections = parseFigmaDesignStructure(data.document);
+      
+      if (parsedSections.length === 0) {
+        console.warn("No recognizable sections found in Figma design");
+        toast({
+          title: "Warning",
+          description: "We couldn't find multiple sections in this design. Try labeling your frames clearly (e.g. Hero, About, Footer).",
+        });
+      }
+
       // Fetch thumbnail
       const thumbnailUrl = await fetchFigmaThumbnail(fileKey, token);
 
@@ -122,7 +205,10 @@ const TemplatesSection: React.FC<TemplatesSectionProps> = ({
         figmaFileKey: fileKey,
         createdAt: new Date().toISOString(),
         version: 1,
-        layoutData: data.document // Store the layout data
+        layoutData: {
+          document: data.document,
+          sections: parsedSections
+        }
       };
 
       // Store in localStorage (since no Supabase integration)
