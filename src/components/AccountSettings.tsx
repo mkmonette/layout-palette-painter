@@ -51,17 +51,13 @@ const AccountSettings = () => {
   const handleUpgradePlan = async () => {
     setIsLoading(true);
     try {
-      // TODO: Integrate with Stripe checkout
-      toast({
-        title: "Stripe Integration Required",
-        description: "Please set up Stripe integration to enable subscription management.",
-        variant: "destructive"
-      });
+      // Navigate to checkout page
+      window.location.href = '/checkout';
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to initiate upgrade process.",
-        variant: "destructive"
+        title: "Navigation Error",
+        description: "Unable to navigate to checkout page.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
