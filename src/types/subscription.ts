@@ -86,7 +86,7 @@ export const AVAILABLE_FEATURES: FeatureLimit[] = [
     id: 'theme_tones',
     name: 'Theme Tones',
     type: 'number',
-    description: 'Number of available theme tones (light, midtone, dark variations)',
+    description: 'Number of available theme tones (Light, Light-Midtone, Midtone, Dark-Midtone, Dark)',
     category: 'access'
   },
   {

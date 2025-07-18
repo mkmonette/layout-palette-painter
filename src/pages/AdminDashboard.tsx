@@ -51,6 +51,7 @@ import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 import CoinCreditSettings from '@/components/admin/CoinCreditSettings';
 import PaymentGatewaySettings from '@/components/admin/PaymentGatewaySettings';
 import ThemeTesterPanel from '@/components/admin/ThemeTesterPanel';
+import ThemeToneSettings from '@/components/admin/ThemeToneSettings';
 
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -64,6 +65,7 @@ const menuItems = [
   { id: 'coin-credit', title: 'Coin Credit', icon: Coins },
   { id: 'generator', title: 'Generator', icon: Palette },
   { id: 'theme-tester', title: 'Theme Tester', icon: TestTube },
+  { id: 'theme-tones', title: 'Theme Tones', icon: Palette },
   { id: 'ai-settings', title: 'AI Settings', icon: Bot },
   { id: 'color-preview', title: 'Colors', icon: Eye },
   { id: 'presets', title: 'Presets', icon: Download },
@@ -243,6 +245,7 @@ const AdminDashboard = () => {
             {activeTab === 'coin-credit' && <CoinCreditSettings />}
             {activeTab === 'generator' && <AutoGenerator />}
             {activeTab === 'theme-tester' && <ThemeTesterPanel />}
+            {activeTab === 'theme-tones' && <ThemeToneSettings />}
             {activeTab === 'color-preview' && <ColorRolePreview />}
 
             {activeTab === 'ai-settings' && (
