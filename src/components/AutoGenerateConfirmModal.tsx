@@ -72,7 +72,7 @@ const AutoGenerateConfirmModal: React.FC<AutoGenerateConfirmModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
@@ -114,7 +114,7 @@ const AutoGenerateConfirmModal: React.FC<AutoGenerateConfirmModalProps> = ({
             )}
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 pt-4">
             <Button
               variant="outline"
               onClick={onClose}
