@@ -215,7 +215,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-6xl h-[calc(100vh-40px)] my-5 p-0">
-          <DialogHeader className="p-6 pb-4">
+          <DialogHeader className="p-6 pb-2">
             <DialogTitle className="flex items-center justify-between my-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
@@ -252,7 +252,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
 
           <div className="flex-1 overflow-hidden">
             <Tabs defaultValue="settings" className="h-full">
-              <div className="px-6 pt-4">
+              <div className="px-6 pt-2">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="settings">Settings</TabsTrigger>
                   <TabsTrigger value="palettes" disabled={generatedPalettes.length === 0}>
