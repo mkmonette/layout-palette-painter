@@ -329,23 +329,33 @@ const Dashboard = () => {
     setColorPalette(aiPalette);
   };
 
-  const handleAutoGenerate = () => {
-    // Generate palettes using current studio settings
-    const newPalettes = generatePaletteBatch(autogenerateCount).map(palette => ({
-      ...palette,
-      templateId: selectedTemplate,
-      templateName: selectedTemplate.replace('-', ' ')
-    }));
-    
-    setGeneratedPalettes(newPalettes);
-    setShowAutoGenerateConfirmModal(false);
-    setShowAutoGenerateResultsModal(true);
-    
-    toast({
-      title: "Palettes Generated!",
-      description: `Generated ${autogenerateCount} color palettes for ${selectedTemplate.replace('-', ' ')}`,
-    });
-  };
+  const handleAutoGenerate = React.useCallback(() => {
+    console.log('handleAutoGenerate called', { autogenerateCount, selectedTemplate });
+    try {
+      // Generate palettes using current studio settings
+      const newPalettes = generatePaletteBatch(autogenerateCount).map(palette => ({
+        ...palette,
+        templateId: selectedTemplate,
+        templateName: selectedTemplate.replace('-', ' ')
+      }));
+      
+      setGeneratedPalettes(newPalettes);
+      setShowAutoGenerateConfirmModal(false);
+      setShowAutoGenerateResultsModal(true);
+      
+      toast({
+        title: "Palettes Generated!",
+        description: `Generated ${autogenerateCount} color palettes for ${selectedTemplate.replace('-', ' ')}`,
+      });
+    } catch (error) {
+      console.error('Error in handleAutoGenerate:', error);
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate palettes. Please try again.",
+        variant: "destructive"
+      });
+    }
+  }, [autogenerateCount, selectedTemplate, setGeneratedPalettes, setShowAutoGenerateConfirmModal, setShowAutoGenerateResultsModal, toast]);
   const handleSave = () => {
     const success = savePalette(colorPalette, selectedTemplate);
     if (success) {
