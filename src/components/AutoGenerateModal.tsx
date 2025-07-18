@@ -331,42 +331,42 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                     </Button>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {generatedPalettes.map((palette, index) => (
                       <Card
                         key={palette.id}
-                        className={`cursor-pointer transition-all hover:shadow-lg ${
+                        className={`transition-all hover:shadow-lg ${
                           selectedPaletteIndex === index
                             ? 'border-blue-500 bg-blue-50 shadow-lg'
                             : 'hover:border-gray-300'
                         }`}
-                        onClick={() => setSelectedPaletteIndex(index)}
                       >
-                        <div className="aspect-[4/3] overflow-hidden rounded-t-lg bg-white p-4">
-                          <div className="grid grid-cols-5 gap-1 h-full">
-                            {palette.colors.map((color, colorIndex) => (
-                              <div
-                                key={colorIndex}
-                                className="rounded"
-                                style={{ backgroundColor: color }}
-                              />
-                            ))}
+                        {/* Template Preview */}
+                        <div className="aspect-[16/10] overflow-hidden rounded-t-lg bg-white border-b">
+                          <div className="h-full transform scale-50 origin-top-left w-[200%]">
+                            <LivePreview
+                              template={palette.templateId as TemplateType}
+                              colorPalette={convertToColorPalette(palette)}
+                              showSaveButton={false}
+                              backgroundSettings={backgroundSettings}
+                            />
                           </div>
                         </div>
                         
-                        <div className="p-3">
-                          <div className="flex items-center justify-between mb-2">
+                        <div className="p-4">
+                          <div className="flex items-center justify-between mb-3">
                             <h4 className="font-medium text-sm">{palette.templateName}</h4>
                             <Badge variant="outline" className="text-xs">
                               {getDaysRemaining(palette.timestamp)}d
                             </Badge>
                           </div>
                           
-                          <div className="flex items-center gap-1 mb-3">
+                          {/* Color Palette Strip */}
+                          <div className="flex items-center gap-1 mb-4">
                             {palette.colors.slice(0, 5).map((color, colorIndex) => (
                               <div
                                 key={colorIndex}
-                                className="w-4 h-4 rounded border border-gray-200"
+                                className="w-6 h-6 rounded border border-gray-200 flex-1"
                                 style={{ backgroundColor: color }}
                               />
                             ))}
@@ -376,10 +376,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleSavePalette(palette);
-                              }}
+                              onClick={() => handleSavePalette(palette)}
                               className="flex-1 text-xs"
                             >
                               <Save className="h-3 w-3 mr-1" />
@@ -388,10 +385,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDownloadPDF();
-                              }}
+                              onClick={() => handleDownloadPDF()}
                               className="text-xs"
                             >
                               <Download className="h-3 w-3" />
