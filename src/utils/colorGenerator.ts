@@ -212,62 +212,63 @@ const generateMonochromaticScheme = (baseHue: number, mode: ColorMode): ColorPal
   // Add more variation in saturation and lightness
   const baseSaturation = 60 + Math.floor(Math.random() * 30); // 60-90%
   const saturationVariation = 10 + Math.floor(Math.random() * 15); // 10-25%
+  const [minL, maxL] = lightnessRanges[mode];
   
-  if (mode === 'dark') {
-    const baseLightness = 55 + Math.floor(Math.random() * 15); // 55-70%
-    return {
-      brand: hslToHex(baseHue, baseSaturation, baseLightness),
-      accent: hslToHex(baseHue, baseSaturation + saturationVariation, baseLightness + 10),
-      "button-primary": hslToHex(baseHue, baseSaturation, baseLightness),
-      "button-text": hslToHex(baseHue, 25, 8),
-      "button-secondary": hslToHex(baseHue, 30, 20),
-      "button-secondary-text": hslToHex(baseHue, baseSaturation, baseLightness),
-      "text-primary": hslToHex(0, 0, 95),
-      "text-secondary": hslToHex(baseHue, 20, 75),
-      "section-bg-1": hslToHex(baseHue, 25, 8),
-      "section-bg-2": hslToHex(baseHue, 30, 12),
-      "section-bg-3": hslToHex(baseHue, 35, 16),
-      border: hslToHex(baseHue, 20, 25),
-      highlight: hslToHex(baseHue, baseSaturation + 10, 65),
-      "input-bg": hslToHex(baseHue, 25, 12),
-      "input-text": hslToHex(baseHue, 10, 95)
-    };
-  } else if (mode === 'midtone') {
-    const [minL, maxL] = lightnessRanges.midtone;
+  if (mode === 'dark' || mode === 'midtone-dark') {
     const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
       brand: hslToHex(baseHue, baseSaturation, baseLightness),
       accent: hslToHex(baseHue, baseSaturation + saturationVariation, Math.min(maxL, baseLightness + 10)),
       "button-primary": hslToHex(baseHue, baseSaturation, baseLightness),
-      "button-text": hslToHex(baseHue, 10, 15),
-      "button-secondary": hslToHex(baseHue, 25, Math.max(minL + 15, baseLightness + 20)),
+      "button-text": hslToHex(baseHue, 25, Math.max(5, minL - 15)),
+      "button-secondary": hslToHex(baseHue, 30, Math.min(maxL, baseLightness + 15)),
       "button-secondary-text": hslToHex(baseHue, baseSaturation, baseLightness),
-      "text-primary": hslToHex(baseHue, 20, 20),
-      "text-secondary": hslToHex(baseHue, 15, 35),
-      "section-bg-1": hslToHex(baseHue, 20, Math.max(minL + 25, baseLightness + 15)),
-      "section-bg-2": hslToHex(baseHue, 25, Math.max(minL + 20, baseLightness + 10)),
-      "section-bg-3": hslToHex(baseHue, 30, Math.max(minL + 15, baseLightness + 5)),
-      border: hslToHex(baseHue, 20, Math.max(minL + 10, baseLightness - 5)),
-      highlight: hslToHex(baseHue, baseSaturation - 10, Math.min(maxL, baseLightness + 15)),
-      "input-bg": hslToHex(baseHue, 15, Math.max(minL + 20, baseLightness + 10)),
-      "input-text": hslToHex(baseHue, 25, 20)
+      "text-primary": hslToHex(0, 0, Math.min(95, maxL + 25)),
+      "text-secondary": hslToHex(baseHue, 20, Math.min(85, maxL + 15)),
+      "section-bg-1": hslToHex(baseHue, 25, Math.max(5, minL - 5)),
+      "section-bg-2": hslToHex(baseHue, 30, Math.max(8, minL)),
+      "section-bg-3": hslToHex(baseHue, 35, Math.max(12, minL + 5)),
+      border: hslToHex(baseHue, 20, Math.min(maxL, baseLightness + 10)),
+      highlight: hslToHex(baseHue, baseSaturation + 10, Math.min(maxL, baseLightness + 15)),
+      "input-bg": hslToHex(baseHue, 25, Math.max(8, minL)),
+      "input-text": hslToHex(baseHue, 10, Math.min(95, maxL + 25))
     };
-  } else {
-    const baseLightness = 45 + Math.floor(Math.random() * 15); // 45-60%
+  } else if (mode === 'midtone' || mode === 'light-midtone') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
       brand: hslToHex(baseHue, baseSaturation, baseLightness),
-      accent: hslToHex(baseHue, baseSaturation + saturationVariation, baseLightness + 10),
+      accent: hslToHex(baseHue, baseSaturation + saturationVariation, Math.min(maxL, baseLightness + 10)),
       "button-primary": hslToHex(baseHue, baseSaturation, baseLightness),
+      "button-text": hslToHex(baseHue, 10, Math.max(15, minL - 30)),
+      "button-secondary": hslToHex(baseHue, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary-text": hslToHex(baseHue, baseSaturation, Math.max(minL - 10, baseLightness - 10)),
+      "text-primary": hslToHex(baseHue, 20, Math.max(15, minL - 25)),
+      "text-secondary": hslToHex(baseHue, 15, Math.max(25, minL - 15)),
+      "section-bg-1": hslToHex(baseHue, 20, Math.min(maxL, baseLightness + 20)),
+      "section-bg-2": hslToHex(baseHue, 25, Math.min(maxL, baseLightness + 15)),
+      "section-bg-3": hslToHex(baseHue, 30, Math.min(maxL, baseLightness + 10)),
+      border: hslToHex(baseHue, 20, Math.max(minL + 5, baseLightness - 10)),
+      highlight: hslToHex(baseHue, baseSaturation - 10, Math.min(maxL, baseLightness + 15)),
+      "input-bg": hslToHex(baseHue, 15, Math.min(maxL, baseLightness + 15)),
+      "input-text": hslToHex(baseHue, 25, Math.max(15, minL - 25))
+    };
+  } else {
+    // Light mode
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL - 30)) + 15; // Keep away from pure white
+    return {
+      brand: hslToHex(baseHue, baseSaturation, Math.max(30, baseLightness - 30)),
+      accent: hslToHex(baseHue, baseSaturation + saturationVariation, Math.max(35, baseLightness - 25)),
+      "button-primary": hslToHex(baseHue, baseSaturation, Math.max(30, baseLightness - 30)),
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(baseHue, 15, 95),
-      "button-secondary-text": hslToHex(baseHue, baseSaturation, baseLightness),
+      "button-secondary": hslToHex(baseHue, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary-text": hslToHex(baseHue, baseSaturation, Math.max(30, baseLightness - 30)),
       "text-primary": hslToHex(baseHue, 30, 15),
       "text-secondary": hslToHex(baseHue, 20, 45),
-      "section-bg-1": hslToHex(baseHue, 15, 98),
-      "section-bg-2": hslToHex(baseHue, 20, 96),
-      "section-bg-3": hslToHex(baseHue, 25, 94),
-      border: hslToHex(baseHue, 15, 85),
-      highlight: hslToHex(baseHue, baseSaturation - 10, baseLightness + 10),
+      "section-bg-1": hslToHex(baseHue, 15, Math.min(maxL, baseLightness)),
+      "section-bg-2": hslToHex(baseHue, 20, Math.min(maxL, baseLightness - 2)),
+      "section-bg-3": hslToHex(baseHue, 25, Math.min(maxL, baseLightness - 4)),
+      border: hslToHex(baseHue, 15, Math.max(minL + 5, baseLightness - 15)),
+      highlight: hslToHex(baseHue, baseSaturation - 10, Math.max(35, baseLightness - 20)),
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(baseHue, 30, 15)
     };
@@ -278,58 +279,63 @@ const generateAnalogousScheme = (baseHue: number, mode: ColorMode): ColorPalette
   const hue1 = baseHue;
   const hue2 = (baseHue + 30) % 360;
   const hue3 = (baseHue + 60) % 360;
+  const [minL, maxL] = lightnessRanges[mode];
   
-  if (mode === 'dark') {
+  if (mode === 'dark' || mode === 'midtone-dark') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(hue1, 70, 60),
-      accent: hslToHex(hue3, 80, 65),
-      "button-primary": hslToHex(hue1, 70, 60),
-      "button-text": hslToHex(hue1, 25, 8),
-      "button-secondary": hslToHex(hue1, 30, 20),
-      "button-secondary-text": hslToHex(hue1, 70, 60),
-      "text-primary": hslToHex(0, 0, 95),
-      "text-secondary": hslToHex(hue1, 20, 75),
-      "section-bg-1": hslToHex(hue1, 25, 8),
-      "section-bg-2": hslToHex(hue2, 25, 12),
-      "section-bg-3": hslToHex(hue3, 25, 16),
-      border: hslToHex(hue1, 20, 25),
-      highlight: hslToHex(hue2, 65, 55),
-      "input-bg": hslToHex(hue1, 25, 12),
-      "input-text": hslToHex(0, 0, 95)
+      brand: hslToHex(hue1, 70, baseLightness),
+      accent: hslToHex(hue3, 80, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(hue1, 70, baseLightness),
+      "button-text": hslToHex(hue1, 25, Math.max(5, minL - 10)),
+      "button-secondary": hslToHex(hue1, 30, Math.min(maxL, baseLightness + 10)),
+      "button-secondary-text": hslToHex(hue1, 70, baseLightness),
+      "text-primary": hslToHex(0, 0, Math.min(95, maxL + 25)),
+      "text-secondary": hslToHex(hue1, 20, Math.min(85, maxL + 15)),
+      "section-bg-1": hslToHex(hue1, 25, Math.max(5, minL - 5)),
+      "section-bg-2": hslToHex(hue2, 25, Math.max(8, minL)),
+      "section-bg-3": hslToHex(hue3, 25, Math.max(12, minL + 5)),
+      border: hslToHex(hue1, 20, Math.min(maxL, baseLightness + 5)),
+      highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 10)),
+      "input-bg": hslToHex(hue1, 25, Math.max(8, minL)),
+      "input-text": hslToHex(0, 0, Math.min(95, maxL + 25))
     };
-  } else if (mode === 'midtone') {
+  } else if (mode === 'midtone' || mode === 'light-midtone') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(hue1, 75, 55),
-      accent: hslToHex(hue3, 80, 60),
-      "button-primary": hslToHex(hue1, 75, 55),
-      "button-text": hslToHex(hue1, 15, 20),
-      "button-secondary": hslToHex(hue1, 25, 60),
-      "button-secondary-text": hslToHex(hue1, 75, 50),
-      "text-primary": hslToHex(hue1, 35, 25),
-      "text-secondary": hslToHex(hue1, 25, 40),
-      "section-bg-1": hslToHex(hue1, 20, 65),
-      "section-bg-2": hslToHex(hue2, 25, 60),
-      "section-bg-3": hslToHex(hue3, 25, 55),
-      border: hslToHex(hue1, 20, 45),
-      highlight: hslToHex(hue2, 65, 50),
-      "input-bg": hslToHex(hue1, 15, 60),
-      "input-text": hslToHex(hue1, 35, 25)
+      brand: hslToHex(hue1, 75, baseLightness),
+      accent: hslToHex(hue3, 80, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(hue1, 75, baseLightness),
+      "button-text": hslToHex(hue1, 15, Math.max(15, minL - 25)),
+      "button-secondary": hslToHex(hue1, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary-text": hslToHex(hue1, 75, Math.max(minL - 5, baseLightness - 5)),
+      "text-primary": hslToHex(hue1, 35, Math.max(15, minL - 20)),
+      "text-secondary": hslToHex(hue1, 25, Math.max(25, minL - 10)),
+      "section-bg-1": hslToHex(hue1, 20, Math.min(maxL, baseLightness + 20)),
+      "section-bg-2": hslToHex(hue2, 25, Math.min(maxL, baseLightness + 15)),
+      "section-bg-3": hslToHex(hue3, 25, Math.min(maxL, baseLightness + 10)),
+      border: hslToHex(hue1, 20, Math.max(minL + 5, baseLightness - 10)),
+      highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 5)),
+      "input-bg": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 15)),
+      "input-text": hslToHex(hue1, 35, Math.max(15, minL - 20))
     };
   } else {
+    // Light mode
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL - 20)) + 10;
     return {
-      brand: hslToHex(hue1, 75, 50),
-      accent: hslToHex(hue3, 80, 55),
-      "button-primary": hslToHex(hue1, 75, 50),
+      brand: hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
+      accent: hslToHex(hue3, 80, Math.max(35, baseLightness - 30)),
+      "button-primary": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(hue1, 15, 95),
-      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "button-secondary": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary-text": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "text-primary": hslToHex(hue1, 40, 15),
       "text-secondary": hslToHex(hue1, 30, 45),
       "section-bg-1": '#FFFFFF',
-      "section-bg-2": hslToHex(hue2, 20, 97),
-      "section-bg-3": hslToHex(hue3, 20, 94),
-      border: hslToHex(hue1, 15, 85),
-      highlight: hslToHex(hue2, 70, 45),
+      "section-bg-2": hslToHex(hue2, 20, Math.min(maxL, baseLightness - 2)),
+      "section-bg-3": hslToHex(hue3, 20, Math.min(maxL, baseLightness - 5)),
+      border: hslToHex(hue1, 15, Math.max(minL + 5, baseLightness - 15)),
+      highlight: hslToHex(hue2, 70, Math.max(35, baseLightness - 30)),
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(hue1, 40, 15)
     };
@@ -338,58 +344,63 @@ const generateAnalogousScheme = (baseHue: number, mode: ColorMode): ColorPalette
 
 const generateComplementaryScheme = (baseHue: number, mode: ColorMode): ColorPalette => {
   const complementaryHue = (baseHue + 180) % 360;
+  const [minL, maxL] = lightnessRanges[mode];
   
-  if (mode === 'dark') {
+  if (mode === 'dark' || mode === 'midtone-dark') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(baseHue, 75, 60),
-      accent: hslToHex(complementaryHue, 85, 65),
-      "button-primary": hslToHex(baseHue, 75, 60),
-      "button-text": hslToHex(baseHue, 30, 8),
-      "button-secondary": hslToHex(baseHue, 30, 20),
-      "button-secondary-text": hslToHex(baseHue, 75, 60),
+      brand: hslToHex(baseHue, 75, baseLightness),
+      accent: hslToHex(complementaryHue, 85, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(baseHue, 75, baseLightness),
+      "button-text": hslToHex(baseHue, 30, Math.max(5, minL - 10)),
+      "button-secondary": hslToHex(baseHue, 30, Math.min(maxL, baseLightness + 10)),
+      "button-secondary-text": hslToHex(baseHue, 75, baseLightness),
       "text-primary": '#F9FAFB',
-      "text-secondary": hslToHex(baseHue, 25, 75),
-      "section-bg-1": hslToHex(baseHue, 30, 8),
-      "section-bg-2": hslToHex(complementaryHue, 25, 12),
-      "section-bg-3": hslToHex(baseHue, 35, 16),
-      border: hslToHex(baseHue, 20, 25),
-      highlight: hslToHex(complementaryHue, 70, 55),
-      "input-bg": hslToHex(baseHue, 30, 12),
+      "text-secondary": hslToHex(baseHue, 25, Math.min(85, maxL + 15)),
+      "section-bg-1": hslToHex(baseHue, 30, Math.max(5, minL - 5)),
+      "section-bg-2": hslToHex(complementaryHue, 25, Math.max(8, minL)),
+      "section-bg-3": hslToHex(baseHue, 35, Math.max(12, minL + 5)),
+      border: hslToHex(baseHue, 20, Math.min(maxL, baseLightness + 5)),
+      highlight: hslToHex(complementaryHue, 70, Math.min(maxL, baseLightness + 10)),
+      "input-bg": hslToHex(baseHue, 30, Math.max(8, minL)),
       "input-text": '#F9FAFB'
     };
-  } else if (mode === 'midtone') {
+  } else if (mode === 'midtone' || mode === 'light-midtone') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(baseHue, 80, 55),
-      accent: hslToHex(complementaryHue, 85, 60),
-      "button-primary": hslToHex(baseHue, 80, 55),
-      "button-text": hslToHex(baseHue, 15, 20),
-      "button-secondary": hslToHex(baseHue, 25, 60),
-      "button-secondary-text": hslToHex(baseHue, 80, 50),
-      "text-primary": hslToHex(baseHue, 40, 25),
-      "text-secondary": hslToHex(baseHue, 30, 40),
-      "section-bg-1": hslToHex(baseHue, 20, 65),
-      "section-bg-2": hslToHex(complementaryHue, 25, 60),
-      "section-bg-3": hslToHex(baseHue, 25, 55),
-      border: hslToHex(baseHue, 20, 45),
-      highlight: hslToHex(complementaryHue, 70, 50),
-      "input-bg": hslToHex(baseHue, 15, 60),
-      "input-text": hslToHex(baseHue, 40, 25)
+      brand: hslToHex(baseHue, 80, baseLightness),
+      accent: hslToHex(complementaryHue, 85, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(baseHue, 80, baseLightness),
+      "button-text": hslToHex(baseHue, 15, Math.max(15, minL - 25)),
+      "button-secondary": hslToHex(baseHue, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary-text": hslToHex(baseHue, 80, Math.max(minL - 5, baseLightness - 5)),
+      "text-primary": hslToHex(baseHue, 40, Math.max(15, minL - 20)),
+      "text-secondary": hslToHex(baseHue, 30, Math.max(25, minL - 10)),
+      "section-bg-1": hslToHex(baseHue, 20, Math.min(maxL, baseLightness + 20)),
+      "section-bg-2": hslToHex(complementaryHue, 25, Math.min(maxL, baseLightness + 15)),
+      "section-bg-3": hslToHex(baseHue, 25, Math.min(maxL, baseLightness + 10)),
+      border: hslToHex(baseHue, 20, Math.max(minL + 5, baseLightness - 10)),
+      highlight: hslToHex(complementaryHue, 70, Math.min(maxL, baseLightness + 5)),
+      "input-bg": hslToHex(baseHue, 15, Math.min(maxL, baseLightness + 15)),
+      "input-text": hslToHex(baseHue, 40, Math.max(15, minL - 20))
     };
   } else {
+    // Light mode
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL - 20)) + 10;
     return {
-      brand: hslToHex(baseHue, 80, 50),
-      accent: hslToHex(complementaryHue, 85, 55),
-      "button-primary": hslToHex(baseHue, 80, 50),
+      brand: hslToHex(baseHue, 80, Math.max(30, baseLightness - 35)),
+      accent: hslToHex(complementaryHue, 85, Math.max(35, baseLightness - 30)),
+      "button-primary": hslToHex(baseHue, 80, Math.max(30, baseLightness - 35)),
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(baseHue, 15, 95),
-      "button-secondary-text": hslToHex(baseHue, 80, 50),
+      "button-secondary": hslToHex(baseHue, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary-text": hslToHex(baseHue, 80, Math.max(30, baseLightness - 35)),
       "text-primary": hslToHex(baseHue, 50, 15),
       "text-secondary": hslToHex(baseHue, 35, 45),
       "section-bg-1": '#FFFFFF',
-      "section-bg-2": hslToHex(complementaryHue, 20, 97),
-      "section-bg-3": hslToHex(baseHue, 20, 94),
-      border: hslToHex(baseHue, 15, 85),
-      highlight: hslToHex(complementaryHue, 75, 45),
+      "section-bg-2": hslToHex(complementaryHue, 20, Math.min(maxL, baseLightness - 2)),
+      "section-bg-3": hslToHex(baseHue, 20, Math.min(maxL, baseLightness - 5)),
+      border: hslToHex(baseHue, 15, Math.max(minL + 5, baseLightness - 15)),
+      highlight: hslToHex(complementaryHue, 75, Math.max(35, baseLightness - 30)),
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(baseHue, 50, 15)
     };
@@ -400,58 +411,63 @@ const generateTriadicScheme = (baseHue: number, mode: ColorMode): ColorPalette =
   const hue1 = baseHue;
   const hue2 = (baseHue + 120) % 360;
   const hue3 = (baseHue + 240) % 360;
+  const [minL, maxL] = lightnessRanges[mode];
   
-  if (mode === 'dark') {
+  if (mode === 'dark' || mode === 'midtone-dark') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(hue1, 70, 60),
-      accent: hslToHex(hue3, 75, 65),
-      "button-primary": hslToHex(hue1, 70, 60),
-      "button-text": hslToHex(hue1, 25, 8),
-      "button-secondary": hslToHex(hue1, 30, 20),
-      "button-secondary-text": hslToHex(hue1, 70, 60),
+      brand: hslToHex(hue1, 70, baseLightness),
+      accent: hslToHex(hue3, 75, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(hue1, 70, baseLightness),
+      "button-text": hslToHex(hue1, 25, Math.max(5, minL - 10)),
+      "button-secondary": hslToHex(hue1, 30, Math.min(maxL, baseLightness + 10)),
+      "button-secondary-text": hslToHex(hue1, 70, baseLightness),
       "text-primary": '#F9FAFB',
-      "text-secondary": hslToHex(hue1, 20, 75),
-      "section-bg-1": hslToHex(hue1, 25, 8),
-      "section-bg-2": hslToHex(hue2, 25, 12),
-      "section-bg-3": hslToHex(hue3, 25, 16),
-      border: hslToHex(hue1, 20, 25),
-      highlight: hslToHex(hue2, 65, 55),
-      "input-bg": hslToHex(hue1, 25, 12),
+      "text-secondary": hslToHex(hue1, 20, Math.min(85, maxL + 15)),
+      "section-bg-1": hslToHex(hue1, 25, Math.max(5, minL - 5)),
+      "section-bg-2": hslToHex(hue2, 25, Math.max(8, minL)),
+      "section-bg-3": hslToHex(hue3, 25, Math.max(12, minL + 5)),
+      border: hslToHex(hue1, 20, Math.min(maxL, baseLightness + 5)),
+      highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 10)),
+      "input-bg": hslToHex(hue1, 25, Math.max(8, minL)),
       "input-text": '#F9FAFB'
     };
-  } else if (mode === 'midtone') {
+  } else if (mode === 'midtone' || mode === 'light-midtone') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(hue1, 75, 55),
-      accent: hslToHex(hue3, 80, 60),
-      "button-primary": hslToHex(hue1, 75, 55),
-      "button-text": hslToHex(hue1, 15, 20),
-      "button-secondary": hslToHex(hue1, 25, 60),
-      "button-secondary-text": hslToHex(hue1, 75, 50),
-      "text-primary": hslToHex(hue1, 35, 25),
-      "text-secondary": hslToHex(hue1, 25, 40),
-      "section-bg-1": hslToHex(hue1, 20, 65),
-      "section-bg-2": hslToHex(hue2, 25, 60),
-      "section-bg-3": hslToHex(hue3, 25, 55),
-      border: hslToHex(hue1, 20, 45),
-      highlight: hslToHex(hue2, 65, 50),
-      "input-bg": hslToHex(hue1, 15, 60),
-      "input-text": hslToHex(hue1, 35, 25)
+      brand: hslToHex(hue1, 75, baseLightness),
+      accent: hslToHex(hue3, 80, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(hue1, 75, baseLightness),
+      "button-text": hslToHex(hue1, 15, Math.max(15, minL - 25)),
+      "button-secondary": hslToHex(hue1, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary-text": hslToHex(hue1, 75, Math.max(minL - 5, baseLightness - 5)),
+      "text-primary": hslToHex(hue1, 35, Math.max(15, minL - 20)),
+      "text-secondary": hslToHex(hue1, 25, Math.max(25, minL - 10)),
+      "section-bg-1": hslToHex(hue1, 20, Math.min(maxL, baseLightness + 20)),
+      "section-bg-2": hslToHex(hue2, 25, Math.min(maxL, baseLightness + 15)),
+      "section-bg-3": hslToHex(hue3, 25, Math.min(maxL, baseLightness + 10)),
+      border: hslToHex(hue1, 20, Math.max(minL + 5, baseLightness - 10)),
+      highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 5)),
+      "input-bg": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 15)),
+      "input-text": hslToHex(hue1, 35, Math.max(15, minL - 20))
     };
   } else {
+    // Light mode
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL - 20)) + 10;
     return {
-      brand: hslToHex(hue1, 75, 50),
-      accent: hslToHex(hue3, 80, 55),
-      "button-primary": hslToHex(hue1, 75, 50),
+      brand: hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
+      accent: hslToHex(hue3, 80, Math.max(35, baseLightness - 30)),
+      "button-primary": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(hue1, 15, 95),
-      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "button-secondary": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary-text": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "text-primary": hslToHex(hue1, 40, 15),
       "text-secondary": hslToHex(hue1, 30, 45),
       "section-bg-1": '#FFFFFF',
-      "section-bg-2": hslToHex(hue2, 20, 97),
-      "section-bg-3": hslToHex(hue3, 20, 94),
-      border: hslToHex(hue1, 15, 85),
-      highlight: hslToHex(hue2, 70, 45),
+      "section-bg-2": hslToHex(hue2, 20, Math.min(maxL, baseLightness - 2)),
+      "section-bg-3": hslToHex(hue3, 20, Math.min(maxL, baseLightness - 5)),
+      border: hslToHex(hue1, 15, Math.max(minL + 5, baseLightness - 15)),
+      highlight: hslToHex(hue2, 70, Math.max(35, baseLightness - 30)),
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(hue1, 40, 15)
     };
@@ -462,62 +478,106 @@ const generateTetradicScheme = (baseHue: number, mode: ColorMode): ColorPalette 
   const hue1 = baseHue;
   const hue2 = (baseHue + 90) % 360;
   const hue3 = (baseHue + 180) % 360;
+  const [minL, maxL] = lightnessRanges[mode];
   
-  if (mode === 'dark') {
+  if (mode === 'dark' || mode === 'midtone-dark') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(hue1, 70, 60),
-      accent: hslToHex(hue3, 75, 65),
-      "button-primary": hslToHex(hue1, 70, 60),
-      "button-text": hslToHex(hue1, 25, 8),
-      "button-secondary": hslToHex(hue1, 30, 20),
-      "button-secondary-text": hslToHex(hue1, 70, 60),
+      brand: hslToHex(hue1, 70, baseLightness),
+      accent: hslToHex(hue3, 75, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(hue1, 70, baseLightness),
+      "button-text": hslToHex(hue1, 25, Math.max(5, minL - 10)),
+      "button-secondary": hslToHex(hue1, 30, Math.min(maxL, baseLightness + 10)),
+      "button-secondary-text": hslToHex(hue1, 70, baseLightness),
       "text-primary": '#F9FAFB',
-      "text-secondary": hslToHex(hue1, 20, 75),
-      "section-bg-1": hslToHex(hue1, 25, 8),
-      "section-bg-2": hslToHex(hue2, 25, 12),
-      "section-bg-3": hslToHex(hue3, 25, 16),
-      border: hslToHex(hue1, 20, 25),
-      highlight: hslToHex(hue2, 65, 55),
-      "input-bg": hslToHex(hue1, 25, 12),
+      "text-secondary": hslToHex(hue1, 20, Math.min(85, maxL + 15)),
+      "section-bg-1": hslToHex(hue1, 25, Math.max(5, minL - 5)),
+      "section-bg-2": hslToHex(hue2, 25, Math.max(8, minL)),
+      "section-bg-3": hslToHex(hue3, 25, Math.max(12, minL + 5)),
+      border: hslToHex(hue1, 20, Math.min(maxL, baseLightness + 5)),
+      highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 10)),
+      "input-bg": hslToHex(hue1, 25, Math.max(8, minL)),
       "input-text": '#F9FAFB'
     };
-  } else if (mode === 'midtone') {
+  } else if (mode === 'midtone' || mode === 'light-midtone') {
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL));
     return {
-      brand: hslToHex(hue1, 75, 55),
-      accent: hslToHex(hue3, 80, 60),
-      "button-primary": hslToHex(hue1, 75, 55),
-      "button-text": hslToHex(hue1, 15, 20),
-      "button-secondary": hslToHex(hue1, 25, 60),
-      "button-secondary-text": hslToHex(hue1, 75, 50),
-      "text-primary": hslToHex(hue1, 35, 25),
-      "text-secondary": hslToHex(hue1, 25, 40),
-      "section-bg-1": hslToHex(hue1, 20, 65),
-      "section-bg-2": hslToHex(hue2, 25, 60),
-      "section-bg-3": hslToHex(hue3, 25, 55),
-      border: hslToHex(hue1, 20, 45),
-      highlight: hslToHex(hue2, 65, 50),
-      "input-bg": hslToHex(hue1, 15, 60),
-      "input-text": hslToHex(hue1, 35, 25)
+      brand: hslToHex(hue1, 75, baseLightness),
+      accent: hslToHex(hue3, 80, Math.min(maxL, baseLightness + 5)),
+      "button-primary": hslToHex(hue1, 75, baseLightness),
+      "button-text": hslToHex(hue1, 15, Math.max(15, minL - 25)),
+      "button-secondary": hslToHex(hue1, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary-text": hslToHex(hue1, 75, Math.max(minL - 5, baseLightness - 5)),
+      "text-primary": hslToHex(hue1, 35, Math.max(15, minL - 20)),
+      "text-secondary": hslToHex(hue1, 25, Math.max(25, minL - 10)),
+      "section-bg-1": hslToHex(hue1, 20, Math.min(maxL, baseLightness + 20)),
+      "section-bg-2": hslToHex(hue2, 25, Math.min(maxL, baseLightness + 15)),
+      "section-bg-3": hslToHex(hue3, 25, Math.min(maxL, baseLightness + 10)),
+      border: hslToHex(hue1, 20, Math.max(minL + 5, baseLightness - 10)),
+      highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 5)),
+      "input-bg": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 15)),
+      "input-text": hslToHex(hue1, 35, Math.max(15, minL - 20))
     };
   } else {
+    // Light mode
+    const baseLightness = minL + Math.floor(Math.random() * (maxL - minL - 20)) + 10;
     return {
-      brand: hslToHex(hue1, 75, 50),
-      accent: hslToHex(hue3, 80, 55),
-      "button-primary": hslToHex(hue1, 75, 50),
+      brand: hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
+      accent: hslToHex(hue3, 80, Math.max(35, baseLightness - 30)),
+      "button-primary": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(hue1, 15, 95),
-      "button-secondary-text": hslToHex(hue1, 75, 50),
+      "button-secondary": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary-text": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "text-primary": hslToHex(hue1, 40, 15),
       "text-secondary": hslToHex(hue1, 30, 45),
       "section-bg-1": '#FFFFFF',
-      "section-bg-2": hslToHex(hue2, 20, 97),
-      "section-bg-3": hslToHex(hue3, 20, 94),
-      border: hslToHex(hue1, 15, 85),
-      highlight: hslToHex(hue2, 70, 45),
+      "section-bg-2": hslToHex(hue2, 20, Math.min(maxL, baseLightness - 2)),
+      "section-bg-3": hslToHex(hue3, 20, Math.min(maxL, baseLightness - 5)),
+      border: hslToHex(hue1, 15, Math.max(minL + 5, baseLightness - 15)),
+      highlight: hslToHex(hue2, 70, Math.max(35, baseLightness - 30)),
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(hue1, 40, 15)
     };
   }
+};
+
+// Function to adjust palette colors based on theme mode
+const adjustPaletteForThemeMode = (basePalette: ColorPalette, mode: ColorMode): ColorPalette => {
+  if (mode === 'light' || mode === 'dark') {
+    // No adjustment needed for light and dark modes - they already use appropriate palettes
+    return basePalette;
+  }
+  
+  // For intermediate modes, adjust lightness values
+  const [minL, maxL] = lightnessRanges[mode];
+  const result = { ...basePalette };
+  
+  // Adjust background colors to fit the theme mode range
+  Object.keys(result).forEach(key => {
+    const colorKey = key as keyof ColorPalette;
+    const hsl = hexToHsl(result[colorKey]);
+    
+    // Only adjust non-text colors and non-fixed colors
+    if (!key.includes('text') && !key.includes('button-text') && result[colorKey] !== '#FFFFFF' && result[colorKey] !== '#000000') {
+      // Map current lightness to the new range
+      let newLightness: number;
+      
+      if (key.includes('section-bg') || key.includes('input-bg')) {
+        // Background colors should be in the upper part of the range
+        newLightness = Math.max(minL + 15, Math.min(maxL, hsl.l));
+      } else if (key.includes('border')) {
+        // Border colors should be in the middle of the range
+        newLightness = minL + (maxL - minL) * 0.3;
+      } else {
+        // Brand and accent colors
+        newLightness = minL + (maxL - minL) * 0.5;
+      }
+      
+      result[colorKey] = hslToHex(hsl.h, hsl.s, Math.round(newLightness));
+    }
+  });
+  
+  return result;
 };
 
 export const generateColorPalette = (mode: ColorMode = 'light'): ColorPalette => {
@@ -526,9 +586,14 @@ export const generateColorPalette = (mode: ColorMode = 'light'): ColorPalette =>
     mode = mode ? 'dark' : 'light';
   }
   
-  const palettes = mode === 'dark' ? darkColorPalettes : lightColorPalettes;
+  // Map all theme modes to appropriate palette sets
+  const isDarkish = mode === 'dark' || mode === 'midtone-dark';
+  const palettes = isDarkish ? darkColorPalettes : lightColorPalettes;
   const randomIndex = Math.floor(Math.random() * palettes.length);
-  return palettes[randomIndex];
+  
+  // Adjust the palette based on the specific theme mode
+  const basePalette = palettes[randomIndex];
+  return adjustPaletteForThemeMode(basePalette, mode);
 };
 
 export const generateColorScheme = (scheme: ColorSchemeType, mode: ColorMode = 'light'): ColorPalette => {
