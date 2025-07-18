@@ -28,7 +28,141 @@ const SECTION_NAMES = [
   'gallery', 'portfolio', 'faq', 'blog', 'news'
 ];
 
-// Parse Figma document structure to identify sections
+// Extract content from Figma nodes
+const extractNodeContent = (node: any): any => {
+  const content: any = {
+    texts: [],
+    images: [],
+    buttons: [],
+    shapes: []
+  };
+
+  const traverseNode = (currentNode: any) => {
+    if (!currentNode) return;
+
+    // Extract text content
+    if (currentNode.type === 'TEXT' && currentNode.characters) {
+      content.texts.push({
+        id: currentNode.id,
+        text: currentNode.characters.trim(),
+        style: currentNode.style || {},
+        fontSize: currentNode.style?.fontSize || 16,
+        fontWeight: currentNode.style?.fontWeight || 400,
+        fills: currentNode.fills || []
+      });
+    }
+
+    // Extract images
+    if (currentNode.type === 'RECTANGLE' && currentNode.fills) {
+      const imageFill = currentNode.fills.find((fill: any) => fill.type === 'IMAGE');
+      if (imageFill && imageFill.imageRef) {
+        content.images.push({
+          id: currentNode.id,
+          imageRef: imageFill.imageRef,
+          width: currentNode.absoluteBoundingBox?.width,
+          height: currentNode.absoluteBoundingBox?.height
+        });
+      }
+    }
+
+    // Detect potential buttons (text with background or specific naming)
+    if (currentNode.name && 
+        (currentNode.name.toLowerCase().includes('button') || 
+         currentNode.name.toLowerCase().includes('btn') ||
+         currentNode.name.toLowerCase().includes('cta'))) {
+      
+      const buttonText = extractTextFromNode(currentNode);
+      if (buttonText) {
+        content.buttons.push({
+          id: currentNode.id,
+          text: buttonText,
+          name: currentNode.name
+        });
+      }
+    }
+
+    // Extract shapes and backgrounds
+    if ((currentNode.type === 'RECTANGLE' || currentNode.type === 'ELLIPSE' || currentNode.type === 'VECTOR') && 
+        currentNode.fills && currentNode.fills.length > 0) {
+      content.shapes.push({
+        id: currentNode.id,
+        type: currentNode.type,
+        fills: currentNode.fills,
+        bounds: currentNode.absoluteBoundingBox
+      });
+    }
+
+    // Recursively process children
+    if (currentNode.children && currentNode.children.length > 0) {
+      currentNode.children.forEach(traverseNode);
+    }
+  };
+
+  traverseNode(node);
+  return content;
+};
+
+// Helper to extract text from any node and its children
+const extractTextFromNode = (node: any): string => {
+  if (!node) return '';
+  
+  if (node.type === 'TEXT' && node.characters) {
+    return node.characters.trim();
+  }
+  
+  if (node.children && node.children.length > 0) {
+    return node.children
+      .map(extractTextFromNode)
+      .filter(text => text.length > 0)
+      .join(' ');
+  }
+  
+  return '';
+};
+
+// Organize extracted content into meaningful sections
+const organizeContent = (content: any, sectionType: string) => {
+  const organized: any = {
+    title: '',
+    subtitle: '',
+    description: '',
+    cta: '',
+    items: [],
+    images: content.images || [],
+    buttons: content.buttons || []
+  };
+
+  // Sort texts by font size (largest to smallest) to identify hierarchy
+  const sortedTexts = [...(content.texts || [])].sort((a, b) => (b.fontSize || 16) - (a.fontSize || 16));
+
+  if (sortedTexts.length > 0) {
+    // Largest text is likely the title
+    organized.title = sortedTexts[0].text;
+    
+    if (sortedTexts.length > 1) {
+      // Second largest might be subtitle
+      organized.subtitle = sortedTexts[1].text;
+    }
+    
+    if (sortedTexts.length > 2) {
+      // Remaining texts as description or items
+      if (sectionType === 'features' || sectionType === 'services') {
+        organized.items = sortedTexts.slice(2).map(text => text.text);
+      } else {
+        organized.description = sortedTexts.slice(2).map(text => text.text).join(' ');
+      }
+    }
+  }
+
+  // Use button text as CTA if available
+  if (content.buttons && content.buttons.length > 0) {
+    organized.cta = content.buttons[0].text;
+  }
+
+  return organized;
+};
+
+// Parse Figma document structure to identify sections and extract real content
 const parseFigmaDesignStructure = (document: any) => {
   const sections: any[] = [];
   
@@ -37,46 +171,48 @@ const parseFigmaDesignStructure = (document: any) => {
   }
 
   // Traverse all top-level frames and child nodes
-  const traverseNodes = (nodes: any[], parentName = '') => {
+  const traverseNodes = (nodes: any[]) => {
     nodes.forEach((node: any) => {
       if (node.type === 'FRAME' || node.type === 'COMPONENT' || node.type === 'COMPONENT_SET') {
-        const nodeName = node.name.toLowerCase();
+        const nodeName = node.name.toLowerCase().replace(/[-_\s]/g, '');
         
-        // Check if this frame matches any common section names (case-insensitive)
+        // Check if this frame matches any common section names (flexible matching)
         const matchedSection = SECTION_NAMES.find(sectionName => 
-          nodeName.includes(sectionName) || 
-          sectionName.includes(nodeName.replace(/\s+/g, ''))
+          nodeName.includes(sectionName.replace(/[-_\s]/g, '')) || 
+          sectionName.replace(/[-_\s]/g, '').includes(nodeName)
         );
 
-        if (matchedSection) {
+        if (matchedSection || (node.absoluteBoundingBox && 
+            node.absoluteBoundingBox.width > 200 && 
+            node.absoluteBoundingBox.height > 100)) {
+          
+          // Extract real content from this frame
+          const extractedContent = extractNodeContent(node);
+          const organizedContent = organizeContent(extractedContent, matchedSection || 'section');
+          
+          const isEmpty = !organizedContent.title && 
+                         !organizedContent.subtitle && 
+                         !organizedContent.description && 
+                         extractedContent.texts.length === 0;
+
           sections.push({
             id: node.id,
             name: node.name,
-            type: matchedSection,
+            type: matchedSection || 'section',
             originalName: node.name,
             nodeData: node,
-            order: sections.length
+            order: sections.length,
+            content: organizedContent,
+            rawContent: extractedContent,
+            isEmpty: isEmpty,
+            figmaNodeId: node.id
           });
-        } else {
-          // If no match found but it's a significant frame, add as generic section
-          if (node.absoluteBoundingBox && 
-              node.absoluteBoundingBox.width > 200 && 
-              node.absoluteBoundingBox.height > 100) {
-            sections.push({
-              id: node.id,
-              name: node.name,
-              type: 'section',
-              originalName: node.name,
-              nodeData: node,
-              order: sections.length
-            });
-          }
         }
       }
       
       // Recursively traverse child nodes
       if (node.children && node.children.length > 0) {
-        traverseNodes(node.children, node.name);
+        traverseNodes(node.children);
       }
     });
   };

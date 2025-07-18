@@ -30,16 +30,28 @@ const CustomFigmaTemplate: React.FC<CustomFigmaTemplateProps> = ({
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
                     style={{ backgroundColor: colorPalette.brand }}
                   >
-                    F
+                    {section.content.title ? section.content.title[0]?.toUpperCase() : 'F'}
                   </div>
-                  <span className="font-semibold text-text-primary">{section.originalName}</span>
+                  <span className="font-semibold text-text-primary">
+                    {section.content.title || section.originalName}
+                  </span>
                 </div>
                 
                 <nav className="hidden md:flex items-center space-x-6">
-                  <a href="#" className="text-text-secondary hover:text-text-primary transition-colors">Home</a>
-                  <a href="#" className="text-text-secondary hover:text-text-primary transition-colors">About</a>
-                  <a href="#" className="text-text-secondary hover:text-text-primary transition-colors">Services</a>
-                  <a href="#" className="text-text-secondary hover:text-text-primary transition-colors">Contact</a>
+                  {section.content.items.length > 0 ? (
+                    section.content.items.slice(0, 4).map((item: string, idx: number) => (
+                      <a key={idx} href="#" className="text-text-secondary hover:text-text-primary transition-colors">
+                        {item}
+                      </a>
+                    ))
+                  ) : (
+                    <>
+                      <a href="#" className="text-text-secondary hover:text-text-primary transition-colors">Home</a>
+                      <a href="#" className="text-text-secondary hover:text-text-primary transition-colors">About</a>
+                      <a href="#" className="text-text-secondary hover:text-text-primary transition-colors">Services</a>
+                      <a href="#" className="text-text-secondary hover:text-text-primary transition-colors">Contact</a>
+                    </>
+                  )}
                 </nav>
                 
                 <button 
@@ -49,7 +61,7 @@ const CustomFigmaTemplate: React.FC<CustomFigmaTemplateProps> = ({
                     color: colorPalette['button-text'] 
                   }}
                 >
-                  Get Started
+                  {section.content.cta || 'Get Started'}
                 </button>
               </div>
             </div>
@@ -60,66 +72,95 @@ const CustomFigmaTemplate: React.FC<CustomFigmaTemplateProps> = ({
         return (
           <section key={section.id} className="py-16 lg:py-24">
             <div className="container mx-auto px-6">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <div className="space-y-6">
+              {section.isEmpty ? (
+                <div className="text-center space-y-6">
                   <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border"
                        style={{ 
                          borderColor: colorPalette.highlight + '40',
                          backgroundColor: colorPalette.highlight + '10',
                          color: colorPalette.highlight 
                        }}>
-                    ✨ {section.originalName}
+                    ⚠️ Empty Section
                   </div>
-                  
-                  <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                    <span className="text-text-primary">Your Design</span>
-                    <br />
-                    <span style={{ color: colorPalette.brand }}>Brought to Life</span>
-                  </h1>
-                  
-                  <p className="text-lg text-text-secondary leading-relaxed max-w-md">
-                    This section comes from your Figma design: "{section.originalName}". 
-                    Enhanced with dynamic color generation.
+                  <h2 className="text-2xl font-bold text-text-primary">
+                    "{section.originalName}" Section
+                  </h2>
+                  <p className="text-text-secondary">
+                    This section appears to be empty in your Figma file. Try adding text or visuals and re-importing.
                   </p>
-                  
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <button 
-                      className="px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg transform hover:scale-105"
-                      style={{ 
-                        backgroundColor: colorPalette['button-primary'], 
-                        color: colorPalette['button-text'] 
-                      }}
-                    >
-                      Explore Design
-                    </button>
-                    <button 
-                      className="px-8 py-3 rounded-lg font-semibold border-2 transition-all duration-200 hover:shadow-md"
-                      style={{ 
-                        borderColor: colorPalette['button-secondary'], 
-                        backgroundColor: colorPalette['button-secondary'],
-                        color: colorPalette['button-secondary-text']
-                      }}
-                    >
-                      Learn More
-                    </button>
-                  </div>
                 </div>
+              ) : (
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-6">
+                    {section.content.subtitle && (
+                      <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border"
+                           style={{ 
+                             borderColor: colorPalette.highlight + '40',
+                             backgroundColor: colorPalette.highlight + '10',
+                             color: colorPalette.highlight 
+                           }}>
+                        ✨ {section.content.subtitle}
+                      </div>
+                    )}
+                    
+                    <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+                      {section.content.title ? (
+                        <span className="text-text-primary">{section.content.title}</span>
+                      ) : (
+                        <>
+                          <span className="text-text-primary">Your Design</span>
+                          <br />
+                          <span style={{ color: colorPalette.brand }}>From Figma</span>
+                        </>
+                      )}
+                    </h1>
+                    
+                    <p className="text-lg text-text-secondary leading-relaxed max-w-md">
+                      {section.content.description || 
+                       `Content from your Figma section: "${section.originalName}". Enhanced with dynamic color generation.`}
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <button 
+                        className="px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg transform hover:scale-105"
+                        style={{ 
+                          backgroundColor: colorPalette['button-primary'], 
+                          color: colorPalette['button-text'] 
+                        }}
+                      >
+                        {section.content.cta || 'Explore Design'}
+                      </button>
+                      {section.content.buttons.length > 1 && (
+                        <button 
+                          className="px-8 py-3 rounded-lg font-semibold border-2 transition-all duration-200 hover:shadow-md"
+                          style={{ 
+                            borderColor: colorPalette['button-secondary'], 
+                            backgroundColor: colorPalette['button-secondary'],
+                            color: colorPalette['button-secondary-text']
+                          }}
+                        >
+                          {section.content.buttons[1].text}
+                        </button>
+                      )}
+                    </div>
+                  </div>
 
-                <div className="relative">
-                  <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                    <img 
-                      src={customTemplate.thumbnail || customTemplate.preview}
-                      alt={section.originalName}
-                      className="w-full h-auto object-cover"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop&crop=center";
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-brand/20 to-transparent"></div>
+                  <div className="relative">
+                    <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                      <img 
+                        src={customTemplate.thumbnail || customTemplate.preview}
+                        alt={section.content.title || section.originalName}
+                        className="w-full h-auto object-cover"
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          img.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop&crop=center";
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-tr from-brand/20 to-transparent"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </section>
         );
@@ -128,33 +169,56 @@ const CustomFigmaTemplate: React.FC<CustomFigmaTemplateProps> = ({
         return (
           <section key={section.id} className="py-16 bg-section-bg-2/50">
             <div className="container mx-auto px-6">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div className="space-y-6">
-                  <h2 className="text-3xl font-bold text-text-primary">{section.originalName}</h2>
-                  <p className="text-lg text-text-secondary leading-relaxed">
-                    This section represents your "{section.originalName}" from Figma. 
-                    The colors adapt dynamically while preserving your design structure.
+              {section.isEmpty ? (
+                <div className="text-center space-y-6">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border"
+                       style={{ 
+                         borderColor: colorPalette.highlight + '40',
+                         backgroundColor: colorPalette.highlight + '10',
+                         color: colorPalette.highlight 
+                       }}>
+                    ⚠️ Empty Section
+                  </div>
+                  <h2 className="text-2xl font-bold text-text-primary">
+                    "{section.originalName}" Section
+                  </h2>
+                  <p className="text-text-secondary">
+                    This section appears to be empty in your Figma file. Try adding text or visuals and re-importing.
                   </p>
-                  <div className="flex gap-4">
-                    <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center"
-                      style={{ backgroundColor: colorPalette.accent + '20' }}
-                    >
-                      <span className="text-xl">📖</span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-text-primary">Story-driven Design</h3>
-                      <p className="text-text-secondary text-sm">Your Figma narrative enhanced</p>
-                    </div>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-text-primary">
+                      {section.content.title || section.originalName}
+                    </h2>
+                    <p className="text-lg text-text-secondary leading-relaxed">
+                      {section.content.description || 
+                       `Content from your "${section.originalName}" section. Enhanced with dynamic color generation.`}
+                    </p>
+                    {section.content.subtitle && (
+                      <div className="flex gap-4">
+                        <div 
+                          className="w-12 h-12 rounded-xl flex items-center justify-center"
+                          style={{ backgroundColor: colorPalette.accent + '20' }}
+                        >
+                          <span className="text-xl">📖</span>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-text-primary">{section.content.subtitle}</h3>
+                          <p className="text-text-secondary text-sm">From your Figma design</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div 
+                    className="h-64 rounded-2xl flex items-center justify-center"
+                    style={{ backgroundColor: colorPalette.accent + '10' }}
+                  >
+                    <span className="text-6xl opacity-50">📝</span>
                   </div>
                 </div>
-                <div 
-                  className="h-64 rounded-2xl flex items-center justify-center"
-                  style={{ backgroundColor: colorPalette.accent + '10' }}
-                >
-                  <span className="text-6xl opacity-50">📝</span>
-                </div>
-              </div>
+              )}
             </div>
           </section>
         );
@@ -164,31 +228,70 @@ const CustomFigmaTemplate: React.FC<CustomFigmaTemplateProps> = ({
         return (
           <section key={section.id} className="py-16">
             <div className="container mx-auto px-6">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-text-primary mb-4">{section.originalName}</h2>
-                <p className="text-text-secondary max-w-2xl mx-auto">
-                  This section showcases your "{section.originalName}" from your Figma design
-                </p>
-              </div>
-              
-              <div className="grid md:grid-cols-3 gap-8">
-                {[
-                  { icon: "🎯", title: "Feature One", description: "First key feature from your design" },
-                  { icon: "⚡", title: "Feature Two", description: "Second important element" },
-                  { icon: "🌟", title: "Feature Three", description: "Third standout feature" }
-                ].map((feature, idx) => (
-                  <div key={idx} className="text-center space-y-4">
-                    <div 
-                      className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-2xl"
-                      style={{ backgroundColor: colorPalette.accent + '20' }}
-                    >
-                      {feature.icon}
-                    </div>
-                    <h3 className="text-xl font-semibold text-text-primary">{feature.title}</h3>
-                    <p className="text-text-secondary">{feature.description}</p>
+              {section.isEmpty ? (
+                <div className="text-center space-y-6">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border"
+                       style={{ 
+                         borderColor: colorPalette.highlight + '40',
+                         backgroundColor: colorPalette.highlight + '10',
+                         color: colorPalette.highlight 
+                       }}>
+                    ⚠️ Empty Section
                   </div>
-                ))}
-              </div>
+                  <h2 className="text-2xl font-bold text-text-primary">
+                    "{section.originalName}" Section
+                  </h2>
+                  <p className="text-text-secondary">
+                    This section appears to be empty in your Figma file. Try adding text or visuals and re-importing.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="text-center mb-12">
+                    <h2 className="text-3xl font-bold text-text-primary mb-4">
+                      {section.content.title || section.originalName}
+                    </h2>
+                    <p className="text-text-secondary max-w-2xl mx-auto">
+                      {section.content.description || 
+                       `Features and services from your "${section.originalName}" section`}
+                    </p>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-3 gap-8">
+                    {section.content.items.length > 0 ? (
+                      section.content.items.slice(0, 6).map((item: string, idx: number) => (
+                        <div key={idx} className="text-center space-y-4">
+                          <div 
+                            className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-2xl"
+                            style={{ backgroundColor: colorPalette.accent + '20' }}
+                          >
+                            {idx === 0 ? '🎯' : idx === 1 ? '⚡' : '🌟'}
+                          </div>
+                          <h3 className="text-xl font-semibold text-text-primary">{item}</h3>
+                          <p className="text-text-secondary">From your Figma design</p>
+                        </div>
+                      ))
+                    ) : (
+                      [
+                        { icon: "🎯", title: section.content.title || "Feature One", description: "From your Figma design" },
+                        { icon: "⚡", title: section.content.subtitle || "Feature Two", description: "Enhanced with dynamic colors" },
+                        { icon: "🌟", title: "Feature Three", description: "Intelligent color adaptation" }
+                      ].map((feature, idx) => (
+                        <div key={idx} className="text-center space-y-4">
+                          <div 
+                            className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-2xl"
+                            style={{ backgroundColor: colorPalette.accent + '20' }}
+                          >
+                            {feature.icon}
+                          </div>
+                          <h3 className="text-xl font-semibold text-text-primary">{feature.title}</h3>
+                          <p className="text-text-secondary">{feature.description}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </section>
         );
@@ -197,37 +300,86 @@ const CustomFigmaTemplate: React.FC<CustomFigmaTemplateProps> = ({
         return (
           <section key={section.id} className="py-16 bg-section-bg-3/30">
             <div className="container mx-auto px-6">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-text-primary mb-4">{section.originalName}</h2>
-                <p className="text-text-secondary">Social proof from your Figma design</p>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-8">
-                {[
-                  { name: "Alex Chen", role: "Design Lead", quote: "Amazing attention to detail in the original design" },
-                  { name: "Sarah Kim", role: "Product Manager", quote: "The color adaptation brings the design to life" }
-                ].map((testimonial, idx) => (
-                  <div 
-                    key={idx} 
-                    className="p-6 rounded-2xl border"
-                    style={{ backgroundColor: colorPalette['section-bg-1'] }}
-                  >
-                    <p className="text-text-secondary italic mb-4">"{testimonial.quote}"</p>
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                        style={{ backgroundColor: colorPalette.brand }}
-                      >
-                        {testimonial.name[0]}
-                      </div>
-                      <div>
-                        <div className="font-medium text-text-primary">{testimonial.name}</div>
-                        <div className="text-sm text-text-secondary">{testimonial.role}</div>
-                      </div>
-                    </div>
+              {section.isEmpty ? (
+                <div className="text-center space-y-6">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border"
+                       style={{ 
+                         borderColor: colorPalette.highlight + '40',
+                         backgroundColor: colorPalette.highlight + '10',
+                         color: colorPalette.highlight 
+                       }}>
+                    ⚠️ Empty Section
                   </div>
-                ))}
-              </div>
+                  <h2 className="text-2xl font-bold text-text-primary">
+                    "{section.originalName}" Section
+                  </h2>
+                  <p className="text-text-secondary">
+                    This section appears to be empty in your Figma file. Try adding text or visuals and re-importing.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="text-center mb-12">
+                    <h2 className="text-3xl font-bold text-text-primary mb-4">
+                      {section.content.title || section.originalName}
+                    </h2>
+                    <p className="text-text-secondary">
+                      {section.content.description || "Testimonials from your Figma design"}
+                    </p>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {section.content.items.length > 0 ? (
+                      section.content.items.slice(0, 4).map((item: string, idx: number) => (
+                        <div 
+                          key={idx} 
+                          className="p-6 rounded-2xl border"
+                          style={{ backgroundColor: colorPalette['section-bg-1'] }}
+                        >
+                          <p className="text-text-secondary italic mb-4">"{item}"</p>
+                          <div className="flex items-center gap-3">
+                            <div 
+                              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                              style={{ backgroundColor: colorPalette.brand }}
+                            >
+                              {item[0]?.toUpperCase() || 'T'}
+                            </div>
+                            <div>
+                              <div className="font-medium text-text-primary">From Figma Design</div>
+                              <div className="text-sm text-text-secondary">Testimonial {idx + 1}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      [
+                        { quote: section.content.description || "Amazing attention to detail in the design", name: "Design Review" },
+                        { quote: section.content.subtitle || "The color adaptation brings designs to life", name: "User Feedback" }
+                      ].map((testimonial, idx) => (
+                        <div 
+                          key={idx} 
+                          className="p-6 rounded-2xl border"
+                          style={{ backgroundColor: colorPalette['section-bg-1'] }}
+                        >
+                          <p className="text-text-secondary italic mb-4">"{testimonial.quote}"</p>
+                          <div className="flex items-center gap-3">
+                            <div 
+                              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                              style={{ backgroundColor: colorPalette.brand }}
+                            >
+                              {testimonial.name[0]}
+                            </div>
+                            <div>
+                              <div className="font-medium text-text-primary">{testimonial.name}</div>
+                              <div className="text-sm text-text-secondary">From your Figma content</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </section>
         );
@@ -237,33 +389,57 @@ const CustomFigmaTemplate: React.FC<CustomFigmaTemplateProps> = ({
         return (
           <section key={section.id} className="py-16 bg-gradient-to-r from-section-bg-2 to-section-bg-3">
             <div className="container mx-auto px-6 text-center">
-              <h2 className="text-3xl font-bold text-text-primary mb-4">
-                {section.originalName}
-              </h2>
-              <p className="text-lg text-text-secondary mb-8 max-w-2xl mx-auto">
-                This call-to-action section maintains your Figma design intent with dynamic colors
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button 
-                  className="px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 hover:shadow-lg"
-                  style={{ 
-                    backgroundColor: colorPalette['button-primary'], 
-                    color: colorPalette['button-text'] 
-                  }}
-                >
-                  Primary Action
-                </button>
-                <button 
-                  className="px-8 py-4 rounded-lg font-semibold text-lg border-2 transition-all duration-200"
-                  style={{ 
-                    borderColor: colorPalette['button-secondary'], 
-                    backgroundColor: colorPalette['button-secondary'],
-                    color: colorPalette['button-secondary-text']
-                  }}
-                >
-                  Secondary Action
-                </button>
-              </div>
+              {section.isEmpty ? (
+                <div className="space-y-6">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border"
+                       style={{ 
+                         borderColor: colorPalette.highlight + '40',
+                         backgroundColor: colorPalette.highlight + '10',
+                         color: colorPalette.highlight 
+                       }}>
+                    ⚠️ Empty Section
+                  </div>
+                  <h2 className="text-2xl font-bold text-text-primary">
+                    "{section.originalName}" Section
+                  </h2>
+                  <p className="text-text-secondary">
+                    This section appears to be empty in your Figma file. Try adding text or visuals and re-importing.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-3xl font-bold text-text-primary mb-4">
+                    {section.content.title || section.originalName}
+                  </h2>
+                  <p className="text-lg text-text-secondary mb-8 max-w-2xl mx-auto">
+                    {section.content.description || 
+                     `Call-to-action content from your "${section.originalName}" section with dynamic colors`}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button 
+                      className="px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 hover:shadow-lg"
+                      style={{ 
+                        backgroundColor: colorPalette['button-primary'], 
+                        color: colorPalette['button-text'] 
+                      }}
+                    >
+                      {section.content.cta || section.content.buttons[0]?.text || 'Primary Action'}
+                    </button>
+                    {(section.content.buttons.length > 1 || section.content.subtitle) && (
+                      <button 
+                        className="px-8 py-4 rounded-lg font-semibold text-lg border-2 transition-all duration-200"
+                        style={{ 
+                          borderColor: colorPalette['button-secondary'], 
+                          backgroundColor: colorPalette['button-secondary'],
+                          color: colorPalette['button-secondary-text']
+                        }}
+                      >
+                        {section.content.buttons[1]?.text || section.content.subtitle || 'Secondary Action'}
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </section>
         );
@@ -297,28 +473,64 @@ const CustomFigmaTemplate: React.FC<CustomFigmaTemplateProps> = ({
         return (
           <section key={section.id} className={`py-16 ${index % 2 === 0 ? 'bg-section-bg-2/30' : ''}`}>
             <div className="container mx-auto px-6">
-              <div className="text-center space-y-6">
-                <div 
-                  className="w-20 h-20 mx-auto rounded-2xl flex items-center justify-center text-3xl"
-                  style={{ backgroundColor: colorPalette.accent + '20' }}
-                >
-                  📦
+              {section.isEmpty ? (
+                <div className="text-center space-y-6">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border"
+                       style={{ 
+                         borderColor: colorPalette.highlight + '40',
+                         backgroundColor: colorPalette.highlight + '10',
+                         color: colorPalette.highlight 
+                       }}>
+                    ⚠️ Empty Section
+                  </div>
+                  <h2 className="text-2xl font-bold text-text-primary">
+                    "{section.originalName}" Section
+                  </h2>
+                  <p className="text-text-secondary">
+                    This section appears to be empty in your Figma file. Try adding text or visuals and re-importing.
+                  </p>
                 </div>
-                <h2 className="text-3xl font-bold text-text-primary">{section.originalName}</h2>
-                <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-                  This is a custom section from your Figma design. The frame contents have been preserved 
-                  and enhanced with your color palette.
-                </p>
-                <div 
-                  className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium"
-                  style={{ 
-                    backgroundColor: colorPalette.highlight + '10',
-                    color: colorPalette.highlight 
-                  }}
-                >
-                  Section Type: {section.type}
+              ) : (
+                <div className="text-center space-y-6">
+                  <div 
+                    className="w-20 h-20 mx-auto rounded-2xl flex items-center justify-center text-3xl"
+                    style={{ backgroundColor: colorPalette.accent + '20' }}
+                  >
+                    📦
+                  </div>
+                  <h2 className="text-3xl font-bold text-text-primary">
+                    {section.content.title || section.originalName}
+                  </h2>
+                  <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+                    {section.content.description || 
+                     `This is the "${section.originalName}" section from your Figma design. The content has been extracted and enhanced with your color palette.`}
+                  </p>
+                  
+                  {section.content.items.length > 0 && (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+                      {section.content.items.slice(0, 6).map((item: string, idx: number) => (
+                        <div 
+                          key={idx}
+                          className="p-4 rounded-lg border"
+                          style={{ backgroundColor: colorPalette['section-bg-1'] + '80' }}
+                        >
+                          <p className="text-text-primary font-medium">{item}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <div 
+                    className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium"
+                    style={{ 
+                      backgroundColor: colorPalette.highlight + '10',
+                      color: colorPalette.highlight 
+                    }}
+                  >
+                    Section Type: {section.type} • {section.rawContent.texts.length} text elements found
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </section>
         );
