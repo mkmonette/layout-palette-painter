@@ -3,78 +3,79 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
-  Palette, 
+  Download, 
   Save, 
+  Sparkles, 
+  Palette, 
   Clock, 
-  TrendingUp, 
-  Calendar, 
-  Eye, 
-  Download,
-  Share,
-  Target,
+  Calendar,
+  Infinity,
+  RefreshCw,
+  TrendingUp,
   Activity
 } from 'lucide-react';
 
-interface UsageStats {
-  totalPalettesGenerated: number;
-  totalPalettesSaved: number;
-  lastLogin: string;
+interface QuotaInfo {
+  used: number;
+  limit: number | null; // null means unlimited
+  resetDate?: string;
+  resetPeriod?: string; // "monthly", "weekly", etc.
+}
+
+interface UsageData {
+  pdfDownloads: QuotaInfo;
+  savedPalettes: QuotaInfo;
+  aiGenerations: QuotaInfo;
+  totalGenerated: number;
   lastActivity: string;
   accountCreated: string;
-  monthlyGenerated: number;
-  monthlyLimit: number;
-  popularColors: Array<{ color: string; count: number }>;
-  streakDays: number;
-  totalShares: number;
-  totalDownloads: number;
-  totalViews: number;
 }
 
 const Usage = () => {
-  const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
+  const [usageData, setUsageData] = useState<UsageData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Mock data - replace with actual data fetching
   useEffect(() => {
-    const fetchUsageStats = async () => {
+    const fetchUsageData = async () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const mockStats: UsageStats = {
-        totalPalettesGenerated: 247,
-        totalPalettesSaved: 89,
-        lastLogin: '2024-01-18T14:30:00Z',
+      const mockData: UsageData = {
+        pdfDownloads: {
+          used: 3,
+          limit: 10,
+          resetPeriod: "monthly",
+          resetDate: "2024-02-01T00:00:00Z"
+        },
+        savedPalettes: {
+          used: 8,
+          limit: 50,
+          resetPeriod: "monthly",
+          resetDate: "2024-02-01T00:00:00Z"
+        },
+        aiGenerations: {
+          used: 15,
+          limit: null, // Unlimited for this user
+          resetPeriod: "monthly"
+        },
+        totalGenerated: 247,
         lastActivity: '2024-01-18T16:45:00Z',
-        accountCreated: '2023-08-15T09:00:00Z',
-        monthlyGenerated: 34,
-        monthlyLimit: 100,
-        popularColors: [
-          { color: '#3b82f6', count: 23 },
-          { color: '#10b981', count: 19 },
-          { color: '#f59e0b', count: 16 },
-          { color: '#ef4444', count: 14 },
-          { color: '#8b5cf6', count: 12 }
-        ],
-        streakDays: 7,
-        totalShares: 45,
-        totalDownloads: 156,
-        totalViews: 1247
+        accountCreated: '2023-08-15T09:00:00Z'
       };
       
-      setUsageStats(mockStats);
+      setUsageData(mockData);
       setIsLoading(false);
     };
 
-    fetchUsageStats();
+    fetchUsageData();
   }, []);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric'
     });
   };
 
@@ -91,33 +92,156 @@ const Usage = () => {
     return `${diffInMonths}mo ago`;
   };
 
-  const calculateAccountAge = (dateString: string) => {
-    const now = new Date();
-    const created = new Date(dateString);
-    const diffInMonths = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24 * 30));
+  const getResetText = (quota: QuotaInfo) => {
+    if (!quota.resetPeriod) return null;
     
-    if (diffInMonths < 1) return 'Less than a month';
-    if (diffInMonths === 1) return '1 month';
-    if (diffInMonths < 12) return `${diffInMonths} months`;
-    const years = Math.floor(diffInMonths / 12);
-    const remainingMonths = diffInMonths % 12;
-    return remainingMonths > 0 ? `${years}y ${remainingMonths}mo` : `${years} year${years > 1 ? 's' : ''}`;
+    if (quota.resetDate) {
+      const resetDate = new Date(quota.resetDate);
+      const now = new Date();
+      const daysUntilReset = Math.ceil((resetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (daysUntilReset <= 0) {
+        return `Resets ${quota.resetPeriod}`;
+      } else if (daysUntilReset === 1) {
+        return "Resets tomorrow";
+      } else if (daysUntilReset <= 7) {
+        return `Resets in ${daysUntilReset} days`;
+      } else {
+        return `Renews on ${formatDate(quota.resetDate)}`;
+      }
+    }
+    
+    return `Resets ${quota.resetPeriod}`;
+  };
+
+  const getProgressValue = (quota: QuotaInfo) => {
+    if (quota.limit === null || quota.limit === 0) return 0;
+    return (quota.used / quota.limit) * 100;
+  };
+
+  const getProgressColor = (percentage: number) => {
+    if (percentage >= 90) return 'destructive';
+    if (percentage >= 70) return 'warning';
+    return 'default';
+  };
+
+  const QuotaCard = ({ 
+    title, 
+    quota, 
+    icon: Icon, 
+    description 
+  }: { 
+    title: string; 
+    quota: QuotaInfo; 
+    icon: React.ElementType; 
+    description: string;
+  }) => {
+    const isUnlimited = quota.limit === null;
+    const progressValue = getProgressValue(quota);
+    const resetText = getResetText(quota);
+
+    return (
+      <Card className="hover:shadow-lg transition-all duration-200 hover-scale">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                isUnlimited ? 'bg-green-500/10' : 
+                progressValue >= 90 ? 'bg-red-500/10' : 
+                progressValue >= 70 ? 'bg-yellow-500/10' : 
+                'bg-blue-500/10'
+              }`}>
+                <Icon className={`w-5 h-5 ${
+                  isUnlimited ? 'text-green-500' : 
+                  progressValue >= 90 ? 'text-red-500' : 
+                  progressValue >= 70 ? 'text-yellow-500' : 
+                  'text-blue-500'
+                }`} />
+              </div>
+              <div>
+                <CardTitle className="text-lg">{title}</CardTitle>
+                <CardDescription className="text-sm">{description}</CardDescription>
+              </div>
+            </div>
+            {isUnlimited && (
+              <Badge variant="secondary" className="bg-green-500/10 text-green-700 border-green-200">
+                <Infinity className="w-3 h-3 mr-1" />
+                Unlimited
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+        
+        <CardContent className="pt-0">
+          <div className="space-y-3">
+            {/* Usage Display */}
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold">
+                {quota.used}
+                {!isUnlimited && (
+                  <span className="text-lg font-normal text-muted-foreground ml-1">
+                    of {quota.limit}
+                  </span>
+                )}
+              </span>
+              {!isUnlimited && (
+                <span className="text-sm text-muted-foreground">
+                  {quota.limit! - quota.used} remaining
+                </span>
+              )}
+            </div>
+
+            {/* Progress Bar (only for limited quotas) */}
+            {!isUnlimited && (
+              <div className="space-y-2">
+                <Progress 
+                  value={progressValue} 
+                  className={`h-2 ${
+                    progressValue >= 90 ? '[&>div]:bg-red-500' : 
+                    progressValue >= 70 ? '[&>div]:bg-yellow-500' : 
+                    '[&>div]:bg-blue-500'
+                  }`}
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>{Math.round(progressValue)}% used</span>
+                  {resetText && (
+                    <span className="flex items-center gap-1">
+                      <RefreshCw className="w-3 h-3" />
+                      {resetText}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Reset info for unlimited quotas */}
+            {isUnlimited && resetText && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <RefreshCw className="w-3 h-3" />
+                {resetText}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
   };
 
   if (isLoading) {
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold mb-2">Usage Statistics</h2>
-          <p className="text-muted-foreground">Track your activity and usage patterns.</p>
+          <h2 className="text-2xl font-bold mb-2">Usage & Quotas</h2>
+          <p className="text-muted-foreground">Track your usage and available quotas.</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
             <Card key={i} className="animate-pulse">
               <CardContent className="p-6">
                 <div className="h-4 bg-muted rounded w-1/2 mb-2"></div>
-                <div className="h-8 bg-muted rounded w-3/4"></div>
+                <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
+                <div className="h-2 bg-muted rounded w-full"></div>
               </CardContent>
             </Card>
           ))}
@@ -126,229 +250,122 @@ const Usage = () => {
     );
   }
 
-  if (!usageStats) return null;
-
-  const monthlyProgress = (usageStats.monthlyGenerated / usageStats.monthlyLimit) * 100;
+  if (!usageData) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">Usage & Quotas</h2>
+          <p className="text-muted-foreground">Track your usage and available quotas.</p>
+        </div>
+        
+        <Card>
+          <CardContent className="p-12 text-center">
+            <Activity className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Usage data unavailable</h3>
+            <p className="text-muted-foreground">
+              We're unable to load your usage information at the moment. Please try again later.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-2">Usage Statistics</h2>
+        <h2 className="text-2xl font-bold mb-2">Usage & Quotas</h2>
         <p className="text-muted-foreground">
-          Track your activity and usage patterns across the platform.
+          Track your usage and available quotas across different features.
         </p>
       </div>
 
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Palettes Generated */}
-        <Card className="hover:shadow-lg transition-all duration-200 hover-scale">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Generated</p>
-                <p className="text-3xl font-bold">{usageStats.totalPalettesGenerated}</p>
-              </div>
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                <Palette className="w-6 h-6 text-primary" />
-              </div>
-            </div>
-            <div className="mt-4 flex items-center">
-              <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-500 font-medium">+12%</span>
-              <span className="text-sm text-muted-foreground ml-2">vs last month</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Total Palettes Saved */}
-        <Card className="hover:shadow-lg transition-all duration-200 hover-scale">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Saved</p>
-                <p className="text-3xl font-bold">{usageStats.totalPalettesSaved}</p>
-              </div>
-              <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
-                <Save className="w-6 h-6 text-green-500" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-sm text-muted-foreground">
-                {Math.round((usageStats.totalPalettesSaved / usageStats.totalPalettesGenerated) * 100)}% save rate
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Current Streak */}
-        <Card className="hover:shadow-lg transition-all duration-200 hover-scale">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Current Streak</p>
-                <p className="text-3xl font-bold">{usageStats.streakDays}</p>
-              </div>
-              <div className="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center">
-                <Target className="w-6 h-6 text-orange-500" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-sm text-muted-foreground">
-                {usageStats.streakDays > 1 ? 'days' : 'day'} in a row
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Total Views */}
-        <Card className="hover:shadow-lg transition-all duration-200 hover-scale">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Views</p>
-                <p className="text-3xl font-bold">{usageStats.totalViews.toLocaleString()}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                <Eye className="w-6 h-6 text-blue-500" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-sm text-muted-foreground">Palette views</span>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Quota Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <QuotaCard
+          title="PDF Downloads"
+          quota={usageData.pdfDownloads}
+          icon={Download}
+          description="Monthly download limit"
+        />
+        
+        <QuotaCard
+          title="Saved Palettes"
+          quota={usageData.savedPalettes}
+          icon={Save}
+          description="Total palette storage"
+        />
+        
+        <QuotaCard
+          title="AI Generations"
+          quota={usageData.aiGenerations}
+          icon={Sparkles}
+          description="AI-powered color creation"
+        />
       </div>
 
-      {/* Monthly Usage Progress */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="w-5 h-5" />
-            Monthly Usage
-          </CardTitle>
-          <CardDescription>
-            Track your monthly palette generation usage and limits.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">
-                Palettes Generated This Month
-              </span>
-              <Badge variant={monthlyProgress > 80 ? "destructive" : "secondary"}>
-                {usageStats.monthlyGenerated} / {usageStats.monthlyLimit}
-              </Badge>
-            </div>
-            <Progress value={monthlyProgress} className="h-2" />
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>{Math.round(monthlyProgress)}% used</span>
-              <span>{usageStats.monthlyLimit - usageStats.monthlyGenerated} remaining</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Activity Overview */}
+      {/* Additional Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activity */}
+        {/* Activity Summary */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              Recent Activity
+              <Activity className="w-5 h-5" />
+              Activity Summary
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between py-2">
-              <span className="text-sm font-medium">Last Login</span>
-              <div className="text-right">
-                <p className="text-sm">{getTimeAgo(usageStats.lastLogin)}</p>
-                <p className="text-xs text-muted-foreground">{formatDate(usageStats.lastLogin)}</p>
-              </div>
+              <span className="text-sm font-medium">Total Palettes Generated</span>
+              <span className="text-lg font-semibold">{usageData.totalGenerated}</span>
             </div>
             
             <div className="flex items-center justify-between py-2">
               <span className="text-sm font-medium">Last Activity</span>
               <div className="text-right">
-                <p className="text-sm">{getTimeAgo(usageStats.lastActivity)}</p>
-                <p className="text-xs text-muted-foreground">{formatDate(usageStats.lastActivity)}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm font-medium">Account Age</span>
-              <div className="text-right">
-                <p className="text-sm">{calculateAccountAge(usageStats.accountCreated)}</p>
+                <p className="text-sm font-medium">{getTimeAgo(usageData.lastActivity)}</p>
                 <p className="text-xs text-muted-foreground">
-                  Since {formatDate(usageStats.accountCreated)}
+                  {formatDate(usageData.lastActivity)}
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Engagement Stats */}
+        {/* Quick Actions */}
         <Card>
           <CardHeader>
-            <CardTitle>Engagement</CardTitle>
-            <CardDescription>How others interact with your palettes</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              Usage Insights
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Share className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Total Shares</span>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Avg. Downloads per Day</span>
+                <span className="text-sm font-medium">
+                  {Math.round(usageData.pdfDownloads.used / 30)} / day
+                </span>
               </div>
-              <span className="text-lg font-semibold">{usageStats.totalShares}</span>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Download className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Total Downloads</span>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Save Rate</span>
+                <span className="text-sm font-medium">
+                  {Math.round((usageData.savedPalettes.used / usageData.totalGenerated) * 100)}%
+                </span>
               </div>
-              <span className="text-lg font-semibold">{usageStats.totalDownloads}</span>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Average Views per Palette</span>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Account Age</span>
+                <span className="text-sm font-medium">
+                  {Math.floor((new Date().getTime() - new Date(usageData.accountCreated).getTime()) / (1000 * 60 * 60 * 24 * 30))} months
+                </span>
               </div>
-              <span className="text-lg font-semibold">
-                {Math.round(usageStats.totalViews / usageStats.totalPalettesSaved)}
-              </span>
             </div>
           </CardContent>
         </Card>
       </div>
-
-      {/* Popular Colors */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Most Used Colors</CardTitle>
-          <CardDescription>Your favorite colors based on usage frequency</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {usageStats.popularColors.map((colorData, index) => (
-              <div key={colorData.color} className="text-center space-y-2">
-                <div
-                  className="w-full h-16 rounded-lg shadow-sm border hover-scale transition-transform duration-200"
-                  style={{ backgroundColor: colorData.color }}
-                  title={colorData.color}
-                />
-                <div>
-                  <p className="font-mono text-xs">{colorData.color}</p>
-                  <p className="text-xs text-muted-foreground">{colorData.count} times</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
