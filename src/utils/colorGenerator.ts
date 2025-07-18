@@ -478,6 +478,7 @@ const generateTetradicScheme = (baseHue: number, mode: ColorMode): ColorPalette 
   const hue1 = baseHue;
   const hue2 = (baseHue + 90) % 360;
   const hue3 = (baseHue + 180) % 360;
+  const hue4 = (baseHue + 270) % 360; // Add the 4th hue for proper tetradic
   const [minL, maxL] = lightnessRanges[mode];
   
   if (mode === 'dark' || mode === 'midtone-dark') {
@@ -485,16 +486,16 @@ const generateTetradicScheme = (baseHue: number, mode: ColorMode): ColorPalette 
     return {
       brand: hslToHex(hue1, 70, baseLightness),
       accent: hslToHex(hue3, 75, Math.min(maxL, baseLightness + 5)),
-      "button-primary": hslToHex(hue1, 70, baseLightness),
+      "button-primary": hslToHex(hue2, 70, baseLightness), // Use hue2 for more variation
       "button-text": hslToHex(hue1, 25, Math.max(5, minL - 10)),
-      "button-secondary": hslToHex(hue1, 30, Math.min(maxL, baseLightness + 10)),
+      "button-secondary": hslToHex(hue4, 30, Math.min(maxL, baseLightness + 10)), // Use hue4
       "button-secondary-text": hslToHex(hue1, 70, baseLightness),
       "text-primary": '#F9FAFB',
       "text-secondary": hslToHex(hue1, 20, Math.min(85, maxL + 15)),
       "section-bg-1": hslToHex(hue1, 25, Math.max(5, minL - 5)),
       "section-bg-2": hslToHex(hue2, 25, Math.max(8, minL)),
       "section-bg-3": hslToHex(hue3, 25, Math.max(12, minL + 5)),
-      border: hslToHex(hue1, 20, Math.min(maxL, baseLightness + 5)),
+      border: hslToHex(hue4, 20, Math.min(maxL, baseLightness + 5)), // Use hue4
       highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 10)),
       "input-bg": hslToHex(hue1, 25, Math.max(8, minL)),
       "input-text": '#F9FAFB'
@@ -504,16 +505,16 @@ const generateTetradicScheme = (baseHue: number, mode: ColorMode): ColorPalette 
     return {
       brand: hslToHex(hue1, 75, baseLightness),
       accent: hslToHex(hue3, 80, Math.min(maxL, baseLightness + 5)),
-      "button-primary": hslToHex(hue1, 75, baseLightness),
+      "button-primary": hslToHex(hue2, 75, baseLightness), // Use hue2
       "button-text": hslToHex(hue1, 15, Math.max(15, minL - 25)),
-      "button-secondary": hslToHex(hue1, 25, Math.min(maxL, baseLightness + 15)),
+      "button-secondary": hslToHex(hue4, 25, Math.min(maxL, baseLightness + 15)), // Use hue4
       "button-secondary-text": hslToHex(hue1, 75, Math.max(minL - 5, baseLightness - 5)),
       "text-primary": hslToHex(hue1, 35, Math.max(15, minL - 20)),
       "text-secondary": hslToHex(hue1, 25, Math.max(25, minL - 10)),
       "section-bg-1": hslToHex(hue1, 20, Math.min(maxL, baseLightness + 20)),
       "section-bg-2": hslToHex(hue2, 25, Math.min(maxL, baseLightness + 15)),
       "section-bg-3": hslToHex(hue3, 25, Math.min(maxL, baseLightness + 10)),
-      border: hslToHex(hue1, 20, Math.max(minL + 5, baseLightness - 10)),
+      border: hslToHex(hue4, 20, Math.max(minL + 5, baseLightness - 10)), // Use hue4
       highlight: hslToHex(hue2, 65, Math.min(maxL, baseLightness + 5)),
       "input-bg": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 15)),
       "input-text": hslToHex(hue1, 35, Math.max(15, minL - 20))
@@ -524,16 +525,16 @@ const generateTetradicScheme = (baseHue: number, mode: ColorMode): ColorPalette 
     return {
       brand: hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       accent: hslToHex(hue3, 80, Math.max(35, baseLightness - 30)),
-      "button-primary": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
+      "button-primary": hslToHex(hue2, 75, Math.max(30, baseLightness - 35)), // Use hue2
       "button-text": '#FFFFFF',
-      "button-secondary": hslToHex(hue1, 15, Math.min(maxL, baseLightness + 5)),
+      "button-secondary": hslToHex(hue4, 15, Math.min(maxL, baseLightness + 5)), // Use hue4
       "button-secondary-text": hslToHex(hue1, 75, Math.max(30, baseLightness - 35)),
       "text-primary": hslToHex(hue1, 40, 15),
       "text-secondary": hslToHex(hue1, 30, 45),
       "section-bg-1": '#FFFFFF',
       "section-bg-2": hslToHex(hue2, 20, Math.min(maxL, baseLightness - 2)),
       "section-bg-3": hslToHex(hue3, 20, Math.min(maxL, baseLightness - 5)),
-      border: hslToHex(hue1, 15, Math.max(minL + 5, baseLightness - 15)),
+      border: hslToHex(hue4, 15, Math.max(minL + 5, baseLightness - 15)), // Use hue4
       highlight: hslToHex(hue2, 70, Math.max(35, baseLightness - 30)),
       "input-bg": '#FFFFFF',
       "input-text": hslToHex(hue1, 40, 15)
