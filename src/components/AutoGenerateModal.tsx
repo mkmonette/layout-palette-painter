@@ -216,7 +216,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-6xl h-[calc(100vh-40px)] my-5 p-0">
           <DialogHeader className="px-6 py-0">
-            <DialogTitle className="flex items-center justify-between my-0">
+            <DialogTitle className="flex items-center justify-between mb-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
                   <Sparkles className="h-5 w-5 text-white" />
