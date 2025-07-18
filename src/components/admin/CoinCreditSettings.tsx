@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Coins, 
   Settings, 
@@ -80,104 +81,158 @@ const CoinCreditSettings = () => {
         </div>
       </div>
 
-      {/* Coin Packages Table Overview */}
-      <CoinPackagesTable />
+      <Tabs defaultValue="packages" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="packages" className="flex items-center gap-2">
+            <Coins className="h-4 w-4" />
+            Coin Packages
+          </TabsTrigger>
+          <TabsTrigger value="ai-costs" className="flex items-center gap-2">
+            <Bot className="h-4 w-4" />
+            AI Costs
+          </TabsTrigger>
+          <TabsTrigger value="subscription-costs" className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4" />
+            Subscription Costs
+          </TabsTrigger>
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Overview
+          </TabsTrigger>
+        </TabsList>
 
-      {/* AI Feature Costs */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bot className="h-5 w-5" />
-            AI Feature Costs
-          </CardTitle>
-          <CardDescription>
-            Set how many coins users need to spend for AI-powered features
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="ai-generation" className="flex items-center gap-2">
-                <Palette className="h-4 w-4" />
-                AI Color Generation
-              </Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="ai-generation"
-                  type="number"
-                  min="1"
-                  value={tempSettings.aiColorGeneration}
-                  onChange={(e) => updateSetting('aiColorGeneration', parseInt(e.target.value) || 1)}
-                  className="w-24"
-                />
-                <span className="text-sm text-muted-foreground">coins per generation</span>
+        <TabsContent value="packages" className="mt-6">
+          <CoinPackagesTable />
+        </TabsContent>
+
+        <TabsContent value="ai-costs" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5" />
+                AI Feature Costs
+              </CardTitle>
+              <CardDescription>
+                Set how many coins users need to spend for AI-powered features
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="ai-generation" className="flex items-center gap-2">
+                    <Palette className="h-4 w-4" />
+                    AI Color Generation
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="ai-generation"
+                      type="number"
+                      min="1"
+                      value={tempSettings.aiColorGeneration}
+                      onChange={(e) => updateSetting('aiColorGeneration', parseInt(e.target.value) || 1)}
+                      className="w-24"
+                    />
+                    <span className="text-sm text-muted-foreground">coins per generation</span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Subscription Plan Costs */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
-            Subscription Plan Costs
-          </CardTitle>
-          <CardDescription>
-            Set how many coins users need to spend to purchase subscription plans
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="free-coins">Free Plan Cost</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="free-coins"
-                  type="number"
-                  min="0"
-                  value={tempSettings.freeSubscriptionCost}
-                  onChange={(e) => updateSetting('freeSubscriptionCost', parseInt(e.target.value) || 0)}
-                  className="w-24"
-                />
-                <Badge variant="secondary">coins/month</Badge>
+        <TabsContent value="subscription-costs" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" />
+                Subscription Plan Costs
+              </CardTitle>
+              <CardDescription>
+                Set how many coins users need to spend to purchase subscription plans
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="free-coins">Free Plan Cost</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="free-coins"
+                      type="number"
+                      min="0"
+                      value={tempSettings.freeSubscriptionCost}
+                      onChange={(e) => updateSetting('freeSubscriptionCost', parseInt(e.target.value) || 0)}
+                      className="w-24"
+                    />
+                    <Badge variant="secondary">coins/month</Badge>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="pro-coins">Pro Plan Cost</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="pro-coins"
+                      type="number"
+                      min="0"
+                      value={tempSettings.proSubscriptionCost}
+                      onChange={(e) => updateSetting('proSubscriptionCost', parseInt(e.target.value) || 0)}
+                      className="w-24"
+                    />
+                    <Badge variant="secondary">coins/month</Badge>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="enterprise-coins">Enterprise Plan Cost</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="enterprise-coins"
+                      type="number"
+                      min="0"
+                      value={tempSettings.enterpriseSubscriptionCost}
+                      onChange={(e) => updateSetting('enterpriseSubscriptionCost', parseInt(e.target.value) || 0)}
+                      className="w-24"
+                    />
+                    <Badge variant="secondary">coins/month</Badge>
+                  </div>
+                </div>
               </div>
-            </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            <div className="space-y-2">
-              <Label htmlFor="pro-coins">Pro Plan Cost</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="pro-coins"
-                  type="number"
-                  min="0"
-                  value={tempSettings.proSubscriptionCost}
-                  onChange={(e) => updateSetting('proSubscriptionCost', parseInt(e.target.value) || 0)}
-                  className="w-24"
-                />
-                <Badge variant="secondary">coins/month</Badge>
+        <TabsContent value="overview" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Current Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <div className="font-medium">AI Generation</div>
+                  <div className="text-muted-foreground">{settings.aiColorGeneration} coins</div>
+                </div>
+                <div>
+                  <div className="font-medium">Free Plan Cost</div>
+                  <div className="text-muted-foreground">{settings.freeSubscriptionCost} coins/month</div>
+                </div>
+                <div>
+                  <div className="font-medium">Pro Plan Cost</div>
+                  <div className="text-muted-foreground">{settings.proSubscriptionCost} coins/month</div>
+                </div>
+                <div>
+                  <div className="font-medium">Enterprise Plan Cost</div>
+                  <div className="text-muted-foreground">{settings.enterpriseSubscriptionCost} coins/month</div>
+                </div>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="enterprise-coins">Enterprise Plan Cost</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="enterprise-coins"
-                  type="number"
-                  min="0"
-                  value={tempSettings.enterpriseSubscriptionCost}
-                  onChange={(e) => updateSetting('enterpriseSubscriptionCost', parseInt(e.target.value) || 0)}
-                  className="w-24"
-                />
-                <Badge variant="secondary">coins/month</Badge>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Action Buttons */}
       <div className="flex items-center justify-between pt-4 border-t">
@@ -195,36 +250,6 @@ const CoinCreditSettings = () => {
           </Button>
         </div>
       </div>
-
-      {/* Current Settings Preview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Current Configuration
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <div className="font-medium">AI Generation</div>
-              <div className="text-muted-foreground">{settings.aiColorGeneration} coins</div>
-            </div>
-            <div>
-              <div className="font-medium">Free Plan Cost</div>
-              <div className="text-muted-foreground">{settings.freeSubscriptionCost} coins/month</div>
-            </div>
-            <div>
-              <div className="font-medium">Pro Plan Cost</div>
-              <div className="text-muted-foreground">{settings.proSubscriptionCost} coins/month</div>
-            </div>
-            <div>
-              <div className="font-medium">Enterprise Plan Cost</div>
-              <div className="text-muted-foreground">{settings.enterpriseSubscriptionCost} coins/month</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
