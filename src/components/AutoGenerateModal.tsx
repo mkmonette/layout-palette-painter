@@ -342,14 +342,24 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                         }`}
                       >
                         {/* Template Preview */}
-                        <div className="aspect-[16/10] overflow-hidden rounded-t-lg bg-white border-b">
-                          <div className="h-full transform scale-50 origin-top-left w-[200%]">
-                            <LivePreview
-                              template={palette.templateId as TemplateType}
-                              colorPalette={convertToColorPalette(palette)}
-                              showSaveButton={false}
-                              backgroundSettings={backgroundSettings}
-                            />
+                        <div className="aspect-[16/10] overflow-hidden rounded-t-lg bg-gray-100 border-b relative">
+                          {/* Desktop Frame */}
+                          <div className="absolute inset-2 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                            <div className="h-2 bg-gray-50 border-b border-gray-200 flex items-center px-2">
+                              <div className="flex gap-1">
+                                <div className="w-1 h-1 rounded-full bg-red-400"></div>
+                                <div className="w-1 h-1 rounded-full bg-yellow-400"></div>
+                                <div className="w-1 h-1 rounded-full bg-green-400"></div>
+                              </div>
+                            </div>
+                            <div className="h-[calc(100%-8px)] transform scale-[0.25] origin-top-left w-[400%]">
+                              <LivePreview
+                                template={palette.templateId as TemplateType}
+                                colorPalette={convertToColorPalette(palette)}
+                                showSaveButton={false}
+                                backgroundSettings={backgroundSettings}
+                              />
+                            </div>
                           </div>
                         </div>
                         
