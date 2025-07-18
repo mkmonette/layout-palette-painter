@@ -26,6 +26,21 @@ import {
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
+  const handleEditUser = (userId: number) => {
+    console.log('Edit user:', userId);
+    // TODO: Implement edit user functionality
+  };
+
+  const handleSuspendUser = (userId: number) => {
+    console.log('Suspend user:', userId);
+    // TODO: Implement suspend user functionality
+  };
+
+  const handleDeleteUser = (userId: number) => {
+    console.log('Delete user:', userId);
+    // TODO: Implement delete user functionality
+  };
+
   const users = [
     {
       id: 1,
@@ -130,7 +145,8 @@ const UserManagement = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>User</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Subscription</TableHead>
                 <TableHead>Coins</TableHead>
@@ -143,10 +159,10 @@ const UserManagement = () => {
               {users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
-                    <div>
-                      <div className="font-medium">{user.name}</div>
-                      <div className="text-sm text-muted-foreground">{user.email}</div>
-                    </div>
+                    <div className="font-medium">{user.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-sm text-muted-foreground">{user.email}</div>
                   </TableCell>
                   <TableCell>{getStatusBadge(user.status)}</TableCell>
                   <TableCell>{getSubscriptionBadge(user.subscription)}</TableCell>
@@ -159,13 +175,13 @@ const UserManagement = () => {
                   <TableCell className="text-sm text-muted-foreground">{user.lastActive}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => handleEditUser(user.id)}>
                         <Edit className="h-3 w-3" />
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => handleSuspendUser(user.id)}>
                         <Ban className="h-3 w-3" />
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="destructive" onClick={() => handleDeleteUser(user.id)}>
                         <Trash className="h-3 w-3" />
                       </Button>
                     </div>
