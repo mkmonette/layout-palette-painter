@@ -581,20 +581,13 @@ const Dashboard = () => {
             <div className="flex-1" />
             <Popover>
               <PopoverTrigger asChild>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-white hover:bg-white/20">
-                      {colorMode === 'light' ? <Sun className="h-4 w-4" /> : 
-                       colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4" /> :
-                       colorMode === 'midtone' ? <Sunset className="h-4 w-4" /> : 
-                       colorMode === 'midtone-dark' ? <Moon className="h-4 w-4" style={{ filter: 'brightness(0.7)' }} /> :
-                       <Moon className="h-4 w-4" />}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">
-                    Theme Mode: {colorMode} {!canAccessTemplateDarkMode && '(Pro)'}
-                  </TooltipContent>
-                </Tooltip>
+                <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-white hover:bg-white/20">
+                  {colorMode === 'light' ? <Sun className="h-4 w-4" /> : 
+                   colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4" /> :
+                   colorMode === 'midtone' ? <Sunset className="h-4 w-4" /> : 
+                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4" style={{ filter: 'brightness(0.7)' }} /> :
+                   <Moon className="h-4 w-4" />}
+                </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64 p-4" side="right" align="end">
                 <div className="space-y-3">
