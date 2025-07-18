@@ -549,12 +549,6 @@ const Dashboard = () => {
     label: 'Background',
     available: true
   }, {
-    id: 'ai-colors' as const,
-    icon: Bot,
-    label: `AI Colors (${maxAIGenerationsPerMonth - remainingAIGenerations}/${maxAIGenerationsPerMonth})`,
-    available: canUseAIGeneration,
-    isPro: true
-  }, {
     id: 'from-image' as const,
     icon: ImageIcon,
     label: 'From Image',
@@ -601,6 +595,40 @@ const Dashboard = () => {
                     AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
                   </span>
                 </div>}
+
+              {/* AI Colors Button */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-white border-[rgba(43,43,43,0.5)] hover:text-white hover:border-white/70 bg-amber-500 hover:bg-amber-400 text-slate-950 px-2 py-1 rounded-sm"
+                        disabled={!canUseAIGeneration}
+                      >
+                        <Bot className="h-4 w-4 mr-2" />
+                        AI Colors {!canUseAIGeneration && '🔒'}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64 p-4" side="bottom" align="end">
+                      <div className="space-y-3">
+                        <h3 className="font-medium text-xs">AI Colors</h3>
+                        <div className="space-y-2">
+                          <AIColorGenerator
+                            isDarkMode={colorMode === 'dark'} 
+                            onPaletteGenerated={handleAIPaletteGenerated}
+                            backgroundSettings={backgroundSettings}
+                          />
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Use AI to generate palettes based on mood or theme
+                </TooltipContent>
+              </Tooltip>
 
               {/* Plan Badge */}
               <Badge variant={isPro ? "default" : "secondary"} className="bg-white/20 text-white border-white/30">
@@ -671,21 +699,14 @@ const Dashboard = () => {
             return <Popover key={item.id}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="w-8 h-8 p-1 relative text-white hover:bg-white/20 rounded-sm">
-                      <item.icon className="h-5 w-5 text-white" />
-                      {item.isPro && <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
-                          <Sparkles className="h-2 w-2 text-blue-600" />
-                        </div>}
+                       <item.icon className="h-5 w-5 text-white" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-80 p-0" side="right" align="start">
-                    <div className="flex flex-col h-96">
-                      <div className="p-4 border-b flex items-center justify-between h-12 bg-green-200">
-                        <h2 className="text-base font-semibold text-foreground">
-                          {item.label}
-                        </h2>
-                      </div>
+                  <PopoverContent className="w-64 p-4" side="right" align="start">
+                    <div className="space-y-3">
+                      <h3 className="font-medium text-xs">{item.label}</h3>
                       
-                      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
+                      <div className="space-y-2">
                         {item.id === 'templates' && 
                           <TemplatesSection 
                             selectedTemplate={selectedTemplate} 
@@ -707,11 +728,6 @@ const Dashboard = () => {
                             <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
                           </div>}
 
-                        {item.id === 'ai-colors' && <AIColorGenerator
-                          isDarkMode={colorMode === 'dark'} 
-                          onPaletteGenerated={handleAIPaletteGenerated}
-                          backgroundSettings={backgroundSettings}
-                        />}
 
                         {item.id === 'from-image' && <ImageColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />}
 
@@ -748,30 +764,6 @@ const Dashboard = () => {
                              </p>
                             <TestPlanSwitcher />
                           </div>}
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="p-4 border-t space-y-2 bg-sky-200">
-                        {/* Main Generate Buttons - Responsive Layout */}
-                        <div className="grid grid-cols-1 gap-2">
-                          <Button onClick={handleGenerateColors} className="w-full text-[11px] sm:text-xs h-8 sm:h-9 whitespace-normal leading-tight px-2 py-1 rounded-sm" disabled={isGenerating}>
-                            {isGenerating ? <RefreshCw className="mr-1 h-3 w-3 sm:h-4 sm:w-4 animate-spin flex-shrink-0" /> : <Wand2 className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />}
-                            Generate Colors
-                          </Button>
-                          
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                               <Button onClick={canUseAIGeneration ? () => {} : () => setActiveModal('pro-upsell')} variant={canUseAIGeneration ? "default" : "outline"} disabled={isGenerating} className="w-full text-[11px] h-8 sm:h-9 whitespace-normal leading-tight bg-amber-500 hover:bg-amber-400 text-slate-950 font-medium sm:text-xs px-2 py-1 rounded-sm">
-                                 <Bot className="mr-1 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                                 AI Colors {!canUseAIGeneration && '🔒 PRO'}
-                               </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              Use AI to generate palettes based on mood or theme
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        
                       </div>
                     </div>
                   </PopoverContent>
