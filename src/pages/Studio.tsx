@@ -976,13 +976,13 @@ const Dashboard = () => {
             )}
 
             {/* Canvas */}
-            <div className="flex-1 overflow-auto p-1 sm:p-2 flex items-start justify-center bg-sky-200">
-              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full my-2 sm:my-5" style={{
+            <div className="flex-1 overflow-auto flex items-start justify-center bg-sky-200">
+              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
               width: isMobile ? 
-                'calc(100vw - 80px)' : // 64px sidebar + 16px padding
-                `min(800px, calc(100vw - ${isContextPanelCollapsed ? '80px' : '400px'}))`, // 64px sidebar + panel width
+                'calc(100vw - 16px)' : // Full width minus equal margins (8px each side)
+                `calc(100vw - ${isContextPanelCollapsed ? '104px' : '424px'})`, // Sidebar + panel width + equal margins (40px total)
               minHeight: '400px'
             }} data-preview-element>
                 <div className="w-full h-auto overflow-visible">
