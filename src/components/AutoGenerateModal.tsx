@@ -214,18 +214,18 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-6xl h-[calc(100vh-40px)] my-5 p-0">
-          <DialogHeader className="px-6 pb-0">
-            <DialogTitle className="flex items-center justify-between mb-0">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-                  <Sparkles className="h-5 w-5 text-white" />
+        <DialogContent className="max-w-6xl h-[calc(100vh-40px)] my-5 p-0 flex flex-col">
+          <DialogHeader className="px-8 py-6 border-b shrink-0">
+            <DialogTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl">
+                  <Sparkles className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     AutoGenerate Colors
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground mt-1">
                     Generate multiple color palettes for your selected template
                   </p>
                 </div>
@@ -233,7 +233,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
               <Button
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-14"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-12 px-6"
               >
                 {isGenerating ? (
                   <>
@@ -250,9 +250,9 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
             </DialogTitle>
           </DialogHeader>
 
-          <div className="flex-1 overflow-hidden">
-            <Tabs defaultValue="settings" className="h-full">
-              <div className="px-6 pt-0">
+          <div className="flex-1 overflow-hidden flex flex-col">
+            <Tabs defaultValue="settings" className="h-full flex flex-col">
+              <div className="px-8 py-4 border-b shrink-0">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="settings">Settings</TabsTrigger>
                   <TabsTrigger value="palettes" disabled={generatedPalettes.length === 0}>
@@ -261,8 +261,8 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                 </TabsList>
               </div>
 
-              <div className="flex-1 max-h-[calc(90vh-280px)] overflow-y-auto">
-                <TabsContent value="settings" className="p-6 pt-4">
+              <div className="flex-1 overflow-y-auto">
+                <TabsContent value="settings" className="px-8 py-6 m-0">
                   <div className="space-y-6">
                     {/* Controls */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -316,7 +316,7 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                   </div>
                 </TabsContent>
 
-                <TabsContent value="palettes" className="p-6 pt-4">
+                <TabsContent value="palettes" className="px-8 py-6 m-0">
                   <div className="flex justify-end mb-4">
                     <Button
                       variant="outline"
