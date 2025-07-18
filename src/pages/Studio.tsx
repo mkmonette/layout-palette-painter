@@ -910,7 +910,7 @@ const Dashboard = () => {
                  </Tooltip>
                  <Tooltip>
                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => setShowAutoGenerateModal(true)} disabled={!canAccessAutoGenerator} className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded-sm">
+                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded-sm">
                         <Sparkles className="h-4 w-4 mr-2" />
                         Auto Generate
                       </Button>
