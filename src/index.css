@@ -252,7 +252,8 @@ All colors MUST be HSL.
   }
   
   .floating-action {
-    @apply shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 bg-primary hover:bg-primary/90 animate-pulse-color;
+    @apply shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 bg-primary hover:bg-primary/90;
+    animation: pulse-color 3s ease-in-out infinite;
   }
 }
 
