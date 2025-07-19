@@ -378,14 +378,14 @@ const ColorMoodSelector: React.FC<ColorMoodSelectorProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[80vh]">
+      <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             🎨 Color Mood
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-4 flex flex-col h-full max-h-[calc(85vh-120px)]">
           {/* Search and Controls */}
           <div className="flex gap-2 items-center">
             <div className="relative flex-1">
@@ -425,7 +425,7 @@ const ColorMoodSelector: React.FC<ColorMoodSelectorProps> = ({
           </div>
 
           {/* Mood Grid */}
-          <ScrollArea className="h-[50vh]">
+          <ScrollArea className="flex-1 min-h-0">
             <div className="grid grid-cols-3 gap-2 p-2 pb-6">
               {filteredMoods.map(mood => (
                 <Card
