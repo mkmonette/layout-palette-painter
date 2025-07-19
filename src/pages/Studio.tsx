@@ -83,7 +83,8 @@ const Dashboard = () => {
   const [colorMode, setColorMode] = useState<ColorMode>('light');
   const [isDashboardDarkMode, setIsDashboardDarkMode] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState<ColorSchemeType>('random');
-  const [colorPalette, setColorPalette] = useState<ColorPalette>({
+  // Default palette for the template
+  const defaultPalette: ColorPalette = {
     brand: '#3B82F6',
     accent: '#F59E0B',
     "button-primary": '#3B82F6',
@@ -99,7 +100,9 @@ const Dashboard = () => {
     highlight: '#10B981',
     "input-bg": '#FFFFFF',
     "input-text": '#1F2937'
-  });
+  };
+
+  const [colorPalette, setColorPalette] = useState<ColorPalette>(defaultPalette);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -282,6 +285,15 @@ const Dashboard = () => {
       }
       console.log('All locked colors:', Array.from(newSet));
       return newSet;
+    });
+  };
+
+  const handleResetToDefault = () => {
+    setColorPalette({ ...defaultPalette });
+    setLockedColors(new Set());
+    toast({
+      title: "Palette Reset",
+      description: "Colors have been reset to template defaults."
     });
   };
 
@@ -782,10 +794,22 @@ const Dashboard = () => {
                                  </div>}
 
                                {item.id === 'current-palettes' && <div className="space-y-3">
-                                    <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
-                                      Edit and lock current palette colors
-                                    </p>
-                                     <ScrollArea className="h-80">
+                                     <div className="flex items-center justify-between">
+                                       <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
+                                         Edit and lock current palette colors
+                                       </p>
+                                       <Button
+                                         variant="outline"
+                                         size="sm"
+                                         onClick={handleResetToDefault}
+                                         className="h-7 px-2 text-xs"
+                                         title="Reset to template default colors"
+                                       >
+                                         <RotateCcw className="h-3 w-3 mr-1" />
+                                         Reset
+                                       </Button>
+                                     </div>
+                                      <ScrollArea className="h-80">
                                        <div className="space-y-2 pr-4">
                                          {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
                               const isLocked = lockedColors.has(key as keyof ColorPalette);
