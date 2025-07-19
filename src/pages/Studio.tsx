@@ -22,7 +22,7 @@ import LivePreview from '@/components/LivePreview';
 import FullscreenPreview from '@/components/FullscreenPreview';
 import { generateColorPalette, generateColorScheme, generateColorSchemeWithLocks, ColorPalette } from '@/utils/colorGenerator';
 import { TemplateType } from '@/types/template';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getCurrentUser, logoutUser } from '@/utils/auth';
 import { useToast } from '@/hooks/use-toast';
 import SavedPalettesModal from '@/components/SavedPalettesModal';
@@ -54,6 +54,7 @@ import AutoGenerateResultsModal from '@/components/AutoGenerateResultsModal';
 import { generatePaletteBatch } from '@/utils/autoGenerator';
 import { GeneratedPalette } from '@/types/generator';
 const Dashboard = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const {
@@ -175,6 +176,36 @@ const Dashboard = () => {
     };
     loadCoinBalance();
   }, []);
+
+  // Load palette from URL parameters if present
+  useEffect(() => {
+    const loadPaletteParam = searchParams.get('loadPalette');
+    if (loadPaletteParam) {
+      try {
+        const decodedData = JSON.parse(decodeURIComponent(loadPaletteParam));
+        if (decodedData.palette && decodedData.template) {
+          // Set the template first
+          setSelectedTemplate(decodedData.template);
+          
+          // Set the color palette
+          const { id, name, savedAt, template, ...paletteColors } = decodedData.palette;
+          setColorPalette(paletteColors);
+          
+          toast({
+            title: "Palette Loaded",
+            description: `Loaded "${name}" with ${template} template for editing.`
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load palette from URL:', error);
+        toast({
+          title: "Error Loading Palette",
+          description: "Failed to load the selected palette. Using default settings.",
+          variant: "destructive"
+        });
+      }
+    }
+  }, [searchParams, toast]);
   const handleLogout = () => {
     logoutUser();
     toast({
