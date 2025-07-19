@@ -332,7 +332,7 @@ const SubscriptionCheckout = () => {
         <CardContent className="p-6">
           <div className="text-center space-y-4">
             <h3 className="text-xl font-semibold">All Plans Include</h3>
-            <div className="grid md:grid-cols-3 gap-4 text-sm">
+            <div className="grid md:grid-cols-3 gap-4 text-sm justify-items-center">
               <div className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-green-500" />
                 <span>No long-term contracts</span>
