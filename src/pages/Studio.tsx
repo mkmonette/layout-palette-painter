@@ -703,7 +703,7 @@ const Dashboard = () => {
                                     <PopoverContent 
                                       className="w-[500px] p-4" 
                                       side="right" 
-                                      align="start"
+                                      align="center"
                                       sideOffset={0}
                                       avoidCollisions={false}
                                       onOpenAutoFocus={() => console.log('Default Templates popover opened')}
@@ -742,7 +742,7 @@ const Dashboard = () => {
                                     <PopoverContent 
                                       className="w-[500px] p-4" 
                                       side="right" 
-                                      align="start"
+                                      align="center"
                                       sideOffset={0}
                                       avoidCollisions={false}
                                       onOpenAutoFocus={() => console.log('Custom Templates popover opened')}
