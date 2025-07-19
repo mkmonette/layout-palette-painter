@@ -696,11 +696,11 @@ const Dashboard = () => {
                                      <span className="text-xs">🟦 Default Templates</span>
                                    </Button>
                                  </PopoverTrigger>
-                                  <PopoverContent 
-                                    className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                    side="right" 
-                                    align="start"
-                                  >
+                                   <PopoverContent 
+                                     className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4 animate-none data-[state=open]:animate-none data-[state=closed]:animate-none" 
+                                     side="right" 
+                                     align="start"
+                                   >
                                    <div className="space-y-3">
                                      <h3 className="font-medium text-xs">Default Templates</h3>
                                      <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
@@ -726,11 +726,11 @@ const Dashboard = () => {
                                      <span className="text-xs">🟩 Custom Templates</span>
                                    </Button>
                                  </PopoverTrigger>
-                                  <PopoverContent 
-                                    className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                    side="right" 
-                                    align="start"
-                                  >
+                                   <PopoverContent 
+                                     className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4 animate-none data-[state=open]:animate-none data-[state=closed]:animate-none" 
+                                     side="right" 
+                                     align="start"
+                                   >
                                    <div className="space-y-3">
                                      <h3 className="font-medium text-xs">Custom Templates</h3>
                                      <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
