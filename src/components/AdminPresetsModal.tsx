@@ -223,7 +223,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[85vh] flex flex-col overflow-hidden">
+      <DialogContent className="max-w-2xl h-[85vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Palette className="h-5 w-5 text-primary" />
@@ -325,7 +325,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
                 </div>
               ) : (
                 <ScrollArea className="h-[420px] pr-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     {filteredPresets.map((preset, index) => (
                       <div
                         key={index}
