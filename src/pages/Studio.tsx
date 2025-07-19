@@ -101,14 +101,18 @@ const Dashboard: React.FC = () => {
   const [showAutoGenerateResultsModal, setShowAutoGenerateResultsModal] = useState(false);
   const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
   const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
-    type: 'solid',
-    solidColor: '#f8fafc',
-    gradientFrom: '#f8fafc',
-    gradientTo: '#e2e8f0',
-    gradientDirection: 'to-b',
-    pattern: 'dots',
-    patternOpacity: 0.1,
-    patternColor: '#64748b'
+    enabled: true,
+    mode: 'gradient',
+    style: 'waves',
+    opacity: 0.6,
+    waveHeight: 40,
+    blobSize: 200,
+    meshIntensity: 0.5,
+    patternScale: 1.0,
+    gradientFillType: 'radial',
+    gradientStartColor: 'brand',
+    gradientEndColor: 'accent',
+    gradientDirection: 'bottom-right'
   });
 
   const { savePalette } = useSavedPalettes();
@@ -401,12 +405,13 @@ const Dashboard: React.FC = () => {
       onGenerateColors={handleGenerateColors}
       onSchemeChange={handleSchemeChange}
       onTemplateChange={setSelectedTemplate}
+      onTemplateToggle={() => {}}
+      onModeChange={handleColorModeChange}
       onColorChange={(palette, moodId) => {
         setColorPalette(palette);
         if (moodId) setSelectedMoodId(moodId);
       }}
       onDownloadPDF={handleDownloadPDF}
-      autoGenerateEnabled={isPro}
     />;
   }
 
@@ -928,6 +933,16 @@ const Dashboard: React.FC = () => {
           isOpen={showPDFExportModal}
           onClose={() => setShowPDFExportModal(false)}
           colorPalette={colorPalette}
+          onBasicExport={() => {
+            incrementDownload();
+            setShowPDFExportModal(false);
+          }}
+          onProfessionalExport={() => {
+            incrementDownload();
+            setShowPDFExportModal(false);
+          }}
+          isPro={isPro}
+          templateName={selectedTemplate}
         />
 
         <ProUpsellModal
