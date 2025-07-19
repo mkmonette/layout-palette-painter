@@ -768,25 +768,31 @@ const Dashboard = () => {
                            </div>
                          </div>
                        </div>
-                     ) : (
-                       // ScrollArea for other menu items
-                        <ScrollArea className={`${
-                           item.id === 'background-settings' ? 'h-80' : 
-                           item.id === 'schemes' ? 'h-fit max-h-[32rem]' :
-                           item.id === 'from-image' ? 'h-40' :
-                           item.id === 'current-palettes' ? 'h-80' :
-                           'h-96'
-                        }`}>
+                      ) : item.id === 'schemes' ? (
+                        // No ScrollArea for schemes - just natural height
+                        <div className="h-fit">
+                          <div className="p-4 pt-3">
+                            <div className="space-y-2">
+                              <div className="space-y-4">
+                                <p className="text-xs text-muted-foreground">
+                                  Choose a color scheme to generate harmonious palettes.
+                                </p>
+                                <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        // ScrollArea for other menu items
+                         <ScrollArea className={`${
+                            item.id === 'background-settings' ? 'h-80' : 
+                            item.id === 'from-image' ? 'h-40' :
+                            item.id === 'current-palettes' ? 'h-80' :
+                            'h-96'
+                         }`}>
                          <div className="p-4 pt-3">
                            <div className="space-y-2">
-                             {item.id === 'schemes' && <div className="space-y-4">
-                                  <p className="text-xs text-muted-foreground">
-                                    Choose a color scheme to generate harmonious palettes.
-                                  </p>
-                                 <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} />
-                               </div>}
-
-                             {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
+                              {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
 
                              {item.id === 'background-settings' && <div className="space-y-4">
                                  <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
