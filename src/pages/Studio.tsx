@@ -710,12 +710,12 @@ const Dashboard = () => {
                                       onOpenAutoFocus={() => console.log('Default Templates popover opened')}
                                     >
                                     <div className="space-y-3">
-                                      <h3 className="text-xl sm:text-lg font-semibold">Default Templates</h3>
+                                      <h3 className="text-2xl sm:text-xl font-bold">Default Templates</h3>
                                       <div className="max-h-96 overflow-y-auto">
                                         <div className="space-y-2">
-                                         <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
-                                           Choose from our built-in professional templates.
-                                         </p>
+                                        <p className="text-sm font-normal text-muted-foreground leading-relaxed">
+                                          Choose from our built-in professional templates.
+                                        </p>
                                           <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading templates...</div>}>
                                             <TemplateSelector 
                                               selectedTemplate={selectedTemplate} 
@@ -750,7 +750,7 @@ const Dashboard = () => {
                                       onOpenAutoFocus={() => console.log('Custom Templates popover opened')}
                                     >
                                     <div className="space-y-3">
-                                      <h3 className="text-xl sm:text-lg font-semibold">Custom Templates</h3>
+                                      <h3 className="text-2xl sm:text-xl font-bold">Custom Templates</h3>
                                       <div className="max-h-96 overflow-y-auto">
                                         <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading custom templates...</div>}>
                                           <TemplatesSection 
@@ -923,9 +923,9 @@ const Dashboard = () => {
                                )}
                              
                               {item.id === 'settings' && <div className="space-y-2">
-                                  <h3 className="text-xl sm:text-lg font-semibold">Settings</h3>
-                                  <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
-                                    Configure preferences and account.
+                                 <h3 className="text-2xl sm:text-xl font-bold">Settings</h3>
+                                 <p className="text-sm font-normal text-muted-foreground leading-relaxed">
+                                   Configure preferences and account.
                                    </p>
                                  
                                  <div className="space-y-2">
@@ -1178,7 +1178,7 @@ const Dashboard = () => {
                           </PopoverTrigger>
                           <PopoverContent className="w-64 p-4" side="left" align="start">
                             <div className="space-y-3">
-                              <h3 className="text-xl sm:text-lg font-semibold">AI Colors</h3>
+                              <h3 className="text-2xl sm:text-xl font-bold">AI Colors</h3>
                               <div className="space-y-2">
                                 <AIColorGenerator
                                   isDarkMode={colorMode === 'dark'} 
