@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +21,7 @@ interface SavedPalette extends ColorPalette {
 }
 
 const SavedPalettes = () => {
+  const navigate = useNavigate();
   const { savedPalettes } = useSavedPalettes();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('savedAt');
@@ -54,7 +56,7 @@ const SavedPalettes = () => {
       palette: palette,
       template: palette.template
     }));
-    window.location.href = `/studio?loadPalette=${paletteData}`;
+    navigate(`/studio?loadPalette=${paletteData}`);
   };
 
   const handleDeletePalette = (paletteId: string, paletteName: string) => {
