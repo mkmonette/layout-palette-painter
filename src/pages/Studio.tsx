@@ -772,7 +772,7 @@ const Dashboard = () => {
                        // ScrollArea for other menu items
                        <ScrollArea className={`${
                           item.id === 'background-settings' ? 'h-80' : 
-                          item.id === 'schemes' ? 'h-96' :
+                          item.id === 'schemes' ? 'h-[28rem]' :
                           item.id === 'from-image' ? 'h-40' :
                           item.id === 'current-palettes' ? 'h-80' :
                           'h-96'
