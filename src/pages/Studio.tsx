@@ -53,12 +53,11 @@ import AutoGenerateConfirmModal from '@/components/AutoGenerateConfirmModal';
 import AutoGenerateResultsModal from '@/components/AutoGenerateResultsModal';
 import { generatePaletteBatch } from '@/utils/autoGenerator';
 import { GeneratedPalette } from '@/types/generator';
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const currentUser = getCurrentUser();
   const {
     isPro,
@@ -78,6 +77,7 @@ const Dashboard = () => {
     MAX_PALETTES,
     savePalette
   } = useSavedPalettes();
+  
   const [savedPalettesCount, setSavedPalettesCount] = useState(0);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('modern-hero');
   const [colorMode, setColorMode] = useState<ColorMode>('light');
@@ -100,6 +100,7 @@ const Dashboard = () => {
     "input-bg": '#FFFFFF',
     "input-text": '#1F2937'
   });
+  
   const [isGenerating, setIsGenerating] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -155,6 +156,7 @@ const Dashboard = () => {
       }
     }
   }, []);
+
   const handleLogout = () => {
     logoutUser();
     toast({
@@ -163,10 +165,12 @@ const Dashboard = () => {
     });
     navigate('/login');
   };
-  const handleGenerateColors = async () => {
-    if (isGenerating) return; // Prevent multiple simultaneous generations
 
-    // Check if trying to generate restricted mode colors without pro access
+  // Handler functions and effects
+
+  const handleGenerateColors = async () => {
+    if (isGenerating) return;
+
     if ((colorMode === 'dark' || colorMode === 'midtone') && !canAccessTemplateDarkMode) {
       toast({
         title: "Pro Feature Required",
@@ -181,14 +185,12 @@ const Dashboard = () => {
         const newPalette = generateColorSchemeWithLocks(selectedScheme, colorMode, colorPalette, lockedColors, false, selectedMoodId);
         setColorPalette(newPalette);
       } catch (error) {
-        // If accessibility mode fails, fall back to regular generation
         if (error instanceof Error && error.message.includes('No accessible palette found')) {
           toast({
             title: "⚠️ No Contrast-Safe Palettes Found",
             description: "Generating regular palette instead. Try adjusting mood or scheme for accessible colors.",
             variant: "destructive"
           });
-          // Generate regular palette as fallback
           const fallbackPalette = generateColorSchemeWithLocks(selectedScheme, colorMode, colorPalette, lockedColors, false, selectedMoodId);
           setColorPalette(fallbackPalette);
         }
@@ -197,18 +199,18 @@ const Dashboard = () => {
       }
     }, 800);
   };
+
   const handleColorChange = (colorKey: keyof ColorPalette, color: string) => {
     const newPalette = {
       ...colorPalette,
       [colorKey]: color
     };
 
-    // Auto-fix text contrast if needed
     const fixedPalette = autoFixTextContrast(newPalette, colorKey);
     setColorPalette(fixedPalette);
   };
+
   const handleModeChange = (newMode: ColorMode) => {
-    // Check if trying to use restricted modes without pro access
     if ((newMode === 'dark' || newMode === 'midtone') && !canAccessTemplateDarkMode) {
       toast({
         title: "Pro Feature Required",
@@ -220,7 +222,6 @@ const Dashboard = () => {
     
     setColorMode(newMode);
     
-    // Update dashboard dark mode based on color mode
     if (newMode === 'dark') {
       document.documentElement.classList.add('dark');
       setIsDashboardDarkMode(true);
@@ -247,9 +248,9 @@ const Dashboard = () => {
       }
     }
   };
+
   const handleSchemeChange = (scheme: ColorSchemeType) => {
     setSelectedScheme(scheme);
-    // Automatically generate colors with the new scheme
     setTimeout(() => {
       try {
         const newPalette = generateColorSchemeWithLocks(scheme, colorMode, colorPalette, lockedColors, false, selectedMoodId);
@@ -259,26 +260,34 @@ const Dashboard = () => {
       }
     }, 100);
   };
+
   const handleFullscreenToggle = () => {
     setIsFullscreen(!isFullscreen);
   };
+
   const closeModal = () => setActiveModal(null);
+
   const handleZoomIn = () => {
     setZoomLevel(prev => Math.min(prev + 25, 200));
   };
+
   const handleZoomOut = () => {
     setZoomLevel(prev => Math.max(prev - 25, 50));
   };
+
   const handleZoomReset = () => {
     setZoomLevel(100);
   };
+
   const handleMoodSelect = (palette: ColorPalette, moodId?: string) => {
     setColorPalette(palette);
     setSelectedMoodId(moodId || null);
   };
+
   const handleSavedPaletteSelect = (palette: ColorPalette) => {
     setColorPalette(palette);
   };
+
   const handleToggleLock = (colorKey: keyof ColorPalette) => {
     setLockedColors(prev => {
       const newSet = new Set(prev);
@@ -294,19 +303,14 @@ const Dashboard = () => {
     });
   };
 
-  // Auto-fix text contrast when backgrounds change
   const autoFixTextContrast = (palette: ColorPalette, changedKey: keyof ColorPalette): ColorPalette => {
-    const result = {
-      ...palette
-    };
+    const result = { ...palette };
 
-    // Only auto-fix if a background color was changed
     const backgroundKeys = ['section-bg-1', 'button-primary', 'button-secondary', 'input-bg'];
     if (backgroundKeys.includes(changedKey)) {
       const issues = validatePaletteContrast(result);
       issues.forEach(issue => {
         if (!issue.isValid && issue.suggestedColor) {
-          // Check if the background that was changed affects this text color
           if (issue.backgroundRole === changedKey) {
             result[issue.textRole as keyof ColorPalette] = issue.suggestedColor;
             toast({
@@ -319,6 +323,7 @@ const Dashboard = () => {
     }
     return result;
   };
+
   const handleAIPaletteGenerated = (aiPalette: ColorPalette) => {
     setColorPalette(aiPalette);
   };
@@ -326,7 +331,6 @@ const Dashboard = () => {
   const handleAutoGenerate = React.useCallback(() => {
     console.log('handleAutoGenerate called', { autogenerateCount, selectedTemplate, selectedScheme, colorMode, selectedMoodId });
     try {
-      // Generate palettes using current studio settings
       const newPalettes = generatePaletteBatch(
         autogenerateCount,
         selectedTemplate,
@@ -353,6 +357,7 @@ const Dashboard = () => {
       });
     }
   }, [autogenerateCount, selectedTemplate, selectedScheme, colorMode, colorPalette, selectedMoodId, setGeneratedPalettes, setShowAutoGenerateConfirmModal, setShowAutoGenerateResultsModal, toast]);
+
   const handleSave = () => {
     const success = savePalette(colorPalette, selectedTemplate);
     if (success) {
@@ -369,6 +374,7 @@ const Dashboard = () => {
       });
     }
   };
+
   const handleDownloadPDF = () => {
     if (!canDownload()) {
       setUpsellModal({
@@ -458,38 +464,27 @@ const Dashboard = () => {
     try {
       const previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
       if (!previewElement) {
-        const livePreviewContainer = document.querySelector('.min-h-full.transition-transform') as HTMLElement;
-        if (!livePreviewContainer) {
-          toast({
-            title: "Error",
-            description: "Could not find template preview to capture.",
-            variant: "destructive"
-          });
-          return;
-        }
-        
-        await generateColorPalettePDF({
-          colorPalette,
-          templateName: selectedTemplate.replace('-', ' '),
-          previewElement: livePreviewContainer,
-          isDarkMode: colorMode === 'dark',
-          isPro: true,
-          projectName
+        toast({
+          title: "Error",
+          description: "Could not find template preview to capture.",
+          variant: "destructive"
         });
-      } else {
-        await generateColorPalettePDF({
-          colorPalette,
-          templateName: selectedTemplate.replace('-', ' '),
-          previewElement,
-          isDarkMode: colorMode === 'dark',
-          isPro: true,
-          projectName
-        });
+        return;
       }
+
+      await generateColorPalettePDF({
+        colorPalette,
+        templateName: selectedTemplate.replace('-', ' '),
+        previewElement,
+        includeColorCodes: true,
+        includeAccessibilityReport: true,
+        isDarkMode: colorMode === 'dark'
+      });
       
+      const remaining = getRemainingDownloads();
       toast({
         title: "Professional PDF Downloaded",
-        description: "Professional color palette PDF with accessibility analysis has been downloaded."
+        description: `Professional color palette PDF has been downloaded. ${remaining === Infinity ? 'Unlimited' : remaining} downloads remaining today.`
       });
     } catch (error) {
       console.error('Professional PDF generation failed:', error);
@@ -500,712 +495,635 @@ const Dashboard = () => {
       });
     }
   };
+
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isFullscreen) {
-        setIsFullscreen(false);
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isFullscreen]);
-  useEffect(() => {
-    const updateCount = () => {
+    const updateSavedCount = () => {
       setSavedPalettesCount(getSavedCount());
     };
-    updateCount();
-
-    // Listen for storage changes
-    const handleStorageChange = () => {
-      loadSavedPalettes();
-      updateCount();
+    
+    updateSavedCount();
+    window.addEventListener('storage', updateSavedCount);
+    
+    return () => {
+      window.removeEventListener('storage', updateSavedCount);
     };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [getSavedCount, loadSavedPalettes]);
-  if (isFullscreen) {
-    return <FullscreenPreview template={selectedTemplate} colorPalette={colorPalette} selectedScheme={selectedScheme} colorMode={colorMode} isDarkMode={colorMode === 'dark'} isGenerating={isGenerating} autogenerateCount={autogenerateCount} onClose={() => setIsFullscreen(false)} onGenerateColors={handleGenerateColors} onSchemeChange={handleSchemeChange} onTemplateChange={setSelectedTemplate} onColorChange={(palette, moodId) => {
-      setColorPalette(palette);
-      if (moodId !== undefined) setSelectedMoodId(moodId);
-    }} onTemplateToggle={(checked: boolean) => {}} onModeChange={handleModeChange} onDownloadPDF={handleDownloadPDF} onAutogenerateCountChange={setAutogenerateCount} />;
-  }
-  const sidebarItems = [{
-    id: 'templates' as const,
-    icon: Layout,
-    label: 'Templates',
-    available: true
-  }, {
-    id: 'schemes' as const,
-    icon: Shapes,
-    label: 'Schemes',
-    available: canAccessColorSchemes
-  }, {
-    id: 'moods' as const,
-    icon: Sparkles,
-    label: 'Moods',
-    available: canAccessColorMood
-  }, {
-    id: 'background-settings' as const,
-    icon: Palette,
-    label: 'Background',
-    available: true
-  }, {
-    id: 'from-image' as const,
-    icon: ImageIcon,
-    label: 'From Image',
-    available: true
-  }, {
-    id: 'admin-presets' as const,
-    icon: Shield,
-    label: 'Color Presets',
-    available: true
-  }, {
-    id: 'saved-palettes' as const,
-    icon: Save,
-    label: 'Saved Palettes',
-    available: true
-  }, {
-    id: 'settings' as const,
-    icon: Settings,
-    label: 'Settings',
-    available: true
-  }, {
-    id: 'test-plans' as const,
-    icon: Shield,
-    label: 'Test Plans',
-    available: process.env.NODE_ENV !== 'production'
-  }];
-  return <TooltipProvider>
-      <div className="h-screen flex flex-col bg-background">
-        {/* Top Navigation Bar */}
-        <div className="h-14 border-b border-white/20" style={{
-        backgroundColor: '#3b82f6'
-      }}>
-          <div className="flex items-center justify-between px-4 h-full bg-blue-700">
-            <div className="flex items-center space-x-4">
-               <h1 className="text-base font-medium text-white">
-                 Color Palette Generator
-               </h1>
-            </div>
+  }, [getSavedCount]);
 
-            <div className="flex items-center space-x-4">
-              {/* AI Quota Display */}
-              {canUseAIGeneration && <div className="flex items-center space-x-2">
-                  <Sparkles className="h-4 w-4 text-white" />
-                  <span className="text-sm text-white/80">
-                    AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
-                  </span>
-                </div>}
+  // Sidebar items with improved semantic colors
+  const sidebarItems = [
+    {
+      id: 'templates',
+      label: 'Templates',
+      icon: Layout,
+      available: true
+    },
+    {
+      id: 'schemes',
+      label: 'Color Schemes',
+      icon: Palette,
+      available: canAccessColorSchemes
+    },
+    {
+      id: 'moods',
+      label: 'Color Moods',
+      icon: Sparkles,
+      available: canAccessColorMood
+    },
+    {
+      id: 'from-image',
+      label: 'From Image/URL',
+      icon: ImageIcon,
+      available: true
+    },
+    {
+      id: 'background-settings',
+      label: 'Background',
+      icon: Shapes,
+      available: true
+    },
+    {
+      id: 'admin-presets',
+      label: 'Presets',
+      icon: Shield,
+      available: isPro
+    },
+    {
+      id: 'saved-palettes',
+      label: 'Saved Palettes',
+      icon: BookOpen,
+      available: true
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: Settings,
+      available: true
+    },
+    {
+      id: 'test-plans',
+      label: 'Test Plans',
+      icon: User,
+      available: currentUser?.id === 'admin'
+    }
+  ];
 
-              {/* AI Colors Button */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="text-white border-[rgba(43,43,43,0.5)] hover:text-white hover:border-white/70 bg-amber-500 hover:bg-amber-400 text-slate-950 px-2 py-1 rounded-sm"
-                        disabled={!canUseAIGeneration}
-                      >
-                        <Bot className="h-4 w-4 mr-2" />
-                        AI Colors {!canUseAIGeneration && '🔒'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 p-4" side="bottom" align="end">
-                      <div className="space-y-3">
-                        <h3 className="font-medium text-xs">AI Colors</h3>
-                        <div className="space-y-2">
-                          <AIColorGenerator
-                            isDarkMode={colorMode === 'dark'} 
-                            onPaletteGenerated={handleAIPaletteGenerated}
-                            backgroundSettings={backgroundSettings}
-                          />
-                        </div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </TooltipTrigger>
-                <TooltipContent>
-                  Use AI to generate palettes based on mood or theme
-                </TooltipContent>
-              </Tooltip>
-
-              {/* Plan Badge */}
-              <Badge variant={isPro ? "default" : "secondary"} className="bg-white/20 text-white border-white/30">
-                {isPro ? "Pro" : "Free"}
+  return (
+    <div className="min-h-screen bg-background">
+      {isFullscreen ? (
+        <FullscreenPreview
+          selectedTemplate={selectedTemplate}
+          colorPalette={colorPalette}
+          onClose={handleFullscreenToggle}
+          onColorChange={setColorPalette}
+          onTemplateChange={setSelectedTemplate}
+          onModeChange={handleModeChange}
+          colorMode={colorMode}
+          backgroundSettings={backgroundSettings}
+          onBackgroundSettingsChange={setBackgroundSettings}
+          onSave={handleSave}
+          onDownload={handleDownloadPDF}
+          onTemplateSelect={setSelectedTemplate}
+          onColorSchemeSelect={handleSchemeChange}
+          onMoodSelect={handleMoodSelect}
+          lockedColors={lockedColors}
+          onToggleLock={handleToggleLock}
+          selectedScheme={selectedScheme}
+          onGenerateColors={handleGenerateColors}
+          isGenerating={isGenerating}
+          selectedMoodId={selectedMoodId}
+        />
+      ) : (
+        <div className="h-screen flex flex-col">
+          <header className="bg-background/95 backdrop-blur-sm border-b border-border px-4 py-2 flex items-center justify-between relative z-50">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-foreground">Studio</h1>
+              <Badge 
+                variant="secondary" 
+                className="bg-secondary text-secondary-foreground border-0 hover:bg-secondary/80"
+              >
+                Beta
               </Badge>
-
-              {/* Action Buttons */}
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" className="text-white border-[rgba(43,43,43,0.5)] hover:text-white hover:border-white/70 bg-gray-950 hover:bg-gray-800 px-2 py-1 rounded-sm">
-                  <Share className="h-4 w-4 mr-2" />
-                  Share
-                </Button>
-              </div>
-
-              {/* Dashboard Dark Mode Toggle */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                   <Button variant="ghost" size="sm" className="w-8 h-8 p-1 text-white hover:bg-white/20 hover:text-white rounded-sm" onClick={() => {
-                  // Dashboard dark mode toggle - only affects dashboard UI
-                  const newDashboardDarkMode = !isDashboardDarkMode;
-                  setIsDashboardDarkMode(newDashboardDarkMode);
-                  if (newDashboardDarkMode) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                  toast({
-                    title: "Dashboard Dark Mode",
-                    description: "Dashboard appearance changed. Use sidebar toggle to generate dark template colors.",
-                    variant: "default"
-                  });
-                }}>
-                    {isDashboardDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  Dashboard {isDashboardDarkMode ? 'Light Mode' : 'Dark Mode'}
-                </TooltipContent>
-              </Tooltip>
-
-              {/* Hamburger Menu */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
-                    <Menu className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
-          </div>
-        </div>
 
-        <div className="flex flex-1 overflow-hidden">
-          {/* Left Sidebar */}
-          <div style={{
-          backgroundColor: '#5b99fe'
-        }} className="w-48 border-r flex flex-col py-4 space-y-2 bg-sky-600">
-            {sidebarItems.map(item => {
-            if (!item.available) return null;
-            return <Popover key={item.id}>
-                  <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 relative text-white hover:bg-white/20 rounded-sm">
-                      <item.icon className="h-4 w-4 text-white mr-3 flex-shrink-0" />
-                      <span className="text-sm text-white truncate">{item.label}</span>
+            <div className="flex items-center gap-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                      variant="ghost" 
+                      size="icon"
+                      className="text-foreground hover:bg-accent lg:hidden"
+                    >
+                      {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
                     </Button>
-                  </PopoverTrigger>
-                   <PopoverContent 
-                     className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' || item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} 
-                     side="right" 
-                     align="start"
-                   >
-                    <div className="p-4 border-b border-border">
-                      <h3 className="font-medium text-xs">{item.label}</h3>
-                    </div>
-                     {item.id === 'templates' ? (
-                       // No ScrollArea for templates - just natural height
-                       <div className="h-fit">
-                         <div className="p-4 pt-3">
-                           <div className="space-y-2">
-                             <div className="space-y-2">
-                               <p className="text-xs text-muted-foreground">
-                                 Choose from built-in templates or your custom imports.
-                               </p>
-                               
-                               {/* Default Templates Popover */}
-                               <Popover>
-                                 <PopoverTrigger asChild>
-                                   <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                     <span className="text-xs">🟦 Default Templates</span>
-                                   </Button>
-                                 </PopoverTrigger>
-                                  <PopoverContent 
-                                    className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                    side="right" 
-                                    align="start"
-                                  >
-                                   <div className="space-y-3">
-                                     <h3 className="font-medium text-xs">Default Templates</h3>
-                                     <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
-                                       <div className="space-y-2">
-                                         <p className="text-xs text-muted-foreground">
-                                           Choose from our built-in professional templates.
-                                         </p>
-                                         <TemplateSelector 
-                                           selectedTemplate={selectedTemplate} 
-                                           onTemplateChange={setSelectedTemplate} 
-                                           colorPalette={colorPalette} 
-                                         />
-                                       </div>
-                                     </div>
-                                   </div>
-                                 </PopoverContent>
-                               </Popover>
-                               
-                               {/* Custom Templates Popover */}
-                               <Popover>
-                                 <PopoverTrigger asChild>
-                                   <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                     <span className="text-xs">🟩 Custom Templates</span>
-                                   </Button>
-                                 </PopoverTrigger>
-                                  <PopoverContent 
-                                    className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                    side="right" 
-                                    align="start"
-                                  >
-                                   <div className="space-y-3">
-                                     <h3 className="font-medium text-xs">Custom Templates</h3>
-                                     <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
-                                       <TemplatesSection 
-                                         selectedTemplate={selectedTemplate} 
-                                         onTemplateChange={setSelectedTemplate} 
-                                         colorPalette={colorPalette} 
-                                         showOnlyCustom={true}
-                                       />
-                                     </div>
-                                   </div>
-                                 </PopoverContent>
-                               </Popover>
-                             </div>
-                           </div>
-                         </div>
-                       </div>
-                     ) : (
-                       // ScrollArea for other menu items
-                       <ScrollArea className={`${
-                         item.id === 'background-settings' ? 'h-80' : 
-                         item.id === 'schemes' ? 'h-96' :
-                         item.id === 'from-image' ? 'h-40' : 
-                         'h-96'
-                       }`}>
-                         <div className="p-4 pt-3">
-                           <div className="space-y-2">
-                             {item.id === 'schemes' && <div className="space-y-4">
-                                  <p className="text-xs text-muted-foreground">
-                                    Choose a color scheme to generate harmonious palettes.
-                                  </p>
-                                 <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
-                               </div>}
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Toggle menu</p>
+                  </TooltipContent>
+                </Tooltip>
 
-                             {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
-
-                             {item.id === 'background-settings' && <div className="space-y-4">
-                                 <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
-                               </div>}
-
-                             {item.id === 'from-image' && 
-                               <div className="space-y-2">
-                                 <p className="text-xs text-muted-foreground">
-                                   Extract color palettes from images or websites.
-                                 </p>
-                                 
-                                 {/* Upload Image Popover */}
-                                 <Popover>
-                                   <PopoverTrigger asChild>
-                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                       <span className="text-xs">📷 Upload Image</span>
-                                     </Button>
-                                   </PopoverTrigger>
-                                    <PopoverContent 
-                                      className="w-64 p-4" 
-                                      side="right" 
-                                      align="start"
-                                    >
-                                     <div className="space-y-3">
-                                       <h3 className="font-medium text-xs">Upload Image</h3>
-                                       <ImageUploadGenerator 
-                                         onPaletteGenerated={setColorPalette} 
-                                         isGenerating={isGenerating} 
-                                         setIsGenerating={setIsGenerating} 
-                                       />
-                                     </div>
-                                   </PopoverContent>
-                                 </Popover>
-                                 
-                                 {/* Website URL Popover */}
-                                 <Popover>
-                                   <PopoverTrigger asChild>
-                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                       <span className="text-xs">🌐 Website URL</span>
-                                     </Button>
-                                   </PopoverTrigger>
-                                    <PopoverContent 
-                                      className="w-64 p-4" 
-                                      side="right" 
-                                      align="start"
-                                    >
-                                     <div className="space-y-3">
-                                       <h3 className="font-medium text-xs">Website URL</h3>
-                                       <WebsiteColorGenerator 
-                                         onPaletteGenerated={setColorPalette} 
-                                         isGenerating={isGenerating} 
-                                         setIsGenerating={setIsGenerating} 
-                                       />
-                                     </div>
-                                   </PopoverContent>
-                                 </Popover>
-                               </div>
-                             }
-
-                              {item.id === 'admin-presets' && <div className="space-y-2">
-                                   <p className="text-xs text-muted-foreground">
-                                     Browse professionally curated color palettes.
-                                   </p>
-                                   <Button onClick={() => setActiveModal('admin-presets')} className="w-full h-6 px-2 text-xs rounded-sm">
-                                     Browse Presets
-                                   </Button>
-                                </div>}
-                               
-                             {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
-                             
-                              {item.id === 'settings' && <div className="space-y-2">
-                                   <h3 className="text-xs font-medium">Settings</h3>
-                                   <p className="text-xs text-muted-foreground">
-                                     Configure preferences and account.
-                                   </p>
-                                 
-                                 <div className="space-y-2">
-                                   <OpenAIKeyInput onKeySet={() => {}} />
-                                 </div>
-                                   <Button variant="outline" className="w-full h-6 px-2 text-xs rounded-sm" onClick={() => navigate('/history')}>
-                                     View History
-                                   </Button>
-                                </div>}
-
-                             {item.id === 'test-plans' && <div className="space-y-4">
-                                  <h3 className="text-sm font-medium">Test Plan Switcher</h3>
-                                  <p className="text-xs text-muted-foreground">
-                                    Simulate different subscription plans for testing UI features. 
-                                    This override is temporary and only affects the current session.
-                                  </p>
-                                 <TestPlanSwitcher />
-                               </div>}
-                           </div>
-                         </div>
-                       </ScrollArea>
-                     )}
-                  </PopoverContent>
-                </Popover>;
-          })}
-
-            {/* Template Theme Mode Selector */}
-            <div className="px-3 mt-auto">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 text-white hover:bg-white/20 rounded-sm">
-                  {colorMode === 'light' ? <Sun className="h-4 w-4 mr-2" /> : 
-                   colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 mr-2" /> :
-                   colorMode === 'midtone' ? <Sunset className="h-4 w-4 mr-2" /> : 
-                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 mr-2" style={{ filter: 'brightness(0.7)' }} /> :
-                   <Moon className="h-4 w-4 mr-2" />}
-                  <span className="text-sm text-white">Theme Mode</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 p-4" side="right" align="end">
-                <div className="space-y-3">
-                  <h3 className="font-medium text-xs">Choose Theme Mode</h3>
-                  <div className="grid gap-2">
-                    {[
-                      { 
-                        mode: 'light' as ColorMode, 
-                        label: 'Light', 
-                        description: 'Lightness 85-100', 
-                        icon: Sun,
-                        available: true 
-                      },
-                      { 
-                        mode: 'light-midtone' as ColorMode, 
-                        label: 'Light Midtone', 
-                        description: 'Lightness 70-84', 
-                        icon: CloudSun,
-                        available: canAccessTemplateDarkMode 
-                      },
-                      { 
-                        mode: 'midtone' as ColorMode, 
-                        label: 'Midtone', 
-                        description: 'Lightness 45-65', 
-                        icon: Sunset,
-                        available: canAccessTemplateDarkMode 
-                      },
-                      { 
-                        mode: 'midtone-dark' as ColorMode, 
-                        label: 'Midtone Dark', 
-                        description: 'Lightness 30-44', 
-                        icon: Moon,
-                        available: canAccessTemplateDarkMode 
-                      },
-                      { 
-                        mode: 'dark' as ColorMode, 
-                        label: 'Dark', 
-                        description: 'Lightness 10-25', 
-                        icon: Moon,
-                        available: canAccessTemplateDarkMode 
-                      }
-                    ].map(({ mode, label, description, icon: Icon, available }) => (
-                       <Button
-                         key={mode}
-                         variant={colorMode === mode ? "default" : "outline"}
-                         size="sm"
-                         className="justify-start h-auto px-2 py-1 relative rounded-sm"
-                         disabled={!available}
-                         onClick={() => {
-                          if (!available) {
-                            setUpsellModal({
-                              isOpen: true,
-                              templateName: 'Template dark mode'
-                            });
-                            return;
-                          }
-                          handleModeChange(mode);
-                        }}
-                      >
-                        <Icon className="h-4 w-4 mr-2 flex-shrink-0" style={mode === 'midtone-dark' ? { filter: 'brightness(0.7)' } : {}} />
-                        <div className="text-left">
-                           <div className="font-medium text-xs">{label}</div>
-                           <div className="text-[11px] text-muted-foreground">{description}</div>
-                        </div>
-                        {!available && (
-                           <Badge variant="secondary" className="ml-auto text-[11px] px-1 py-0">
-                             Pro
-                           </Badge>
-                        )}
-                      </Button>
-                    ))}
-                  </div>
-                   <div className="text-[11px] text-muted-foreground pt-2 border-t">
-                     Theme modes control the lightness range of generated colors
-                   </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent">
+                      <Menu className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TooltipProvider>
             </div>
-          </div>
+          </header>
 
+          <div className="flex flex-1 overflow-hidden">
+            {/* Left Sidebar */}
+            <div className={`w-48 bg-background/95 backdrop-blur-sm border-r border-border p-3 overflow-y-auto transition-transform lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:block absolute lg:relative top-0 left-0 h-full z-40`}>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-foreground mb-2">Templates</h3>
+                  <div className="space-y-2">
+                    <Button
+                      onClick={() => setActiveModal('template')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <Layout className="mr-2 h-3 w-3" />
+                      {selectedTemplate.replace('-', ' ')}
+                    </Button>
+                    
+                    <div>
+                      <Tabs value="current" className="w-full">
+                        <TabsList className="grid w-full grid-cols-3 h-7">
+                          <TabsTrigger value="pro" className="text-xs">Pro</TabsTrigger>
+                          <TabsTrigger value="current" className="text-xs">Basic</TabsTrigger>
+                          <TabsTrigger value="other" className="text-xs">Other</TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                    </div>
+                  </div>
+                </div>
 
-          {/* Main Content Area with Right Sidebar */}
-          <div className="flex-1 flex bg-muted/30">
-            {/* Canvas */}
-            <div className="flex-1 overflow-auto flex items-start justify-center bg-sky-200">
-              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
-              transform: `scale(${zoomLevel / 100})`,
-              transformOrigin: 'top center',
-              width: isMobile ? 
-                'calc(100vw - 16px)' : // Full width minus right sidebar and margins
-                'calc(100vw - 400px)', // Left sidebar (192px) + right sidebar (192px) + margins (16px)
-              minHeight: '400px'
-            }} data-preview-element>
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-foreground mb-2">Color Tools</h3>
+                  <div className="space-y-1">
+                    <ColorThemeDropdown 
+                      onSchemeClick={() => setActiveModal('color-scheme')}
+                      onMoodClick={() => setActiveModal('color-mood')}
+                    />
+                    
+                    <Button
+                      onClick={() => setActiveModal('color-mood')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <Palette className="mr-2 h-3 w-3" />
+                      Mood
+                    </Button>
+                  </div>
+                </div>
 
-            {/* Mobile dropdown menu */}
-            {isMobileMenuOpen && (
-              <div className="sm:hidden absolute top-0 left-0 right-0 bg-background border-b border-border p-4 space-y-2 z-50">
-                <div className="grid grid-cols-2 gap-2">
-                   <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-[11px] px-2 py-1 rounded-sm">
-                     {isGenerating ? <RefreshCw className="h-3 w-3 mr-2 animate-spin" /> : <Wand2 className="h-3 w-3 mr-2" />}
-                     Generate
-                   </Button>
-                   <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-[11px] px-2 py-1 rounded-sm">
-                     <Download className="h-3 w-3 mr-2" />
-                     Export PDF
-                   </Button>
-                   <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-[11px] px-2 py-1 rounded-sm">
-                     <Save className="h-3 w-3 mr-2" />
-                     Save
-                   </Button>
-                   <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="bg-amber-500 hover:bg-amber-400 text-[11px] px-2 py-1 rounded-sm">
-                     <Maximize className="h-3 w-3 mr-2" />
-                     Fullscreen
-                   </Button>
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-foreground mb-2">Generation</h3>
+                  <div className="space-y-1">
+                    <Button
+                      onClick={handleGenerateColors}
+                      disabled={isGenerating}
+                      variant="default"
+                      size="sm"
+                      className="w-full h-8 text-xs"
+                    >
+                      <RefreshCw className={`mr-2 h-3 w-3 ${isGenerating ? 'animate-spin' : ''}`} />
+                      Generate
+                    </Button>
+
+                    <Button
+                      onClick={() => setActiveModal('ai-generator')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <Bot className="mr-2 h-3 w-3" />
+                      AI Color
+                    </Button>
+
+                    <Button
+                      onClick={() => setActiveModal('image-generator')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <ImageIcon className="mr-2 h-3 w-3" />
+                      Image
+                    </Button>
+
+                    <Button
+                      onClick={() => setActiveModal('website-generator')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <CloudSun className="mr-2 h-3 w-3" />
+                      Website
+                    </Button>
+
+                    {canAccessAutoGenerator && (
+                      <Button
+                        onClick={() => setShowAutoGenerateConfirmModal(true)}
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start h-8 text-xs"
+                      >
+                        <Sparkles className="mr-2 h-3 w-3" />
+                        Auto Gen
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-foreground mb-2">Tools</h3>
+                  <div className="space-y-1">
+                    <Button
+                      onClick={() => setActiveModal('saved-palettes')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <BookOpen className="mr-2 h-3 w-3" />
+                      <span className="flex-1 text-left">Saved</span>
+                      <Badge 
+                        variant="secondary" 
+                        className="text-xs h-4 ml-1"
+                      >
+                        {savedPalettesCount}/{MAX_PALETTES}
+                      </Badge>
+                    </Button>
+
+                    <Button
+                      onClick={() => setActiveModal('background')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <Shapes className="mr-2 h-3 w-3" />
+                      Background
+                    </Button>
+
+                    <Button
+                      onClick={() => setActiveModal('color-controls')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <Settings className="mr-2 h-3 w-3" />
+                      Customize
+                    </Button>
+                  </div>
                 </div>
               </div>
-            )}
-                <div className="w-full h-auto overflow-visible">
-                  <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
-                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col" style={{ width: 'calc(100% - 24rem)' }}>
+              <div className="flex-1 bg-muted/50 relative">
+                <LivePreview
+                  selectedTemplate={selectedTemplate}
+                  colorPalette={colorPalette}
+                  onColorChange={handleColorChange}
+                  colorMode={colorMode}
+                  backgroundSettings={backgroundSettings}
+                  zoomLevel={zoomLevel}
+                />
               </div>
             </div>
 
             {/* Right Sidebar */}
-            <div className="w-48 bg-background border-l border-border flex flex-col">
-              {/* Sidebar Header */}
-              <div className="p-3 border-b border-border">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Controls</span>
-                  {/* Mobile hamburger menu for right sidebar */}
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="sm:hidden px-1 py-1 rounded-sm"
-                  >
-                    {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                  </Button>
-                </div>
-                
+            <div className="w-48 bg-background/95 backdrop-blur-sm border-l border-border p-3 overflow-y-auto">
+              <div className="space-y-3">
                 {/* Template Info */}
-                <div className="space-y-1">
-                  <span className="text-xs text-muted-foreground">Template</span>
-                  <div className="text-xs font-medium capitalize">
-                    {selectedTemplate.replace('-', ' ')}
-                  </div>
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-foreground mb-2">Template Info</h3>
+                  <Card className="p-3">
+                    <h3 className="text-sm font-medium text-foreground capitalize">
+                      {selectedTemplate.replace('-', ' ')}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Current template design
+                    </p>
+                  </Card>
                 </div>
-              </div>
 
-              {/* Sidebar Content */}
-              <div className="flex-1 p-3 space-y-3">
                 {/* Zoom Controls */}
                 <div className="space-y-2">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Zoom</span>
-                  <div className="flex items-center justify-between">
-                    <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-1 py-1 rounded-sm">
+                  <h3 className="text-sm font-medium text-foreground mb-2">Zoom</h3>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      onClick={handleZoomOut}
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                    >
                       <ZoomOut className="h-3 w-3" />
                     </Button>
-                    <span className="text-xs font-medium text-center">{zoomLevel}%</span>
-                    <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-1 py-1 rounded-sm">
+                    
+                    <div className="flex-1 text-center">
+                      <span className="text-xs text-foreground font-medium">{zoomLevel}%</span>
+                    </div>
+                    
+                    <Button
+                      onClick={handleZoomIn}
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                    >
                       <ZoomIn className="h-3 w-3" />
                     </Button>
                   </div>
+                  
+                  <Button
+                    onClick={handleZoomReset}
+                    variant="outline"
+                    size="sm"
+                    className="w-full h-7 text-xs"
+                  >
+                    <RotateCcw className="mr-1 h-3 w-3" />
+                    Reset
+                  </Button>
                 </div>
 
-                {/* Action Buttons */}
+                {/* Color Mode */}
                 <div className="space-y-2">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Actions</span>
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full bg-green-500 hover:bg-green-600 text-white px-2 py-1.5 rounded-sm text-xs">
-                        {isGenerating ? <RefreshCw className="h-3 w-3 mr-1.5 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1.5" />}
-                        Generate
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Generate new color palette</TooltipContent>
-                  </Tooltip>
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="w-full bg-purple-500 hover:bg-purple-600 text-white px-2 py-1.5 rounded-sm text-xs">
-                        <Sparkles className="h-3 w-3 mr-1.5" />
-                        Auto Gen
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Generate multiple color palettes</TooltipContent>
-                  </Tooltip>
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="w-full px-2 py-1.5 rounded-sm text-xs">
-                        <Download className="h-3 w-3 mr-1.5" />
-                        Export PDF
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Export color palette as PDF</TooltipContent>
-                  </Tooltip>
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleSave} className="w-full px-2 py-1.5 rounded-sm text-xs">
-                        <Save className="h-3 w-3 mr-1.5" />
-                        Save
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Save current palette</TooltipContent>
-                  </Tooltip>
-                  
-                  <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full bg-amber-500 hover:bg-amber-400 px-2 py-1.5 rounded-sm text-xs">
-                    <Maximize className="h-3 w-3 mr-1.5" />
-                    Fullscreen
-                  </Button>
+                  <h3 className="text-sm font-medium text-foreground mb-2">Color Mode</h3>
+                  <ColorModeSelector
+                    colorMode={colorMode}
+                    onModeChange={handleModeChange}
+                    disabled={!canAccessTemplateDarkMode}
+                    className="w-full"
+                  />
+                </div>
+
+                {/* Actions */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-foreground mb-2">Actions</h3>
+                  <div className="space-y-1">
+                    <Button
+                      onClick={handleDownloadPDF}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <Download className="mr-2 h-3 w-3" />
+                      PDF
+                    </Button>
+
+                    <Button
+                      onClick={handleSave}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <Save className="mr-2 h-3 w-3" />
+                      Save
+                    </Button>
+
+                    <Button
+                      onClick={handleFullscreenToggle}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-8 text-xs"
+                    >
+                      <Maximize className="mr-2 h-3 w-3" />
+                      Fullscreen
+                    </Button>
+
+                    <MoreOptionsDropdown
+                      onOpenAIKeyModal={() => setActiveModal('openai-key')}
+                      onAdminPresetsModal={() => setActiveModal('admin-presets')}
+                      remainingAIGenerations={remainingAIGenerations}
+                      maxAIGenerationsPerMonth={maxAIGenerationsPerMonth}
+                      canUseAI={canUseAIGeneration}
+                      colorPalette={colorPalette}
+                      selectedTemplate={selectedTemplate}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
+      )}
 
-        {/* Modals */}
-        <AdminPresetsModal isOpen={activeModal === 'admin-presets'} onClose={closeModal} onPresetSelect={palette => {
-        setColorPalette(palette);
-        closeModal();
-      }} />
-
-
-        {/* Pro Upsell Modal */}
-        <ProUpsellModal isOpen={upsellModal.isOpen || activeModal === 'pro-upsell'} onClose={() => {
-        setUpsellModal({
-          isOpen: false,
-          templateName: ''
-        });
-        setActiveModal(null);
-      }} templateName={activeModal === 'pro-upsell' ? 'AI Colors' : upsellModal.templateName} />
-
-        {/* Color Mood Modal */}
-        <ColorMoodSelector isOpen={showColorMood} onClose={() => setShowColorMood(false)} onMoodSelect={(palette, moodId) => {
-        handleMoodSelect(palette, moodId);
-        setShowColorMood(false);
-      }} currentPalette={colorPalette} />
-
-         {/* PDF Export Modal */}
-        <PDFExportModal
-          isOpen={showPDFExportModal}
-          onClose={() => setShowPDFExportModal(false)}
-          onBasicExport={handleBasicPDFExport}
-          onProfessionalExport={handleProfessionalPDFExport}
-          isPro={isPro}
-          colorPalette={colorPalette}
-          templateName={selectedTemplate}
+      {/* Mobile overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 lg:hidden" 
+          onClick={() => setIsMobileMenuOpen(false)}
         />
+      )}
 
-        {/* Auto Generate Modals */}
-        <AutoGenerateConfirmModal
-          isOpen={showAutoGenerateConfirmModal}
-          onClose={() => setShowAutoGenerateConfirmModal(false)}
-          selectedTemplate={selectedTemplate}
-          selectedScheme={selectedScheme}
-          selectedMoodId={selectedMoodId}
-          autogenerateCount={autogenerateCount}
-          colorPalette={colorPalette}
-          onGenerate={handleAutoGenerate}
-          onShowGeneratedPalettes={() => {
-            setShowAutoGenerateConfirmModal(false);
-            setShowAutoGenerateResultsModal(true);
-          }}
-          hasGeneratedPalettes={generatedPalettes.length > 0}
+      {/* Modals */}
+      {activeModal === 'template' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Select Template</DialogTitle>
+            </DialogHeader>
+            <TemplateSelector 
+              selectedTemplate={selectedTemplate} 
+              onTemplateChange={setSelectedTemplate} 
+              colorPalette={colorPalette} 
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'color-scheme' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Color Schemes</DialogTitle>
+            </DialogHeader>
+            <ColorSchemeSelector 
+              selectedScheme={selectedScheme} 
+              onSchemeChange={handleSchemeChange}
+              onGenerateScheme={handleGenerateColors}
+              isGenerating={isGenerating}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'color-mood' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Color Mood</DialogTitle>
+            </DialogHeader>
+            <InlineColorMoods
+              onMoodSelect={handleMoodSelect}
+              currentPalette={colorPalette}
+              selectedMoodId={selectedMoodId}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'color-controls' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Customize Colors</DialogTitle>
+            </DialogHeader>
+            <ColorControls
+              colorPalette={colorPalette}
+              onColorChange={handleColorChange}
+              lockedColors={lockedColors}
+              onToggleLock={handleToggleLock}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'saved-palettes' && (
+        <SavedPalettesModal
+          isOpen={true}
+          onClose={closeModal}
+          currentPalette={colorPalette}
+          currentTemplate={selectedTemplate}
+          onPaletteSelect={handleSavedPaletteSelect}
+          onTemplateChange={setSelectedTemplate}
         />
+      )}
 
-        <AutoGenerateResultsModal
-          isOpen={showAutoGenerateResultsModal}
-          onClose={() => setShowAutoGenerateResultsModal(false)}
-          generatedPalettes={generatedPalettes}
-          backgroundSettings={backgroundSettings}
-          onApplyPalette={setColorPalette}
-          onRegenerateClick={() => {
-            setShowAutoGenerateResultsModal(false);
-            setShowAutoGenerateConfirmModal(true);
-          }}
+      {activeModal === 'ai-generator' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>AI Color Generator</DialogTitle>
+            </DialogHeader>
+            <AIColorGenerator
+              isDarkMode={colorMode === 'dark'}
+              onPaletteGenerated={handleAIPaletteGenerated}
+              backgroundSettings={backgroundSettings}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'image-generator' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Generate from Image</DialogTitle>
+            </DialogHeader>
+            <ImageUploadGenerator
+              onPaletteGenerated={setColorPalette}
+              isGenerating={isGenerating}
+              setIsGenerating={setIsGenerating}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'website-generator' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Generate from Website</DialogTitle>
+            </DialogHeader>
+            <WebsiteColorGenerator
+              onPaletteGenerated={setColorPalette}
+              isGenerating={isGenerating}
+              setIsGenerating={setIsGenerating}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'background' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Background Settings</DialogTitle>
+            </DialogHeader>
+            <BackgroundCustomizer
+              settings={backgroundSettings}
+              onSettingsChange={setBackgroundSettings}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'openai-key' && (
+        <Dialog open={true} onOpenChange={closeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>OpenAI Configuration</DialogTitle>
+            </DialogHeader>
+            <OpenAIKeyInput onKeySet={closeModal} />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {activeModal === 'admin-presets' && (
+        <AdminPresetsModal
+          isOpen={true}
+          onClose={closeModal}
+          onPaletteSelect={setColorPalette}
         />
+      )}
 
-        {/* Floating Generate Button */}
-        <Button
-          onClick={handleGenerateColors}
-          disabled={isGenerating}
-          className="fixed bottom-6 right-6 h-12 w-12 rounded-sm shadow-lg hover:shadow-xl transition-all duration-200 z-50 p-2"
-          size="icon"
-        >
-          <Sparkles className="h-5 w-5" />
-        </Button>
-      </div>
-    </TooltipProvider>;
+      <ProUpsellModal
+        isOpen={upsellModal.isOpen}
+        onClose={() => setUpsellModal(prev => ({ ...prev, isOpen: false }))}
+        templateName={upsellModal.templateName}
+      />
+
+      <PDFExportModal
+        isOpen={showPDFExportModal}
+        onClose={() => setShowPDFExportModal(false)}
+        onBasicExport={handleBasicPDFExport}
+        onProfessionalExport={handleProfessionalPDFExport}
+        isPro={isPro}
+        colorPalette={colorPalette}
+        templateName={selectedTemplate}
+      />
+
+      <AutoGenerateConfirmModal
+        isOpen={showAutoGenerateConfirmModal}
+        onClose={() => setShowAutoGenerateConfirmModal(false)}
+        onConfirm={handleAutoGenerate}
+        count={autogenerateCount}
+        onCountChange={setAutogenerateCount}
+        templateName={selectedTemplate}
+        colorScheme={selectedScheme}
+        colorMode={colorMode}
+      />
+
+      <AutoGenerateResultsModal
+        isOpen={showAutoGenerateResultsModal}
+        onClose={() => setShowAutoGenerateResultsModal(false)}
+        palettes={generatedPalettes}
+        onPaletteSelect={(palette) => {
+          setColorPalette(palette.colors);
+          setShowAutoGenerateResultsModal(false);
+        }}
+        templateName={selectedTemplate}
+      />
+    </div>
+  );
 };
+
 export default Dashboard;
