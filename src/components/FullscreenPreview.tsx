@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -310,6 +311,30 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       onColorChange(palette);
       closeModal();
     }} />
+
+      {/* Generate Button - Bottom Right */}
+      <div className="fixed bottom-6 right-6 z-30">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={onGenerateColors}
+                disabled={isGenerating}
+                className="h-12 w-12 bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-lg border-0"
+              >
+                {isGenerating ? (
+                  <RefreshCw className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Sparkles className="h-5 w-5" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Generate Palette</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
       {/* Pro Upsell Modal */}
       <ProUpsellModal isOpen={upsellModal.isOpen} onClose={() => setUpsellModal({
