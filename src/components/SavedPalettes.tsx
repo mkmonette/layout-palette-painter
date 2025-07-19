@@ -72,53 +72,23 @@ const SavedPalettes = () => {
     });
   };
 
-  const MiniDesktopPreview = ({ palette, template }: { palette: SavedPalette; template: TemplateType }) => (
-    <div className="w-full h-full bg-white rounded border overflow-hidden relative">
-      {/* Browser chrome */}
-      <div className="h-2 bg-gray-100 border-b flex items-center px-1 gap-1">
-        <div className="w-1 h-1 bg-red-400 rounded-full"></div>
-        <div className="w-1 h-1 bg-yellow-400 rounded-full"></div>
-        <div className="w-1 h-1 bg-green-400 rounded-full"></div>
-      </div>
-      
-      {/* Content area with gradient representing the template */}
-      <div className="flex-1 h-full relative">
-        {/* Header section */}
-        <div 
-          className="h-1/3 flex items-center justify-center text-xs font-bold"
-          style={{ backgroundColor: palette.brand, color: palette["button-text"] }}
-        >
-          <div className="w-8 h-1 rounded" style={{ backgroundColor: palette.accent }}></div>
-        </div>
-        
-        {/* Content sections */}
-        <div className="h-2/3 flex flex-col">
-          <div 
-            className="flex-1 flex items-center justify-center"
-            style={{ backgroundColor: palette["section-bg-1"] }}
-          >
-            <div className="flex gap-0.5">
-              <div className="w-2 h-0.5 rounded" style={{ backgroundColor: palette["text-primary"] }}></div>
-              <div className="w-1 h-0.5 rounded" style={{ backgroundColor: palette["text-secondary"] }}></div>
-            </div>
-          </div>
-          <div 
-            className="flex-1 flex items-center justify-center"
-            style={{ backgroundColor: palette["section-bg-2"] }}
-          >
-            <div className="w-3 h-0.5 rounded" style={{ backgroundColor: palette["button-primary"] }}></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   const PaletteCard = ({ palette }: { palette: SavedPalette }) => (
     <Card className="group hover:shadow-lg transition-all duration-200 animate-fade-in">
       <CardContent className="p-4">
         {/* Template Preview */}
-        <div className="mb-4 rounded-lg overflow-hidden border shadow-sm h-32">
-          <MiniDesktopPreview palette={palette} template={palette.template} />
+        <div className="mb-4 rounded-lg overflow-hidden border shadow-sm bg-white relative">
+          <div className="w-full h-32 relative overflow-hidden">
+            <div 
+              className="absolute top-0 left-0 origin-top-left"
+              style={{ 
+                transform: 'scale(0.25)',
+                width: '400%',
+                height: '400%'
+              }}
+            >
+              <LivePreview template={palette.template} colorPalette={palette} />
+            </div>
+          </div>
         </div>
 
         {/* Color Swatches */}
@@ -202,8 +172,17 @@ const SavedPalettes = () => {
       <CardContent className="p-4">
         <div className="flex items-center gap-4">
           {/* Template Preview */}
-          <div className="flex-shrink-0 w-32 h-20 rounded-lg overflow-hidden border shadow-sm">
-            <MiniDesktopPreview palette={palette} template={palette.template} />
+          <div className="flex-shrink-0 w-40 h-24 rounded-lg overflow-hidden border shadow-sm bg-white relative">
+            <div 
+              className="absolute top-0 left-0 origin-top-left"
+              style={{ 
+                transform: 'scale(0.2)',
+                width: '500%',
+                height: '417%'
+              }}
+            >
+              <LivePreview template={palette.template} colorPalette={palette} />
+            </div>
           </div>
 
           {/* Color Swatches */}
