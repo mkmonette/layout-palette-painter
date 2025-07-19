@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -554,6 +554,11 @@ const Dashboard = () => {
     label: 'Color Presets',
     available: true
   }, {
+    id: 'current-palettes' as const,
+    icon: Layers,
+    label: 'Current Palettes',
+    available: true
+  }, {
     id: 'saved-palettes' as const,
     icon: Save,
     label: 'Saved Palettes',
@@ -656,12 +661,12 @@ const Dashboard = () => {
 
         <div className="flex flex-1 overflow-hidden relative z-10">
           {/* Left Sidebar */}
-          <div className="w-48 studio-sidebar flex flex-col py-4 space-y-2">
+          <div className="w-48 studio-sidebar flex flex-col py-2 space-y-1">
             {sidebarItems.map(item => {
             if (!item.available) return null;
             return <Popover key={item.id}>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                     <Button variant="ghost" size="sm" className="w-full h-8 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
                        <item.icon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />
                        <span className="text-sm text-sidebar-foreground truncate">{item.label}</span>
                     </Button>
@@ -820,16 +825,34 @@ const Dashboard = () => {
                                </div>
                              }
 
-                              {item.id === 'admin-presets' && <div className="space-y-2">
-                                   <p className="text-xs text-muted-foreground">
-                                     Browse professionally curated color palettes.
-                                   </p>
-                                   <Button onClick={() => setActiveModal('admin-presets')} className="w-full h-6 px-2 text-xs rounded-sm">
-                                     Browse Presets
-                                   </Button>
-                                </div>}
-                               
-                             {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
+                               {item.id === 'admin-presets' && <div className="space-y-2">
+                                    <p className="text-xs text-muted-foreground">
+                                      Browse professionally curated color palettes.
+                                    </p>
+                                    <Button onClick={() => setActiveModal('admin-presets')} className="w-full h-6 px-2 text-xs rounded-sm">
+                                      Browse Presets
+                                    </Button>
+                                 </div>}
+
+                              {item.id === 'current-palettes' && <div className="space-y-2">
+                                    <p className="text-xs text-muted-foreground">
+                                      Current palette colors
+                                    </p>
+                                    <div className="grid grid-cols-4 gap-1">
+                                      <div className="h-6 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette.brand }} title={`Brand: ${colorPalette.brand}`} />
+                                      <div className="h-6 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette.accent }} title={`Accent: ${colorPalette.accent}`} />
+                                      <div className="h-6 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette["button-primary"] }} title={`Button Primary: ${colorPalette["button-primary"]}`} />
+                                      <div className="h-6 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette["section-bg-1"] }} title={`Section BG: ${colorPalette["section-bg-1"]}`} />
+                                    </div>
+                                    <div className="grid grid-cols-4 gap-1">
+                                      <div className="h-4 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette["text-primary"] }} title={`Text Primary: ${colorPalette["text-primary"]}`} />
+                                      <div className="h-4 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette["text-secondary"] }} title={`Text Secondary: ${colorPalette["text-secondary"]}`} />
+                                      <div className="h-4 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette.border }} title={`Border: ${colorPalette.border}`} />
+                                      <div className="h-4 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette.highlight }} title={`Highlight: ${colorPalette.highlight}`} />
+                                    </div>
+                                 </div>}
+                                
+                              {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
                              
                               {item.id === 'settings' && <div className="space-y-2">
                                    <h3 className="text-xs font-medium">Settings</h3>
@@ -864,7 +887,7 @@ const Dashboard = () => {
             {/* Template Theme Mode Selector */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                <Button variant="ghost" size="sm" className="w-full h-8 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
                   {colorMode === 'light' ? <Sun className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> : 
                    colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> :
                    colorMode === 'midtone' ? <Sunset className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> : 
