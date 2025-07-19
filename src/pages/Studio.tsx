@@ -105,7 +105,7 @@ const Dashboard: React.FC = () => {
     solidColor: '#f8fafc',
     gradientFrom: '#f8fafc',
     gradientTo: '#e2e8f0',
-    gradientDirection: 'to-br',
+    gradientDirection: 'to-b',
     pattern: 'dots',
     patternOpacity: 0.1,
     patternColor: '#64748b'
@@ -406,7 +406,7 @@ const Dashboard: React.FC = () => {
         if (moodId) setSelectedMoodId(moodId);
       }}
       onDownloadPDF={handleDownloadPDF}
-      onAutoGenerate={handleAutoGenerate}
+      autoGenerateEnabled={isPro}
     />;
   }
 
@@ -594,7 +594,7 @@ const Dashboard: React.FC = () => {
                         <div className="h-fit">
                           <div className="p-4 pt-3">
                             <div className="space-y-2">
-                              {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
+                              {item.id === 'moods' && <InlineColorMoods onMoodSelect={(palette, moodId) => handleMoodSelect(moodId || '')} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
 
                               {item.id === 'background-settings' && <div className="space-y-4">
                                 <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
@@ -625,9 +625,10 @@ const Dashboard: React.FC = () => {
                                         <p className="text-xs text-muted-foreground">
                                           Upload an image to extract its dominant colors.
                                         </p>
-                                        <ImageUploadGenerator
-                                          onColorsGenerated={handleImageColorsGenerated}
-                                          backgroundSettings={backgroundSettings}
+                                        <ImageUploadGenerator 
+                                          onPaletteGenerated={(palette) => setColorPalette(palette)}
+                                          isGenerating={false}
+                                          setIsGenerating={() => {}}
                                         />
                                       </div>
                                     </div>
@@ -654,7 +655,7 @@ const Dashboard: React.FC = () => {
                                         <p className="text-xs text-muted-foreground">
                                           Generate colors from any website.
                                         </p>
-                                        <WebsiteColorGenerator onColorsGenerated={handleWebsiteColorsGenerated} />
+                                        <WebsiteColorGenerator onPaletteGenerated={(palette) => setColorPalette(palette)} isGenerating={false} setIsGenerating={() => {}} />
                                       </div>
                                     </div>
                                   </PopoverContent>
@@ -913,10 +914,9 @@ const Dashboard: React.FC = () => {
 
             {/* Preview Content */}
             <div className="flex-1 overflow-auto bg-muted/30">
-              <LivePreview
+              <LivePreview 
                 template={selectedTemplate}
                 colorPalette={colorPalette}
-                isDarkMode={colorMode === 'dark'}
                 backgroundSettings={backgroundSettings}
               />
             </div>
@@ -928,33 +928,23 @@ const Dashboard: React.FC = () => {
           isOpen={showPDFExportModal}
           onClose={() => setShowPDFExportModal(false)}
           colorPalette={colorPalette}
-          template={selectedTemplate}
-          onExport={(format) => {
-            if (format === 'basic') {
-              generateBasicColorPalettePDF(colorPalette);
-            } else {
-              generateColorPalettePDF(colorPalette, selectedTemplate, format);
-            }
-            incrementDownload();
-          }}
         />
 
         <ProUpsellModal
           isOpen={showProUpsellModal}
           onClose={() => setShowProUpsellModal(false)}
-          feature="PDF Export"
-          description="Export your color palettes as professional PDF documents with multiple format options."
+          templateName="PDF Export"
         />
 
         <AdminPresetsModal
           isOpen={activeModal === 'admin-presets'}
           onClose={() => setActiveModal(null)}
           onPresetSelect={(preset) => {
-            setColorPalette(preset.palette);
+            setColorPalette(preset);
             setActiveModal(null);
             toast({
               title: "🎨 Preset Applied",
-              description: `Applied ${preset.name} color preset.`,
+              description: "Applied color preset.",
             });
           }}
         />
