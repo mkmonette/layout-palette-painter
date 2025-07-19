@@ -136,35 +136,35 @@ export const fullTemplates: Template[] = [
     id: 'ecommerce-product-showcase',
     name: 'Product Showcase',
     description: 'Feature products with detailed views',
-    isPro: false,
+    isPro: true,
     category: 'full-template'
   },
   {
     id: 'ecommerce-minimal-store',
     name: 'Minimal Store',
     description: 'Clean, minimal e-commerce design',
-    isPro: false,
+    isPro: true,
     category: 'full-template'
   },
   {
     id: 'ecommerce-fashion-boutique',
     name: 'Fashion Boutique',
     description: 'Elegant fashion store template',
-    isPro: false,
+    isPro: true,
     category: 'full-template'
   },
   {
     id: 'ecommerce-tech-store',
     name: 'Tech Store',
     description: 'Electronics and gadgets store',
-    isPro: false,
+    isPro: true,
     category: 'full-template'
   },
   {
     id: 'ecommerce-marketplace',
     name: 'Marketplace',
     description: 'Multi-vendor marketplace design',
-    isPro: false,
+    isPro: true,
     category: 'full-template'
   },
   {
