@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal, MoreVertical } from 'lucide-react';
+import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal, MoreVertical, Bot, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
@@ -385,6 +385,37 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               </TooltipContent>
             </Tooltip>
           </div>
+
+          {/* AI Colors Button */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={onGenerateColors} // Using same logic as Generate for now
+                disabled={isGenerating}
+                className="h-12 w-12 bg-violet-600 hover:bg-violet-700 text-white shadow-lg rounded-lg border-0"
+              >
+                <Bot className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>AI Colors</p>
+            </TooltipContent>
+          </Tooltip>
+
+          {/* Autogenerate Button */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => onAutoGenerateChange && onAutoGenerateChange(!autoGenerate)}
+                className={`h-12 w-12 ${autoGenerate ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'} text-white shadow-lg rounded-lg border-0`}
+              >
+                <Play className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{autoGenerate ? 'Stop Autogenerate' : 'Start Autogenerate'}</p>
+            </TooltipContent>
+          </Tooltip>
 
           {/* Generate Button */}
           <Tooltip>
