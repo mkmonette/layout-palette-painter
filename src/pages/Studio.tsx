@@ -783,13 +783,8 @@ const Dashboard = () => {
                           </div>
                         </div>
                       ) : (
-                        // ScrollArea for other menu items
-                         <ScrollArea className={`${
-                            item.id === 'background-settings' ? 'h-80' : 
-                            item.id === 'from-image' ? 'h-40' :
-                            item.id === 'current-palettes' ? 'h-80' :
-                            'h-96'
-                         }`}>
+                        // Natural height for all other menu items
+                        <div className="h-fit">
                          <div className="p-4 pt-3">
                            <div className="space-y-2">
                               {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
@@ -937,7 +932,7 @@ const Dashboard = () => {
                                </div>}
                            </div>
                          </div>
-                       </ScrollArea>
+                       </div>
                      )}
                   </PopoverContent>
                 </Popover>;
