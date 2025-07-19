@@ -469,13 +469,13 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
           />
           
           {/* Slide-in Panel */}
-          <div className={`fixed top-0 right-0 h-full w-80 bg-white dark:bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ${
+          <div className={`fixed top-0 right-0 h-full w-72 bg-white dark:bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ${
             isRightPanelOpen ? 'translate-x-0' : 'translate-x-full'
           }`}>
             <div className="flex flex-col h-full">
               {/* Panel Header */}
-              <div className="flex items-center justify-between p-4 border-b">
-                <h3 className="text-lg font-semibold">Tools</h3>
+              <div className="flex items-center justify-between p-3 border-b">
+                <h3 className="text-base font-semibold">Tools</h3>
                 <Button
                   onClick={() => setIsRightPanelOpen(false)}
                   variant="ghost"
@@ -487,60 +487,60 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
               {/* Panel Content */}
               <ScrollArea className="flex-1">
-                <div className="p-4 space-y-6">
+                <div className="p-3 space-y-4">
                   
                   {/* 🎨 Color Logic Section */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Palette className="h-4 w-4 text-primary" />
-                      <h4 className="font-semibold text-sm text-foreground">Color Logic</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Palette className="h-3 w-3 text-primary" />
+                      <h4 className="font-medium text-xs text-foreground uppercase tracking-wide">Color Logic</h4>
                     </div>
                     
                     {/* Templates */}
-                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('template')}>
-                      <div className="flex items-center gap-3">
-                        <Layout className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Templates</span>
-                      </div>
+                    <div className="flex items-center justify-between p-2 rounded border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('template')}>
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {template.replace(/([A-Z])/g, ' $1').trim()}
+                        <Layout className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium">Templates</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                          {template.replace(/([A-Z])/g, ' $1').trim().slice(0, 8)}...
                         </Badge>
-                        <Settings className="h-3 w-3 text-muted-foreground" />
+                        <Settings className="h-2 w-2 text-muted-foreground" />
                       </div>
                     </div>
 
                     {/* Schemes */}
-                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('scheme')}>
-                      <div className="flex items-center gap-3">
-                        <Palette className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Color Schemes</span>
-                      </div>
+                    <div className="flex items-center justify-between p-2 rounded border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('scheme')}>
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">
+                        <Palette className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium">Schemes</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Badge variant="secondary" className="text-[10px] px-1 py-0">
                           {selectedScheme}
                         </Badge>
-                        <Settings className="h-3 w-3 text-muted-foreground" />
+                        <Settings className="h-2 w-2 text-muted-foreground" />
                       </div>
                     </div>
 
                     {/* Moods */}
-                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('mood')}>
-                      <div className="flex items-center gap-3">
-                        <Sparkles className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Color Moods</span>
+                    <div className="flex items-center justify-between p-2 rounded border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('mood')}>
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium">Moods</span>
                       </div>
-                      <Settings className="h-3 w-3 text-muted-foreground" />
+                      <Settings className="h-2 w-2 text-muted-foreground" />
                     </div>
 
                     {/* Theme Mode */}
-                    <div className="flex items-center justify-between p-3 rounded-lg border">
-                      <div className="flex items-center gap-3">
-                        <Sun className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Theme Mode</span>
-                      </div>
+                    <div className="flex items-center justify-between p-2 rounded border">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">
+                        <Sun className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium">Theme</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-muted-foreground">
                           {templateDarkMode ? 'Dark' : 'Light'}
                         </span>
                         <Switch
@@ -551,40 +551,40 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                     </div>
                   </div>
 
-                  <Separator />
+                  <Separator className="my-3" />
 
                   {/* 🌈 Palette Tools Section */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Wand2 className="h-4 w-4 text-primary" />
-                      <h4 className="font-semibold text-sm text-foreground">Palette Tools</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Wand2 className="h-3 w-3 text-primary" />
+                      <h4 className="font-medium text-xs text-foreground uppercase tracking-wide">Palette Tools</h4>
                     </div>
 
                     {/* Color Presets */}
-                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('admin-presets')}>
-                      <div className="flex items-center gap-3">
-                        <Wand2 className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Color Presets</span>
+                    <div className="flex items-center justify-between p-2 rounded border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('admin-presets')}>
+                      <div className="flex items-center gap-2">
+                        <Wand2 className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium">Presets</span>
                       </div>
-                      <Settings className="h-3 w-3 text-muted-foreground" />
+                      <Settings className="h-2 w-2 text-muted-foreground" />
                     </div>
 
                     {/* Current Palettes */}
-                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('colors')}>
-                      <div className="flex items-center gap-3">
-                        <Settings className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Current Palettes</span>
-                      </div>
+                    <div className="flex items-center justify-between p-2 rounded border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('colors')}>
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {lockedColors.size} locked
-                        </Badge>
                         <Settings className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium">Current</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                          {lockedColors.size}🔒
+                        </Badge>
+                        <Settings className="h-2 w-2 text-muted-foreground" />
                       </div>
                     </div>
 
                     {/* From Image */}
-                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => {
+                    <div className="flex items-center justify-between p-2 rounded border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => {
                       if (!isPro) {
                         setUpsellModal({
                           isOpen: true,
@@ -594,49 +594,49 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                       }
                       setActiveModal('image-generator');
                     }}>
-                      <div className="flex items-center gap-3">
-                        <Image className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">From Image</span>
-                      </div>
                       <div className="flex items-center gap-2">
-                        {!isPro && <Badge variant="outline" className="text-xs">Pro</Badge>}
-                        <Settings className="h-3 w-3 text-muted-foreground" />
+                        <Image className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium">From Image</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {!isPro && <Badge variant="outline" className="text-[10px] px-1 py-0">Pro</Badge>}
+                        <Settings className="h-2 w-2 text-muted-foreground" />
                       </div>
                     </div>
                   </div>
 
-                  <Separator />
+                  <Separator className="my-3" />
 
                   {/* 🖼️ Appearance Section */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Settings className="h-4 w-4 text-primary" />
-                      <h4 className="font-semibold text-sm text-foreground">Appearance</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Settings className="h-3 w-3 text-primary" />
+                      <h4 className="font-medium text-xs text-foreground uppercase tracking-wide">Appearance</h4>
                     </div>
 
                     {/* Background */}
-                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('background')}>
-                      <div className="flex items-center gap-3">
-                        <Settings className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Background</span>
-                      </div>
+                    <div className="flex items-center justify-between p-2 rounded border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('background')}>
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {backgroundSettings.enabled ? backgroundSettings.style : 'None'}
-                        </Badge>
                         <Settings className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium">Background</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                          {backgroundSettings.enabled ? backgroundSettings.style.slice(0, 6) : 'None'}
+                        </Badge>
+                        <Settings className="h-2 w-2 text-muted-foreground" />
                       </div>
                     </div>
                   </div>
 
-                  <Separator />
+                  <Separator className="my-3" />
 
                   {/* Reset All Button */}
-                  <div className="pt-2">
+                  <div className="pt-1">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full text-muted-foreground hover:text-foreground"
+                      className="w-full text-muted-foreground hover:text-foreground h-7 text-xs"
                       onClick={() => {
                         // Reset functionality can be implemented here
                         toast({
@@ -645,8 +645,8 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                         });
                       }}
                     >
-                      <RotateCcwSquare className="h-4 w-4 mr-2" />
-                      Reset All Settings
+                      <RotateCcwSquare className="h-3 w-3 mr-1" />
+                      Reset All
                     </Button>
                   </div>
                 </div>
