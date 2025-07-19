@@ -60,7 +60,7 @@ const ColorControls: React.FC<ColorControlsProps> = ({
                 </Button>
               )}
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
               <div 
                 className={`w-10 h-10 rounded-lg border-2 shadow-sm flex-shrink-0 ${isLocked ? 'border-orange-300' : 'border-gray-200'}`}
                 style={{ backgroundColor: value }}
