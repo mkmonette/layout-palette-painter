@@ -168,22 +168,21 @@ const Landing = () => {
 
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32">
-          <div className="absolute inset-0 hero-gradient opacity-10" />
-          <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 opacity-25 z-0">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
               <defs>
                 <linearGradient id="heroGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style={{stopColor: 'hsl(280, 100%, 65%)', stopOpacity: 0.2}} />
-                  <stop offset="100%" style={{stopColor: 'hsl(340, 82%, 65%)', stopOpacity: 0.1}} />
+                  <stop offset="0%" style={{stopColor: 'hsl(280, 100%, 65%)', stopOpacity: 0.3}} />
+                  <stop offset="100%" style={{stopColor: 'hsl(340, 82%, 65%)', stopOpacity: 0.15}} />
                 </linearGradient>
                 <linearGradient id="heroGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
-                  <stop offset="0%" style={{stopColor: 'hsl(195, 100%, 70%)', stopOpacity: 0.15}} />
+                  <stop offset="0%" style={{stopColor: 'hsl(195, 100%, 70%)', stopOpacity: 0.25}} />
                   <stop offset="100%" style={{stopColor: 'hsl(160, 100%, 65%)', stopOpacity: 0.1}} />
                 </linearGradient>
               </defs>
               <path d="M0,400 Q300,300 600,350 T1200,400 L1200,800 L0,800 Z" fill="url(#heroGrad1)"/>
               <path d="M0,500 Q400,420 800,460 T1200,500 L1200,800 L0,800 Z" fill="url(#heroGrad2)"/>
-              <path d="M0,600 Q200,550 400,580 T800,600 T1200,620 L1200,800 L0,800 Z" fill="hsl(280, 100%, 65%)" opacity="0.1"/>
+              <path d="M0,600 Q200,550 400,580 T800,600 T1200,620 L1200,800 L0,800 Z" fill="hsl(280, 100%, 65%)" opacity="0.15"/>
             </svg>
           </div>
           <div className="max-w-7xl mx-auto px-4 relative z-10">
