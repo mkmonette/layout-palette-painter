@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -834,21 +834,39 @@ const Dashboard = () => {
                                     </Button>
                                  </div>}
 
-                              {item.id === 'current-palettes' && <div className="space-y-2">
+                              {item.id === 'current-palettes' && <div className="space-y-3">
                                     <p className="text-xs text-muted-foreground">
-                                      Current palette colors
+                                      Current palette colors with lock controls
                                     </p>
-                                    <div className="grid grid-cols-4 gap-1">
-                                      <div className="h-6 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette.brand }} title={`Brand: ${colorPalette.brand}`} />
-                                      <div className="h-6 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette.accent }} title={`Accent: ${colorPalette.accent}`} />
-                                      <div className="h-6 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette["button-primary"] }} title={`Button Primary: ${colorPalette["button-primary"]}`} />
-                                      <div className="h-6 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette["section-bg-1"] }} title={`Section BG: ${colorPalette["section-bg-1"]}`} />
-                                    </div>
-                                    <div className="grid grid-cols-4 gap-1">
-                                      <div className="h-4 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette["text-primary"] }} title={`Text Primary: ${colorPalette["text-primary"]}`} />
-                                      <div className="h-4 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette["text-secondary"] }} title={`Text Secondary: ${colorPalette["text-secondary"]}`} />
-                                      <div className="h-4 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette.border }} title={`Border: ${colorPalette.border}`} />
-                                      <div className="h-4 rounded-sm border border-border/20" style={{ backgroundColor: colorPalette.highlight }} title={`Highlight: ${colorPalette.highlight}`} />
+                                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                                      {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
+                                        const isLocked = lockedColors.has(key as keyof ColorPalette);
+                                        return (
+                                          <div key={key} className="flex items-center gap-2">
+                                            <div 
+                                              className={`w-6 h-6 rounded border flex-shrink-0 ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
+                                              style={{ backgroundColor: value }}
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                              <div className="text-[10px] font-medium text-foreground truncate">
+                                                {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                              </div>
+                                              <div className="text-[9px] font-mono text-muted-foreground">
+                                                {value}
+                                              </div>
+                                            </div>
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() => handleToggleLock(key as keyof ColorPalette)}
+                                              className={`h-5 w-5 p-0 flex-shrink-0 ${isLocked ? 'text-orange-500 hover:text-orange-600' : 'text-muted-foreground hover:text-foreground'}`}
+                                              title={isLocked ? 'Unlock color' : 'Lock color'}
+                                            >
+                                              {isLocked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
+                                            </Button>
+                                          </div>
+                                        );
+                                      })}
                                     </div>
                                  </div>}
                                 
