@@ -43,10 +43,11 @@ const ColorControls: React.FC<ColorControlsProps> = ({
         const isLocked = lockedColors.has(key as keyof ColorPalette);
         return (
           <div key={key} className="space-y-2">
+            {/* Label and lock icon on one line */}
             <div className="flex items-center justify-between">
-               <Label htmlFor={key} className="text-xs font-medium text-gray-700">
-                 {colorLabels[key as keyof ColorPalette]}
-               </Label>
+              <Label htmlFor={key} className="text-xs font-medium text-gray-700">
+                {colorLabels[key as keyof ColorPalette]}
+              </Label>
               {onToggleLock && (
                 <Button
                   type="button"
@@ -60,7 +61,9 @@ const ColorControls: React.FC<ColorControlsProps> = ({
                 </Button>
               )}
             </div>
-            <div className="flex items-center space-x-2">
+            
+            {/* Color picker and color name on the line below */}
+            <div className="flex items-center gap-2">
               <div className="relative">
                 <div 
                   className={`w-10 h-10 rounded-lg border-2 shadow-sm flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300' : 'border-gray-200'}`}
