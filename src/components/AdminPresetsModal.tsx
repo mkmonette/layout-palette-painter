@@ -227,7 +227,7 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Palette className="h-5 w-5 text-primary" />
-            Admin Color Presets
+            Color Presets
           </DialogTitle>
         </DialogHeader>
         
