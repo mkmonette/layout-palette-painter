@@ -601,9 +601,9 @@ const Dashboard = () => {
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button 
-                        variant="outline" 
+                        variant="secondary" 
                         size="sm" 
-                        className="px-2 py-1 rounded-sm"
+                        className="px-2 py-1 rounded-sm text-primary-foreground bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground/20"
                         disabled={!canUseAIGeneration}
                       >
                         <Bot className="h-4 w-4 mr-2" />
@@ -630,13 +630,13 @@ const Dashboard = () => {
               </Tooltip>
 
               {/* Plan Badge */}
-              <Badge variant={isPro ? "default" : "secondary"}>
+              <Badge variant={isPro ? "default" : "secondary"} className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/20">
                 {isPro ? "Pro" : "Free"}
               </Badge>
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" className="px-2 py-1 rounded-sm">
+                <Button variant="secondary" size="sm" className="px-2 py-1 rounded-sm text-primary-foreground bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground/20">
                   <Share className="h-4 w-4 mr-2" />
                   Share
                 </Button>
@@ -671,7 +671,7 @@ const Dashboard = () => {
               {/* Hamburger Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent">
+                  <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
                     <Menu className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
