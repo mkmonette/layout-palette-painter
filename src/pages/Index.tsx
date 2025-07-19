@@ -350,8 +350,6 @@ const Index = () => {
               <ColorSchemeSelector
                 selectedScheme={selectedScheme}
                 onSchemeChange={handleSchemeChange}
-                onGenerateScheme={handleGenerateColors}
-                isGenerating={isGenerating}
               />
             </div>
           </ScrollArea>

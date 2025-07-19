@@ -17,8 +17,6 @@ export type ColorSchemeType =
 interface ColorSchemeSelectorProps {
   selectedScheme: ColorSchemeType;
   onSchemeChange: (scheme: ColorSchemeType) => void;
-  onGenerateScheme: () => void;
-  isGenerating: boolean;
 }
 
 const colorSchemes = [
@@ -62,58 +60,43 @@ const colorSchemes = [
 
 const ColorSchemeSelector: React.FC<ColorSchemeSelectorProps> = ({
   selectedScheme,
-  onSchemeChange,
-  onGenerateScheme,
-  isGenerating
+  onSchemeChange
 }) => {
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <Button
-          onClick={onGenerateScheme}
-          disabled={isGenerating}
-          size="sm"
-          className="w-full text-xs h-8"
+    <RadioGroup value={selectedScheme} onValueChange={onSchemeChange} className="grid grid-cols-2 gap-3">
+      {colorSchemes.map((scheme) => (
+        <div
+          key={scheme.id}
+          className={`w-full border rounded p-2 transition-all duration-200 cursor-pointer ${
+            selectedScheme === scheme.id 
+              ? 'border-blue-500 bg-blue-50' 
+              : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+          }`}
+          onClick={() => onSchemeChange(scheme.id)}
         >
-          Generate Colors
-        </Button>
-      </div>
-      
-      <RadioGroup value={selectedScheme} onValueChange={onSchemeChange} className="space-y-2">
-        {colorSchemes.map((scheme) => (
-          <div
-            key={scheme.id}
-            className={`w-full border rounded p-2 transition-all duration-200 cursor-pointer ${
-              selectedScheme === scheme.id 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-            }`}
-            onClick={() => onSchemeChange(scheme.id)}
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value={scheme.id} id={scheme.id} className="w-3 h-3" />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-2">
-                  <Label htmlFor={scheme.id} className="text-xs font-medium cursor-pointer">
-                    {scheme.name}
-                  </Label>
-                  <div className="flex space-x-1">
-                    {scheme.preview.map((color, index) => (
-                      <div
-                        key={index}
-                        className="w-3 h-3 rounded-full border border-gray-200 flex-shrink-0"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                  </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value={scheme.id} id={scheme.id} className="w-3 h-3" />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center space-x-2">
+                <Label htmlFor={scheme.id} className="text-xs font-medium cursor-pointer">
+                  {scheme.name}
+                </Label>
+                <div className="flex space-x-1">
+                  {scheme.preview.map((color, index) => (
+                    <div
+                      key={index}
+                      className="w-3 h-3 rounded-full border border-gray-200 flex-shrink-0"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
                 </div>
-                <p className="text-xs text-gray-600 mt-1">{scheme.description}</p>
               </div>
+              <p className="text-xs text-gray-600 mt-1">{scheme.description}</p>
             </div>
           </div>
-        ))}
-      </RadioGroup>
-    </div>
+        </div>
+      ))}
+    </RadioGroup>
   );
 };
 

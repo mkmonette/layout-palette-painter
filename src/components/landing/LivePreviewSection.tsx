@@ -276,11 +276,6 @@ const LivePreviewSection = () => {
               <ColorSchemeSelector
                 selectedScheme={selectedScheme}
                 onSchemeChange={setSelectedScheme}
-                onGenerateScheme={() => {
-                  setShowControls(false);
-                  handleGenerateColors();
-                }}
-                isGenerating={isGenerating}
               />
             </div>
           </div>

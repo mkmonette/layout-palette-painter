@@ -763,7 +763,7 @@ const Dashboard = () => {
                                   <p className="text-xs text-muted-foreground">
                                     Choose a color scheme to generate harmonious palettes.
                                   </p>
-                                 <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} onGenerateScheme={handleGenerateColors} isGenerating={isGenerating} />
+                                 <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} />
                                </div>}
 
                              {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}

@@ -305,8 +305,6 @@ const AutoGenerateModal: React.FC<AutoGenerateModalProps> = ({ isOpen, onClose, 
                             <ColorSchemeSelector
                               selectedScheme={selectedScheme}
                               onSchemeChange={setSelectedScheme}
-                              onGenerateScheme={() => {}}
-                              isGenerating={false}
                             />
                           </div>
                         </div>
