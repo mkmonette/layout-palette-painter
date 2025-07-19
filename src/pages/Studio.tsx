@@ -220,14 +220,8 @@ const Dashboard = () => {
     
     setColorMode(newMode);
     
-    // Update dashboard dark mode based on color mode
-    if (newMode === 'dark') {
-      document.documentElement.classList.add('dark');
-      setIsDashboardDarkMode(true);
-    } else {
-      document.documentElement.classList.remove('dark');
-      setIsDashboardDarkMode(false);
-    }
+    // Template color mode only affects template generation, not studio interface
+    // Studio interface dark mode is controlled separately via dashboard dark mode toggle
     
     try {
       const newPalette = generateColorSchemeWithLocks(selectedScheme, newMode, colorPalette, lockedColors, false);
@@ -868,16 +862,15 @@ const Dashboard = () => {
           })}
 
             {/* Template Theme Mode Selector */}
-            <div className="px-3 mt-auto">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
-                  {colorMode === 'light' ? <Sun className="h-4 w-4 mr-2" /> : 
-                   colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 mr-2" /> :
-                   colorMode === 'midtone' ? <Sunset className="h-4 w-4 mr-2" /> : 
-                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 mr-2 opacity-70" /> :
-                   <Moon className="h-4 w-4 mr-2" />}
-                  <span className="text-sm text-sidebar-foreground">Theme Mode</span>
+                <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                  {colorMode === 'light' ? <Sun className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> : 
+                   colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> :
+                   colorMode === 'midtone' ? <Sunset className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> : 
+                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0 opacity-70" /> :
+                   <Moon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />}
+                  <span className="text-sm text-sidebar-foreground truncate">Theme Mode</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64 p-4" side="right" align="end">
@@ -955,9 +948,8 @@ const Dashboard = () => {
                      Theme modes control the lightness range of generated colors
                    </div>
                 </div>
-              </PopoverContent>
+             </PopoverContent>
             </Popover>
-            </div>
           </div>
 
 
