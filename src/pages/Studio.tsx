@@ -771,20 +771,19 @@ const Dashboard = () => {
                       ) : item.id === 'schemes' ? (
                         // No ScrollArea for schemes - just natural height
                         <div className="h-fit">
-                          <div className="p-4 pt-3">
-                            <div className="space-y-2">
-                              <div className="space-y-4">
-                                <p className="text-xs text-muted-foreground">
-                                  Choose a color scheme to generate harmonious palettes.
-                                </p>
-                                <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
+                          {item.id === 'current-palettes' ? (
                         // Natural height for all other menu items
                         <div className="h-fit">
+                          <div className="p-4 pt-3">
+                            <div className="space-y-2">
+                               {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
+
+                              {item.id === 'background-settings' && <div className="space-y-4">
+                                  <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
+                                </div>}
+                      ) : (
+                        // Natural height for all other menu items, except current-palettes which needs scroll
+                        <div className={item.id === 'current-palettes' ? '' : 'h-fit'}>
                          <div className="p-4 pt-3">
                            <div className="space-y-2">
                               {item.id === 'moods' && <InlineColorMoods onMoodSelect={handleMoodSelect} currentPalette={colorPalette} selectedMoodId={selectedMoodId} />}
@@ -856,55 +855,59 @@ const Dashboard = () => {
                                     </Button>
                                  </div>}
 
-                              {item.id === 'current-palettes' && <div className="space-y-3">
-                                    <p className="text-xs text-muted-foreground">
-                                      Edit and lock current palette colors
-                                    </p>
-                                    <div className="space-y-2">
-                                      {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
-                                        const isLocked = lockedColors.has(key as keyof ColorPalette);
-                                        return (
-                                          <div key={key} className="flex items-center gap-2">
-                                            <div 
-                                              className={`w-6 h-6 rounded border flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
-                                              style={{ backgroundColor: value }}
-                                              title={`Click to edit ${key.replace(/-/g, ' ')}`}
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                              <div className="text-[10px] font-medium text-foreground truncate mb-1">
-                                                {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                              </div>
-                                              <input
-                                                type="color"
-                                                value={value}
-                                                onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
-                                                disabled={isLocked}
-                                                className={`w-full h-4 border rounded cursor-pointer ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary'}`}
-                                                style={{ backgroundColor: value }}
-                                              />
-                                              <input
-                                                type="text"
-                                                value={value}
-                                                onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
-                                                disabled={isLocked}
-                                                className={`w-full text-[9px] font-mono mt-1 px-1 py-0.5 border rounded bg-background ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary focus:border-primary focus:outline-none'}`}
-                                                placeholder="#000000"
-                                              />
-                                            </div>
-                                            <Button
-                                              variant="ghost"
-                                              size="sm"
-                                              onClick={() => handleToggleLock(key as keyof ColorPalette)}
-                                              className={`h-5 w-5 p-0 flex-shrink-0 ${isLocked ? 'text-orange-500 hover:text-orange-600' : 'text-muted-foreground hover:text-foreground'}`}
-                                              title={isLocked ? 'Unlock color' : 'Lock color'}
-                                            >
-                                              {isLocked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
-                                            </Button>
-                                          </div>
-                                        );
-                                      })}
+                               {item.id === 'current-palettes' && (
+                                 <ScrollArea className="h-80">
+                                 <ScrollArea className="h-80">
+                                    <div className="space-y-3">
+                                     <p className="text-xs text-muted-foreground">
+                                       Edit and lock current palette colors
+                                     </p>
+                                     <div className="space-y-2">
+                                       {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
+                                         const isLocked = lockedColors.has(key as keyof ColorPalette);
+                                         return (
+                                           <div key={key} className="flex items-center gap-2">
+                                             <div 
+                                               className={`w-6 h-6 rounded border flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
+                                               style={{ backgroundColor: value }}
+                                               title={`Click to edit ${key.replace(/-/g, ' ')}`}
+                                             />
+                                             <div className="flex-1 min-w-0">
+                                               <div className="text-[10px] font-medium text-foreground truncate mb-1">
+                                                 {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                               </div>
+                                               <input
+                                                 type="color"
+                                                 value={value}
+                                                 onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
+                                                 disabled={isLocked}
+                                                 className={`w-full h-4 border rounded cursor-pointer ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary'}`}
+                                                 style={{ backgroundColor: value }}
+                                               />
+                                               <input
+                                                 type="text"
+                                                 value={value}
+                                                 onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
+                                                 disabled={isLocked}
+                                                 className={`w-full text-[9px] font-mono mt-1 px-1 py-0.5 border rounded bg-background ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary focus:border-primary focus:outline-none'}`}
+                                                 placeholder="#000000"
+                                               />
+                                             </div>
+                                             <Button
+                                               variant="ghost"
+                                               size="sm"
+                                               onClick={() => handleToggleLock(key as keyof ColorPalette)}
+                                               className={`h-5 w-5 p-0 flex-shrink-0 ${isLocked ? 'text-orange-500 hover:text-orange-600' : 'text-muted-foreground hover:text-foreground'}`}
+                                               title={isLocked ? 'Unlock color' : 'Lock color'}
+                                             >
+                                               {isLocked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
+                                             </Button>
+                                           </div>
+                                         );
+                                       })}
+                                      </div>
                                     </div>
-                                 </div>}
+                                 </ScrollArea>
                                 
                               {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
                              
@@ -930,9 +933,15 @@ const Dashboard = () => {
                                   </p>
                                  <TestPlanSwitcher />
                                </div>}
-                           </div>
-                         </div>
-                       </div>
+                            {item.id === 'current-palettes' ? (
+                                </div>
+                              </div>
+                            </ScrollArea>
+                          ) : (
+                            </div>
+                          </div>
+                          )}
+                        </div>
                      )}
                   </PopoverContent>
                 </Popover>;
