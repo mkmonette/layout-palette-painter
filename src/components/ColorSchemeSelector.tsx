@@ -77,7 +77,7 @@ const ColorSchemeSelector: React.FC<ColorSchemeSelectorProps> = ({
           <div className="flex items-center space-x-1.5">
             <RadioGroupItem value={scheme.id} id={scheme.id} className="w-3 h-3" />
             <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-1.5">
+              <div className="flex flex-col space-y-1">
                 <Label htmlFor={scheme.id} className="text-xs font-medium cursor-pointer">
                   {scheme.name}
                 </Label>
