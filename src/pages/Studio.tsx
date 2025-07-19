@@ -578,12 +578,10 @@ const Dashboard = () => {
   return <TooltipProvider>
       <div className="h-screen flex flex-col bg-background">
         {/* Top Navigation Bar */}
-        <div className="h-14 border-b border-white/20" style={{
-        backgroundColor: '#3b82f6'
-      }}>
-          <div className="flex items-center justify-between px-4 h-full bg-blue-700">
+        <div className="h-14 border-b border-border bg-primary">
+          <div className="flex items-center justify-between px-4 h-full">
             <div className="flex items-center space-x-4">
-               <h1 className="text-base font-medium text-white">
+               <h1 className="text-base font-medium text-primary-foreground">
                  Color Palette Generator
                </h1>
             </div>
@@ -591,10 +589,10 @@ const Dashboard = () => {
             <div className="flex items-center space-x-4">
               {/* AI Quota Display */}
               {canUseAIGeneration && <div className="flex items-center space-x-2">
-                  <Sparkles className="h-4 w-4 text-white" />
-                  <span className="text-sm text-white/80">
-                    AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
-                  </span>
+                   <Sparkles className="h-4 w-4 text-primary-foreground" />
+                   <span className="text-sm text-primary-foreground/80">
+                     AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
+                   </span>
                 </div>}
 
               {/* AI Colors Button */}
@@ -605,7 +603,7 @@ const Dashboard = () => {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="text-white border-[rgba(43,43,43,0.5)] hover:text-white hover:border-white/70 bg-amber-500 hover:bg-amber-400 text-slate-950 px-2 py-1 rounded-sm"
+                        className="px-2 py-1 rounded-sm"
                         disabled={!canUseAIGeneration}
                       >
                         <Bot className="h-4 w-4 mr-2" />
@@ -632,13 +630,13 @@ const Dashboard = () => {
               </Tooltip>
 
               {/* Plan Badge */}
-              <Badge variant={isPro ? "default" : "secondary"} className="bg-white/20 text-white border-white/30">
+              <Badge variant={isPro ? "default" : "secondary"}>
                 {isPro ? "Pro" : "Free"}
               </Badge>
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" className="text-white border-[rgba(43,43,43,0.5)] hover:text-white hover:border-white/70 bg-gray-950 hover:bg-gray-800 px-2 py-1 rounded-sm">
+                <Button variant="outline" size="sm" className="px-2 py-1 rounded-sm">
                   <Share className="h-4 w-4 mr-2" />
                   Share
                 </Button>
@@ -647,7 +645,7 @@ const Dashboard = () => {
               {/* Dashboard Dark Mode Toggle */}
               <Tooltip>
                 <TooltipTrigger asChild>
-                   <Button variant="ghost" size="sm" className="w-8 h-8 p-1 text-white hover:bg-white/20 hover:text-white rounded-sm" onClick={() => {
+                   <Button variant="ghost" size="sm" className="w-8 h-8 p-1 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground rounded-sm" onClick={() => {
                   // Dashboard dark mode toggle - only affects dashboard UI
                   const newDashboardDarkMode = !isDashboardDarkMode;
                   setIsDashboardDarkMode(newDashboardDarkMode);
@@ -673,7 +671,7 @@ const Dashboard = () => {
               {/* Hamburger Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent">
                     <Menu className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -694,16 +692,14 @@ const Dashboard = () => {
 
         <div className="flex flex-1 overflow-hidden">
           {/* Left Sidebar */}
-          <div style={{
-          backgroundColor: '#5b99fe'
-        }} className="w-48 border-r flex flex-col py-4 space-y-2 bg-sky-600">
+          <div className="w-48 border-r border-border bg-sidebar flex flex-col py-4 space-y-2">
             {sidebarItems.map(item => {
             if (!item.available) return null;
             return <Popover key={item.id}>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 relative text-white hover:bg-white/20 rounded-sm">
-                      <item.icon className="h-4 w-4 text-white mr-3 flex-shrink-0" />
-                      <span className="text-sm text-white truncate">{item.label}</span>
+                    <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                       <item.icon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />
+                       <span className="text-sm text-sidebar-foreground truncate">{item.label}</span>
                     </Button>
                   </PopoverTrigger>
                    <PopoverContent 
@@ -905,13 +901,13 @@ const Dashboard = () => {
             <div className="px-3 mt-auto">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 text-white hover:bg-white/20 rounded-sm">
+                <Button variant="ghost" size="sm" className="w-full h-10 justify-start px-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
                   {colorMode === 'light' ? <Sun className="h-4 w-4 mr-2" /> : 
                    colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 mr-2" /> :
                    colorMode === 'midtone' ? <Sunset className="h-4 w-4 mr-2" /> : 
                    colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 mr-2" style={{ filter: 'brightness(0.7)' }} /> :
                    <Moon className="h-4 w-4 mr-2" />}
-                  <span className="text-sm text-white">Theme Mode</span>
+                  <span className="text-sm text-sidebar-foreground">Theme Mode</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64 p-4" side="right" align="end">
@@ -998,7 +994,7 @@ const Dashboard = () => {
           {/* Main Content Area with Right Sidebar */}
           <div className="flex-1 flex bg-muted/30">
             {/* Canvas */}
-            <div className="flex-1 overflow-auto flex items-start justify-center bg-sky-200">
+            <div className="flex-1 overflow-auto flex items-start justify-center bg-muted/50">
               <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
@@ -1012,7 +1008,7 @@ const Dashboard = () => {
             {isMobileMenuOpen && (
               <div className="sm:hidden absolute top-0 left-0 right-0 bg-background border-b border-border p-4 space-y-2 z-50">
                 <div className="grid grid-cols-2 gap-2">
-                   <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="bg-green-500 hover:bg-green-600 text-white text-[11px] px-2 py-1 rounded-sm">
+                   <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="text-[11px] px-2 py-1 rounded-sm">
                      {isGenerating ? <RefreshCw className="h-3 w-3 mr-2 animate-spin" /> : <Wand2 className="h-3 w-3 mr-2" />}
                      Generate
                    </Button>
@@ -1085,7 +1081,7 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full bg-green-500 hover:bg-green-600 text-white px-2 py-1.5 rounded-sm text-xs">
+                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full px-2 py-1.5 rounded-sm text-xs">
                         {isGenerating ? <RefreshCw className="h-3 w-3 mr-1.5 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1.5" />}
                         Generate
                       </Button>
@@ -1095,7 +1091,7 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="w-full bg-purple-500 hover:bg-purple-600 text-white px-2 py-1.5 rounded-sm text-xs">
+                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="w-full px-2 py-1.5 rounded-sm text-xs">
                         <Sparkles className="h-3 w-3 mr-1.5" />
                         Auto Gen
                       </Button>
