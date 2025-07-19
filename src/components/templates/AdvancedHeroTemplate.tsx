@@ -115,10 +115,10 @@ export const AdvancedHeroTemplate: React.FC<AdvancedHeroTemplateProps> = ({
       {/* Content Container */}
       <div className="relative z-10 flex min-h-[calc(100vh-100px)]">
         {/* Left Content Section */}
-        <div className="flex-1 flex items-center px-8 lg:px-16 xl:px-24 pt-16">
+        <div className="flex-1 flex items-center px-8 lg:px-16 xl:px-24 pt-8">
           <div className="max-w-2xl space-y-8">
             {/* Trust Indicators */}
-            <div className="flex items-center space-x-6 text-sm font-medium opacity-80 mt-8">
+            <div className="flex items-center space-x-6 text-sm font-medium opacity-80">
               <div className="flex items-center space-x-2">
                 <Star className="w-4 h-4" style={{ color: colorPalette.accent }} />
                 <span style={{ color: colorPalette['text-primary'] }}>4.9 Rating</span>
