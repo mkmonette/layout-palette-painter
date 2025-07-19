@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal, MoreVertical, Bot, Play } from 'lucide-react';
+import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal, MoreVertical, Bot, Play, SlidersHorizontal, Image, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
@@ -106,6 +106,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     gradientDirection: 'horizontal'
   });
   const [isToolsExpanded, setIsToolsExpanded] = useState(false);
+  const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
 
   // Handle template-only dark mode toggle
   const handleTemplateDarkModeToggle = (checked: boolean) => {
@@ -417,27 +418,209 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </TooltipContent>
           </Tooltip>
 
-          {/* Generate Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={onGenerateColors}
-                disabled={isGenerating}
-                className="h-12 w-12 bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-lg border-0"
-              >
-                {isGenerating ? (
-                  <RefreshCw className="h-5 w-5 animate-spin" />
-                ) : (
-                  <Sparkles className="h-5 w-5" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Generate Palette</p>
-            </TooltipContent>
-          </Tooltip>
+          {/* Panel Toggle Button - Above Generate */}
+          <div className="flex flex-col gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
+                  className="h-12 w-12 bg-slate-600 hover:bg-slate-700 text-white shadow-lg rounded-lg border-0"
+                >
+                  <SlidersHorizontal className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Tools</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Generate Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={onGenerateColors}
+                  disabled={isGenerating}
+                  className="h-12 w-12 bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-lg border-0"
+                >
+                  {isGenerating ? (
+                    <RefreshCw className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-5 w-5" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Generate Palette</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </TooltipProvider>
       </div>
+
+      {/* Right Side Panel Overlay */}
+      {isRightPanelOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/20 z-40"
+            onClick={() => setIsRightPanelOpen(false)}
+          />
+          
+          {/* Slide-in Panel */}
+          <div className={`fixed top-0 right-0 h-full w-80 bg-white dark:bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ${
+            isRightPanelOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}>
+            <div className="flex flex-col h-full">
+              {/* Panel Header */}
+              <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="text-lg font-semibold">Tools</h3>
+                <Button
+                  onClick={() => setIsRightPanelOpen(false)}
+                  variant="ghost"
+                  size="icon"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Panel Content */}
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4">
+                  {/* Templates */}
+                  <Card className="p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Layout className="h-4 w-4" />
+                      Templates
+                    </h4>
+                    <Button
+                      onClick={() => setActiveModal('template')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Choose Template
+                    </Button>
+                  </Card>
+
+                  {/* Schemes */}
+                  <Card className="p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Palette className="h-4 w-4" />
+                      Color Schemes
+                    </h4>
+                    <Button
+                      onClick={() => setActiveModal('scheme')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Choose Scheme
+                    </Button>
+                  </Card>
+
+                  {/* Moods */}
+                  <Card className="p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      Color Moods
+                    </h4>
+                    <Button
+                      onClick={() => setActiveModal('mood')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Browse Moods
+                    </Button>
+                  </Card>
+
+                  {/* Background */}
+                  <Card className="p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      Background
+                    </h4>
+                    <Button
+                      onClick={() => setActiveModal('background')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Customize Background
+                    </Button>
+                  </Card>
+
+                  {/* From Image */}
+                  <Card className="p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Image className="h-4 w-4" />
+                      From Image
+                    </h4>
+                    <Button
+                      onClick={() => {
+                        if (!isPro) {
+                          setUpsellModal({
+                            isOpen: true,
+                            templateName: 'Image/URL Color Generator'
+                          });
+                          return;
+                        }
+                        setActiveModal('image-generator');
+                      }}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Generate from Image
+                    </Button>
+                  </Card>
+
+                  {/* Color Presets */}
+                  <Card className="p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Wand2 className="h-4 w-4" />
+                      Color Presets
+                    </h4>
+                    <Button
+                      onClick={() => setActiveModal('admin-presets')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Browse Presets
+                    </Button>
+                  </Card>
+
+                  {/* Current Palettes */}
+                  <Card className="p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      Current Palettes
+                    </h4>
+                    <Button
+                      onClick={() => setActiveModal('colors')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Customize Colors
+                    </Button>
+                  </Card>
+
+                  {/* Theme Mode */}
+                  <Card className="p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Sun className="h-4 w-4" />
+                      Theme Mode
+                    </h4>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Dark Mode</span>
+                      <Switch
+                        checked={templateDarkMode}
+                        onCheckedChange={handleTemplateDarkModeToggle}
+                      />
+                    </div>
+                  </Card>
+                </div>
+              </ScrollArea>
+            </div>
+          </div>
+        </>
+      )}
+
 
       {/* Pro Upsell Modal */}
       <ProUpsellModal isOpen={upsellModal.isOpen} onClose={() => setUpsellModal({
