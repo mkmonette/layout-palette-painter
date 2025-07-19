@@ -23,10 +23,13 @@ import { useToast } from '@/hooks/use-toast';
 import ImageUploadGenerator from '@/components/ImageUploadGenerator';
 import WebsiteColorGenerator from '@/components/WebsiteColorGenerator';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
+import { useDownloadLimits } from '@/hooks/useDownloadLimits';
+import { generateColorPalettePDF, generateBasicColorPalettePDF } from '@/utils/pdfGenerator';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import ColorThemeDropdown from '@/components/ColorThemeDropdown';
 import MoreOptionsDropdown from '@/components/MoreOptionsDropdown';
 import AdminPresetsModal from '@/components/AdminPresetsModal';
+import PDFExportModal from '@/components/PDFExportModal';
 import BackgroundCustomizer, { type BackgroundSettings } from '@/components/BackgroundCustomizer';
 interface FullscreenPreviewProps {
   template: TemplateType;
@@ -80,6 +83,11 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   const {
     isPro
   } = useFeatureAccess();
+  
+  const {
+    canDownload,
+    incrementDownload
+  } = useDownloadLimits();
 
   // Local template-only dark mode state (separate from dashboard dark mode)
   const [templateDarkMode, setTemplateDarkMode] = useState(isDarkMode);
@@ -110,6 +118,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   });
   const [isToolsExpanded, setIsToolsExpanded] = useState(false);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
+  const [showPDFExportModal, setShowPDFExportModal] = useState(false);
 
   // Handle template-only dark mode toggle
   const handleTemplateDarkModeToggle = (checked: boolean) => {
@@ -159,6 +168,135 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       return newSet;
     });
   };
+
+  // PDF Export Handlers
+  const handleDownloadPDF = () => {
+    if (!canDownload()) {
+      setUpsellModal({
+        isOpen: true,
+        templateName: 'PDF Export'
+      });
+      return;
+    }
+    setShowPDFExportModal(true);
+  };
+
+  const handleBasicPDFExport = async () => {
+    setShowPDFExportModal(false);
+    
+    if (!incrementDownload()) {
+      toast({
+        title: "Download Limit Reached",
+        description: "You've reached your daily download limit. Upgrade to Pro for unlimited downloads.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      const previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
+      if (!previewElement) {
+        const livePreviewContainer = document.querySelector('.min-h-full.transition-transform') as HTMLElement;
+        if (!livePreviewContainer) {
+          toast({
+            title: "Error",
+            description: "Could not find preview element for PDF export.",
+            variant: "destructive"
+          });
+          return;
+        }
+        await generateBasicColorPalettePDF({
+          colorPalette,
+          templateName: template,
+          previewElement: livePreviewContainer,
+          isDarkMode: templateDarkMode
+        });
+      } else {
+        await generateBasicColorPalettePDF({
+          colorPalette,
+          templateName: template,
+          previewElement,
+          isDarkMode: templateDarkMode
+        });
+      }
+      
+      toast({
+        title: "PDF Downloaded",
+        description: "Your color palette PDF has been downloaded successfully."
+      });
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      toast({
+        title: "Export Failed",
+        description: "There was an error generating the PDF. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleProfessionalPDFExport = async () => {
+    setShowPDFExportModal(false);
+    
+    if (!isPro) {
+      setUpsellModal({
+        isOpen: true,
+        templateName: 'Professional PDF Export'
+      });
+      return;
+    }
+    
+    if (!incrementDownload()) {
+      toast({
+        title: "Download Limit Reached", 
+        description: "You've reached your daily download limit. Upgrade to Pro for unlimited downloads.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      const previewElement = document.querySelector('[data-preview-element]') as HTMLElement;
+      if (!previewElement) {
+        const livePreviewContainer = document.querySelector('.min-h-full.transition-transform') as HTMLElement;
+        if (!livePreviewContainer) {
+          toast({
+            title: "Error",
+            description: "Could not find preview element for PDF export.",
+            variant: "destructive"
+          });
+          return;
+        }
+        await generateColorPalettePDF({
+          colorPalette,
+          templateName: template,
+          previewElement: livePreviewContainer,
+          isDarkMode: templateDarkMode,
+          isPro: true
+        });
+      } else {
+        await generateColorPalettePDF({
+          colorPalette,
+          templateName: template,
+          previewElement,
+          isDarkMode: templateDarkMode,
+          isPro: true
+        });
+      }
+      
+      toast({
+        title: "Professional PDF Downloaded",
+        description: "Your professional color palette PDF has been downloaded successfully."
+      });
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      toast({
+        title: "Export Failed",
+        description: "There was an error generating the professional PDF. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   useEffect(() => {
     const updateCount = () => {
       setSavedPalettesCount(getSavedCount());
@@ -331,7 +469,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        onClick={onDownloadPDF}
+                        onClick={handleDownloadPDF}
                         className="h-12 w-12 bg-gray-700 hover:bg-gray-600 text-white shadow-lg rounded-lg border-0"
                       >
                         <Download className="h-5 w-5" />
@@ -669,6 +807,18 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
         </>
       )}
 
+
+
+      {/* PDF Export Modal */}
+      <PDFExportModal
+        isOpen={showPDFExportModal}
+        onClose={() => setShowPDFExportModal(false)}
+        onBasicExport={handleBasicPDFExport}
+        onProfessionalExport={handleProfessionalPDFExport}
+        isPro={isPro}
+        colorPalette={colorPalette}
+        templateName={template}
+      />
 
       {/* Pro Upsell Modal */}
       <ProUpsellModal isOpen={upsellModal.isOpen} onClose={() => setUpsellModal({
