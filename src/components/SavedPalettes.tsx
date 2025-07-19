@@ -49,8 +49,12 @@ const SavedPalettes = () => {
   };
 
   const handleEditPalette = (palette: SavedPalette) => {
-    // Navigate to studio with this palette in edit mode
-    window.location.href = `/studio?edit=${palette.id}&palette=${encodeURIComponent(JSON.stringify(palette))}`;
+    // Navigate to studio with this palette and template applied
+    const paletteData = encodeURIComponent(JSON.stringify({
+      palette: palette,
+      template: palette.template
+    }));
+    window.location.href = `/studio?loadPalette=${paletteData}`;
   };
 
   const handleDeletePalette = (paletteId: string, paletteName: string) => {
