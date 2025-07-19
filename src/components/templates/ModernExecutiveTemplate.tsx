@@ -202,7 +202,7 @@ export const ModernExecutiveTemplate: React.FC<ModernExecutiveTemplateProps> = (
               </div>
 
               <div 
-                className="absolute -bottom-6 -left-6 w-32 h-20 rounded-2xl shadow-xl flex items-center justify-center backdrop-blur-sm"
+                className="absolute -bottom-6 -left-6 w-32 h-20 rounded-2xl shadow-xl flex items-center justify-center backdrop-blur-sm z-10"
                 style={{ backgroundColor: colorPalette.accent + 'E6' }}
               >
                 <div className="text-center">
