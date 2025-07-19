@@ -53,7 +53,7 @@ const ColorControls: React.FC<ColorControlsProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => onToggleLock(key as keyof ColorPalette)}
-                  className={`h-6 w-6 p-0 ${isLocked ? 'text-orange-500 hover:text-orange-600' : 'text-gray-400 hover:text-gray-600'}`}
+                  className={`h-4 w-4 p-0 ${isLocked ? 'text-orange-500 hover:text-orange-600' : 'text-gray-400 hover:text-gray-600'}`}
                   title={isLocked ? 'Unlock color' : 'Lock color'}
                 >
                   {isLocked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
