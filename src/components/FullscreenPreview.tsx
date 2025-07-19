@@ -211,7 +211,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
       {/* Color Scheme Modal - 2 Column Layout */}
       <Dialog open={activeModal === 'scheme'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh]">
+        <DialogContent className="max-w-2xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Palette className="h-5 w-5" />
