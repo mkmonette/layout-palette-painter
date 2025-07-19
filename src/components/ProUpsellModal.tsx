@@ -27,7 +27,7 @@ const ProUpsellModal: React.FC<ProUpsellModalProps> = ({ isOpen, onClose, templa
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Crown className="h-5 w-5 text-yellow-500" />
-              This is a PRO template
+              Upgrade to PRO
             </DialogTitle>
           </DialogHeader>
           
@@ -37,7 +37,7 @@ const ProUpsellModal: React.FC<ProUpsellModalProps> = ({ isOpen, onClose, templa
                 {templateName}
               </Badge>
               <p className="text-gray-600">
-                Upgrade to PRO to use advanced designs and features.
+                This feature requires a PRO subscription. Upgrade now to unlock advanced tools and capabilities.
               </p>
             </div>
             
@@ -53,11 +53,11 @@ const ProUpsellModal: React.FC<ProUpsellModalProps> = ({ isOpen, onClose, templa
                 </li>
                 <li className="flex items-center gap-2">
                   <Zap className="h-3 w-3" />
-                  Interactive components
+                  AI-powered features
                 </li>
                 <li className="flex items-center gap-2">
                   <Zap className="h-3 w-3" />
-                  Premium color schemes
+                  Unlimited downloads
                 </li>
                 <li className="flex items-center gap-2">
                   <Zap className="h-3 w-3" />

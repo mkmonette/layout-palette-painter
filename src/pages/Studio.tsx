@@ -373,7 +373,7 @@ const Dashboard = () => {
     if (!canDownload()) {
       setUpsellModal({
         isOpen: true,
-        templateName: 'PDF downloads'
+        templateName: 'PDF Export'
       });
       return;
     }
@@ -441,7 +441,7 @@ const Dashboard = () => {
     if (!isPro) {
       setUpsellModal({
         isOpen: true,
-        templateName: 'Professional PDF reports'
+        templateName: 'Professional PDF Export'
       });
       return;
     }
@@ -928,7 +928,7 @@ const Dashboard = () => {
                           if (!available) {
                             setUpsellModal({
                               isOpen: true,
-                              templateName: 'Template dark mode'
+                              templateName: 'Dark Mode Templates'
                             });
                             return;
                           }
@@ -1068,7 +1068,7 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate feature' })} className="w-full px-2 py-1.5 rounded-sm text-xs">
+                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate' })} className="w-full px-2 py-1.5 rounded-sm text-xs">
                         <Sparkles className="h-3 w-3 mr-1.5" />
                         Auto Gen
                       </Button>
@@ -1108,7 +1108,7 @@ const Dashboard = () => {
                           variant="outline" 
                           size="sm" 
                           className="w-full px-2 py-1.5 rounded-sm text-xs"
-                          onClick={() => setUpsellModal({ isOpen: true, templateName: 'AI Colors feature' })}
+                          onClick={() => setUpsellModal({ isOpen: true, templateName: 'AI Colors' })}
                         >
                           <Bot className="h-3 w-3 mr-1.5" />
                           AI Colors 🔒
