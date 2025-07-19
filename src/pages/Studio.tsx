@@ -875,14 +875,15 @@ const Dashboard = () => {
                                                  <div className="text-[10px] font-medium text-foreground truncate mb-1">
                                                    {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                                  </div>
-                                                 <input
-                                                   type="color"
-                                                   value={value}
-                                                   onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
-                                                   disabled={isLocked}
-                                                   className={`w-full h-4 border rounded cursor-pointer ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary'}`}
-                                                   style={{ backgroundColor: value }}
-                                                 />
+                                                  <div className={`w-full h-4 border rounded overflow-hidden ${isLocked ? 'opacity-50' : 'hover:border-primary'}`}>
+                                                    <input
+                                                      type="color"
+                                                      value={value}
+                                                      onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
+                                                      disabled={isLocked}
+                                                      className={`w-full h-full border-none cursor-pointer ${isLocked ? 'cursor-not-allowed' : ''}`}
+                                                    />
+                                                  </div>
                                                  <input
                                                    type="text"
                                                    value={value}
