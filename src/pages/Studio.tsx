@@ -705,7 +705,7 @@ const Dashboard = () => {
                                       side="right" 
                                       align="start"
                                       alignOffset={-100}
-                                      sideOffset={0}
+                                      sideOffset={20}
                                       avoidCollisions={false}
                                       onOpenAutoFocus={() => console.log('Default Templates popover opened')}
                                     >
@@ -745,7 +745,7 @@ const Dashboard = () => {
                                       side="right" 
                                       align="start"
                                       alignOffset={-100}
-                                      sideOffset={0}
+                                      sideOffset={20}
                                       avoidCollisions={false}
                                       onOpenAutoFocus={() => console.log('Custom Templates popover opened')}
                                     >
