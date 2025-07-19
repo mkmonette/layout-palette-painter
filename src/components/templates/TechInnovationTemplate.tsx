@@ -208,8 +208,8 @@ export const TechInnovationTemplate: React.FC<TechInnovationTemplateProps> = ({
                   }}
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Advanced technology and AI visualization"
+                    src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    alt="Advanced circuit board and technology visualization"
                     className="w-full h-[600px] object-cover"
                   />
                   
