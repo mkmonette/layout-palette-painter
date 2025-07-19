@@ -583,7 +583,7 @@ const Dashboard = () => {
         <div className="h-14 border-b border-border bg-card/90 backdrop-blur-md relative z-10">
           <div className="flex items-center justify-between px-4 h-full">
             <div className="flex items-center space-x-4">
-               <h1 className="text-base font-medium text-foreground">
+               <h1 className="text-3xl sm:text-2xl font-bold text-foreground leading-tight">
                  Color Palette Generator
                </h1>
             </div>
@@ -592,7 +592,7 @@ const Dashboard = () => {
               {/* AI Quota Display */}
               {canUseAIGeneration && <div className="flex items-center space-x-2">
                    <Sparkles className="h-4 w-4 text-foreground" />
-                   <span className="text-sm text-muted-foreground">
+                   <span className="text-sm sm:text-xs font-normal text-muted-foreground">
                      AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
                    </span>
                 </div>}
@@ -697,7 +697,7 @@ const Dashboard = () => {
                                       className="w-full justify-start h-auto px-3 py-2 rounded-sm"
                                       onClick={() => console.log('Default Templates button clicked')}
                                     >
-                                      <span className="text-xs">🟦 Default Templates</span>
+                                      <span className="text-base sm:text-sm font-medium tracking-tight">🟦 Default Templates</span>
                                     </Button>
                                   </PopoverTrigger>
                                     <PopoverContent 
@@ -710,13 +710,13 @@ const Dashboard = () => {
                                       onOpenAutoFocus={() => console.log('Default Templates popover opened')}
                                     >
                                     <div className="space-y-3">
-                                      <h3 className="font-medium text-xs">Default Templates</h3>
+                                      <h3 className="text-xl sm:text-lg font-semibold">Default Templates</h3>
                                       <div className="max-h-96 overflow-y-auto">
                                         <div className="space-y-2">
-                                          <p className="text-xs text-muted-foreground">
-                                            Choose from our built-in professional templates.
-                                          </p>
-                                          <Suspense fallback={<div className="text-xs text-muted-foreground">Loading templates...</div>}>
+                                         <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
+                                           Choose from our built-in professional templates.
+                                         </p>
+                                          <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading templates...</div>}>
                                             <TemplateSelector 
                                               selectedTemplate={selectedTemplate} 
                                               onTemplateChange={setSelectedTemplate} 
@@ -737,7 +737,7 @@ const Dashboard = () => {
                                       className="w-full justify-start h-auto px-3 py-2 rounded-sm"
                                       onClick={() => console.log('Custom Templates button clicked')}
                                     >
-                                      <span className="text-xs">🟩 Custom Templates</span>
+                                      <span className="text-base sm:text-sm font-medium tracking-tight">🟩 Custom Templates</span>
                                     </Button>
                                   </PopoverTrigger>
                                     <PopoverContent 
@@ -750,9 +750,9 @@ const Dashboard = () => {
                                       onOpenAutoFocus={() => console.log('Custom Templates popover opened')}
                                     >
                                     <div className="space-y-3">
-                                      <h3 className="font-medium text-xs">Custom Templates</h3>
+                                      <h3 className="text-xl sm:text-lg font-semibold">Custom Templates</h3>
                                       <div className="max-h-96 overflow-y-auto">
-                                        <Suspense fallback={<div className="text-xs text-muted-foreground">Loading custom templates...</div>}>
+                                        <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading custom templates...</div>}>
                                           <TemplatesSection 
                                             selectedTemplate={selectedTemplate} 
                                             onTemplateChange={setSelectedTemplate} 
@@ -774,9 +774,9 @@ const Dashboard = () => {
                           <div className="p-4 pt-3">
                             <div className="space-y-2">
                               <div className="space-y-4">
-                                <p className="text-xs text-muted-foreground">
-                                  Choose a color scheme to generate harmonious palettes.
-                                </p>
+                               <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
+                                 Choose a color scheme to generate harmonious palettes.
+                               </p>
                                 <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={handleSchemeChange} />
                               </div>
                             </div>
@@ -795,9 +795,9 @@ const Dashboard = () => {
 
                              {item.id === 'from-image' && 
                                <div className="space-y-2">
-                                 <p className="text-xs text-muted-foreground">
-                                   Extract color palettes from images or websites.
-                                 </p>
+                                <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
+                                  Extract color palettes from images or websites.
+                                </p>
                                  
                                  {/* Upload Image Popover */}
                                  <Popover>
@@ -857,9 +857,9 @@ const Dashboard = () => {
                                  </div>}
 
                                {item.id === 'current-palettes' && <div className="space-y-3">
-                                     <p className="text-xs text-muted-foreground">
-                                       Edit and lock current palette colors
-                                     </p>
+                                    <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
+                                      Edit and lock current palette colors
+                                    </p>
                                      <ScrollArea className="h-80">
                                        <div className="space-y-2 pr-4">
                                          {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
@@ -868,9 +868,9 @@ const Dashboard = () => {
                                               <div key={key} className="space-y-2">
                                                 {/* Label and lock icon on one line */}
                                                 <div className="flex items-center justify-between">
-                                                  <div className="text-[10px] font-medium text-foreground truncate">
-                                                    {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                                  </div>
+                                                 <div className="text-base sm:text-sm font-medium text-foreground truncate">
+                                                   {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                                 </div>
                                                   <Button
                                                     variant="ghost"
                                                     size="sm"
@@ -1023,21 +1023,21 @@ const Dashboard = () => {
                         }}
                       >
                         <Icon className={`h-4 w-4 mr-2 flex-shrink-0 ${mode === 'midtone-dark' ? 'opacity-70' : ''}`} />
-                        <div className="text-left">
-                           <div className="font-medium text-xs">{label}</div>
-                           <div className="text-[11px] text-muted-foreground">{description}</div>
-                        </div>
+                          <div className="text-left">
+                             <div className="text-base sm:text-sm font-medium">{label}</div>
+                             <div className="text-sm sm:text-xs font-normal text-muted-foreground">{description}</div>
+                          </div>
                         {!available && (
-                           <Badge variant="secondary" className="ml-auto text-[11px] px-1 py-0">
+                           <Badge variant="secondary" className="ml-auto text-sm sm:text-xs font-normal px-1 py-0">
                              Pro
                            </Badge>
                         )}
                       </Button>
                     ))}
                   </div>
-                   <div className="text-[11px] text-muted-foreground pt-2 border-t">
-                     Theme modes control the lightness range of generated colors
-                   </div>
+                 <div className="text-sm sm:text-xs font-normal text-muted-foreground pt-2 border-t leading-relaxed">
+                   Theme modes control the lightness range of generated colors
+                 </div>
                 </div>
              </PopoverContent>
             </Popover>
@@ -1061,19 +1061,19 @@ const Dashboard = () => {
             {isMobileMenuOpen && (
               <div className="sm:hidden absolute top-0 left-0 right-0 bg-background border-b border-border p-4 space-y-2 z-50">
                 <div className="grid grid-cols-2 gap-2">
-                   <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="text-[11px] px-2 py-1 rounded-sm">
+                   <Button variant="outline" size="sm" onClick={() => { handleGenerateColors(); setIsMobileMenuOpen(false); }} disabled={isGenerating} className="text-base sm:text-sm font-bold px-2 py-1 rounded-sm">
                      {isGenerating ? <RefreshCw className="h-3 w-3 mr-2 animate-spin" /> : <Wand2 className="h-3 w-3 mr-2" />}
                      Generate
                    </Button>
-                   <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-[11px] px-2 py-1 rounded-sm">
+                   <Button variant="outline" size="sm" onClick={() => { handleDownloadPDF(); setIsMobileMenuOpen(false); }} disabled={!canDownload()} className="text-base sm:text-sm font-bold px-2 py-1 rounded-sm">
                      <Download className="h-3 w-3 mr-2" />
                      Export PDF
                    </Button>
-                   <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-[11px] px-2 py-1 rounded-sm">
+                   <Button variant="outline" size="sm" onClick={() => { handleSave(); setIsMobileMenuOpen(false); }} className="text-base sm:text-sm font-bold px-2 py-1 rounded-sm">
                      <Save className="h-3 w-3 mr-2" />
                      Save
                    </Button>
-                   <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="text-[11px] px-2 py-1 rounded-sm">
+                   <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="text-base sm:text-sm font-bold px-2 py-1 rounded-sm">
                      <Maximize className="h-3 w-3 mr-2" />
                      Fullscreen
                    </Button>
@@ -1091,7 +1091,7 @@ const Dashboard = () => {
               {/* Sidebar Header */}
               <div className="p-3 border-b border-border">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Controls</span>
+                  <span className="text-xl sm:text-lg font-semibold">Controls</span>
                   {/* Mobile hamburger menu for right sidebar */}
                   <Button 
                     variant="ghost" 
@@ -1105,10 +1105,10 @@ const Dashboard = () => {
                 
                 {/* Template Info */}
                 <div className="space-y-1">
-                  <span className="text-xs text-muted-foreground">Template</span>
-                  <div className="text-xs font-medium capitalize">
-                    {selectedTemplate.replace('-', ' ')}
-                  </div>
+                 <span className="text-base sm:text-sm font-medium text-muted-foreground">Template</span>
+                 <div className="text-base sm:text-sm font-medium capitalize">
+                   {selectedTemplate.replace('-', ' ')}
+                 </div>
                 </div>
               </div>
 
@@ -1116,12 +1116,12 @@ const Dashboard = () => {
               <div className="flex-1 p-3 space-y-3">
                 {/* Zoom Controls */}
                 <div className="space-y-2">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Zoom</span>
+                  <span className="text-base sm:text-sm font-medium text-muted-foreground uppercase tracking-wide">Zoom</span>
                   <div className="flex items-center justify-between">
                     <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-1 py-1 rounded-sm">
                       <ZoomOut className="h-3 w-3" />
                     </Button>
-                    <span className="text-xs font-medium text-center">{zoomLevel}%</span>
+                    <span className="text-sm sm:text-xs font-medium text-center">{zoomLevel}%</span>
                     <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-1 py-1 rounded-sm">
                       <ZoomIn className="h-3 w-3" />
                     </Button>
@@ -1130,36 +1130,36 @@ const Dashboard = () => {
 
                 {/* Action Buttons */}
                 <div className="space-y-2">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Actions</span>
+                  <span className="text-base sm:text-sm font-medium text-muted-foreground uppercase tracking-wide">Actions</span>
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full bg-amber-500 hover:bg-amber-400 px-2 py-1.5 rounded-sm text-xs">
-                        <Maximize className="h-3 w-3 mr-1.5" />
-                        Fullscreen
-                      </Button>
+                     <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full bg-amber-500 hover:bg-amber-400 px-2 py-1.5 rounded-sm text-base sm:text-sm font-bold">
+                       <Maximize className="h-3 w-3 mr-1.5" />
+                       Fullscreen
+                     </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Enter fullscreen preview mode</TooltipContent>
+                    <TooltipContent className="text-sm sm:text-xs font-normal">Enter fullscreen preview mode</TooltipContent>
                   </Tooltip>
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full px-2 py-1.5 rounded-sm text-xs">
-                        {isGenerating ? <RefreshCw className="h-3 w-3 mr-1.5 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1.5" />}
-                        Generate
-                      </Button>
+                     <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full px-2 py-1.5 rounded-sm text-base sm:text-sm font-bold">
+                       {isGenerating ? <RefreshCw className="h-3 w-3 mr-1.5 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1.5" />}
+                       Generate
+                     </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Generate new color palette</TooltipContent>
+                    <TooltipContent className="text-sm sm:text-xs font-normal">Generate new color palette</TooltipContent>
                   </Tooltip>
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate' })} className="w-full px-2 py-1.5 rounded-sm text-xs">
-                        <Sparkles className="h-3 w-3 mr-1.5" />
-                        Auto Gen
-                      </Button>
+                     <Button variant="outline" size="sm" onClick={() => canAccessAutoGenerator ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({ isOpen: true, templateName: 'Auto Generate' })} className="w-full px-2 py-1.5 rounded-sm text-base sm:text-sm font-bold">
+                       <Sparkles className="h-3 w-3 mr-1.5" />
+                       Auto Gen
+                     </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Generate multiple color palettes</TooltipContent>
+                    <TooltipContent className="text-sm sm:text-xs font-normal">Generate multiple color palettes</TooltipContent>
                   </Tooltip>
                   
                   <Tooltip>
@@ -1167,18 +1167,18 @@ const Dashboard = () => {
                       {canUseAIGeneration ? (
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full px-2 py-1.5 rounded-sm text-xs"
-                            >
-                              <Bot className="h-3 w-3 mr-1.5" />
-                              AI Colors
-                            </Button>
+                             <Button 
+                               variant="outline" 
+                               size="sm" 
+                               className="w-full px-2 py-1.5 rounded-sm text-base sm:text-sm font-bold"
+                             >
+                               <Bot className="h-3 w-3 mr-1.5" />
+                               AI Colors
+                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-64 p-4" side="left" align="start">
                             <div className="space-y-3">
-                              <h3 className="font-medium text-xs">AI Colors</h3>
+                              <h3 className="text-xl sm:text-lg font-semibold">AI Colors</h3>
                               <div className="space-y-2">
                                 <AIColorGenerator
                                   isDarkMode={colorMode === 'dark'} 
@@ -1193,35 +1193,35 @@ const Dashboard = () => {
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          className="w-full px-2 py-1.5 rounded-sm text-xs"
-                          onClick={() => setUpsellModal({ isOpen: true, templateName: 'AI Colors' })}
-                        >
-                          <Bot className="h-3 w-3 mr-1.5" />
-                          AI Colors 🔒
-                        </Button>
+                           className="w-full px-2 py-1.5 rounded-sm text-base sm:text-sm font-bold"
+                           onClick={() => setUpsellModal({ isOpen: true, templateName: 'AI Colors' })}
+                         >
+                           <Bot className="h-3 w-3 mr-1.5" />
+                           AI Colors 🔒
+                         </Button>
                       )}
                     </TooltipTrigger>
-                    <TooltipContent>Use AI to generate palettes based on mood or theme</TooltipContent>
+                    <TooltipContent className="text-sm sm:text-xs font-normal">Use AI to generate palettes based on mood or theme</TooltipContent>
                   </Tooltip>
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="w-full px-2 py-1.5 rounded-sm text-xs">
-                        <Download className="h-3 w-3 mr-1.5" />
-                        Export PDF
-                      </Button>
+                     <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={!canDownload()} className="w-full px-2 py-1.5 rounded-sm text-base sm:text-sm font-bold">
+                       <Download className="h-3 w-3 mr-1.5" />
+                       Export PDF
+                     </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Export color palette as PDF</TooltipContent>
+                    <TooltipContent className="text-sm sm:text-xs font-normal">Export color palette as PDF</TooltipContent>
                   </Tooltip>
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleSave} className="w-full px-2 py-1.5 rounded-sm text-xs">
-                        <Save className="h-3 w-3 mr-1.5" />
-                        Save
-                      </Button>
+                     <Button variant="outline" size="sm" onClick={handleSave} className="w-full px-2 py-1.5 rounded-sm text-base sm:text-sm font-bold">
+                       <Save className="h-3 w-3 mr-1.5" />
+                       Save
+                     </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Save current palette</TooltipContent>
+                    <TooltipContent className="text-sm sm:text-xs font-normal">Save current palette</TooltipContent>
                   </Tooltip>
                 </div>
               </div>
