@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,8 +13,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import TemplateSelector from '@/components/TemplateSelector';
-import TemplatesSection from '@/components/TemplatesSection';
+const TemplateSelector = lazy(() => import('@/components/TemplateSelector'));
+const TemplatesSection = lazy(() => import('@/components/TemplatesSection'));
 import ColorControls from '@/components/ColorControls';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
@@ -689,65 +689,79 @@ const Dashboard = () => {
                                  Choose from built-in templates or your custom imports.
                                </p>
                                
-                               {/* Default Templates Popover */}
-                               <Popover>
-                                 <PopoverTrigger asChild>
-                                   <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                     <span className="text-xs">🟦 Default Templates</span>
-                                   </Button>
-                                 </PopoverTrigger>
+                                {/* Default Templates Popover */}
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button 
+                                      variant="outline" 
+                                      className="w-full justify-start h-auto px-3 py-2 rounded-sm"
+                                      onClick={() => console.log('Default Templates button clicked')}
+                                    >
+                                      <span className="text-xs">🟦 Default Templates</span>
+                                    </Button>
+                                  </PopoverTrigger>
                                     <PopoverContent 
                                       className="w-[500px] p-4" 
                                       side="right" 
                                       align="start"
                                       sideOffset={0}
                                       avoidCollisions={false}
+                                      onOpenAutoFocus={() => console.log('Default Templates popover opened')}
                                     >
-                                   <div className="space-y-3">
-                                     <h3 className="font-medium text-xs">Default Templates</h3>
+                                    <div className="space-y-3">
+                                      <h3 className="font-medium text-xs">Default Templates</h3>
                                       <div className="max-h-96 overflow-y-auto">
-                                       <div className="space-y-2">
-                                         <p className="text-xs text-muted-foreground">
-                                           Choose from our built-in professional templates.
-                                         </p>
-                                         <TemplateSelector 
-                                           selectedTemplate={selectedTemplate} 
-                                           onTemplateChange={setSelectedTemplate} 
-                                           colorPalette={colorPalette} 
-                                         />
-                                       </div>
-                                     </div>
-                                   </div>
-                                 </PopoverContent>
-                               </Popover>
+                                        <div className="space-y-2">
+                                          <p className="text-xs text-muted-foreground">
+                                            Choose from our built-in professional templates.
+                                          </p>
+                                          <Suspense fallback={<div className="text-xs text-muted-foreground">Loading templates...</div>}>
+                                            <TemplateSelector 
+                                              selectedTemplate={selectedTemplate} 
+                                              onTemplateChange={setSelectedTemplate} 
+                                              colorPalette={colorPalette} 
+                                            />
+                                          </Suspense>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </PopoverContent>
+                                </Popover>
                                
-                               {/* Custom Templates Popover */}
-                               <Popover>
-                                 <PopoverTrigger asChild>
-                                   <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                     <span className="text-xs">🟩 Custom Templates</span>
-                                   </Button>
-                                 </PopoverTrigger>
+                                {/* Custom Templates Popover */}
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button 
+                                      variant="outline" 
+                                      className="w-full justify-start h-auto px-3 py-2 rounded-sm"
+                                      onClick={() => console.log('Custom Templates button clicked')}
+                                    >
+                                      <span className="text-xs">🟩 Custom Templates</span>
+                                    </Button>
+                                  </PopoverTrigger>
                                     <PopoverContent 
                                       className="w-[500px] p-4" 
                                       side="right" 
                                       align="start"
                                       sideOffset={0}
                                       avoidCollisions={false}
+                                      onOpenAutoFocus={() => console.log('Custom Templates popover opened')}
                                     >
-                                   <div className="space-y-3">
-                                     <h3 className="font-medium text-xs">Custom Templates</h3>
-                                     <div className="max-h-96 overflow-y-auto">
-                                       <TemplatesSection 
-                                         selectedTemplate={selectedTemplate} 
-                                         onTemplateChange={setSelectedTemplate} 
-                                         colorPalette={colorPalette} 
-                                         showOnlyCustom={true}
-                                       />
-                                     </div>
-                                   </div>
-                                 </PopoverContent>
-                               </Popover>
+                                    <div className="space-y-3">
+                                      <h3 className="font-medium text-xs">Custom Templates</h3>
+                                      <div className="max-h-96 overflow-y-auto">
+                                        <Suspense fallback={<div className="text-xs text-muted-foreground">Loading custom templates...</div>}>
+                                          <TemplatesSection 
+                                            selectedTemplate={selectedTemplate} 
+                                            onTemplateChange={setSelectedTemplate} 
+                                            colorPalette={colorPalette} 
+                                            showOnlyCustom={true}
+                                          />
+                                        </Suspense>
+                                      </div>
+                                    </div>
+                                  </PopoverContent>
+                                </Popover>
                              </div>
                            </div>
                          </div>
