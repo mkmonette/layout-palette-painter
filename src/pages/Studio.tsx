@@ -103,16 +103,16 @@ const Dashboard: React.FC = () => {
   const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
     enabled: true,
     mode: 'gradient',
-    style: 'waves',
+    style: 'wavy-layers',
     opacity: 0.6,
     waveHeight: 40,
     blobSize: 200,
     meshIntensity: 0.5,
     patternScale: 1.0,
-    gradientFillType: 'radial',
+    gradientFillType: 'gradient',
     gradientStartColor: 'brand',
     gradientEndColor: 'accent',
-    gradientDirection: 'bottom-right'
+    gradientDirection: 'horizontal'
   });
 
   const { savePalette } = useSavedPalettes();
