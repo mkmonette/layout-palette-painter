@@ -279,6 +279,42 @@ All colors MUST be HSL.
   animation: shimmer 2s infinite;
 }
 
+/* Scrollbar styling for dark mode support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) hsl(var(--background));
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+*::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+.dark *::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
 @layer base {
   * {
     @apply border-border;
