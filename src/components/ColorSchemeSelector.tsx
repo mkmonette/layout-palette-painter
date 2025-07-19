@@ -63,21 +63,21 @@ const ColorSchemeSelector: React.FC<ColorSchemeSelectorProps> = ({
   onSchemeChange
 }) => {
   return (
-    <RadioGroup value={selectedScheme} onValueChange={onSchemeChange} className="grid grid-cols-2 gap-3">
+    <RadioGroup value={selectedScheme} onValueChange={onSchemeChange} className="grid grid-cols-2 gap-2">
       {colorSchemes.map((scheme) => (
         <div
           key={scheme.id}
-          className={`w-full border rounded p-2 transition-all duration-200 cursor-pointer ${
+          className={`w-full border rounded p-1.5 transition-all duration-200 cursor-pointer ${
             selectedScheme === scheme.id 
               ? 'border-blue-500 bg-blue-50' 
               : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
           }`}
           onClick={() => onSchemeChange(scheme.id)}
         >
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5">
             <RadioGroupItem value={scheme.id} id={scheme.id} className="w-3 h-3" />
             <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5">
                 <Label htmlFor={scheme.id} className="text-xs font-medium cursor-pointer">
                   {scheme.name}
                 </Label>
@@ -91,7 +91,7 @@ const ColorSchemeSelector: React.FC<ColorSchemeSelectorProps> = ({
                   ))}
                 </div>
               </div>
-              <p className="text-xs text-gray-600 mt-1">{scheme.description}</p>
+              <p className="text-xs text-gray-600 mt-0.5">{scheme.description}</p>
             </div>
           </div>
         </div>
