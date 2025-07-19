@@ -239,7 +239,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <div className="p-4">
+            <div className="p-4 grid grid-cols-2 gap-3">
               <ColorControls colorPalette={colorPalette} onColorChange={(colorKey, color) => {
               const newPalette = {
                 ...colorPalette,
