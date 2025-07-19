@@ -52,7 +52,9 @@ const FloatingColorOrbs = () => {
     'hsl(188, 94%, 50%)', // Turquoise
     'hsl(142, 76%, 36%)', // Green
     'hsl(45, 93%, 47%)',  // Orange
-    'hsl(217, 91%, 60%)'  // Blue
+    'hsl(217, 91%, 60%)', // Blue
+    'hsl(280, 100%, 70%)', // Light Purple
+    'hsl(350, 90%, 60%)'   // Coral
   ];
 
   return (
@@ -66,11 +68,13 @@ const FloatingColorOrbs = () => {
             i === 2 ? 'bottom-1/3 right-12' :
             i === 3 ? 'top-2/3 left-1/4' :
             i === 4 ? 'bottom-20 left-20' :
-            'top-1/2 right-1/3'
+            i === 5 ? 'top-1/2 right-1/3' :
+            i === 6 ? 'top-16 left-1/3' :
+            'bottom-16 right-1/4'
           } hidden lg:block`}
-          style={{ animationDelay: `${i * 1000}ms` }}
+          style={{ animationDelay: `${i * 800}ms` }}
         >
-          <ColorOrb color={color} size={i % 2 === 0 ? "lg" : "md"} />
+          <ColorOrb color={color} size={i % 3 === 0 ? "xl" : i % 2 === 0 ? "lg" : "md"} />
         </div>
       ))}
     </div>
