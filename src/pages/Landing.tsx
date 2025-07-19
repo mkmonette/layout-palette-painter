@@ -63,7 +63,7 @@ const FloatingColorOrbs = () => {
         <div
           key={i}
           className={`absolute floating-palette ${
-            i === 0 ? 'top-20 right-20' : 
+            i === 0 ? 'top-32 left-12' : 
             i === 1 ? 'top-1/3 left-16' : 
             i === 2 ? 'bottom-1/3 right-12' :
             i === 3 ? 'top-2/3 left-1/4' :
