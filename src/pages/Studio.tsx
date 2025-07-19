@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -144,6 +144,9 @@ const Dashboard = () => {
     maxAIGenerationsPerMonth,
     canUseAIGeneration
   } = useFeatureAccess();
+  
+  // Coin balance state
+  const [coinBalance, setCoinBalance] = useState(0);
 
   // Initialize OpenAI on component mount if API key exists
   React.useEffect(() => {
@@ -155,6 +158,22 @@ const Dashboard = () => {
         console.error('Failed to initialize OpenAI:', error);
       }
     }
+  }, []);
+
+  // Load coin balance from localStorage
+  React.useEffect(() => {
+    const loadCoinBalance = () => {
+      const savedBalance = localStorage.getItem('user_coin_balance');
+      if (savedBalance) {
+        setCoinBalance(parseInt(savedBalance, 10) || 0);
+      } else {
+        // Set default balance for new users
+        const defaultBalance = 100;
+        setCoinBalance(defaultBalance);
+        localStorage.setItem('user_coin_balance', defaultBalance.toString());
+      }
+    };
+    loadCoinBalance();
   }, []);
   const handleLogout = () => {
     logoutUser();
@@ -638,7 +657,16 @@ const Dashboard = () => {
                     <Menu className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="flex items-center justify-between px-2 py-1.5 border-b">
+                    <div className="flex items-center gap-2">
+                      <Coins className="h-4 w-4 text-yellow-500" />
+                      <span className="text-sm font-medium">Coin Balance</span>
+                    </div>
+                    <Badge variant="secondary" className="font-semibold">
+                      {coinBalance.toLocaleString()}
+                    </Badge>
+                  </div>
                   <DropdownMenuItem onClick={() => navigate('/dashboard')}>
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     Dashboard
