@@ -63,9 +63,9 @@ const FloatingColorOrbs = () => {
         <div
           key={i}
           className={`absolute floating-palette ${
-            i === 0 ? 'top-20 right-20' : 
-            i === 1 ? 'top-1/3 left-16' : 
-            i === 2 ? 'bottom-1/3 right-12' :
+            i === 0 ? 'top-32 right-16' : 
+            i === 1 ? 'top-1/2 left-8' : 
+            i === 2 ? 'bottom-24 right-1/3' :
             'hidden'
           } hidden lg:block`}
           style={{ animationDelay: `${i * 800}ms` }}
