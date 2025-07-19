@@ -61,19 +61,22 @@ const ColorControls: React.FC<ColorControlsProps> = ({
               )}
             </div>
             <div className="flex items-center space-x-2">
-              <div 
-                className={`w-10 h-10 rounded-lg border-2 shadow-sm flex-shrink-0 ${isLocked ? 'border-orange-300' : 'border-gray-200'}`}
-                style={{ backgroundColor: value }}
-              />
-              <div className="flex-1 space-y-1">
+              <div className="relative">
+                <div 
+                  className={`w-10 h-10 rounded-lg border-2 shadow-sm flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300' : 'border-gray-200'}`}
+                  style={{ backgroundColor: value }}
+                  title={`Click to edit ${key.replace(/-/g, ' ')}`}
+                />
                 <Input
                   id={key}
                   type="color"
                   value={value}
                   onChange={(e) => onColorChange(key as keyof ColorPalette, e.target.value)}
-                  className="w-full h-8 border-gray-300 cursor-pointer"
+                  className="absolute inset-0 w-10 h-10 opacity-0 cursor-pointer disabled:cursor-not-allowed"
                   disabled={isLocked}
                 />
+              </div>
+              <div className="flex-1">
                 <Input
                   type="text"
                   value={value}
