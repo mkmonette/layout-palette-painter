@@ -1081,16 +1081,6 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full px-2 py-1.5 rounded-sm text-xs">
-                        <Maximize className="h-3 w-3 mr-1.5" />
-                        Fullscreen
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Toggle fullscreen preview</TooltipContent>
-                  </Tooltip>
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
                       <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full px-2 py-1.5 rounded-sm text-xs">
                         {isGenerating ? <RefreshCw className="h-3 w-3 mr-1.5 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1.5" />}
                         Generate
