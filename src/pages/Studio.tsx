@@ -1081,6 +1081,16 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full bg-amber-500 hover:bg-amber-400 px-2 py-1.5 rounded-sm text-xs">
+                        <Maximize className="h-3 w-3 mr-1.5" />
+                        Fullscreen
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Enter fullscreen preview mode</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
                       <Button variant="outline" size="sm" onClick={handleGenerateColors} disabled={isGenerating} className="w-full px-2 py-1.5 rounded-sm text-xs">
                         {isGenerating ? <RefreshCw className="h-3 w-3 mr-1.5 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1.5" />}
                         Generate
@@ -1118,11 +1128,6 @@ const Dashboard = () => {
                     </TooltipTrigger>
                     <TooltipContent>Save current palette</TooltipContent>
                   </Tooltip>
-                  
-                  <Button variant="outline" size="sm" onClick={handleFullscreenToggle} className="w-full bg-amber-500 hover:bg-amber-400 px-2 py-1.5 rounded-sm text-xs">
-                    <Maximize className="h-3 w-3 mr-1.5" />
-                    Fullscreen
-                  </Button>
                 </div>
               </div>
             </div>
