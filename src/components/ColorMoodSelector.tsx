@@ -426,7 +426,7 @@ const ColorMoodSelector: React.FC<ColorMoodSelectorProps> = ({
 
           {/* Mood Grid */}
           <ScrollArea className="h-[50vh]">
-            <div className="grid grid-cols-3 gap-2 p-2 pb-4">
+            <div className="grid grid-cols-3 gap-2 p-2 pb-6">
               {filteredMoods.map(mood => (
                 <Card
                   key={mood.id}
