@@ -14,12 +14,17 @@ interface ColorControlsProps {
 }
 
 const colorLabels = {
-  primary: 'Primary Color',
-  secondary: 'Secondary Color',
-  accent: 'Accent Color',
+  primary: 'Primary (Headers & CTAs)',
+  secondary: 'Secondary (Sections)',
+  accent: 'Accent (Highlights)',
   background: 'Background',
-  text: 'Text Color',
-  textLight: 'Light Text'
+  text: 'Text Content',
+  textLight: 'Light Text',
+  'section-bg-1': 'Section Background 1',
+  'section-bg-2': 'Section Background 2',
+  'section-bg-3': 'Section Background 3',
+  'card-bg': 'Card Background',
+  'nav-bg': 'Navigation Background'
 };
 
 const ColorControls: React.FC<ColorControlsProps> = ({
