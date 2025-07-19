@@ -118,7 +118,7 @@ export const ProCosmeticsTemplate: React.FC<ProCosmeticsTemplateProps> = ({ pale
               >
                 <div className="flex items-center space-x-4">
                   <img
-                    src="https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                    src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
                     alt="Skincare serum"
                     className="w-16 h-16 object-cover rounded-lg"
                   />
