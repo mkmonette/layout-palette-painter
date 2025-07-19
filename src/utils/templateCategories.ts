@@ -24,9 +24,107 @@ export const heroHeaderTemplates: Template[] = [
     category: 'hero-header'
   },
   {
+    id: 'bold-landing',
+    name: 'Bold Landing',
+    description: 'Eye-catching landing page design',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
+    id: 'creative-portfolio',
+    name: 'Creative Portfolio',
+    description: 'Artistic portfolio layout',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
+    id: 'split-screen',
+    name: 'Split Screen',
+    description: 'Dynamic split layout with image showcase',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
+    id: 'magazine-style',
+    name: 'Magazine Style',
+    description: 'Editorial design with typography focus',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
+    id: 'startup-landing',
+    name: 'Startup Landing',
+    description: 'Tech startup focused design',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
+    id: 'tech-startup',
+    name: 'Tech Startup',
+    description: 'Modern tech company with glassmorphism',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
+    id: 'creative-agency',
+    name: 'Creative Agency',
+    description: 'Bold creative studio design',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
+    id: 'saas-product',
+    name: 'SaaS Product',
+    description: 'Clean SaaS landing with features',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
+    id: 'ecommerce-landing',
+    name: 'E-commerce Landing',
+    description: 'Product-focused e-commerce design',
+    isPro: false,
+    category: 'hero-header'
+  },
+  {
     id: 'advanced-hero',
     name: 'Advanced Hero',
     description: 'Sophisticated header design with premium typography and visual elements',
+    isPro: true,
+    category: 'hero-header'
+  },
+  {
+    id: 'modern-executive',
+    name: 'Modern Executive',
+    description: 'Professional business template with strategic design and authority',
+    isPro: true,
+    category: 'hero-header'
+  },
+  {
+    id: 'creative-showcase',
+    name: 'Creative Showcase',
+    description: 'Dynamic creative template with artistic layouts and bold visuals',
+    isPro: true,
+    category: 'hero-header'
+  },
+  {
+    id: 'tech-innovation',
+    name: 'Tech Innovation',
+    description: 'Cutting-edge technology template with futuristic design elements',
+    isPro: true,
+    category: 'hero-header'
+  },
+  {
+    id: 'luxury-brand',
+    name: 'Luxury Brand',
+    description: 'Premium luxury template with sophisticated elegance and refinement',
+    isPro: true,
+    category: 'hero-header'
+  },
+  {
+    id: 'startup-vision',
+    name: 'Startup Vision',
+    description: 'Dynamic startup template with growth-focused design and innovation',
     isPro: true,
     category: 'hero-header'
   }
@@ -34,69 +132,6 @@ export const heroHeaderTemplates: Template[] = [
 
 // Full Template: Complete page layouts
 export const fullTemplates: Template[] = [
-  {
-    id: 'bold-landing',
-    name: 'Bold Landing',
-    description: 'Eye-catching landing page design',
-    isPro: false,
-    category: 'full-template'
-  },
-  {
-    id: 'creative-portfolio',
-    name: 'Creative Portfolio',
-    description: 'Artistic portfolio layout',
-    isPro: false,
-    category: 'full-template'
-  },
-  {
-    id: 'split-screen',
-    name: 'Split Screen',
-    description: 'Dynamic split layout with image showcase',
-    isPro: false,
-    category: 'full-template'
-  },
-  {
-    id: 'magazine-style',
-    name: 'Magazine Style',
-    description: 'Editorial design with typography focus',
-    isPro: false,
-    category: 'full-template'
-  },
-  {
-    id: 'startup-landing',
-    name: 'Startup Landing',
-    description: 'Tech startup focused design',
-    isPro: false,
-    category: 'full-template'
-  },
-  {
-    id: 'tech-startup',
-    name: 'Tech Startup',
-    description: 'Modern tech company with glassmorphism',
-    isPro: false,
-    category: 'full-template'
-  },
-  {
-    id: 'creative-agency',
-    name: 'Creative Agency',
-    description: 'Bold creative studio design',
-    isPro: false,
-    category: 'full-template'
-  },
-  {
-    id: 'saas-product',
-    name: 'SaaS Product',
-    description: 'Clean SaaS landing with features',
-    isPro: false,
-    category: 'full-template'
-  },
-  {
-    id: 'ecommerce-landing',
-    name: 'E-commerce Landing',
-    description: 'Product-focused e-commerce design',
-    isPro: false,
-    category: 'full-template'
-  },
   {
     id: 'ecommerce-product-showcase',
     name: 'Product Showcase',
@@ -136,41 +171,6 @@ export const fullTemplates: Template[] = [
     id: 'pro-cosmetics',
     name: 'Pro Cosmetics',
     description: 'Premium beauty and cosmetics template with elegant product showcase',
-    isPro: true,
-    category: 'full-template'
-  },
-  {
-    id: 'modern-executive',
-    name: 'Modern Executive',
-    description: 'Professional business template with strategic design and authority',
-    isPro: true,
-    category: 'full-template'
-  },
-  {
-    id: 'creative-showcase',
-    name: 'Creative Showcase',
-    description: 'Dynamic creative template with artistic layouts and bold visuals',
-    isPro: true,
-    category: 'full-template'
-  },
-  {
-    id: 'tech-innovation',
-    name: 'Tech Innovation',
-    description: 'Cutting-edge technology template with futuristic design elements',
-    isPro: true,
-    category: 'full-template'
-  },
-  {
-    id: 'luxury-brand',
-    name: 'Luxury Brand',
-    description: 'Premium luxury template with sophisticated elegance and refinement',
-    isPro: true,
-    category: 'full-template'
-  },
-  {
-    id: 'startup-vision',
-    name: 'Startup Vision',
-    description: 'Dynamic startup template with growth-focused design and innovation',
     isPro: true,
     category: 'full-template'
   }
