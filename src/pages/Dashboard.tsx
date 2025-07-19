@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Palette, Coins, User, UserCog, Save } from 'lucide-react';
+import { Palette, Coins, User, UserCog, Save, BarChart3 } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -16,10 +16,16 @@ import {
 import ProfileSettings from '@/components/ProfileSettings';
 import AccountSettings from '@/components/AccountSettings';
 import SavedPalettes from '@/components/SavedPalettes';
-
+import Overview from '@/components/Overview';
 import CoinCredits from '@/components/CoinCredits';
 
 const menuItems = [
+  {
+    title: "📊 Overview",
+    url: "#",
+    icon: BarChart3,
+    id: "overview"
+  },
   {
     title: "Go to Studio",
     url: "/studio",
@@ -97,6 +103,8 @@ function DashboardSidebar({ activeItem, onItemClick }: DashboardSidebarProps) {
 
 const DashboardContent = ({ activeItem }: { activeItem: string }) => {
   switch (activeItem) {
+    case 'overview':
+      return <Overview />;
     case 'palettes':
       return <SavedPalettes />;
     case 'profile':
@@ -106,30 +114,22 @@ const DashboardContent = ({ activeItem }: { activeItem: string }) => {
     case 'credits':
       return <CoinCredits />;
     default:
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-6">Welcome to your Dashboard</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-card p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-semibold mb-2">Quick Stats</h3>
-              <p className="text-muted-foreground">View your app statistics</p>
-            </div>
-            <div className="bg-card p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-semibold mb-2">Recent Activity</h3>
-              <p className="text-muted-foreground">Latest user interactions</p>
-            </div>
-            <div className="bg-card p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-semibold mb-2">System Health</h3>
-              <p className="text-muted-foreground">Monitor system status</p>
-            </div>
-          </div>
-        </div>
-      );
+      return <Overview />;
   }
 };
 
 const Dashboard = () => {
-  const [activeItem, setActiveItem] = useState('dashboard');
+  const [activeItem, setActiveItem] = useState('overview');
+
+  // Listen for custom navigation events from Overview component
+  useEffect(() => {
+    const handleNavigateToPalettes = () => {
+      setActiveItem('palettes');
+    };
+
+    window.addEventListener('navigate-to-palettes', handleNavigateToPalettes);
+    return () => window.removeEventListener('navigate-to-palettes', handleNavigateToPalettes);
+  }, []);
 
   const handleItemClick = (itemId: string) => {
     setActiveItem(itemId);
