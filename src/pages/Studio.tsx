@@ -866,29 +866,24 @@ const Dashboard = () => {
                                            const isLocked = lockedColors.has(key as keyof ColorPalette);
                                            return (
                                              <div key={key} className="flex items-center gap-2">
-                                                <div 
-                                                  className={`w-6 h-6 rounded border flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
-                                                  style={{ backgroundColor: value }}
-                                                  title={`Click to edit ${key.replace(/-/g, ' ')}`}
-                                                  onClick={() => {
-                                                    if (!isLocked) {
-                                                      const colorInput = document.getElementById(`color-input-${key}`) as HTMLInputElement;
-                                                      colorInput?.click();
-                                                    }
-                                                  }}
-                                                />
-                                                <div className="flex-1 min-w-0">
-                                                  <div className="text-[10px] font-medium text-foreground truncate mb-1">
-                                                    {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                                  </div>
+                                                <div className="relative">
+                                                  <div 
+                                                    className={`w-6 h-6 rounded border flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
+                                                    style={{ backgroundColor: value }}
+                                                    title={`Click to edit ${key.replace(/-/g, ' ')}`}
+                                                  />
                                                   <input
-                                                    id={`color-input-${key}`}
                                                     type="color"
                                                     value={value}
                                                     onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
                                                     disabled={isLocked}
-                                                    className="hidden"
+                                                    className="absolute inset-0 w-6 h-6 opacity-0 cursor-pointer disabled:cursor-not-allowed"
                                                   />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                  <div className="text-[10px] font-medium text-foreground truncate mb-1">
+                                                    {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                                  </div>
                                                  <input
                                                    type="text"
                                                    value={value}
