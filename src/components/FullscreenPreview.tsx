@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal } from 'lucide-react';
+import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
@@ -105,6 +105,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     gradientEndColor: 'accent',
     gradientDirection: 'horizontal'
   });
+  const [isToolsExpanded, setIsToolsExpanded] = useState(false);
 
   // Handle template-only dark mode toggle
   const handleTemplateDarkModeToggle = (checked: boolean) => {
@@ -312,9 +313,80 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
       closeModal();
     }} />
 
-      {/* Generate Button - Bottom Right */}
-      <div className="fixed bottom-6 right-6 z-30">
+      {/* Floating Tools Group - Bottom Right */}
+      <div className="fixed bottom-6 right-6 z-30 flex items-end gap-3">
         <TooltipProvider>
+          {/* Collapsible Tools Group */}
+          <div className="flex flex-col items-center gap-2">
+            {/* Expanded Tools */}
+            {isToolsExpanded && (
+              <div className="flex flex-col gap-2 animate-fade-in">
+                {/* Export PDF */}
+                {onDownloadPDF && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={onDownloadPDF}
+                        className="h-12 w-12 bg-gray-700 hover:bg-gray-600 text-white shadow-lg rounded-lg border-0"
+                      >
+                        <Download className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Export PDF</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* Save Palette */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleSave}
+                      className="h-12 w-12 bg-gray-700 hover:bg-gray-600 text-white shadow-lg rounded-lg border-0"
+                    >
+                      <Save className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Save Palette</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                {/* Saved Palettes */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => setActiveModal('saved')}
+                      className="h-12 w-12 bg-gray-700 hover:bg-gray-600 text-white shadow-lg rounded-lg border-0"
+                    >
+                      <BookOpen className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Saved Palettes</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            )}
+
+            {/* Toggle Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setIsToolsExpanded(!isToolsExpanded)}
+                  className="h-12 w-12 bg-gray-700 hover:bg-gray-600 text-white shadow-lg rounded-lg border-0"
+                >
+                  <MoreVertical className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isToolsExpanded ? 'Collapse Tools' : 'Expand Tools'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+
+          {/* Generate Button */}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
