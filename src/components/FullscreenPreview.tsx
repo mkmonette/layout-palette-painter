@@ -13,6 +13,7 @@ import LivePreview from '@/components/LivePreview';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import TemplateSelector from '@/components/TemplateSelector';
 import ColorControls from '@/components/ColorControls';
+import ColorModeSelector from '@/components/ColorModeSelector';
 import ColorMoodSelector from '@/components/ColorMoodSelector';
 import { TemplateType, ColorPalette } from '@/types/template';
 import { ColorMode } from '@/utils/colorGenerator';
@@ -533,20 +534,31 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
                       <Settings className="h-2 w-2 text-muted-foreground" />
                     </div>
 
-                    {/* Theme Mode */}
-                    <div className="flex items-center justify-between p-2 rounded border">
-                      <div className="flex items-center gap-2">
-                        <Sun className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs font-medium">Theme</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className="text-[10px] text-muted-foreground">
-                          {templateDarkMode ? 'Dark' : 'Light'}
-                        </span>
-                        <Switch
-                          checked={templateDarkMode}
-                          onCheckedChange={handleTemplateDarkModeToggle}
-                        />
+                    {/* Color Mode */}
+                    <div className="p-2 rounded border">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Sun className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-xs font-medium">Color Mode</span>
+                          <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                            {colorMode}
+                          </Badge>
+                        </div>
+                        <div className="grid grid-cols-5 gap-1">
+                          {['light', 'light-midtone', 'midtone', 'midtone-dark', 'dark'].map((mode) => (
+                            <Button
+                              key={mode}
+                              variant={colorMode === mode ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => onModeChange(mode as ColorMode)}
+                              className="text-[9px] px-1 py-1 h-6"
+                            >
+                              {mode === 'light-midtone' ? 'L-M' : 
+                               mode === 'midtone-dark' ? 'M-D' :
+                               mode.charAt(0).toUpperCase()}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>

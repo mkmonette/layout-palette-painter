@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Sun, Sunset, Moon } from 'lucide-react';
+import { Sun, Sunset, Moon, CloudSun, CloudMoon } from 'lucide-react';
 import { ColorMode } from '@/utils/colorGenerator';
 
 interface ColorModeSelectorProps {
@@ -22,10 +22,22 @@ const ColorModeSelector: React.FC<ColorModeSelectorProps> = ({
       description: 'Bright, high-contrast colors (85-100% lightness)'
     },
     {
+      id: 'light-midtone',
+      label: 'Light-Mid',
+      icon: CloudSun,
+      description: 'Light with subtle depth (65-85% lightness)'
+    },
+    {
       id: 'midtone',
       label: 'Midtone',
       icon: Sunset,
       description: 'Balanced, medium-intensity colors (45-65% lightness)'
+    },
+    {
+      id: 'midtone-dark',
+      label: 'Mid-Dark',
+      icon: CloudMoon,
+      description: 'Dark with medium contrast (25-45% lightness)'
     },
     {
       id: 'dark',
@@ -38,8 +50,7 @@ const ColorModeSelector: React.FC<ColorModeSelectorProps> = ({
   return (
     <div className="space-y-3">
       <label className="text-sm font-medium text-foreground">Color Mode</label>
-      <div className="grid grid-cols-3 gap-2">
-        {modes.map((mode) => {
+      <div className="grid grid-cols-5 gap-1">{modes.map((mode) => {
           const Icon = mode.icon;
           const isSelected = selectedMode === mode.id;
           
