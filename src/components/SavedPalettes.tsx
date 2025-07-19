@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,83 +7,32 @@ import { useToast } from '@/hooks/use-toast';
 import { Palette, Eye, Edit, Trash2, Calendar, Search, Grid, List, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useSavedPalettes } from '@/hooks/useSavedPalettes';
+import LivePreview from '@/components/LivePreview';
+import { TemplateType, ColorPalette } from '@/types/template';
 
-interface SavedPalette {
+interface SavedPalette extends ColorPalette {
   id: string;
   name: string;
-  colors: string[];
-  dateCreated: string;
-  tags?: string[];
-  isPublic?: boolean;
+  savedAt: string;
+  template: TemplateType;
 }
 
 const SavedPalettes = () => {
-  const [savedPalettes, setSavedPalettes] = useState<SavedPalette[]>([]);
+  const { savedPalettes } = useSavedPalettes();
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('dateCreated');
+  const [sortBy, setSortBy] = useState('savedAt');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [filterBy, setFilterBy] = useState('all');
   const { toast } = useToast();
 
-  // Mock data - replace with actual data fetching
-  useEffect(() => {
-    const mockPalettes: SavedPalette[] = [
-      {
-        id: '1',
-        name: 'Ocean Breeze',
-        colors: ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd', '#dbeafe'],
-        dateCreated: '2024-01-15T10:30:00Z',
-        tags: ['blue', 'ocean', 'calm'],
-        isPublic: true
-      },
-      {
-        id: '2',
-        name: 'Sunset Vibes',
-        colors: ['#dc2626', '#ea580c', '#f59e0b', '#fbbf24', '#fef3c7'],
-        dateCreated: '2024-01-14T15:45:00Z',
-        tags: ['warm', 'sunset', 'orange'],
-        isPublic: false
-      },
-      {
-        id: '3',
-        name: 'Forest Green',
-        colors: ['#14532d', '#166534', '#16a34a', '#22c55e', '#bbf7d0'],
-        dateCreated: '2024-01-13T09:15:00Z',
-        tags: ['green', 'nature', 'fresh'],
-        isPublic: true
-      },
-      {
-        id: '4',
-        name: 'Purple Dream',
-        colors: ['#581c87', '#7c3aed', '#8b5cf6', '#a78bfa', '#e9d5ff'],
-        dateCreated: '2024-01-12T14:20:00Z',
-        tags: ['purple', 'dreamy', 'elegant'],
-        isPublic: false
-      },
-      {
-        id: '5',
-        name: 'Monochrome',
-        colors: ['#000000', '#374151', '#6b7280', '#d1d5db', '#ffffff'],
-        dateCreated: '2024-01-11T11:00:00Z',
-        tags: ['black', 'white', 'minimal'],
-        isPublic: true
-      }
-    ];
-    setSavedPalettes(mockPalettes);
-  }, []);
 
   const filteredAndSortedPalettes = savedPalettes
     .filter(palette => {
-      const matchesSearch = palette.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           palette.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesFilter = filterBy === 'all' || 
-                           (filterBy === 'public' && palette.isPublic) ||
-                           (filterBy === 'private' && !palette.isPublic);
-      return matchesSearch && matchesFilter;
+      return palette.name.toLowerCase().includes(searchTerm.toLowerCase());
     })
     .sort((a, b) => {
-      if (sortBy === 'dateCreated') {
-        return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+      if (sortBy === 'savedAt') {
+        return new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime();
       } else if (sortBy === 'name') {
         return a.name.localeCompare(b.name);
       }
@@ -91,26 +40,28 @@ const SavedPalettes = () => {
     });
 
   const handleViewPalette = (palette: SavedPalette) => {
-    toast({
-      title: "Viewing Palette",
-      description: `Opening "${palette.name}" for preview.`,
-    });
+    // Navigate to studio with this palette
+    window.location.href = `/studio?palette=${encodeURIComponent(JSON.stringify(palette))}`;
   };
 
   const handleEditPalette = (palette: SavedPalette) => {
-    toast({
-      title: "Edit Palette",
-      description: `Opening "${palette.name}" in the editor.`,
-    });
+    // Navigate to studio with this palette in edit mode
+    window.location.href = `/studio?edit=${palette.id}&palette=${encodeURIComponent(JSON.stringify(palette))}`;
   };
 
   const handleDeletePalette = (paletteId: string, paletteName: string) => {
-    setSavedPalettes(prev => prev.filter(p => p.id !== paletteId));
+    // Remove from localStorage
+    const updatedPalettes = savedPalettes.filter(p => p.id !== paletteId);
+    localStorage.setItem('savedPalettes', JSON.stringify(updatedPalettes));
+    
     toast({
       title: "Palette Deleted",
       description: `"${paletteName}" has been removed from your saved palettes.`,
       variant: "destructive"
     });
+    
+    // Reload saved palettes
+    window.location.reload();
   };
 
   const formatDate = (dateString: string) => {
@@ -124,9 +75,18 @@ const SavedPalettes = () => {
   const PaletteCard = ({ palette }: { palette: SavedPalette }) => (
     <Card className="group hover:shadow-lg transition-all duration-200 animate-fade-in">
       <CardContent className="p-4">
+        {/* Template Preview */}
+        <div className="mb-4 rounded-lg overflow-hidden border shadow-sm">
+          <div className="h-32 w-full scale-50 origin-top-left transform-gpu overflow-hidden">
+            <div className="w-[200%] h-[200%]">
+              <LivePreview template={palette.template} colorPalette={palette} />
+            </div>
+          </div>
+        </div>
+
         {/* Color Swatches */}
-        <div className="flex rounded-lg overflow-hidden mb-3 h-20 shadow-sm">
-          {palette.colors.map((color, index) => (
+        <div className="flex rounded-lg overflow-hidden mb-3 h-12 shadow-sm">
+          {[palette.brand, palette.accent, palette["button-primary"], palette["section-bg-1"], palette["text-primary"]].map((color, index) => (
             <div
               key={index}
               className="flex-1 transition-all duration-200 hover:scale-105"
@@ -140,32 +100,15 @@ const SavedPalettes = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-lg truncate">{palette.name}</h3>
-            {palette.isPublic && (
-              <Badge variant="secondary" className="text-xs">
-                Public
-              </Badge>
-            )}
+            <Badge variant="secondary" className="text-xs">
+              {palette.template}
+            </Badge>
           </div>
 
           <div className="flex items-center text-sm text-muted-foreground">
             <Calendar className="w-4 h-4 mr-1" />
-            {formatDate(palette.dateCreated)}
+            {formatDate(palette.savedAt)}
           </div>
-
-          {palette.tags && palette.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {palette.tags.slice(0, 3).map((tag, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
-              {palette.tags.length > 3 && (
-                <Badge variant="outline" className="text-xs">
-                  +{palette.tags.length - 3}
-                </Badge>
-              )}
-            </div>
-          )}
 
           {/* Actions */}
           <div className="flex gap-2 pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -221,9 +164,18 @@ const SavedPalettes = () => {
     <Card className="group hover:shadow-md transition-all duration-200 animate-fade-in">
       <CardContent className="p-4">
         <div className="flex items-center gap-4">
+          {/* Template Preview */}
+          <div className="flex-shrink-0 w-32 h-20 rounded-lg overflow-hidden border shadow-sm">
+            <div className="w-full h-full scale-25 origin-top-left transform-gpu overflow-hidden">
+              <div className="w-[400%] h-[400%]">
+                <LivePreview template={palette.template} colorPalette={palette} />
+              </div>
+            </div>
+          </div>
+
           {/* Color Swatches */}
           <div className="flex rounded-lg overflow-hidden h-12 w-24 shadow-sm flex-shrink-0">
-            {palette.colors.map((color, index) => (
+            {[palette.brand, palette.accent, palette["button-primary"], palette["section-bg-1"], palette["text-primary"]].map((color, index) => (
               <div
                 key={index}
                 className="flex-1"
@@ -237,25 +189,14 @@ const SavedPalettes = () => {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-semibold truncate">{palette.name}</h3>
-              {palette.isPublic && (
-                <Badge variant="secondary" className="text-xs">
-                  Public
-                </Badge>
-              )}
+              <Badge variant="secondary" className="text-xs">
+                {palette.template}
+              </Badge>
             </div>
             <div className="flex items-center text-sm text-muted-foreground mb-2">
               <Calendar className="w-4 h-4 mr-1" />
-              {formatDate(palette.dateCreated)}
+              {formatDate(palette.savedAt)}
             </div>
-            {palette.tags && palette.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {palette.tags.slice(0, 4).map((tag, index) => (
-                  <Badge key={index} variant="outline" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Actions */}
@@ -335,21 +276,11 @@ const SavedPalettes = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-md z-50">
-                  <SelectItem value="dateCreated">Date Created</SelectItem>
+                  <SelectItem value="savedAt">Date Saved</SelectItem>
                   <SelectItem value="name">Name</SelectItem>
                 </SelectContent>
               </Select>
 
-              <Select value={filterBy} onValueChange={setFilterBy}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-background border shadow-md z-50">
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="public">Public</SelectItem>
-                  <SelectItem value="private">Private</SelectItem>
-                </SelectContent>
-              </Select>
 
               {/* View Mode Toggle */}
               <div className="flex border rounded-lg">
@@ -378,10 +309,6 @@ const SavedPalettes = () => {
             <span className="text-sm text-muted-foreground">
               {filteredAndSortedPalettes.length} of {savedPalettes.length} palettes
             </span>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>{savedPalettes.filter(p => p.isPublic).length} public</span>
-              <span>{savedPalettes.filter(p => !p.isPublic).length} private</span>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -392,16 +319,16 @@ const SavedPalettes = () => {
           <CardContent className="p-12 text-center">
             <Palette className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">
-              {searchTerm || filterBy !== 'all' ? 'No palettes match your search' : 'No saved palettes yet'}
+              {searchTerm ? 'No palettes match your search' : 'No saved palettes yet'}
             </h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              {searchTerm || filterBy !== 'all' 
-                ? 'Try adjusting your search terms or filters to find what you\'re looking for.'
+              {searchTerm 
+                ? 'Try adjusting your search terms to find what you\'re looking for.'
                 : 'Start creating and saving color palettes to see them here. Your creative journey begins with the first palette!'
               }
             </p>
-            {!searchTerm && filterBy === 'all' && (
-              <Button className="mt-4">
+            {!searchTerm && (
+              <Button className="mt-4" onClick={() => window.location.href = '/studio'}>
                 <Palette className="w-4 h-4 mr-2" />
                 Create Your First Palette
               </Button>
