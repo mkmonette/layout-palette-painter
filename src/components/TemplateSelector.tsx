@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { TemplateType, ColorPalette, Template } from '@/types/template';
+import { TemplateType, ColorPalette, Template, TemplateCategory } from '@/types/template';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Crown, Lock } from 'lucide-react';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import ProUpsellModal from '@/components/ProUpsellModal';
+import { 
+  freeTemplates as categoryFreeTemplates, 
+  proTemplates as categoryProTemplates, 
+  getTemplatesByCategory 
+} from '@/utils/templateCategories';
 import ModernHeroTemplate from '@/components/templates/ModernHeroTemplate';
 import MinimalHeaderTemplate from '@/components/templates/MinimalHeaderTemplate';
 import BoldLandingTemplate from '@/components/templates/BoldLandingTemplate';
@@ -36,128 +41,6 @@ interface TemplateSelectorProps {
   onTemplateChange: (template: TemplateType) => void;
   colorPalette: ColorPalette;
 }
-const freeTemplates: Template[] = [{
-  id: 'modern-hero',
-  name: 'Modern Hero',
-  description: 'Clean hero section with centered content',
-  isPro: false
-}, {
-  id: 'minimal-header',
-  name: 'Minimal Header',
-  description: 'Simple header with navigation',
-  isPro: false
-}, {
-  id: 'bold-landing',
-  name: 'Bold Landing',
-  description: 'Eye-catching landing page design',
-  isPro: false
-}, {
-  id: 'creative-portfolio',
-  name: 'Creative Portfolio',
-  description: 'Artistic portfolio layout',
-  isPro: false
-}, {
-  id: 'gradient-hero',
-  name: 'Gradient Hero',
-  description: 'Modern gradient background with floating elements',
-  isPro: false
-}, {
-  id: 'split-screen',
-  name: 'Split Screen',
-  description: 'Dynamic split layout with image showcase',
-  isPro: false
-}, {
-  id: 'magazine-style',
-  name: 'Magazine Style',
-  description: 'Editorial design with typography focus',
-  isPro: false
-}, {
-  id: 'startup-landing',
-  name: 'Startup Landing',
-  description: 'Tech startup focused design',
-  isPro: false
-}, {
-  id: 'tech-startup',
-  name: 'Tech Startup',
-  description: 'Modern tech company with glassmorphism',
-  isPro: false
-}, {
-  id: 'creative-agency',
-  name: 'Creative Agency',
-  description: 'Bold creative studio design',
-  isPro: false
-}, {
-  id: 'saas-product',
-  name: 'SaaS Product',
-  description: 'Clean SaaS landing with features',
-  isPro: false
-}, {
-  id: 'ecommerce-landing',
-  name: 'E-commerce Landing',
-  description: 'Product-focused e-commerce design',
-  isPro: false
-}, {
-  id: 'ecommerce-product-showcase',
-  name: 'Product Showcase',
-  description: 'Feature products with detailed views',
-  isPro: false
-}, {
-  id: 'ecommerce-minimal-store',
-  name: 'Minimal Store',
-  description: 'Clean, minimal e-commerce design',
-  isPro: false
-}, {
-  id: 'ecommerce-fashion-boutique',
-  name: 'Fashion Boutique',
-  description: 'Elegant fashion store template',
-  isPro: false
-}, {
-  id: 'ecommerce-tech-store',
-  name: 'Tech Store',
-  description: 'Electronics and gadgets store',
-  isPro: false
-}, {
-  id: 'ecommerce-marketplace',
-  name: 'Marketplace',
-  description: 'Multi-vendor marketplace design',
-  isPro: false
-}];
-const proTemplates: Template[] = [{
-  id: 'pro-cosmetics',
-  name: 'Pro Cosmetics',
-  description: 'Premium beauty and cosmetics template with elegant product showcase',
-  isPro: true
-}, {
-  id: 'advanced-hero',
-  name: 'Advanced Hero',
-  description: 'Sophisticated header design with premium typography and visual elements',
-  isPro: true
-}, {
-  id: 'modern-executive',
-  name: 'Modern Executive',
-  description: 'Professional business template with strategic design and authority',
-  isPro: true
-}, {
-  id: 'creative-showcase',
-  name: 'Creative Showcase',
-  description: 'Dynamic creative template with artistic layouts and bold visuals',
-  isPro: true
-}, {
-  id: 'tech-innovation',
-  name: 'Tech Innovation',
-  description: 'Cutting-edge technology template with futuristic design elements',
-  isPro: true
-}, {
-  id: 'luxury-brand',
-  name: 'Luxury Brand',
-  description: 'Premium luxury template with sophisticated elegance and refinement',
-  isPro: true
-}, {
-  id: 'startup-vision',
-  name: 'Startup Vision',
-  description: 'Dynamic startup template with growth-focused design and innovation',
-  isPro: true
-}];
 const renderTemplatePreview = (templateId: TemplateType, colorPalette: ColorPalette) => {
   const previewProps = {
     colorPalette
@@ -223,7 +106,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   const {
     isPro
   } = useFeatureAccess();
-  const [filter, setFilter] = useState<'all' | 'free' | 'pro'>('all');
+  const [filter, setFilter] = useState<'all' | 'free' | 'pro' | 'hero-header' | 'full-template'>('all');
   const [upsellModal, setUpsellModal] = useState<{
     isOpen: boolean;
     templateName: string;
@@ -245,18 +128,28 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
     switch (filter) {
       case 'free':
         return {
-          free: freeTemplates,
+          free: categoryFreeTemplates,
           pro: []
         };
       case 'pro':
         return {
           free: [],
-          pro: proTemplates
+          pro: categoryProTemplates
+        };
+      case 'hero-header':
+        return {
+          free: getTemplatesByCategory('hero-header').filter(t => !t.isPro),
+          pro: getTemplatesByCategory('hero-header').filter(t => t.isPro)
+        };
+      case 'full-template':
+        return {
+          free: getTemplatesByCategory('full-template').filter(t => !t.isPro),
+          pro: getTemplatesByCategory('full-template').filter(t => t.isPro)
         };
       default:
         return {
-          free: freeTemplates,
-          pro: proTemplates
+          free: categoryFreeTemplates,
+          pro: categoryProTemplates
         };
     }
   };
@@ -317,9 +210,15 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   const allTemplates = [...filteredFree, ...filteredPro];
   return <>
       {/* Filter Buttons - Now at the top */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 flex-wrap">
         <Button variant={filter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('all')} className="text-xs">
           Show All
+        </Button>
+        <Button variant={filter === 'hero-header' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('hero-header')} className="text-xs">
+          Hero/Header
+        </Button>
+        <Button variant={filter === 'full-template' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('full-template')} className="text-xs">
+          Full Template
         </Button>
         <Button variant={filter === 'free' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('free')} className="text-xs">
           FREE Only

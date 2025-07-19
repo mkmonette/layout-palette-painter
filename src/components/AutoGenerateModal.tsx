@@ -23,22 +23,7 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { useDownloadLimits } from '@/hooks/useDownloadLimits';
 import ProUpsellModal from '@/components/ProUpsellModal';
 import type { BackgroundSettings } from '@/components/BackgroundCustomizer';
-
-// Template definitions
-const allTemplates: Template[] = [
-  { id: 'modern-hero', name: 'Modern Hero', description: 'Clean hero section with centered content', isPro: false },
-  { id: 'minimal-header', name: 'Minimal Header', description: 'Simple header with navigation', isPro: false },
-  { id: 'bold-landing', name: 'Bold Landing', description: 'Eye-catching landing page design', isPro: false },
-  { id: 'creative-portfolio', name: 'Creative Portfolio', description: 'Artistic portfolio layout', isPro: false },
-  { id: 'gradient-hero', name: 'Gradient Hero', description: 'Modern gradient background with floating elements', isPro: false },
-  { id: 'split-screen', name: 'Split Screen', description: 'Dynamic split layout with image showcase', isPro: false },
-  { id: 'magazine-style', name: 'Magazine Style', description: 'Editorial design with typography focus', isPro: false },
-  { id: 'startup-landing', name: 'Startup Landing', description: 'Tech startup focused design', isPro: false },
-  { id: 'tech-startup', name: 'Tech Startup', description: 'Modern tech company with glassmorphism', isPro: false },
-  { id: 'creative-agency', name: 'Creative Agency', description: 'Bold creative studio design', isPro: false },
-  { id: 'saas-product', name: 'SaaS Product', description: 'Clean SaaS landing with features', isPro: false },
-  { id: 'ecommerce-landing', name: 'E-commerce Landing', description: 'Product-focused e-commerce design', isPro: false }
-];
+import { allTemplates } from '@/utils/templateCategories';
 
 interface AutoGenerateModalProps {
   isOpen: boolean;

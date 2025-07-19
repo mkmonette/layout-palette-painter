@@ -1,4 +1,6 @@
 
+export type TemplateCategory = 'hero-header' | 'full-template';
+
 export type TemplateType = 
   | 'modern-hero' 
   | 'minimal-header' 
@@ -62,4 +64,5 @@ export interface Template {
   name: string;
   description: string;
   isPro: boolean;
+  category: TemplateCategory;
 }
