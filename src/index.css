@@ -8,35 +8,35 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Light Mode - Creative Workspace Theme */
-    --background: 252 100% 99%;              /* Very light lavender-white */
-    --foreground: 240 15% 15%;               /* Deep charcoal */
+    /* Light Mode - Vibrant Creative Studio Theme */
+    --background: 245 100% 97%;              /* Very light blue-white */
+    --foreground: 240 18% 12%;               /* Deep navy text */
 
-    --card: 255 100% 98%;                    /* Pure white cards */
-    --card-foreground: 240 15% 15%;          /* Deep charcoal text */
+    --card: 255 100% 99%;                    /* Pure white cards */
+    --card-foreground: 240 18% 12%;          /* Deep navy text */
 
-    --popover: 255 100% 98%;                 /* Clean white popovers */
-    --popover-foreground: 240 15% 15%;       /* Deep charcoal text */
+    --popover: 255 100% 99%;                 /* Clean white popovers */
+    --popover-foreground: 240 18% 12%;       /* Deep navy text */
 
-    /* Creative Primary Colors */
-    --primary: 262 83% 58%;                  /* Creative purple */
+    /* Vibrant Primary Colors */
+    --primary: 280 100% 65%;                 /* Electric purple */
     --primary-foreground: 255 100% 98%;      /* White text on primary */
 
-    --secondary: 292 84% 95%;                /* Light purple secondary */
-    --secondary-foreground: 262 83% 35%;     /* Darker purple text */
+    --secondary: 340 82% 95%;                /* Light pink secondary */
+    --secondary-foreground: 340 82% 25%;     /* Deep pink text */
 
-    --muted: 252 50% 96%;                    /* Soft lavender muted */
-    --muted-foreground: 240 8% 45%;          /* Subtle gray text */
+    --muted: 220 60% 96%;                    /* Light blue muted */
+    --muted-foreground: 240 12% 40%;         /* Medium gray text */
 
-    --accent: 292 84% 95%;                   /* Light purple accent */
-    --accent-foreground: 262 83% 35%;        /* Darker purple text */
+    --accent: 195 100% 90%;                  /* Light cyan accent */
+    --accent-foreground: 195 100% 25%;       /* Deep cyan text */
 
     --destructive: 0 84% 60%;                /* Keep destructive red */
     --destructive-foreground: 0 0% 100%;     /* White text */
 
-    --border: 252 30% 90%;                   /* Soft lavender border */
-    --input: 252 30% 92%;                    /* Light input background */
-    --ring: 262 83% 58%;                     /* Purple focus ring */
+    --border: 220 40% 88%;                   /* Soft blue border */
+    --input: 220 60% 94%;                    /* Light blue input background */
+    --ring: 280 100% 65%;                    /* Electric purple focus ring */
 
     --radius: 1rem;
 
@@ -45,13 +45,13 @@ All colors MUST be HSL.
     --warning: 45 93% 47%;
     --info: 188 94% 50%;
     
-    /* Creative Workspace Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(292 84% 95%));
-    --gradient-secondary: linear-gradient(135deg, hsl(252 100% 99%), hsl(262 20% 96%));
-    --gradient-accent: linear-gradient(135deg, hsl(292 84% 95%), hsl(252 50% 96%));
-    --gradient-workspace: linear-gradient(135deg, hsl(252 100% 99%) 0%, hsl(262 20% 96%) 50%, hsl(292 84% 95%) 100%);
-    --gradient-creative: linear-gradient(45deg, hsl(252 100% 99%), hsl(262 20% 96%), hsl(292 84% 95%), hsl(252 100% 99%));
-    --gradient-mesh: radial-gradient(circle at 20% 80%, hsl(262 83% 58% / 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(292 84% 95% / 0.3) 0%, transparent 50%), radial-gradient(circle at 40% 40%, hsl(252 50% 96% / 0.2) 0%, transparent 50%);
+    /* Vibrant Creative Studio Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(280 100% 65%), hsl(340 82% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(195 100% 70%), hsl(160 100% 65%));
+    --gradient-accent: linear-gradient(135deg, hsl(340 82% 95%), hsl(195 100% 90%));
+    --gradient-workspace: linear-gradient(135deg, hsl(245 100% 97%) 0%, hsl(280 40% 94%) 25%, hsl(195 60% 94%) 50%, hsl(160 40% 94%) 75%, hsl(245 100% 97%) 100%);
+    --gradient-creative: linear-gradient(45deg, hsl(280 100% 65%), hsl(340 82% 65%), hsl(195 100% 70%), hsl(160 100% 65%));
+    --gradient-mesh: radial-gradient(circle at 20% 80%, hsl(280 100% 65% / 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(340 82% 65% / 0.15) 0%, transparent 50%), radial-gradient(circle at 40% 40%, hsl(195 100% 70% / 0.1) 0%, transparent 50%), radial-gradient(circle at 60% 60%, hsl(160 100% 65% / 0.1) 0%, transparent 50%);
     
     /* Color Palette Samples */
     --palette-1: 263 85% 58%;  /* Purple */
@@ -76,61 +76,61 @@ All colors MUST be HSL.
     --animation-slide-up: slide-up 0.6s ease-out;
     --animation-fade-in-up: fade-in-up 0.8s ease-out;
 
-    /* Creative sidebar styling */
-    --sidebar-background: 262 20% 96%;       /* Light purple-gray */
-    --sidebar-foreground: 240 15% 25%;       /* Dark charcoal */
-    --sidebar-primary: 262 83% 58%;          /* Creative purple */
+    /* Vibrant sidebar styling */
+    --sidebar-background: 280 40% 94%;       /* Light purple-blue */
+    --sidebar-foreground: 240 18% 18%;       /* Deep navy */
+    --sidebar-primary: 280 100% 65%;         /* Electric purple */
     --sidebar-primary-foreground: 255 100% 98%; /* White text */
-    --sidebar-accent: 262 40% 92%;           /* Soft purple hover */
-    --sidebar-accent-foreground: 240 15% 20%; /* Dark text on hover */
-    --sidebar-border: 252 25% 88%;           /* Subtle lavender border */
-    --sidebar-ring: 262 83% 58%;             /* Purple focus ring */
+    --sidebar-accent: 280 60% 88%;           /* Medium purple hover */
+    --sidebar-accent-foreground: 240 18% 15%; /* Dark text on hover */
+    --sidebar-border: 220 40% 85%;           /* Soft blue border */
+    --sidebar-ring: 280 100% 65%;            /* Electric purple focus ring */
   }
 
   .dark {
-    /* Dark Mode - Creative Workspace Theme */
-    --background: 240 15% 8%;                /* Deep charcoal background */
-    --foreground: 252 100% 95%;              /* Light lavender-white text */
+    /* Dark Mode - Vibrant Creative Studio Theme */
+    --background: 240 25% 8%;                /* Deep navy background */
+    --foreground: 245 100% 95%;              /* Light blue-white text */
 
-    --card: 240 12% 12%;                     /* Dark cards */
-    --card-foreground: 252 100% 95%;         /* Light text on cards */
+    --card: 240 20% 12%;                     /* Dark navy cards */
+    --card-foreground: 245 100% 95%;         /* Light text on cards */
 
-    --popover: 240 12% 12%;                  /* Dark popovers */
-    --popover-foreground: 252 100% 95%;      /* Light text */
+    --popover: 240 20% 12%;                  /* Dark navy popovers */
+    --popover-foreground: 245 100% 95%;      /* Light text */
 
-    --primary: 262 83% 68%;                  /* Bright creative purple */
-    --primary-foreground: 240 15% 8%;        /* Dark text on primary */
+    --primary: 280 100% 75%;                 /* Bright electric purple */
+    --primary-foreground: 240 25% 8%;        /* Dark text on primary */
 
-    --secondary: 262 60% 25%;                /* Dark purple secondary */
-    --secondary-foreground: 292 84% 85%;     /* Light purple text */
+    --secondary: 340 82% 35%;                /* Dark pink secondary */
+    --secondary-foreground: 340 82% 85%;     /* Light pink text */
 
-    --muted: 240 8% 15%;                     /* Dark muted */
-    --muted-foreground: 240 5% 55%;          /* Medium gray text */
+    --muted: 240 15% 15%;                    /* Dark navy muted */
+    --muted-foreground: 240 8% 55%;          /* Medium gray text */
 
-    --accent: 262 60% 25%;                   /* Dark purple accent */
-    --accent-foreground: 292 84% 85%;        /* Light purple text */
+    --accent: 195 100% 35%;                  /* Dark cyan accent */
+    --accent-foreground: 195 100% 85%;       /* Light cyan text */
 
-    --destructive: 0 62% 50%;                /* Brighter red for dark mode */
-    --destructive-foreground: 210 40% 98%;   /* White text */
+    --destructive: 0 84% 65%;                /* Bright red for dark mode */
+    --destructive-foreground: 0 0% 100%;     /* White text */
 
-    --border: 240 8% 20%;                    /* Dark border */
-    --input: 240 8% 18%;                     /* Dark input background */
-    --ring: 262 83% 68%;                     /* Bright purple focus ring */
+    --border: 240 15% 20%;                   /* Dark border */
+    --input: 240 15% 18%;                    /* Dark input background */
+    --ring: 280 100% 75%;                    /* Bright purple focus ring */
 
     /* Success, Warning, Info - Vibrant colors for dark */
     --success: 142 76% 36%;
     --warning: 45 93% 47%;
     --info: 188 94% 50%;
 
-    /* Dark sidebar styling */
-    --sidebar-background: 240 12% 12%;       /* Dark sidebar */
-    --sidebar-foreground: 252 50% 85%;       /* Light text */
-    --sidebar-primary: 262 83% 68%;          /* Bright purple */
-    --sidebar-primary-foreground: 240 15% 8%; /* Dark text on primary */
-    --sidebar-accent: 240 8% 20%;            /* Dark hover */
-    --sidebar-accent-foreground: 252 100% 90%; /* Light text on hover */
-    --sidebar-border: 240 8% 20%;            /* Dark border */
-    --sidebar-ring: 262 83% 68%;             /* Bright purple focus ring */
+    /* Dark vibrant sidebar styling */
+    --sidebar-background: 240 20% 12%;       /* Dark navy sidebar */
+    --sidebar-foreground: 245 80% 85%;       /* Light blue text */
+    --sidebar-primary: 280 100% 75%;         /* Bright purple */
+    --sidebar-primary-foreground: 240 25% 8%; /* Dark text on primary */
+    --sidebar-accent: 240 15% 20%;           /* Dark hover */
+    --sidebar-accent-foreground: 245 100% 90%; /* Light text on hover */
+    --sidebar-border: 240 15% 20%;           /* Dark border */
+    --sidebar-ring: 280 100% 75%;            /* Bright purple focus ring */
   }
 
   /* Template wrapper and background styles */
@@ -231,7 +231,7 @@ All colors MUST be HSL.
     @apply transform transition-all duration-300 hover:scale-110 hover:rotate-3 hover:shadow-colorful;
   }
   
-  /* Creative Workspace Utilities */
+  /* Vibrant Creative Studio Utilities */
   .workspace-background {
     background: var(--gradient-workspace);
     @apply bg-[length:400%_400%] animate-gradient-shift;
@@ -243,16 +243,16 @@ All colors MUST be HSL.
   }
   
   .studio-card {
-    @apply bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply bg-card/90 backdrop-blur-md border border-border/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02];
   }
   
   .studio-sidebar {
     background: linear-gradient(180deg, hsl(var(--sidebar-background)), hsl(var(--sidebar-background) / 0.95));
-    @apply backdrop-blur-sm border-r border-sidebar-border;
+    @apply backdrop-blur-md border-r border-sidebar-border;
   }
   
   .floating-action {
-    @apply shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-primary hover:bg-primary/90;
+    @apply shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 bg-primary hover:bg-primary/90 animate-pulse-color;
   }
 }
 

@@ -576,12 +576,12 @@ const Dashboard = () => {
     available: process.env.NODE_ENV !== 'production'
   }];
   return <TooltipProvider>
-      <div className="h-screen flex flex-col bg-background creative-mesh relative">
-        {/* Creative mesh background overlay */}
-        <div className="absolute inset-0 creative-mesh opacity-40 z-0" />
+      <div className="h-screen flex flex-col bg-background workspace-background relative">
+        {/* Vibrant animated background overlay */}
+        <div className="absolute inset-0 workspace-background opacity-60 z-0" />
         
         {/* Top Navigation Bar */}
-        <div className="h-14 border-b border-border bg-card/80 backdrop-blur-sm relative z-10">
+        <div className="h-14 border-b border-border bg-card/90 backdrop-blur-md relative z-10">
           <div className="flex items-center justify-between px-4 h-full">
             <div className="flex items-center space-x-4">
                <h1 className="text-base font-medium text-foreground">
@@ -962,9 +962,9 @@ const Dashboard = () => {
 
 
           {/* Main Content Area with Right Sidebar */}
-          <div className="flex-1 flex bg-background/30 backdrop-blur-sm">
+          <div className="flex-1 flex bg-card/40 backdrop-blur-sm">
             {/* Canvas */}
-            <div className="flex-1 overflow-auto flex items-start justify-center bg-background/20 backdrop-blur-sm">
+            <div className="flex-1 overflow-auto flex items-start justify-center bg-card/20 backdrop-blur-sm">
               <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
@@ -1004,7 +1004,7 @@ const Dashboard = () => {
             </div>
 
             {/* Right Sidebar */}
-            <div className="w-48 bg-card/60 backdrop-blur-sm border-l border-border flex flex-col">
+            <div className="w-48 bg-card/80 backdrop-blur-md border-l border-border flex flex-col">
               {/* Sidebar Header */}
               <div className="p-3 border-b border-border">
                 <div className="flex items-center justify-between mb-2">
