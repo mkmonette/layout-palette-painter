@@ -1078,31 +1078,42 @@ const Dashboard = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="w-full px-2 py-1.5 rounded-sm text-xs"
-                            disabled={!canUseAIGeneration}
-                          >
-                            <Bot className="h-3 w-3 mr-1.5" />
-                            AI Colors {!canUseAIGeneration && '🔒'}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-64 p-4" side="left" align="start">
-                          <div className="space-y-3">
-                            <h3 className="font-medium text-xs">AI Colors</h3>
-                            <div className="space-y-2">
-                              <AIColorGenerator
-                                isDarkMode={colorMode === 'dark'} 
-                                onPaletteGenerated={handleAIPaletteGenerated}
-                                backgroundSettings={backgroundSettings}
-                              />
+                      {canUseAIGeneration ? (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full px-2 py-1.5 rounded-sm text-xs"
+                            >
+                              <Bot className="h-3 w-3 mr-1.5" />
+                              AI Colors
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-64 p-4" side="left" align="start">
+                            <div className="space-y-3">
+                              <h3 className="font-medium text-xs">AI Colors</h3>
+                              <div className="space-y-2">
+                                <AIColorGenerator
+                                  isDarkMode={colorMode === 'dark'} 
+                                  onPaletteGenerated={handleAIPaletteGenerated}
+                                  backgroundSettings={backgroundSettings}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
+                          </PopoverContent>
+                        </Popover>
+                      ) : (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full px-2 py-1.5 rounded-sm text-xs"
+                          onClick={() => setUpsellModal({ isOpen: true, templateName: 'AI Colors feature' })}
+                        >
+                          <Bot className="h-3 w-3 mr-1.5" />
+                          AI Colors 🔒
+                        </Button>
+                      )}
                     </TooltipTrigger>
                     <TooltipContent>Use AI to generate palettes based on mood or theme</TooltipContent>
                   </Tooltip>
