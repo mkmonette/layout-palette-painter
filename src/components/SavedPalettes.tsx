@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import LivePreview from '@/components/LivePreview';
+import SimpleFullscreenPreview from '@/components/SimpleFullscreenPreview';
 import { TemplateType, ColorPalette } from '@/types/template';
 
 interface SavedPalette extends ColorPalette {
@@ -23,6 +24,10 @@ const SavedPalettes = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('savedAt');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [fullscreenPreview, setFullscreenPreview] = useState<{
+    isOpen: boolean;
+    palette: SavedPalette | null;
+  }>({ isOpen: false, palette: null });
   const { toast } = useToast();
 
 
@@ -40,8 +45,7 @@ const SavedPalettes = () => {
     });
 
   const handleViewPalette = (palette: SavedPalette) => {
-    // Navigate to studio with this palette
-    window.location.href = `/studio?palette=${encodeURIComponent(JSON.stringify(palette))}`;
+    setFullscreenPreview({ isOpen: true, palette });
   };
 
   const handleEditPalette = (palette: SavedPalette) => {
@@ -70,6 +74,10 @@ const SavedPalettes = () => {
       day: 'numeric',
       year: 'numeric'
     });
+  };
+
+  const closeFullscreenPreview = () => {
+    setFullscreenPreview({ isOpen: false, palette: null });
   };
 
   const PaletteCard = ({ palette }: { palette: SavedPalette }) => (
@@ -361,6 +369,16 @@ const SavedPalettes = () => {
             )
           ))}
         </div>
+      )}
+
+      {/* Fullscreen Preview */}
+      {fullscreenPreview.palette && (
+        <SimpleFullscreenPreview
+          isOpen={fullscreenPreview.isOpen}
+          template={fullscreenPreview.palette.template}
+          colorPalette={fullscreenPreview.palette}
+          onClose={closeFullscreenPreview}
+        />
       )}
     </div>
   );
