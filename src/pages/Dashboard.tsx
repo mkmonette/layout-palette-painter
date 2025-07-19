@@ -17,6 +17,7 @@ import ProfileSettings from '@/components/ProfileSettings';
 import AccountSettings from '@/components/AccountSettings';
 import SavedPalettes from '@/components/SavedPalettes';
 import Usage from '@/components/Usage';
+import CoinCredits from '@/components/CoinCredits';
 
 const menuItems = [
   {
@@ -156,14 +157,7 @@ const DashboardContent = ({ activeItem }: { activeItem: string }) => {
         </div>
       );
     case 'credits':
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-6">Coin Credits</h2>
-          <div className="bg-card p-6 rounded-lg border shadow-sm">
-            <p className="text-muted-foreground">Coin credits content coming soon...</p>
-          </div>
-        </div>
-      );
+      return <CoinCredits />;
     default:
       return (
         <div>
