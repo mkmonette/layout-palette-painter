@@ -118,7 +118,7 @@ const SavedPalettes = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2 pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="flex gap-2 pt-2 transition-opacity duration-200">
             <Button
               size="sm"
               variant="outline"
