@@ -66,11 +66,7 @@ const FloatingColorOrbs = () => {
             i === 0 ? 'top-20 right-20' : 
             i === 1 ? 'top-1/3 left-16' : 
             i === 2 ? 'bottom-1/3 right-12' :
-            i === 3 ? 'top-2/3 left-1/4' :
-            i === 4 ? 'bottom-20 left-20' :
-            i === 5 ? 'top-1/2 right-1/3' :
-            i === 6 ? 'top-16 left-1/3' :
-            'bottom-16 right-1/4'
+            'hidden'
           } hidden lg:block`}
           style={{ animationDelay: `${i * 800}ms` }}
         >
