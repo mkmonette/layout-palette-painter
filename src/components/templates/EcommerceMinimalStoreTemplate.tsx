@@ -102,10 +102,10 @@ const EcommerceMinimalStoreTemplate: React.FC<EcommerceMinimalStoreTemplateProps
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { name: "Ceramic Vase", price: "$89", rating: 4.7, image: "photo-1578662996442-48f60103fc96" },
-              { name: "Oak Chair", price: "$299", rating: 4.9, image: "photo-1506439773649-6e0eb8cfb237" },
-              { name: "Table Lamp", price: "$149", rating: 4.6, image: "photo-1507003211169-0a1dd7228f2d" },
-              { name: "Throw Pillow", price: "$45", rating: 4.5, image: "photo-1555041469-a586c61ea9bc" }
+              { name: "Modern Floor Lamp", price: "$249", rating: 4.8, image: "photo-1513506003901-1e6a229e2d15" },
+              { name: "Scandinavian Sofa", price: "$899", rating: 4.9, image: "photo-1586023492125-27b2c045efd7" },
+              { name: "Pendant Light", price: "$189", rating: 4.7, image: "photo-1524484485831-a92ffc0de03f" },
+              { name: "Coffee Table", price: "$379", rating: 4.6, image: "photo-1506439773649-6e0eb8cfb237" }
             ].map((product, index) => (
               <div key={index} className="group cursor-pointer">
                 <div className="aspect-square overflow-hidden mb-6 relative rounded-lg shadow-sm hover:shadow-xl transition-all duration-500">
