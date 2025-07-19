@@ -865,44 +865,51 @@ const Dashboard = () => {
                                          {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
                                            const isLocked = lockedColors.has(key as keyof ColorPalette);
                                            return (
-                                             <div key={key} className="flex items-center gap-2">
-                                                <div className="relative">
-                                                  <div 
-                                                    className={`w-6 h-6 rounded border flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
-                                                    style={{ backgroundColor: value }}
-                                                    title={`Click to edit ${key.replace(/-/g, ' ')}`}
-                                                  />
-                                                  <input
-                                                    type="color"
-                                                    value={value}
-                                                    onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
-                                                    disabled={isLocked}
-                                                    className="absolute inset-0 w-6 h-6 opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                                                  />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                  <div className="text-[10px] font-medium text-foreground truncate mb-1">
+                                              <div key={key} className="space-y-2">
+                                                {/* Label and lock icon on one line */}
+                                                <div className="flex items-center justify-between">
+                                                  <div className="text-[10px] font-medium text-foreground truncate">
                                                     {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                                   </div>
-                                                 <input
-                                                   type="text"
-                                                   value={value}
-                                                   onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
-                                                   disabled={isLocked}
-                                                   className={`w-full text-[9px] font-mono mt-1 px-1 py-0.5 border rounded bg-background ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary focus:border-primary focus:outline-none'}`}
-                                                   placeholder="#000000"
-                                                 />
-                                               </div>
-                                               <Button
-                                                 variant="ghost"
-                                                 size="sm"
-                                                 onClick={() => handleToggleLock(key as keyof ColorPalette)}
-                                                 className={`h-5 w-5 p-0 flex-shrink-0 ${isLocked ? 'text-orange-500 hover:text-orange-600' : 'text-muted-foreground hover:text-foreground'}`}
-                                                 title={isLocked ? 'Unlock color' : 'Lock color'}
-                                               >
-                                                 {isLocked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
-                                               </Button>
-                                             </div>
+                                                  <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleToggleLock(key as keyof ColorPalette)}
+                                                    className={`h-4 w-4 p-0 flex-shrink-0 ${isLocked ? 'text-orange-500 hover:text-orange-600' : 'text-muted-foreground hover:text-foreground'}`}
+                                                    title={isLocked ? 'Unlock color' : 'Lock color'}
+                                                  >
+                                                    {isLocked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
+                                                  </Button>
+                                                </div>
+                                                
+                                                {/* Color picker and color code on one line */}
+                                                <div className="flex items-center gap-2">
+                                                  <div className="relative">
+                                                    <div 
+                                                      className={`w-6 h-6 rounded border flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
+                                                      style={{ backgroundColor: value }}
+                                                      title={`Click to edit ${key.replace(/-/g, ' ')}`}
+                                                    />
+                                                    <input
+                                                      type="color"
+                                                      value={value}
+                                                      onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
+                                                      disabled={isLocked}
+                                                      className="absolute inset-0 w-6 h-6 opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                                                    />
+                                                  </div>
+                                                  <div className="flex-1">
+                                                    <input
+                                                      type="text"
+                                                      value={value}
+                                                      onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
+                                                      disabled={isLocked}
+                                                      className={`w-full text-[9px] font-mono px-1 py-0.5 border rounded bg-background ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary focus:border-primary focus:outline-none'}`}
+                                                      placeholder="#000000"
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </div>
                                            );
                                          })}
                                        </div>
