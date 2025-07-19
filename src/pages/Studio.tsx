@@ -476,8 +476,6 @@ const Dashboard = () => {
         colorPalette,
         templateName: selectedTemplate.replace('-', ' '),
         previewElement,
-        includeColorCodes: true,
-        includeAccessibilityReport: true,
         isDarkMode: colorMode === 'dark'
       });
       
@@ -563,7 +561,7 @@ const Dashboard = () => {
       id: 'test-plans',
       label: 'Test Plans',
       icon: User,
-      available: currentUser?.id === 'admin'
+      available: true
     }
   ];
 
@@ -1115,12 +1113,13 @@ const Dashboard = () => {
       <AutoGenerateResultsModal
         isOpen={showAutoGenerateResultsModal}
         onClose={() => setShowAutoGenerateResultsModal(false)}
-        palettes={generatedPalettes}
-        onPaletteSelect={(palette) => {
-          setColorPalette(palette.colors);
+        generatedPalettes={generatedPalettes}
+        backgroundSettings={backgroundSettings}
+        onApplyPalette={(palette) => {
+          setColorPalette(palette);
           setShowAutoGenerateResultsModal(false);
         }}
-        templateName={selectedTemplate}
+        onRegenerateClick={handleAutoGenerate}
       />
     </div>
   );
