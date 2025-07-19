@@ -906,7 +906,11 @@ const Dashboard = () => {
                                     </div>
                                  </div>}
                                 
-                              {item.id === 'saved-palettes' && <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />}
+                               {item.id === 'saved-palettes' && (
+                                 <ScrollArea className="h-80">
+                                   <SavedPalettesContent currentPalette={colorPalette} currentTemplate={selectedTemplate} onPaletteSelect={handleSavedPaletteSelect} onTemplateChange={setSelectedTemplate} />
+                                 </ScrollArea>
+                               )}
                              
                               {item.id === 'settings' && <div className="space-y-2">
                                    <h3 className="text-xs font-medium">Settings</h3>
