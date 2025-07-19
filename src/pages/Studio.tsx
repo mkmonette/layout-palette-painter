@@ -751,10 +751,11 @@ const Dashboard = () => {
                      ) : (
                        // ScrollArea for other menu items
                        <ScrollArea className={`${
-                         item.id === 'background-settings' ? 'h-80' : 
-                         item.id === 'schemes' ? 'h-96' :
-                         item.id === 'from-image' ? 'h-40' : 
-                         'h-96'
+                          item.id === 'background-settings' ? 'h-80' : 
+                          item.id === 'schemes' ? 'h-96' :
+                          item.id === 'from-image' ? 'h-40' :
+                          item.id === 'current-palettes' ? 'h-80' :
+                          'h-96'
                        }`}>
                          <div className="p-4 pt-3">
                            <div className="space-y-2">
@@ -838,7 +839,7 @@ const Dashboard = () => {
                                     <p className="text-xs text-muted-foreground">
                                       Current palette colors with lock controls
                                     </p>
-                                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                                    <div className="space-y-2">
                                       {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
                                         const isLocked = lockedColors.has(key as keyof ColorPalette);
                                         return (
