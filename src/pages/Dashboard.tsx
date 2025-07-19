@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Palette, Settings, Users, BarChart3, Coins, User, UserCog, Save, TrendingUp } from 'lucide-react';
+import { Palette, Coins, User, UserCog, Save } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +16,7 @@ import {
 import ProfileSettings from '@/components/ProfileSettings';
 import AccountSettings from '@/components/AccountSettings';
 import SavedPalettes from '@/components/SavedPalettes';
-import Usage from '@/components/Usage';
+
 import CoinCredits from '@/components/CoinCredits';
 
 const menuItems = [
@@ -33,10 +33,10 @@ const menuItems = [
     id: "palettes"
   },
   {
-    title: "Usage",
+    title: "Coin Credits",
     url: "#",
-    icon: TrendingUp,
-    id: "usage"
+    icon: Coins,
+    id: "credits"
   },
   {
     title: "Profile Settings",
@@ -49,30 +49,6 @@ const menuItems = [
     url: "#",
     icon: UserCog,
     id: "account"
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-    id: "settings"
-  },
-  {
-    title: "Users",
-    url: "#",
-    icon: Users,
-    id: "users"
-  },
-  {
-    title: "Analytics",
-    url: "#",
-    icon: BarChart3,
-    id: "analytics"
-  },
-  {
-    title: "Coin Credits",
-    url: "#",
-    icon: Coins,
-    id: "credits"
   },
 ];
 
@@ -123,39 +99,10 @@ const DashboardContent = ({ activeItem }: { activeItem: string }) => {
   switch (activeItem) {
     case 'palettes':
       return <SavedPalettes />;
-    case 'usage':
-      return <Usage />;
     case 'profile':
       return <ProfileSettings />;
     case 'account':
       return <AccountSettings />;
-    case 'settings':
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-6">General Settings</h2>
-          <div className="bg-card p-6 rounded-lg border shadow-sm">
-            <p className="text-muted-foreground">General settings content coming soon...</p>
-          </div>
-        </div>
-      );
-    case 'users':
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-6">User Management</h2>
-          <div className="bg-card p-6 rounded-lg border shadow-sm">
-            <p className="text-muted-foreground">User management content coming soon...</p>
-          </div>
-        </div>
-      );
-    case 'analytics':
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-6">Analytics</h2>
-          <div className="bg-card p-6 rounded-lg border shadow-sm">
-            <p className="text-muted-foreground">Analytics content coming soon...</p>
-          </div>
-        </div>
-      );
     case 'credits':
       return <CoinCredits />;
     default:
