@@ -231,7 +231,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
 
       {/* Customize Colors Modal */}
       <Dialog open={activeModal === 'colors'} onOpenChange={closeModal}>
-        <DialogContent className="max-w-lg max-h-[80vh]">
+        <DialogContent className="max-w-sm max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5" />
