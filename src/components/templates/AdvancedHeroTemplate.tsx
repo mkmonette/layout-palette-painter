@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ColorPalette } from '@/types/template';
-import { ArrowRight, Play, Award, Users, Star } from 'lucide-react';
+import { ArrowRight, Play, Award, Users, Star, Menu, X } from 'lucide-react';
 
 interface AdvancedHeroTemplateProps {
   colorPalette: ColorPalette;
@@ -26,8 +26,94 @@ export const AdvancedHeroTemplate: React.FC<AdvancedHeroTemplateProps> = ({
       />
       <div className={`absolute inset-0 ${overlayClass} backdrop-blur-sm`} />
       
+      {/* Header Navigation */}
+      <header className="relative z-20 px-8 lg:px-16 xl:px-24 py-6">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <div 
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              style={{ backgroundColor: colorPalette.brand }}
+            >
+              <Award 
+                className="w-6 h-6"
+                style={{ color: colorPalette['button-text'] }}
+              />
+            </div>
+            <h2 
+              className="text-2xl font-bold"
+              style={{ color: colorPalette['text-primary'] }}
+            >
+              AdvancedTech
+            </h2>
+          </div>
+
+          {/* Navigation Menu */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <a 
+              href="#" 
+              className="text-lg font-medium hover:opacity-80 transition-opacity"
+              style={{ color: colorPalette['text-primary'] }}
+            >
+              Features
+            </a>
+            <a 
+              href="#" 
+              className="text-lg font-medium hover:opacity-80 transition-opacity"
+              style={{ color: colorPalette['text-primary'] }}
+            >
+              Solutions
+            </a>
+            <a 
+              href="#" 
+              className="text-lg font-medium hover:opacity-80 transition-opacity"
+              style={{ color: colorPalette['text-primary'] }}
+            >
+              Pricing
+            </a>
+            <a 
+              href="#" 
+              className="text-lg font-medium hover:opacity-80 transition-opacity"
+              style={{ color: colorPalette['text-primary'] }}
+            >
+              About
+            </a>
+          </nav>
+
+          {/* Header Actions */}
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="ghost" 
+              className="hidden sm:flex text-lg font-medium"
+              style={{ color: colorPalette['text-primary'] }}
+            >
+              Sign In
+            </Button>
+            <Button
+              className="px-6 py-2 text-lg font-semibold rounded-xl"
+              style={{
+                backgroundColor: colorPalette['button-primary'],
+                color: colorPalette['button-text']
+              }}
+            >
+              Get Started
+            </Button>
+            
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden"
+              style={{ color: colorPalette['text-primary'] }}
+            >
+              <Menu className="w-6 h-6" />
+            </Button>
+          </div>
+        </div>
+      </header>
+      
       {/* Content Container */}
-      <div className="relative z-10 flex min-h-screen">
+      <div className="relative z-10 flex min-h-[calc(100vh-100px)]">
         {/* Left Content Section */}
         <div className="flex-1 flex items-center px-8 lg:px-16 xl:px-24">
           <div className="max-w-2xl space-y-8">
