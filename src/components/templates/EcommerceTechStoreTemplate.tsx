@@ -141,89 +141,109 @@ const EcommerceTechStoreTemplate: React.FC<EcommerceTechStoreTemplateProps> = ({
               { name: "AirPods Pro", price: "$249", originalPrice: "$279", rating: 4.7, image: "photo-1606220945770-b5b6c2c55bf1", badge: "Popular", discount: "11%" },
               { name: "Apple Watch", price: "$399", originalPrice: "$449", rating: 4.9, image: "photo-1579586337278-3f436f25d4d6", badge: "Featured", discount: "11%" }
             ].map((product, index) => (
-              <div key={index} className="group border rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 cursor-pointer" 
+              <div key={index} className="group border-2 rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-700 transform hover:-translate-y-4 hover:rotate-1 cursor-pointer" 
                    style={{ borderColor: colorPalette.border, backgroundColor: colorPalette['section-bg-1'] }}>
-                <div className="aspect-square overflow-hidden relative">
+                <div className="aspect-square overflow-hidden relative bg-gradient-to-br"
+                     style={{ background: `linear-gradient(135deg, ${colorPalette['section-bg-2']}, ${colorPalette['section-bg-1']})` }}>
                   <img 
-                    src={`https://images.unsplash.com/${product.image}?w=350&h=350&fit=crop`}
+                    src={`https://images.unsplash.com/${product.image}?w=400&h=400&fit=crop`}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-1000 ease-out"
                   />
                   
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 space-y-2">
-                    <span className="px-3 py-1 text-xs font-bold rounded-full" 
-                          style={{ backgroundColor: colorPalette.highlight, color: colorPalette['button-text'] }}>
-                      {product.badge}
-                    </span>
-                    <div className="px-2 py-1 text-xs font-medium rounded-full" 
-                         style={{ backgroundColor: colorPalette.accent, color: colorPalette['button-text'] }}>
-                      -{product.discount}
+                  {/* Tech-style grid overlay */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+                       style={{ 
+                         backgroundImage: `linear-gradient(${colorPalette.accent} 1px, transparent 1px), linear-gradient(90deg, ${colorPalette.accent} 1px, transparent 1px)`,
+                         backgroundSize: '20px 20px'
+                       }}></div>
+                  
+                  {/* Tech badges */}
+                  <div className="absolute top-4 left-4 space-y-3">
+                    <div className="px-3 py-2 text-xs font-bold rounded-lg backdrop-blur-lg border-2 shadow-xl" 
+                         style={{ backgroundColor: `${colorPalette.highlight}90`, color: colorPalette['button-text'], borderColor: colorPalette['button-text'] }}>
+                      ⚡ {product.badge}
+                    </div>
+                    <div className="px-3 py-2 text-xs font-bold rounded-lg backdrop-blur-lg border-2 shadow-xl" 
+                         style={{ backgroundColor: `${colorPalette.accent}90`, color: colorPalette['button-text'], borderColor: colorPalette['button-text'] }}>
+                      -{product.discount} OFF
                     </div>
                   </div>
                   
-                  {/* Action Buttons */}
-                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 space-y-2">
-                    <button className="p-2 rounded-full backdrop-blur-md shadow-lg hover:scale-110 transition-transform" 
-                            style={{ backgroundColor: `${colorPalette['section-bg-1']}CC` }}>
-                      <Heart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                  {/* Tech action buttons */}
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0 space-y-3">
+                    <button className="p-3 rounded-lg backdrop-blur-lg border-2 shadow-xl hover:scale-125 transition-all duration-300" 
+                            style={{ backgroundColor: `${colorPalette['section-bg-1']}95`, borderColor: colorPalette.border }}>
+                      <Heart className="h-5 w-5" style={{ color: colorPalette['text-primary'] }} />
                     </button>
-                    <button className="p-2 rounded-full backdrop-blur-md shadow-lg hover:scale-110 transition-transform" 
-                            style={{ backgroundColor: `${colorPalette['section-bg-1']}CC` }}>
-                      <Eye className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                    <button className="p-3 rounded-lg backdrop-blur-lg border-2 shadow-xl hover:scale-125 transition-all duration-300" 
+                            style={{ backgroundColor: `${colorPalette['section-bg-1']}95`, borderColor: colorPalette.border }}>
+                      <Eye className="h-5 w-5" style={{ color: colorPalette['text-primary'] }} />
                     </button>
                   </div>
                   
-                  {/* Quick Add Button */}
-                  <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                  {/* Tech quick add button */}
+                  <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-700 transform translate-y-6 group-hover:translate-y-0">
                     <Button 
                       size="sm"
-                      className="w-full backdrop-blur-md shadow-lg font-medium"
+                      className="w-full backdrop-blur-lg border-2 font-bold shadow-xl hover:scale-105 transition-all duration-300"
                       style={{ 
-                        backgroundColor: `${colorPalette['button-primary']}CC`,
+                        backgroundColor: `${colorPalette['button-primary']}95`,
                         color: colorPalette['button-text'],
-                        borderColor: colorPalette.border
+                        borderColor: colorPalette['button-text']
                       }}
                     >
                       <Zap className="h-4 w-4 mr-2" />
-                      Quick Add
+                      QUICK ADD
                     </Button>
                   </div>
                 </div>
                 
-                <div className="p-5 space-y-4">
-                  <h4 className="font-bold text-lg" style={{ color: colorPalette['text-primary'] }}>
+                <div className="p-6 space-y-5">
+                  <h4 className="font-bold text-xl leading-tight group-hover:text-opacity-80 transition-colors" style={{ color: colorPalette['text-primary'] }}>
                     {product.name}
                   </h4>
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center">
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-current" 
+                        <Star key={i} className="h-5 w-5 fill-current transition-transform hover:scale-125" 
                               style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
                       ))}
+                      <span className="text-sm font-bold ml-2" style={{ color: colorPalette['text-secondary'] }}>
+                        ({product.rating})
+                      </span>
                     </div>
-                    <span className="text-sm font-medium" style={{ color: colorPalette['text-secondary'] }}>
-                      ({product.rating})
-                    </span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-2">
+                  
+                  <div className="flex items-end justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-3">
                         <span className="text-2xl font-bold" style={{ color: colorPalette.brand }}>
                           {product.price}
                         </span>
-                        <span className="text-sm line-through" style={{ color: colorPalette['text-secondary'] }}>
+                        <span className="text-lg line-through opacity-60" style={{ color: colorPalette['text-secondary'] }}>
                           {product.originalPrice}
                         </span>
                       </div>
-                      <p className="text-xs" style={{ color: colorPalette['text-secondary'] }}>
-                        Free shipping
-                      </p>
+                      <div className="flex items-center space-x-2">
+                        <div className="text-sm font-bold" style={{ color: colorPalette.highlight }}>
+                          Save ${(parseFloat(product.originalPrice.slice(1)) - parseFloat(product.price.slice(1))).toFixed(0)}
+                        </div>
+                        <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: colorPalette.accent, color: colorPalette['button-text'] }}>
+                          Free shipping
+                        </span>
+                      </div>
                     </div>
+                    
                     <Button 
                       size="sm"
-                      className="hover:scale-105 transition-transform shadow-md"
-                      style={{ backgroundColor: colorPalette['button-secondary'], color: colorPalette['button-secondary-text'] }}
+                      className="hover:scale-110 transition-all duration-300 shadow-lg border-2 font-bold"
+                      style={{ 
+                        backgroundColor: colorPalette['button-secondary'], 
+                        color: colorPalette['button-secondary-text'],
+                        borderColor: colorPalette['button-secondary']
+                      }}
                     >
                       <ShoppingCart className="h-4 w-4 mr-1" />
                       Add

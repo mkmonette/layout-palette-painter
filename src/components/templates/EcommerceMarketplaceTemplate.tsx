@@ -178,71 +178,93 @@ const EcommerceMarketplaceTemplate: React.FC<EcommerceMarketplaceTemplateProps> 
               { name: "Coffee Maker", price: "$129", originalPrice: "$159", seller: "HomeEssentials", rating: 4.6, reviews: 342, image: "photo-1559056199-641a0ac8b55e", freeShipping: true },
               { name: "Running Shoes", price: "$89", originalPrice: "$119", seller: "SportGear", rating: 4.8, reviews: 923, image: "photo-1542291026-7eec264c27ff", freeShipping: true }
             ].map((product, index) => (
-              <div key={index} className="group border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer" 
+              <div key={index} className="group border-2 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-600 transform hover:-translate-y-3 hover:rotate-1 cursor-pointer" 
                    style={{ borderColor: colorPalette.border, backgroundColor: colorPalette['section-bg-1'] }}>
-                <div className="aspect-square overflow-hidden relative">
+                <div className="aspect-square overflow-hidden relative bg-gradient-to-br"
+                     style={{ background: `linear-gradient(135deg, ${colorPalette['section-bg-2']}, ${colorPalette['section-bg-1']})` }}>
                   <img 
-                    src={`https://images.unsplash.com/${product.image}?w=280&h=280&fit=crop`}
+                    src={`https://images.unsplash.com/${product.image}?w=320&h=320&fit=crop`}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-120 transition-transform duration-800 ease-out"
                   />
                   
-                  {/* Discount Badge */}
-                  <div className="absolute top-2 left-2 px-2 py-1 text-xs font-bold rounded-full" 
-                       style={{ backgroundColor: colorPalette.highlight, color: colorPalette['button-text'] }}>
-                    {Math.round(((parseFloat(product.originalPrice.slice(1)) - parseFloat(product.price.slice(1))) / parseFloat(product.originalPrice.slice(1))) * 100)}% OFF
+                  {/* Marketplace-style discount badge */}
+                  <div className="absolute top-3 left-3 px-3 py-2 text-xs font-bold rounded-lg backdrop-blur-lg border-2 shadow-xl" 
+                       style={{ backgroundColor: `${colorPalette.highlight}90`, color: colorPalette['button-text'], borderColor: colorPalette['button-text'] }}>
+                    🏷️ {Math.round(((parseFloat(product.originalPrice.slice(1)) - parseFloat(product.price.slice(1))) / parseFloat(product.originalPrice.slice(1))) * 100)}% OFF
                   </div>
                   
-                  {/* Free Shipping Badge */}
+                  {/* Free shipping badge */}
                   {product.freeShipping && (
-                    <div className="absolute top-2 right-2 px-2 py-1 text-xs font-medium rounded-full" 
-                         style={{ backgroundColor: colorPalette.accent, color: colorPalette['button-text'] }}>
-                      Free Ship
+                    <div className="absolute top-3 right-3 px-3 py-2 text-xs font-bold rounded-lg backdrop-blur-lg border-2 shadow-xl" 
+                         style={{ backgroundColor: `${colorPalette.accent}90`, color: colorPalette['button-text'], borderColor: colorPalette['button-text'] }}>
+                      🚚 Free Ship
                     </div>
                   )}
                   
-                  {/* Action Buttons */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <div className="flex space-x-3">
-                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
-                              style={{ backgroundColor: `${colorPalette['section-bg-1']}DD` }}>
-                        <Heart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                  {/* Marketplace action overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                    <div className="flex space-x-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      <button className="p-4 rounded-xl backdrop-blur-lg border-2 shadow-xl hover:scale-125 transition-all duration-300" 
+                              style={{ backgroundColor: `${colorPalette['section-bg-1']}95`, borderColor: colorPalette.border }}>
+                        <Heart className="h-5 w-5" style={{ color: colorPalette['text-primary'] }} />
                       </button>
-                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
-                              style={{ backgroundColor: `${colorPalette['section-bg-1']}DD` }}>
-                        <Eye className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      <button className="p-4 rounded-xl backdrop-blur-lg border-2 shadow-xl hover:scale-125 transition-all duration-300" 
+                              style={{ backgroundColor: `${colorPalette['section-bg-1']}95`, borderColor: colorPalette.border }}>
+                        <Eye className="h-5 w-5" style={{ color: colorPalette['text-primary'] }} />
                       </button>
-                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
-                              style={{ backgroundColor: colorPalette['button-primary'], color: colorPalette['button-text'] }}>
-                        <ShoppingCart className="h-4 w-4" />
+                      <button className="p-4 rounded-xl backdrop-blur-lg border-2 shadow-xl hover:scale-125 transition-all duration-300" 
+                              style={{ backgroundColor: colorPalette['button-primary'], color: colorPalette['button-text'], borderColor: colorPalette['button-text'] }}>
+                        <ShoppingCart className="h-5 w-5" />
                       </button>
                     </div>
                   </div>
                 </div>
                 
-                <div className="p-4 space-y-3">
-                  <h4 className="font-semibold text-sm leading-snug" style={{ color: colorPalette['text-primary'] }}>
+                <div className="p-5 space-y-4">
+                  <h4 className="font-bold text-lg leading-snug group-hover:text-opacity-80 transition-colors" style={{ color: colorPalette['text-primary'] }}>
                     {product.name}
                   </h4>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg font-bold" style={{ color: colorPalette.brand }}>
-                      {product.price}
-                    </span>
-                    <span className="text-xs line-through" style={{ color: colorPalette['text-secondary'] }}>
-                      {product.originalPrice}
-                    </span>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-xl font-bold" style={{ color: colorPalette.brand }}>
+                        {product.price}
+                      </span>
+                      <span className="text-sm line-through opacity-60" style={{ color: colorPalette['text-secondary'] }}>
+                        {product.originalPrice}
+                      </span>
+                    </div>
+                    <div className="text-sm font-bold" style={{ color: colorPalette.highlight }}>
+                      Save ${(parseFloat(product.originalPrice.slice(1)) - parseFloat(product.price.slice(1))).toFixed(0)}
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium" style={{ color: colorPalette['text-secondary'] }}>
-                      by {product.seller}
-                    </span>
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-3 w-3 fill-current" style={{ color: colorPalette.highlight }} />
-                      <span className="font-medium" style={{ color: colorPalette['text-secondary'] }}>
+                  
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium opacity-75" style={{ color: colorPalette['text-secondary'] }}>
+                        by {product.seller}
+                      </span>
+                      <div className="w-1 h-1 rounded-full opacity-50" style={{ backgroundColor: colorPalette['text-secondary'] }}></div>
+                      <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: colorPalette.accent, color: colorPalette['button-text'] }}>
+                        Verified
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-current transition-transform hover:scale-125" 
+                                style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
+                        ))}
+                      </div>
+                      <span className="text-sm font-bold" style={{ color: colorPalette['text-secondary'] }}>
                         {product.rating}
                       </span>
-                      <span style={{ color: colorPalette['text-secondary'] }}>
-                        ({product.reviews})
+                      <span className="text-xs opacity-75" style={{ color: colorPalette['text-secondary'] }}>
+                        ({product.reviews} reviews)
                       </span>
                     </div>
                   </div>

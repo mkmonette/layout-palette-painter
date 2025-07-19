@@ -134,67 +134,103 @@ const EcommerceFashionBoutiqueTemplate: React.FC<EcommerceFashionBoutiqueTemplat
               { name: "Pearl Earrings", price: "$89", originalPrice: "$119", rating: 5.0, image: "photo-1515562141207-7a88fb7ce338", isNew: true }
             ].map((product, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4 relative shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-                  <img 
-                    src={`https://images.unsplash.com/${product.image}?w=350&h=450&fit=crop`}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 space-y-2">
-                    {product.isNew && (
-                      <span className="px-2 py-1 text-xs font-medium rounded-full" 
-                            style={{ backgroundColor: colorPalette.highlight, color: colorPalette['button-text'] }}>
-                        New
-                      </span>
-                    )}
+                <div className="aspect-[3/4] rounded-3xl overflow-hidden mb-6 relative shadow-xl hover:shadow-2xl transition-all duration-700 transform hover:-translate-y-3 hover:rotate-1">
+                  <div className="w-full h-full bg-gradient-to-br relative"
+                       style={{ background: `linear-gradient(135deg, ${colorPalette['section-bg-2']}, ${colorPalette['section-bg-1']})` }}>
+                    <img 
+                      src={`https://images.unsplash.com/${product.image}?w=400&h=533&fit=crop`}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-1000 ease-out"
+                    />
                   </div>
                   
-                  {/* Action Buttons */}
-                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                  {/* Elegant gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Elegant badges */}
+                  <div className="absolute top-4 left-4 space-y-3">
+                    {product.isNew && (
+                      <div className="px-3 py-2 text-xs font-medium rounded-full backdrop-blur-md border" 
+                           style={{ backgroundColor: `${colorPalette.highlight}90`, color: colorPalette['button-text'], borderColor: colorPalette['button-text'] }}>
+                        ✨ New Arrival
+                      </div>
+                    )}
+                    <div className="px-3 py-2 text-xs font-medium rounded-full backdrop-blur-md border" 
+                         style={{ backgroundColor: `${colorPalette.accent}90`, color: colorPalette['button-text'], borderColor: colorPalette['button-text'] }}>
+                      {Math.round(((parseFloat(product.originalPrice.slice(1)) - parseFloat(product.price.slice(1))) / parseFloat(product.originalPrice.slice(1))) * 100)}% OFF
+                    </div>
+                  </div>
+                  
+                  {/* Sophisticated action buttons */}
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0">
                     <div className="flex flex-col space-y-3">
-                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
-                              style={{ backgroundColor: `${colorPalette['section-bg-1']}90` }}>
-                        <Heart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      <button className="p-3 rounded-full backdrop-blur-lg border shadow-xl hover:scale-125 transition-all duration-300" 
+                              style={{ backgroundColor: `${colorPalette['section-bg-1']}95`, borderColor: colorPalette.border }}>
+                        <Heart className="h-5 w-5" style={{ color: colorPalette['text-primary'] }} />
                       </button>
-                      <button className="p-3 rounded-full backdrop-blur-sm shadow-lg hover:scale-110 transition-transform" 
-                              style={{ backgroundColor: `${colorPalette['section-bg-1']}90` }}>
-                        <ShoppingCart className="h-4 w-4" style={{ color: colorPalette['text-primary'] }} />
+                      <button className="p-3 rounded-full backdrop-blur-lg border shadow-xl hover:scale-125 transition-all duration-300" 
+                              style={{ backgroundColor: `${colorPalette['section-bg-1']}95`, borderColor: colorPalette.border }}>
+                        <ShoppingCart className="h-5 w-5" style={{ color: colorPalette['text-primary'] }} />
                       </button>
                     </div>
+                  </div>
+                  
+                  {/* Quick shop overlay */}
+                  <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                    <Button 
+                      size="sm"
+                      className="w-full font-serif font-medium backdrop-blur-lg border shadow-xl hover:scale-105 transition-all duration-300"
+                      style={{ 
+                        backgroundColor: `${colorPalette['button-primary']}95`,
+                        color: colorPalette['button-text'],
+                        borderColor: colorPalette['button-text']
+                      }}
+                    >
+                      Quick Shop
+                    </Button>
                   </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <h4 className="font-serif text-lg" style={{ color: colorPalette['text-primary'] }}>
+                <div className="space-y-4">
+                  <h4 className="font-serif text-xl leading-snug group-hover:text-opacity-80 transition-colors" style={{ color: colorPalette['text-primary'] }}>
                     {product.name}
                   </h4>
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-current" 
-                              style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
-                      ))}
-                    </div>
-                    <span className="text-sm font-medium" style={{ color: colorPalette['text-secondary'] }}>
-                      ({product.rating})
-                    </span>
-                  </div>
+                  
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="text-xl font-semibold" style={{ color: colorPalette.brand }}>
-                        {product.price}
-                      </span>
-                      <span className="text-sm line-through opacity-75" style={{ color: colorPalette['text-secondary'] }}>
-                        {product.originalPrice}
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 fill-current transition-transform hover:scale-125" 
+                              style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
+                      ))}
+                      <span className="text-sm font-medium ml-2" style={{ color: colorPalette['text-secondary'] }}>
+                        ({product.rating})
                       </span>
                     </div>
+                  </div>
+                  
+                  <div className="flex items-end justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-2xl font-serif font-semibold" style={{ color: colorPalette.brand }}>
+                          {product.price}
+                        </span>
+                        <span className="text-lg line-through opacity-60" style={{ color: colorPalette['text-secondary'] }}>
+                          {product.originalPrice}
+                        </span>
+                      </div>
+                      <div className="text-sm font-medium italic" style={{ color: colorPalette.highlight }}>
+                        Save ${(parseFloat(product.originalPrice.slice(1)) - parseFloat(product.price.slice(1))).toFixed(0)}
+                      </div>
+                    </div>
+                    
                     <Button 
                       size="sm"
-                      className="font-medium hover:scale-105 transition-transform shadow-md"
-                      style={{ backgroundColor: colorPalette['button-primary'], color: colorPalette['button-text'] }}
+                      className="font-serif font-medium hover:scale-110 transition-all duration-300 shadow-lg border-2"
+                      style={{ 
+                        backgroundColor: colorPalette['button-secondary'], 
+                        color: colorPalette['button-secondary-text'],
+                        borderColor: colorPalette['button-secondary']
+                      }}
                     >
                       Add to Cart
                     </Button>

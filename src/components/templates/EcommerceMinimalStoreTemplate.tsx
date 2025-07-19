@@ -108,40 +108,60 @@ const EcommerceMinimalStoreTemplate: React.FC<EcommerceMinimalStoreTemplateProps
               { name: "Coffee Table", price: "$379", rating: 4.6, image: "photo-1506439773649-6e0eb8cfb237" }
             ].map((product, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className="aspect-square overflow-hidden mb-6 relative rounded-lg shadow-sm hover:shadow-xl transition-all duration-500">
-                  <img 
-                    src={`https://images.unsplash.com/${product.image}?w=400&h=400&fit=crop`}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                  <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="aspect-square overflow-hidden mb-8 relative">
+                  <div className="w-full h-full bg-gradient-to-br rounded-none shadow-none group-hover:shadow-2xl transition-all duration-700 transform group-hover:-translate-y-2"
+                       style={{ background: `linear-gradient(135deg, ${colorPalette['section-bg-2']}, ${colorPalette['section-bg-1']})` }}>
+                    <img 
+                      src={`https://images.unsplash.com/${product.image}?w=500&h=500&fit=crop`}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
+                    />
+                  </div>
+                  
+                  {/* Minimal overlay on hover */}
+                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors duration-500" />
+                  
+                  {/* Floating minimal add button */}
+                  <div className="absolute bottom-6 left-6 right-6 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-6 group-hover:translate-y-0">
                     <Button 
                       size="sm"
-                      className="w-full backdrop-blur-sm"
+                      className="w-full font-light tracking-wider border-0 shadow-xl backdrop-blur-lg"
                       style={{ 
-                        backgroundColor: `${colorPalette['button-primary']}CC`,
-                        color: colorPalette['button-text'],
-                        border: `1px solid ${colorPalette.border}`
+                        backgroundColor: `${colorPalette['button-primary']}95`,
+                        color: colorPalette['button-text']
                       }}
                     >
-                      Add to Cart
+                      ADD TO CART
                     </Button>
                   </div>
+                  
+                  {/* Minimal corner accent */}
+                  <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colorPalette.highlight }}></div>
+                  </div>
                 </div>
-                <div className="text-center space-y-3">
-                  <h4 className="font-light text-lg" style={{ color: colorPalette['text-primary'] }}>
+                
+                <div className="text-center space-y-4">
+                  <h4 className="font-light text-xl tracking-wide group-hover:tracking-wider transition-all duration-300" style={{ color: colorPalette['text-primary'] }}>
                     {product.name}
                   </h4>
+                  
                   <div className="flex items-center justify-center space-x-1">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" 
+                      <Star key={i} className="h-4 w-4 fill-current transition-transform hover:scale-125" 
                             style={{ color: i < Math.floor(product.rating) ? colorPalette.highlight : colorPalette.border }} />
                     ))}
+                    <span className="text-xs ml-3 font-light opacity-70" style={{ color: colorPalette['text-secondary'] }}>
+                      ({product.rating})
+                    </span>
                   </div>
-                  <p className="text-lg font-light" style={{ color: colorPalette.brand }}>
-                    {product.price}
-                  </p>
+                  
+                  <div className="space-y-2">
+                    <p className="text-2xl font-light tracking-wide" style={{ color: colorPalette.brand }}>
+                      {product.price}
+                    </p>
+                    <div className="w-12 h-px mx-auto opacity-30" style={{ backgroundColor: colorPalette.border }}></div>
+                  </div>
                 </div>
               </div>
             ))}
