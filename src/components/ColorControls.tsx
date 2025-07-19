@@ -38,7 +38,7 @@ const ColorControls: React.FC<ColorControlsProps> = ({
   onToggleLock
 }) => {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-6">
       {Object.entries(colorPalette).map(([key, value]) => {
         const isLocked = lockedColors.has(key as keyof ColorPalette);
         return (
