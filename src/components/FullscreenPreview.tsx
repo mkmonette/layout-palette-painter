@@ -333,6 +333,21 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     };
   }, []);
 
+  // Handle escape key to close fullscreen
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [onClose]);
+
   useEffect(() => {
     const updateCount = () => {
       setSavedPalettesCount(getSavedCount());
