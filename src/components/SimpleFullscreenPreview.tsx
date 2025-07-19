@@ -20,9 +20,9 @@ const SimpleFullscreenPreview: React.FC<SimpleFullscreenPreviewProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col">
+    <div className="fixed inset-0 z-[9999] bg-white flex flex-col">
       {/* Exit button - top right */}
-      <div className="absolute top-4 right-4 z-20">
+      <div className="absolute top-4 right-4 z-[10000]">
         <Button 
           onClick={onClose} 
           variant="outline" 
@@ -34,8 +34,8 @@ const SimpleFullscreenPreview: React.FC<SimpleFullscreenPreviewProps> = ({
       </div>
 
       {/* Live Preview - Full screen */}
-      <div className="flex-1 overflow-auto">
-        <div className="min-h-full">
+      <div className="flex-1 overflow-auto w-full h-full">
+        <div className="min-h-screen w-full">
           <LivePreview template={template} colorPalette={colorPalette} />
         </div>
       </div>
