@@ -219,7 +219,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+            <div className="p-4">
               <ColorSchemeSelector selectedScheme={selectedScheme} onSchemeChange={onSchemeChange} />
             </div>
           </ScrollArea>
