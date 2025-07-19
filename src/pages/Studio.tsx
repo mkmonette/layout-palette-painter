@@ -875,7 +875,7 @@ const Dashboard = () => {
                                                  <div className="text-[10px] font-medium text-foreground truncate mb-1">
                                                    {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                                  </div>
-                                                  <div className={`w-full h-4 border rounded overflow-hidden ${isLocked ? 'opacity-50' : 'hover:border-primary'}`}>
+                                                  <div className={`w-6 h-6 border rounded overflow-hidden ${isLocked ? 'opacity-50' : 'hover:border-primary'}`}>
                                                     <input
                                                       type="color"
                                                       value={value}
