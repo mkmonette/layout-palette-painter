@@ -578,10 +578,10 @@ const Dashboard = () => {
   return <TooltipProvider>
       <div className="h-screen flex flex-col bg-background">
         {/* Top Navigation Bar */}
-        <div className="h-14 border-b border-border bg-primary">
+        <div className="h-14 border-b border-border bg-background">
           <div className="flex items-center justify-between px-4 h-full">
             <div className="flex items-center space-x-4">
-               <h1 className="text-base font-medium text-primary-foreground">
+               <h1 className="text-base font-medium text-foreground">
                  Color Palette Generator
                </h1>
             </div>
@@ -589,8 +589,8 @@ const Dashboard = () => {
             <div className="flex items-center space-x-4">
               {/* AI Quota Display */}
               {canUseAIGeneration && <div className="flex items-center space-x-2">
-                   <Sparkles className="h-4 w-4 text-primary-foreground" />
-                   <span className="text-sm text-primary-foreground/80">
+                   <Sparkles className="h-4 w-4 text-foreground" />
+                   <span className="text-sm text-muted-foreground">
                      AI Colors: {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth}
                    </span>
                 </div>}
@@ -601,9 +601,9 @@ const Dashboard = () => {
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button 
-                        variant="secondary" 
+                        variant="outline" 
                         size="sm" 
-                        className="px-2 py-1 rounded-sm text-primary-foreground bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground/20"
+                        className="px-2 py-1 rounded-sm"
                         disabled={!canUseAIGeneration}
                       >
                         <Bot className="h-4 w-4 mr-2" />
@@ -630,13 +630,13 @@ const Dashboard = () => {
               </Tooltip>
 
               {/* Plan Badge */}
-              <Badge variant={isPro ? "default" : "secondary"} className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/20">
+              <Badge variant={isPro ? "default" : "secondary"}>
                 {isPro ? "Pro" : "Free"}
               </Badge>
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
-                <Button variant="secondary" size="sm" className="px-2 py-1 rounded-sm text-primary-foreground bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground/20">
+                <Button variant="outline" size="sm" className="px-2 py-1 rounded-sm">
                   <Share className="h-4 w-4 mr-2" />
                   Share
                 </Button>
@@ -645,7 +645,7 @@ const Dashboard = () => {
               {/* Dashboard Dark Mode Toggle */}
               <Tooltip>
                 <TooltipTrigger asChild>
-                   <Button variant="ghost" size="sm" className="w-8 h-8 p-1 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground rounded-sm" onClick={() => {
+                   <Button variant="ghost" size="sm" className="w-8 h-8 p-1 text-foreground hover:bg-accent hover:text-accent-foreground rounded-sm" onClick={() => {
                   // Dashboard dark mode toggle - only affects dashboard UI
                   const newDashboardDarkMode = !isDashboardDarkMode;
                   setIsDashboardDarkMode(newDashboardDarkMode);
@@ -671,7 +671,7 @@ const Dashboard = () => {
               {/* Hamburger Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
+                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent">
                     <Menu className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
