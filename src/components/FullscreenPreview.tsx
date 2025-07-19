@@ -119,6 +119,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
   const [isToolsExpanded, setIsToolsExpanded] = useState(false);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
   const [showPDFExportModal, setShowPDFExportModal] = useState(false);
+  const [areButtonsVisible, setAreButtonsVisible] = useState(true);
 
   // Handle template-only dark mode toggle
   const handleTemplateDarkModeToggle = (checked: boolean) => {
@@ -297,6 +298,41 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     }
   };
 
+  // Auto-hide buttons on scroll
+  useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout;
+    
+    const handleScroll = () => {
+      // Hide buttons immediately when scrolling starts
+      setAreButtonsVisible(false);
+      
+      // Clear existing timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      
+      // Show buttons again after 800ms of no scrolling
+      scrollTimeout = setTimeout(() => {
+        setAreButtonsVisible(true);
+      }, 800);
+    };
+
+    // Get the scroll container (the preview area)
+    const scrollContainer = document.querySelector('.flex-1.overflow-auto');
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    }
+
+    return () => {
+      if (scrollContainer) {
+        scrollContainer.removeEventListener('scroll', handleScroll);
+      }
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const updateCount = () => {
       setSavedPalettesCount(getSavedCount());
@@ -457,7 +493,11 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
     }} />
 
       {/* Floating Tools Group - Bottom Right */}
-      <div className="fixed bottom-6 right-6 z-30 flex items-end gap-3">
+      <div className={`fixed bottom-6 right-6 z-30 flex items-end gap-3 transition-all duration-300 ${
+        areButtonsVisible 
+          ? 'opacity-100 translate-y-0' 
+          : 'opacity-0 translate-y-4 pointer-events-none'
+      }`}>
         <TooltipProvider>
           {/* Collapsible Tools Group */}
           <div className="flex flex-col items-center gap-2">
