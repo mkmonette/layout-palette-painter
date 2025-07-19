@@ -14,17 +14,21 @@ interface ColorControlsProps {
 }
 
 const colorLabels = {
-  primary: 'Primary (Headers & CTAs)',
-  secondary: 'Secondary (Sections)',
-  accent: 'Accent (Highlights)',
-  background: 'Background',
-  text: 'Text Content',
-  textLight: 'Light Text',
+  brand: 'Brand (Main Identity)',
+  accent: 'Accent (Highlights)', 
+  'button-primary': 'Primary Button',
+  'button-text': 'Primary Button Text',
+  'button-secondary': 'Secondary Button',
+  'button-secondary-text': 'Secondary Button Text',
+  'text-primary': 'Primary Text',
+  'text-secondary': 'Secondary Text',
   'section-bg-1': 'Section Background 1',
-  'section-bg-2': 'Section Background 2',
+  'section-bg-2': 'Section Background 2', 
   'section-bg-3': 'Section Background 3',
-  'card-bg': 'Card Background',
-  'nav-bg': 'Navigation Background'
+  border: 'Borders & Dividers',
+  highlight: 'Highlights & Focus',
+  'input-bg': 'Input Background',
+  'input-text': 'Input Text'
 };
 
 const ColorControls: React.FC<ColorControlsProps> = ({
