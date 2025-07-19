@@ -76,9 +76,9 @@ const SavedPalettes = () => {
     <Card className="group hover:shadow-lg transition-all duration-200 animate-fade-in">
       <CardContent className="p-4">
         {/* Template Preview */}
-        <div className="mb-4 rounded-lg overflow-hidden border shadow-sm">
-          <div className="h-32 w-full scale-50 origin-top-left transform-gpu overflow-hidden">
-            <div className="w-[200%] h-[200%]">
+        <div className="mb-4 rounded-lg overflow-hidden border shadow-sm bg-white">
+          <div className="h-40 w-full transform scale-[0.3] origin-top-left overflow-hidden">
+            <div className="w-[333%] h-[250%]">
               <LivePreview template={palette.template} colorPalette={palette} />
             </div>
           </div>
@@ -165,9 +165,9 @@ const SavedPalettes = () => {
       <CardContent className="p-4">
         <div className="flex items-center gap-4">
           {/* Template Preview */}
-          <div className="flex-shrink-0 w-32 h-20 rounded-lg overflow-hidden border shadow-sm">
-            <div className="w-full h-full scale-25 origin-top-left transform-gpu overflow-hidden">
-              <div className="w-[400%] h-[400%]">
+          <div className="flex-shrink-0 w-40 h-24 rounded-lg overflow-hidden border shadow-sm bg-white">
+            <div className="w-full h-full transform scale-[0.2] origin-top-left overflow-hidden">
+              <div className="w-[500%] h-[417%]">
                 <LivePreview template={palette.template} colorPalette={palette} />
               </div>
             </div>
