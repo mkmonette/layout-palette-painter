@@ -837,7 +837,7 @@ const Dashboard = () => {
 
                               {item.id === 'current-palettes' && <div className="space-y-3">
                                     <p className="text-xs text-muted-foreground">
-                                      Current palette colors with lock controls
+                                      Edit and lock current palette colors
                                     </p>
                                     <div className="space-y-2">
                                       {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
@@ -845,16 +845,30 @@ const Dashboard = () => {
                                         return (
                                           <div key={key} className="flex items-center gap-2">
                                             <div 
-                                              className={`w-6 h-6 rounded border flex-shrink-0 ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
+                                              className={`w-6 h-6 rounded border flex-shrink-0 cursor-pointer ${isLocked ? 'border-orange-300 border-2' : 'border-border'}`}
                                               style={{ backgroundColor: value }}
+                                              title={`Click to edit ${key.replace(/-/g, ' ')}`}
                                             />
                                             <div className="flex-1 min-w-0">
-                                              <div className="text-[10px] font-medium text-foreground truncate">
+                                              <div className="text-[10px] font-medium text-foreground truncate mb-1">
                                                 {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                               </div>
-                                              <div className="text-[9px] font-mono text-muted-foreground">
-                                                {value}
-                                              </div>
+                                              <input
+                                                type="color"
+                                                value={value}
+                                                onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
+                                                disabled={isLocked}
+                                                className={`w-full h-4 border rounded cursor-pointer ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary'}`}
+                                                style={{ backgroundColor: value }}
+                                              />
+                                              <input
+                                                type="text"
+                                                value={value}
+                                                onChange={(e) => handleColorChange(key as keyof ColorPalette, e.target.value)}
+                                                disabled={isLocked}
+                                                className={`w-full text-[9px] font-mono mt-1 px-1 py-0.5 border rounded bg-background ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary focus:border-primary focus:outline-none'}`}
+                                                placeholder="#000000"
+                                              />
                                             </div>
                                             <Button
                                               variant="ghost"
