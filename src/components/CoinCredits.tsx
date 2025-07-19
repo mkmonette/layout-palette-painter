@@ -23,8 +23,8 @@ import {
   Timer
 } from 'lucide-react';
 import { format, addDays, isAfter, differenceInDays } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import CoinCheckoutModal from './CoinCheckoutModal';
 
 interface CoinPurchase {
   id: string;
@@ -45,7 +45,6 @@ interface CoinSettings {
 }
 
 const CoinCredits = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [currentBalance, setCurrentBalance] = useState(0);
   const [coinPurchases, setCoinPurchases] = useState<CoinPurchase[]>([]);
@@ -53,6 +52,7 @@ const CoinCredits = () => {
     coinExpirationDays: 365,
     enableCoinExpiration: false
   });
+  const [showCoinCheckout, setShowCoinCheckout] = useState(false);
 
   // Load data on component mount
   useEffect(() => {
@@ -206,7 +206,7 @@ const CoinCredits = () => {
   };
 
   const handlePurchaseMore = () => {
-    navigate('/checkout');
+    setShowCoinCheckout(true);
   };
 
   return (
@@ -420,6 +420,11 @@ const CoinCredits = () => {
           </CardContent>
         </Card>
       )}
+      
+      <CoinCheckoutModal 
+        isOpen={showCoinCheckout} 
+        onClose={() => setShowCoinCheckout(false)} 
+      />
     </div>
   );
 };
