@@ -10,7 +10,6 @@ import Landing from "./pages/Landing";
 import Studio from "./pages/Studio";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
-import History from "./pages/History";
 
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
@@ -52,14 +51,6 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/history" 
-              element={
-                <ProtectedRoute>
-                  <History />
                 </ProtectedRoute>
               } 
             />
