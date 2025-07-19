@@ -133,17 +133,17 @@ const Landing = () => {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold gradient-text">
+                  <h1 className="text-xl font-bold text-foreground">
                     Palette Painter
                   </h1>
                 </div>
               </div>
               
               <div className="hidden md:flex items-center space-x-6">
-                <a href="#features" className="text-foreground/80 hover:text-foreground transition-colors font-medium">Features</a>
-                <a href="#how-it-works" className="text-foreground/80 hover:text-foreground transition-colors font-medium">How it Works</a>
-                <a href="#pricing" className="text-foreground/80 hover:text-foreground transition-colors font-medium">Pricing</a>
-                <a href="#testimonials" className="text-foreground/80 hover:text-foreground transition-colors font-medium">Reviews</a>
+                <a href="#features" className="text-foreground hover:text-primary transition-colors font-medium">Features</a>
+                <a href="#how-it-works" className="text-foreground hover:text-primary transition-colors font-medium">How it Works</a>
+                <a href="#pricing" className="text-foreground hover:text-primary transition-colors font-medium">Pricing</a>
+                <a href="#testimonials" className="text-foreground hover:text-primary transition-colors font-medium">Reviews</a>
               </div>
 
               <div className="flex items-center space-x-3">
@@ -169,6 +169,23 @@ const Landing = () => {
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32">
           <div className="absolute inset-0 hero-gradient opacity-10" />
+          <div className="absolute inset-0 opacity-30">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
+              <defs>
+                <linearGradient id="heroGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style={{stopColor: 'hsl(280, 100%, 65%)', stopOpacity: 0.1}} />
+                  <stop offset="100%" style={{stopColor: 'hsl(340, 82%, 65%)', stopOpacity: 0.05}} />
+                </linearGradient>
+                <linearGradient id="heroGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" style={{stopColor: 'hsl(195, 100%, 70%)', stopOpacity: 0.1}} />
+                  <stop offset="100%" style={{stopColor: 'hsl(160, 100%, 65%)', stopOpacity: 0.05}} />
+                </linearGradient>
+              </defs>
+              <path d="M0,400 Q300,300 600,350 T1200,400 L1200,800 L0,800 Z" fill="url(#heroGrad1)"/>
+              <path d="M0,500 Q400,420 800,460 T1200,500 L1200,800 L0,800 Z" fill="url(#heroGrad2)"/>
+              <path d="M0,600 Q200,550 400,580 T800,600 T1200,620 L1200,800 L0,800 Z" fill="hsl(280, 100%, 65%)" opacity="0.05"/>
+            </svg>
+          </div>
           <div className="max-w-7xl mx-auto px-4 relative z-10">
             <div className="text-center scroll-reveal">
               <Badge className="mb-8 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 text-sm px-6 py-3 backdrop-blur-sm">

@@ -49,6 +49,7 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(280 100% 65%), hsl(340 82% 65%));
     --gradient-secondary: linear-gradient(135deg, hsl(195 100% 70%), hsl(160 100% 65%));
     --gradient-accent: linear-gradient(135deg, hsl(340 82% 95%), hsl(195 100% 90%));
+    --gradient-hero: linear-gradient(135deg, hsl(280 100% 65%), hsl(340 82% 65%), hsl(195 100% 70%));
     --gradient-workspace: linear-gradient(135deg, hsl(245 100% 97%) 0%, hsl(280 40% 94%) 25%, hsl(195 60% 94%) 50%, hsl(160 40% 94%) 75%, hsl(245 100% 97%) 100%);
     --gradient-creative: linear-gradient(45deg, hsl(280 100% 65%), hsl(340 82% 65%), hsl(195 100% 70%), hsl(160 100% 65%));
     --gradient-mesh: radial-gradient(circle at 20% 80%, hsl(280 100% 65% / 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(340 82% 65% / 0.15) 0%, transparent 50%), radial-gradient(circle at 40% 40%, hsl(195 100% 70% / 0.1) 0%, transparent 50%), radial-gradient(circle at 60% 60%, hsl(160 100% 65% / 0.1) 0%, transparent 50%);
