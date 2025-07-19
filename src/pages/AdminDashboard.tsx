@@ -20,7 +20,8 @@ import {
   Plug,
   ChevronDown,
   ChevronRight,
-  TestTube
+  TestTube,
+  FileText
 } from 'lucide-react';
 import { 
   Sidebar,
@@ -51,6 +52,7 @@ import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 import CoinCreditSettings from '@/components/admin/CoinCreditSettings';
 import PaymentGatewaySettings from '@/components/admin/PaymentGatewaySettings';
 import ThemeTesterPanel from '@/components/admin/ThemeTesterPanel';
+import ContentManagement from '@/components/admin/ContentManagement';
 
 
 import { logoutUser } from '@/utils/auth';
@@ -63,6 +65,7 @@ const menuItems = [
   { id: 'users', title: 'Users', icon: Users },
   { id: 'subscriptions', title: 'Plans', icon: CreditCard },
   { id: 'coin-credit', title: 'Coin Credit', icon: Coins },
+  { id: 'content', title: 'Content', icon: FileText },
   { id: 'generator', title: 'Generator', icon: Palette },
   { id: 'theme-tester', title: 'Theme Tester', icon: TestTube },
   
@@ -243,6 +246,7 @@ const AdminDashboard = () => {
             {activeTab === 'users' && <UserManagement />}
             {activeTab === 'subscriptions' && <FeatureManagement />}
             {activeTab === 'coin-credit' && <CoinCreditSettings />}
+            {activeTab === 'content' && <ContentManagement />}
             {activeTab === 'generator' && <AutoGenerator />}
             {activeTab === 'theme-tester' && <ThemeTesterPanel />}
             

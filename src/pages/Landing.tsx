@@ -105,8 +105,20 @@ const Landing = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
+  const [contentSettings, setContentSettings] = useState({
+    websiteName: 'Palette Painter',
+    logoUrl: ''
+  });
 
   useScrollReveal();
+
+  // Load content settings from admin panel
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('contentSettings');
+    if (savedSettings) {
+      setContentSettings(JSON.parse(savedSettings));
+    }
+  }, []);
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,13 +140,23 @@ const Landing = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <div className="w-12 h-12 rounded-2xl hero-gradient flex items-center justify-center shadow-lg">
-                    <Palette className="h-6 w-6 text-white" />
-                  </div>
+                  {contentSettings.logoUrl ? (
+                    <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg bg-white flex items-center justify-center">
+                      <img 
+                        src={contentSettings.logoUrl} 
+                        alt={`${contentSettings.websiteName} logo`}
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-2xl hero-gradient flex items-center justify-center shadow-lg">
+                      <Palette className="h-6 w-6 text-white" />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-foreground">
-                    Palette Painter
+                    {contentSettings.websiteName}
                   </h1>
                 </div>
               </div>
