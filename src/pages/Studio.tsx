@@ -923,9 +923,9 @@ const Dashboard = () => {
                                )}
                              
                               {item.id === 'settings' && <div className="space-y-2">
-                                   <h3 className="text-xs font-medium">Settings</h3>
-                                   <p className="text-xs text-muted-foreground">
-                                     Configure preferences and account.
+                                  <h3 className="text-xl sm:text-lg font-semibold">Settings</h3>
+                                  <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
+                                    Configure preferences and account.
                                    </p>
                                  
                                  <div className="space-y-2">
