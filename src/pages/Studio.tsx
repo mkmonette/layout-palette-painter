@@ -672,7 +672,7 @@ const Dashboard = () => {
                     </Button>
                   </PopoverTrigger>
                    <PopoverContent 
-                     className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' || item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} 
+                     className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' ? 'w-80' : item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} 
                      side="right" 
                      align="start"
                    >
