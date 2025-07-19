@@ -240,7 +240,7 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
             <p className="text-sm text-muted-foreground">Edit and lock current palette colors</p>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <div className="p-4 grid grid-cols-2 gap-3">
+            <div className="p-4">
               <ColorControls colorPalette={colorPalette} onColorChange={(colorKey, color) => {
               const newPalette = {
                 ...colorPalette,
