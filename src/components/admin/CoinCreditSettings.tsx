@@ -89,7 +89,7 @@ const CoinCreditSettings = () => {
       </div>
 
       <Tabs defaultValue="packages" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="packages" className="flex items-center gap-2">
             <Coins className="h-4 w-4" />
             Coin Packages
@@ -102,10 +102,6 @@ const CoinCreditSettings = () => {
             <CreditCard className="h-4 w-4" />
             Subscription Costs
           </TabsTrigger>
-          <TabsTrigger value="expiration" className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            Coin Expiration
-          </TabsTrigger>
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             Overview
@@ -113,7 +109,7 @@ const CoinCreditSettings = () => {
         </TabsList>
 
         <TabsContent value="packages" className="mt-6">
-          <CoinPackagesTable />
+          <CoinPackagesTable coinSettings={tempSettings} onSettingsChange={setTempSettings} />
         </TabsContent>
 
         <TabsContent value="ai-costs" className="mt-6">
@@ -206,99 +202,6 @@ const CoinCreditSettings = () => {
                       className="w-24"
                     />
                     <Badge variant="secondary">coins/month</Badge>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="expiration" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Coin Expiration Settings
-              </CardTitle>
-              <CardDescription>
-                Configure expiration policies for purchased coins across all packages
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label className="text-base">Enable Coin Expiration</Label>
-                    <div className="text-sm text-muted-foreground">
-                      When enabled, all purchased coins will expire after the specified time period
-                    </div>
-                  </div>
-                  <Switch
-                    checked={tempSettings.enableCoinExpiration}
-                    onCheckedChange={(checked) => updateSetting('enableCoinExpiration', checked ? 1 : 0)}
-                  />
-                </div>
-
-                {tempSettings.enableCoinExpiration && (
-                  <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
-                    <div className="space-y-2">
-                      <Label htmlFor="expiration-days" className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        Expiration Period (Days)
-                      </Label>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          id="expiration-days"
-                          type="number"
-                          min="1"
-                          max="3650"
-                          value={tempSettings.coinExpirationDays}
-                          onChange={(e) => updateSetting('coinExpirationDays', parseInt(e.target.value) || 365)}
-                          className="w-32"
-                        />
-                        <span className="text-sm text-muted-foreground">days after purchase</span>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Recommended: 365 days (1 year) for most businesses
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium">Expiration Examples:</div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                        <div className="flex justify-between p-2 bg-background rounded border">
-                          <span>30 days:</span>
-                          <span className="text-muted-foreground">1 month</span>
-                        </div>
-                        <div className="flex justify-between p-2 bg-background rounded border">
-                          <span>90 days:</span>
-                          <span className="text-muted-foreground">3 months</span>
-                        </div>
-                        <div className="flex justify-between p-2 bg-background rounded border">
-                          <span>365 days:</span>
-                          <span className="text-muted-foreground">1 year</span>
-                        </div>
-                        <div className="flex justify-between p-2 bg-background rounded border">
-                          <span>730 days:</span>
-                          <span className="text-muted-foreground">2 years</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/20">
-                  <div className="flex items-start gap-3">
-                    <Calendar className="h-5 w-5 text-blue-600 mt-0.5" />
-                    <div className="space-y-1">
-                      <div className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                        Expiration Policy applies to all packages
-                      </div>
-                      <div className="text-xs text-blue-700 dark:text-blue-200">
-                        When expiration is enabled, all coin packages will use the same expiration period. 
-                        Coins will expire on a first-in-first-out basis when users make purchases.
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>

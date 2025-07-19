@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Switch } from '@/components/ui/switch';
 import { 
   Coins, 
   Edit, 
@@ -28,7 +29,9 @@ import {
   Plus,
   DollarSign,
   Gift,
-  MoreHorizontal
+  MoreHorizontal,
+  Calendar,
+  Clock
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -45,7 +48,21 @@ interface CoinPackage {
   bonus?: number;
 }
 
-const CoinPackagesTable = () => {
+interface CoinSettings {
+  aiColorGeneration: number;
+  freeSubscriptionCost: number;
+  proSubscriptionCost: number;
+  enterpriseSubscriptionCost: number;
+  coinExpirationDays: number;
+  enableCoinExpiration: boolean;
+}
+
+interface CoinPackagesTableProps {
+  coinSettings: CoinSettings;
+  onSettingsChange: (settings: CoinSettings) => void;
+}
+
+const CoinPackagesTable = ({ coinSettings, onSettingsChange }: CoinPackagesTableProps) => {
   const { toast } = useToast();
   const [coinPackages, setCoinPackages] = useState<CoinPackage[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -212,8 +229,114 @@ const CoinPackagesTable = () => {
     );
   };
 
+  const updateSetting = (path: string, value: number | boolean) => {
+    const keys = path.split('.');
+    const newSettings = { ...coinSettings };
+    let current: any = newSettings;
+    
+    for (let i = 0; i < keys.length - 1; i++) {
+      current = current[keys[i]];
+    }
+    current[keys[keys.length - 1]] = value;
+    
+    onSettingsChange(newSettings);
+  };
+
   return (
-    <>
+    <div className="space-y-6">
+      {/* Expiration Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Coin Expiration Settings
+          </CardTitle>
+          <CardDescription>
+            Configure expiration policies for purchased coins across all packages
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label className="text-base">Enable Coin Expiration</Label>
+                <div className="text-sm text-muted-foreground">
+                  When enabled, all purchased coins will expire after the specified time period
+                </div>
+              </div>
+              <Switch
+                checked={coinSettings.enableCoinExpiration}
+                onCheckedChange={(checked) => updateSetting('enableCoinExpiration', checked)}
+              />
+            </div>
+
+            {coinSettings.enableCoinExpiration && (
+              <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+                <div className="space-y-2">
+                  <Label htmlFor="expiration-days" className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Expiration Period (Days)
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="expiration-days"
+                      type="number"
+                      min="1"
+                      max="3650"
+                      value={coinSettings.coinExpirationDays}
+                      onChange={(e) => updateSetting('coinExpirationDays', parseInt(e.target.value) || 365)}
+                      className="w-32"
+                    />
+                    <span className="text-sm text-muted-foreground">days after purchase</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Recommended: 365 days (1 year) for most businesses
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">Expiration Examples:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                    <div className="flex justify-between p-2 bg-background rounded border">
+                      <span>30 days:</span>
+                      <span className="text-muted-foreground">1 month</span>
+                    </div>
+                    <div className="flex justify-between p-2 bg-background rounded border">
+                      <span>90 days:</span>
+                      <span className="text-muted-foreground">3 months</span>
+                    </div>
+                    <div className="flex justify-between p-2 bg-background rounded border">
+                      <span>365 days:</span>
+                      <span className="text-muted-foreground">1 year</span>
+                    </div>
+                    <div className="flex justify-between p-2 bg-background rounded border">
+                      <span>730 days:</span>
+                      <span className="text-muted-foreground">2 years</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/20">
+              <div className="flex items-start gap-3">
+                <Calendar className="h-5 w-5 text-blue-600 mt-0.5" />
+                <div className="space-y-1">
+                  <div className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                    Expiration Policy applies to all packages
+                  </div>
+                  <div className="text-xs text-blue-700 dark:text-blue-200">
+                    When expiration is enabled, all coin packages will use the same expiration period. 
+                    Coins will expire on a first-in-first-out basis when users make purchases.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Coin Packages */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -403,7 +526,7 @@ const CoinPackagesTable = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 };
 
