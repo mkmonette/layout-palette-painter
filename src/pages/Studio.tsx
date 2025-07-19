@@ -696,16 +696,16 @@ const Dashboard = () => {
                                      <span className="text-xs">🟦 Default Templates</span>
                                    </Button>
                                  </PopoverTrigger>
-                                   <PopoverContent 
-                                     className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                     side="right" 
-                                     align="start"
-                                     sideOffset={0}
-                                     avoidCollisions={false}
-                                   >
+                                    <PopoverContent 
+                                      className="w-[500px] p-4" 
+                                      side="right" 
+                                      align="start"
+                                      sideOffset={0}
+                                      avoidCollisions={false}
+                                    >
                                    <div className="space-y-3">
                                      <h3 className="font-medium text-xs">Default Templates</h3>
-                                     <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
+                                      <div className="max-h-96 overflow-y-auto">
                                        <div className="space-y-2">
                                          <p className="text-xs text-muted-foreground">
                                            Choose from our built-in professional templates.
@@ -728,16 +728,16 @@ const Dashboard = () => {
                                      <span className="text-xs">🟩 Custom Templates</span>
                                    </Button>
                                  </PopoverTrigger>
-                                   <PopoverContent 
-                                     className="w-[500px] max-h-[calc(100vh-40px)] overflow-y-auto p-4" 
-                                     side="right" 
-                                     align="start"
-                                     sideOffset={0}
-                                     avoidCollisions={false}
-                                   >
+                                    <PopoverContent 
+                                      className="w-[500px] p-4" 
+                                      side="right" 
+                                      align="start"
+                                      sideOffset={0}
+                                      avoidCollisions={false}
+                                    >
                                    <div className="space-y-3">
                                      <h3 className="font-medium text-xs">Custom Templates</h3>
-                                     <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
+                                     <div className="max-h-96 overflow-y-auto">
                                        <TemplatesSection 
                                          selectedTemplate={selectedTemplate} 
                                          onTemplateChange={setSelectedTemplate} 
