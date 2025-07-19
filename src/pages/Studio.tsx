@@ -810,7 +810,7 @@ const Dashboard = () => {
                                        </Button>
                                      </div>
                                       <ScrollArea className="h-80">
-                                       <div className="space-y-2 pr-4">
+                                       <div className="space-y-4 pr-4">
                                          {Object.entries(colorPalette).slice(0, 8).map(([key, value]) => {
                               const isLocked = lockedColors.has(key as keyof ColorPalette);
                               return <div key={key} className="space-y-2">
