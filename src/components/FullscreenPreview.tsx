@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal, MoreVertical, Bot, Play, SlidersHorizontal, Image, Wand2 } from 'lucide-react';
+import { X, RefreshCw, Palette, Layout, Settings, Sun, Moon, ZoomIn, ZoomOut, RotateCcw, Save, Check, Download, Shield, Sparkles, BookOpen, MoreHorizontal, MoreVertical, Bot, Play, SlidersHorizontal, Image, Wand2, RotateCcwSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
@@ -7,6 +7,8 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import LivePreview from '@/components/LivePreview';
 import ColorSchemeSelector, { ColorSchemeType } from '@/components/ColorSchemeSelector';
 import TemplateSelector from '@/components/TemplateSelector';
@@ -484,136 +486,169 @@ const FullscreenPreview: React.FC<FullscreenPreviewProps> = ({
               </div>
 
               {/* Panel Content */}
-              <ScrollArea className="flex-1 p-4">
-                <div className="space-y-4">
-                  {/* Templates */}
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Layout className="h-4 w-4" />
-                      Templates
-                    </h4>
-                    <Button
-                      onClick={() => setActiveModal('template')}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Choose Template
-                    </Button>
-                  </Card>
-
-                  {/* Schemes */}
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Palette className="h-4 w-4" />
-                      Color Schemes
-                    </h4>
-                    <Button
-                      onClick={() => setActiveModal('scheme')}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Choose Scheme
-                    </Button>
-                  </Card>
-
-                  {/* Moods */}
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Sparkles className="h-4 w-4" />
-                      Color Moods
-                    </h4>
-                    <Button
-                      onClick={() => setActiveModal('mood')}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Browse Moods
-                    </Button>
-                  </Card>
-
-                  {/* Background */}
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      Background
-                    </h4>
-                    <Button
-                      onClick={() => setActiveModal('background')}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Customize Background
-                    </Button>
-                  </Card>
-
-                  {/* From Image */}
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Image className="h-4 w-4" />
-                      From Image
-                    </h4>
-                    <Button
-                      onClick={() => {
-                        if (!isPro) {
-                          setUpsellModal({
-                            isOpen: true,
-                            templateName: 'Image/URL Color Generator'
-                          });
-                          return;
-                        }
-                        setActiveModal('image-generator');
-                      }}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Generate from Image
-                    </Button>
-                  </Card>
-
-                  {/* Color Presets */}
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Wand2 className="h-4 w-4" />
-                      Color Presets
-                    </h4>
-                    <Button
-                      onClick={() => setActiveModal('admin-presets')}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Browse Presets
-                    </Button>
-                  </Card>
-
-                  {/* Current Palettes */}
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      Current Palettes
-                    </h4>
-                    <Button
-                      onClick={() => setActiveModal('colors')}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Customize Colors
-                    </Button>
-                  </Card>
-
-                  {/* Theme Mode */}
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Sun className="h-4 w-4" />
-                      Theme Mode
-                    </h4>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Dark Mode</span>
-                      <Switch
-                        checked={templateDarkMode}
-                        onCheckedChange={handleTemplateDarkModeToggle}
-                      />
+              <ScrollArea className="flex-1">
+                <div className="p-4 space-y-6">
+                  
+                  {/* 🎨 Color Logic Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Palette className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold text-sm text-foreground">Color Logic</h4>
                     </div>
-                  </Card>
+                    
+                    {/* Templates */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('template')}>
+                      <div className="flex items-center gap-3">
+                        <Layout className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Templates</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {template.replace(/([A-Z])/g, ' $1').trim()}
+                        </Badge>
+                        <Settings className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    </div>
+
+                    {/* Schemes */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('scheme')}>
+                      <div className="flex items-center gap-3">
+                        <Palette className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Color Schemes</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {selectedScheme}
+                        </Badge>
+                        <Settings className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    </div>
+
+                    {/* Moods */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('mood')}>
+                      <div className="flex items-center gap-3">
+                        <Sparkles className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Color Moods</span>
+                      </div>
+                      <Settings className="h-3 w-3 text-muted-foreground" />
+                    </div>
+
+                    {/* Theme Mode */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border">
+                      <div className="flex items-center gap-3">
+                        <Sun className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Theme Mode</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">
+                          {templateDarkMode ? 'Dark' : 'Light'}
+                        </span>
+                        <Switch
+                          checked={templateDarkMode}
+                          onCheckedChange={handleTemplateDarkModeToggle}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* 🌈 Palette Tools Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Wand2 className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold text-sm text-foreground">Palette Tools</h4>
+                    </div>
+
+                    {/* Color Presets */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('admin-presets')}>
+                      <div className="flex items-center gap-3">
+                        <Wand2 className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Color Presets</span>
+                      </div>
+                      <Settings className="h-3 w-3 text-muted-foreground" />
+                    </div>
+
+                    {/* Current Palettes */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('colors')}>
+                      <div className="flex items-center gap-3">
+                        <Settings className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Current Palettes</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {lockedColors.size} locked
+                        </Badge>
+                        <Settings className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    </div>
+
+                    {/* From Image */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => {
+                      if (!isPro) {
+                        setUpsellModal({
+                          isOpen: true,
+                          templateName: 'Image/URL Color Generator'
+                        });
+                        return;
+                      }
+                      setActiveModal('image-generator');
+                    }}>
+                      <div className="flex items-center gap-3">
+                        <Image className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">From Image</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {!isPro && <Badge variant="outline" className="text-xs">Pro</Badge>}
+                        <Settings className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* 🖼️ Appearance Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Settings className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold text-sm text-foreground">Appearance</h4>
+                    </div>
+
+                    {/* Background */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setActiveModal('background')}>
+                      <div className="flex items-center gap-3">
+                        <Settings className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Background</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {backgroundSettings.enabled ? backgroundSettings.style : 'None'}
+                        </Badge>
+                        <Settings className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Reset All Button */}
+                  <div className="pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-muted-foreground hover:text-foreground"
+                      onClick={() => {
+                        // Reset functionality can be implemented here
+                        toast({
+                          title: "Reset All",
+                          description: "All settings have been reset to defaults."
+                        });
+                      }}
+                    >
+                      <RotateCcwSquare className="h-4 w-4 mr-2" />
+                      Reset All Settings
+                    </Button>
+                  </div>
                 </div>
               </ScrollArea>
             </div>
