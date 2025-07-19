@@ -770,13 +770,13 @@ const Dashboard = () => {
                        </div>
                      ) : (
                        // ScrollArea for other menu items
-                       <ScrollArea className={`${
-                          item.id === 'background-settings' ? 'h-80' : 
-                          item.id === 'schemes' ? 'h-[28rem]' :
-                          item.id === 'from-image' ? 'h-40' :
-                          item.id === 'current-palettes' ? 'h-80' :
-                          'h-96'
-                       }`}>
+                        <ScrollArea className={`${
+                           item.id === 'background-settings' ? 'h-80' : 
+                           item.id === 'schemes' ? 'h-fit max-h-[32rem]' :
+                           item.id === 'from-image' ? 'h-40' :
+                           item.id === 'current-palettes' ? 'h-80' :
+                           'h-96'
+                        }`}>
                          <div className="p-4 pt-3">
                            <div className="space-y-2">
                              {item.id === 'schemes' && <div className="space-y-4">
