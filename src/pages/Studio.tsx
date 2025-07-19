@@ -905,7 +905,7 @@ const Dashboard = () => {
                   {colorMode === 'light' ? <Sun className="h-4 w-4 mr-2" /> : 
                    colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 mr-2" /> :
                    colorMode === 'midtone' ? <Sunset className="h-4 w-4 mr-2" /> : 
-                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 mr-2" style={{ filter: 'brightness(0.7)' }} /> :
+                   colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 mr-2 opacity-70" /> :
                    <Moon className="h-4 w-4 mr-2" />}
                   <span className="text-sm text-sidebar-foreground">Theme Mode</span>
                 </Button>
@@ -968,7 +968,7 @@ const Dashboard = () => {
                           handleModeChange(mode);
                         }}
                       >
-                        <Icon className="h-4 w-4 mr-2 flex-shrink-0" style={mode === 'midtone-dark' ? { filter: 'brightness(0.7)' } : {}} />
+                        <Icon className={`h-4 w-4 mr-2 flex-shrink-0 ${mode === 'midtone-dark' ? 'opacity-70' : ''}`} />
                         <div className="text-left">
                            <div className="font-medium text-xs">{label}</div>
                            <div className="text-[11px] text-muted-foreground">{description}</div>
@@ -1020,7 +1020,7 @@ const Dashboard = () => {
                      <Save className="h-3 w-3 mr-2" />
                      Save
                    </Button>
-                   <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="bg-amber-500 hover:bg-amber-400 text-[11px] px-2 py-1 rounded-sm">
+                   <Button variant="outline" size="sm" onClick={() => { handleFullscreenToggle(); setIsMobileMenuOpen(false); }} className="text-[11px] px-2 py-1 rounded-sm">
                      <Maximize className="h-3 w-3 mr-2" />
                      Fullscreen
                    </Button>
