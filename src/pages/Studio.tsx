@@ -655,8 +655,8 @@ const Dashboard = () => {
                     document.documentElement.classList.remove('dark');
                   }
                   toast({
-                    title: "Dashboard Dark Mode",
-                    description: "Dashboard appearance changed. Use sidebar toggle to generate dark template colors.",
+                    title: "Studio Dark Mode",
+                    description: "Studio interface appearance changed. This doesn't affect template colors.",
                     variant: "default"
                   });
                 }}>
@@ -664,7 +664,7 @@ const Dashboard = () => {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  Dashboard {isDashboardDarkMode ? 'Light Mode' : 'Dark Mode'}
+                  Studio {isDashboardDarkMode ? 'Light Mode' : 'Dark Mode'}
                 </TooltipContent>
               </Tooltip>
 
