@@ -197,7 +197,7 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
       scheme: currentScheme,
       mood: currentMood && currentMood !== 'none' ? currentMood : undefined,
       mode: currentMode,
-      sentToUsers: false
+      sentToUsers: false // Admin presets should NOT be automatically available to users
     };
 
     const updatedPresets = [...presets, newPreset];
