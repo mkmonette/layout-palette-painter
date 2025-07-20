@@ -16,10 +16,27 @@ import {
   RotateCcw,
   Bot,
   Calendar,
-  Clock
+  Clock,
+  Gift,
+  TrendingUp,
+  ArrowRightLeft,
+  Calculator,
+  Plus,
+  Trash2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CoinPackagesTable from './CoinPackagesTable';
+
+interface UpgradeBonus {
+  id: string;
+  fromPlan: string;
+  toPlan: string;
+  coinsPerDay: number;
+  minDaysRequired: number;
+  maxBonusCoins: number;
+  enabled: boolean;
+}
 
 interface CoinSettings {
   aiColorGeneration: number;
@@ -28,6 +45,7 @@ interface CoinSettings {
   enterpriseSubscriptionCost: number;
   coinExpirationDays: number;
   enableCoinExpiration: boolean;
+  upgradeBonuses: UpgradeBonus[];
 }
 
 const CoinCreditSettings = () => {
@@ -39,7 +57,27 @@ const CoinCreditSettings = () => {
     proSubscriptionCost: 100,
     enterpriseSubscriptionCost: 300,
     coinExpirationDays: 365,
-    enableCoinExpiration: false
+    enableCoinExpiration: false,
+    upgradeBonuses: [
+      {
+        id: '1',
+        fromPlan: 'free',
+        toPlan: 'pro',
+        coinsPerDay: 3,
+        minDaysRequired: 7,
+        maxBonusCoins: 100,
+        enabled: true
+      },
+      {
+        id: '2',
+        fromPlan: 'pro',
+        toPlan: 'enterprise',
+        coinsPerDay: 5,
+        minDaysRequired: 5,
+        maxBonusCoins: 200,
+        enabled: true
+      }
+    ]
   });
 
   const [tempSettings, setTempSettings] = useState<CoinSettings>(settings);
@@ -89,7 +127,7 @@ const CoinCreditSettings = () => {
       </div>
 
       <Tabs defaultValue="packages" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="packages" className="flex items-center gap-2">
             <Coins className="h-4 w-4" />
             Coin Packages
@@ -102,6 +140,10 @@ const CoinCreditSettings = () => {
             <CreditCard className="h-4 w-4" />
             Subscription Costs
           </TabsTrigger>
+          <TabsTrigger value="upgrade-rewards" className="flex items-center gap-2">
+            <Gift className="h-4 w-4" />
+            Upgrade Rewards
+          </TabsTrigger>
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             Overview
@@ -109,7 +151,22 @@ const CoinCreditSettings = () => {
         </TabsList>
 
         <TabsContent value="packages" className="mt-6">
-          <CoinPackagesTable coinSettings={tempSettings} onSettingsChange={setTempSettings} />
+          <CoinPackagesTable 
+            coinSettings={{
+              aiColorGeneration: tempSettings.aiColorGeneration,
+              freeSubscriptionCost: tempSettings.freeSubscriptionCost,
+              proSubscriptionCost: tempSettings.proSubscriptionCost,
+              enterpriseSubscriptionCost: tempSettings.enterpriseSubscriptionCost,
+              coinExpirationDays: tempSettings.coinExpirationDays,
+              enableCoinExpiration: tempSettings.enableCoinExpiration
+            }} 
+            onSettingsChange={(newSettings) => {
+              setTempSettings({
+                ...tempSettings,
+                ...newSettings
+              });
+            }}
+          />
         </TabsContent>
 
         <TabsContent value="ai-costs" className="mt-6">
@@ -163,6 +220,202 @@ const CoinCreditSettings = () => {
                 <p className="text-sm text-orange-700 font-medium">
                   ⚠️ Coin-based subscription purchases are no longer available. Users can only purchase subscriptions through PayPal, LemonSqueezy, or other secure payment methods.
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="upgrade-rewards" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Gift className="h-5 w-5 text-green-500" />
+                Subscription Upgrade Bonus
+              </CardTitle>
+              <CardDescription>
+                Configure bonus coins awarded when users upgrade their subscription via secure payment gateways
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Existing Upgrade Bonuses */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-lg font-medium">Current Upgrade Bonuses</h4>
+                  <Button size="sm" onClick={() => {
+                    const newBonus: UpgradeBonus = {
+                      id: Date.now().toString(),
+                      fromPlan: 'free',
+                      toPlan: 'pro',
+                      coinsPerDay: 2,
+                      minDaysRequired: 1,
+                      maxBonusCoins: 50,
+                      enabled: true
+                    };
+                    setTempSettings({
+                      ...tempSettings,
+                      upgradeBonuses: [...tempSettings.upgradeBonuses, newBonus]
+                    });
+                  }}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Bonus Rule
+                  </Button>
+                </div>
+
+                {tempSettings.upgradeBonuses.map((bonus, index) => (
+                  <Card key={bonus.id} className="border-l-4 border-l-green-500">
+                    <CardContent className="pt-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+                        <div className="space-y-2">
+                          <Label className="text-xs">From Plan</Label>
+                          <Select 
+                            value={bonus.fromPlan} 
+                            onValueChange={(value) => {
+                              const updated = [...tempSettings.upgradeBonuses];
+                              updated[index] = { ...bonus, fromPlan: value };
+                              setTempSettings({ ...tempSettings, upgradeBonuses: updated });
+                            }}
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="free">Free</SelectItem>
+                              <SelectItem value="pro">Pro</SelectItem>
+                              <SelectItem value="enterprise">Enterprise</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-xs">To Plan</Label>
+                          <Select 
+                            value={bonus.toPlan} 
+                            onValueChange={(value) => {
+                              const updated = [...tempSettings.upgradeBonuses];
+                              updated[index] = { ...bonus, toPlan: value };
+                              setTempSettings({ ...tempSettings, upgradeBonuses: updated });
+                            }}
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pro">Pro</SelectItem>
+                              <SelectItem value="enterprise">Enterprise</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-xs">Coins/Day</Label>
+                          <Input
+                            type="number"
+                            min="0"
+                            value={bonus.coinsPerDay}
+                            onChange={(e) => {
+                              const updated = [...tempSettings.upgradeBonuses];
+                              updated[index] = { ...bonus, coinsPerDay: parseInt(e.target.value) || 0 };
+                              setTempSettings({ ...tempSettings, upgradeBonuses: updated });
+                            }}
+                            className="h-8"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-xs">Max Bonus</Label>
+                          <Input
+                            type="number"
+                            min="0"
+                            value={bonus.maxBonusCoins}
+                            onChange={(e) => {
+                              const updated = [...tempSettings.upgradeBonuses];
+                              updated[index] = { ...bonus, maxBonusCoins: parseInt(e.target.value) || 0 };
+                              setTempSettings({ ...tempSettings, upgradeBonuses: updated });
+                            }}
+                            className="h-8"
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={bonus.enabled}
+                            onCheckedChange={(checked) => {
+                              const updated = [...tempSettings.upgradeBonuses];
+                              updated[index] = { ...bonus, enabled: checked };
+                              setTempSettings({ ...tempSettings, upgradeBonuses: updated });
+                            }}
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              const updated = tempSettings.upgradeBonuses.filter((_, i) => i !== index);
+                              setTempSettings({ ...tempSettings, upgradeBonuses: updated });
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Preview Calculation */}
+                      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Calculator className="h-4 w-4 text-green-600" />
+                          <span className="text-sm font-medium text-green-800">Bonus Calculation Preview</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                          <div>
+                            <span className="text-green-700">15 days remaining:</span>
+                            <div className="font-mono">
+                              {Math.min(15 * bonus.coinsPerDay, bonus.maxBonusCoins)} coins
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-green-700">30 days remaining:</span>
+                            <div className="font-mono">
+                              {Math.min(30 * bonus.coinsPerDay, bonus.maxBonusCoins)} coins
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-green-700">Max possible:</span>
+                            <div className="font-mono">{bonus.maxBonusCoins} coins</div>
+                          </div>
+                        </div>
+                        <div className="mt-2 text-xs text-green-600">
+                          <ArrowRightLeft className="h-3 w-3 inline mr-1" />
+                          {bonus.fromPlan} → {bonus.toPlan} upgrade via payment gateway only
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                {tempSettings.upgradeBonuses.length === 0 && (
+                  <Card className="border-dashed">
+                    <CardContent className="pt-6 text-center">
+                      <Gift className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-muted-foreground">No upgrade bonuses configured</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Add bonus rules to reward users for upgrading their subscriptions
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+
+              {/* Information Section */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h5 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  How Upgrade Bonuses Work
+                </h5>
+                <ul className="text-sm text-blue-700 space-y-1">
+                  <li>• Bonuses are only applied when users upgrade via secure payment gateways</li>
+                  <li>• Calculation: remaining_days × coins_per_day (capped at max bonus)</li>
+                  <li>• Remaining days = time left in current billing period</li>
+                  <li>• Coins are automatically added to the user's account after successful upgrade</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
