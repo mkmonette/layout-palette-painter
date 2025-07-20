@@ -10,6 +10,7 @@ import Landing from "./pages/Landing";
 import Studio from "./pages/Studio";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminNotifications from "./pages/AdminNotifications";
 
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
@@ -51,6 +52,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/notifications" 
+              element={
+                <ProtectedRoute>
+                  <AdminNotifications />
                 </ProtectedRoute>
               } 
             />

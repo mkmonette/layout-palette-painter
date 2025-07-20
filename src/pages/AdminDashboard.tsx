@@ -170,7 +170,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }: AdminSidebarProps) => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton>
+                <SidebarMenuButton onClick={() => navigate('/admin/notifications')}>
                   <Bell className="h-4 w-4" />
                   <span>Notifications</span>
                 </SidebarMenuButton>
