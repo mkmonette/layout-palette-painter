@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bell, ArrowLeft, Filter, Check, Shield, CreditCard, Users, Settings, Workflow, ExternalLink } from 'lucide-react';
+import { Bell, ArrowLeft, Filter, Check, Shield, CreditCard, Users, Settings, Workflow, ExternalLink, Grid, List, Download, FileSpreadsheet } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -14,6 +16,7 @@ import type { Notification, NotificationPreferences } from '@/components/admin/N
 const STORAGE_KEY = 'admin_notifications';
 const PREFERENCES_KEY = 'notification_preferences';
 const FILTER_KEY = 'notification_last_filter';
+const VIEW_MODE_KEY = 'notification_view_mode';
 
 // Default preferences
 const defaultPreferences: NotificationPreferences = {
@@ -76,6 +79,7 @@ const AdminNotifications = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [preferences, setPreferences] = useState<NotificationPreferences>(defaultPreferences);
   const [activeTab, setActiveTab] = useState('notifications');
+  const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
   const unreadRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   // Load notifications from localStorage
@@ -106,6 +110,12 @@ const AdminNotifications = () => {
     const lastFilter = localStorage.getItem(FILTER_KEY);
     if (lastFilter) {
       setSelectedType(lastFilter);
+    }
+
+    // Load last view mode
+    const lastViewMode = localStorage.getItem(VIEW_MODE_KEY);
+    if (lastViewMode && (lastViewMode === 'card' || lastViewMode === 'table')) {
+      setViewMode(lastViewMode);
     }
   }, []);
 
@@ -161,6 +171,11 @@ const AdminNotifications = () => {
   useEffect(() => {
     localStorage.setItem(FILTER_KEY, selectedType);
   }, [selectedType]);
+
+  // Save view mode to localStorage
+  useEffect(() => {
+    localStorage.setItem(VIEW_MODE_KEY, viewMode);
+  }, [viewMode]);
 
   // Scroll to latest unread notification
   useEffect(() => {
@@ -228,6 +243,55 @@ const AdminNotifications = () => {
     (n.type === 'workflow' && preferences.showWorkflow)
   )).length;
 
+  // Export functions
+  const exportToCSV = () => {
+    const csvData = filteredNotifications.map(notification => ({
+      Type: notification.type,
+      Severity: notification.severity,
+      Title: notification.title,
+      Message: notification.message,
+      Timestamp: new Date(notification.timestamp).toLocaleString(),
+      'Read Status': notification.read ? 'Read' : 'Unread'
+    }));
+
+    const csvContent = [
+      // Header
+      Object.keys(csvData[0] || {}).join(','),
+      // Data rows
+      ...csvData.map(row => 
+        Object.values(row).map(value => 
+          `"${String(value).replace(/"/g, '""')}"`
+        ).join(',')
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `notifications-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToExcel = () => {
+    const excelData = filteredNotifications.map(notification => ({
+      Type: notification.type,
+      Severity: notification.severity,
+      Title: notification.title,
+      Message: notification.message,
+      Timestamp: new Date(notification.timestamp).toLocaleString(),
+      'Read Status': notification.read ? 'Read' : 'Unread'
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Notifications');
+    XLSX.writeFile(workbook, `notifications-${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -288,53 +352,106 @@ const AdminNotifications = () => {
           </TabsList>
 
           <TabsContent value="notifications" className="space-y-6">
-            {/* Filters */}
+            {/* Controls */}
             <Card>
               <CardHeader className="pb-3">
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-muted-foreground" />
-                  <CardTitle className="text-lg">Filter Notifications</CardTitle>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <CardTitle className="text-lg">Controls</CardTitle>
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <Select value={selectedType} onValueChange={setSelectedType}>
-                  <SelectTrigger className="w-64">
-                    <SelectValue placeholder="Filter by type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="security">
-                      <div className="flex items-center gap-2">
-                        <Shield className="h-4 w-4" />
-                        Security
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="payment">
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="h-4 w-4" />
-                        Payment
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="user">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        User
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="system">
-                      <div className="flex items-center gap-2">
-                        <Settings className="h-4 w-4" />
-                        System
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="workflow">
-                      <div className="flex items-center gap-2">
-                        <Workflow className="h-4 w-4" />
-                        Workflow
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+              <CardContent className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                  {/* Filter */}
+                  <Select value={selectedType} onValueChange={setSelectedType}>
+                    <SelectTrigger className="w-64">
+                      <SelectValue placeholder="Filter by type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="security">
+                        <div className="flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Security
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="payment">
+                        <div className="flex items-center gap-2">
+                          <CreditCard className="h-4 w-4" />
+                          Payment
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="user">
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          User
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="system">
+                        <div className="flex items-center gap-2">
+                          <Settings className="h-4 w-4" />
+                          System
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="workflow">
+                        <div className="flex items-center gap-2">
+                          <Workflow className="h-4 w-4" />
+                          Workflow
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <div className="flex gap-2">
+                    {/* View Toggle */}
+                    <div className="flex items-center border rounded-lg p-1 bg-muted/50">
+                      <Button
+                        variant={viewMode === 'card' ? 'default' : 'ghost'}
+                        size="sm"
+                        onClick={() => setViewMode('card')}
+                        className="h-8 px-3"
+                      >
+                        <Grid className="h-4 w-4 mr-1" />
+                        Cards
+                      </Button>
+                      <Button
+                        variant={viewMode === 'table' ? 'default' : 'ghost'}
+                        size="sm"
+                        onClick={() => setViewMode('table')}
+                        className="h-8 px-3"
+                      >
+                        <List className="h-4 w-4 mr-1" />
+                        Table
+                      </Button>
+                    </div>
+
+                    {/* Export Buttons */}
+                    {filteredNotifications.length > 0 && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={exportToCSV}
+                          className="h-8"
+                        >
+                          <Download className="h-4 w-4 mr-1" />
+                          CSV
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={exportToExcel}
+                          className="h-8"
+                        >
+                          <FileSpreadsheet className="h-4 w-4 mr-1" />
+                          Excel
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
@@ -349,8 +466,80 @@ const AdminNotifications = () => {
                     </div>
                   </CardContent>
                 </Card>
+              ) : viewMode === 'table' ? (
+                // Table View
+                <Card>
+                  <CardContent className="p-0">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[100px]">Type</TableHead>
+                          <TableHead className="w-[120px]">Severity</TableHead>
+                          <TableHead className="w-[180px]">Timestamp</TableHead>
+                          <TableHead>Message</TableHead>
+                          <TableHead className="w-[100px]">Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredNotifications.map((notification) => (
+                          <TableRow
+                            key={notification.id}
+                            className={`cursor-pointer hover:bg-muted/50 ${
+                              !notification.read ? 'bg-primary/5' : ''
+                            }`}
+                            onClick={() => handleNotificationClick(notification)}
+                          >
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                {notification.type === 'security' && <Shield className="h-4 w-4" />}
+                                {notification.type === 'payment' && <CreditCard className="h-4 w-4" />}
+                                {notification.type === 'user' && <Users className="h-4 w-4" />}
+                                {notification.type === 'system' && <Settings className="h-4 w-4" />}
+                                {notification.type === 'workflow' && <Workflow className="h-4 w-4" />}
+                                <span className="capitalize text-sm">{notification.type}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">{getSeverityIcon(notification.severity)}</span>
+                                <Badge 
+                                  variant={notification.severity === 'critical' ? 'destructive' : 'secondary'}
+                                  className="text-xs"
+                                >
+                                  {notification.severity.charAt(0).toUpperCase() + notification.severity.slice(1)}
+                                </Badge>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {formatTime(notification.timestamp)}
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <div className="font-medium text-sm">{notification.title}</div>
+                                <div className="text-xs text-muted-foreground line-clamp-2">
+                                  {notification.message}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {notification.read ? (
+                                <Badge variant="outline" className="text-xs">
+                                  Read
+                                </Badge>
+                              ) : (
+                                <Badge variant="default" className="text-xs">
+                                  Unread
+                                </Badge>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
               ) : (
-                // Group notifications by type
+                // Card View - Group notifications by type
                 (() => {
                   const grouped = filteredNotifications.reduce((acc, notification) => {
                     if (!acc[notification.type]) {
