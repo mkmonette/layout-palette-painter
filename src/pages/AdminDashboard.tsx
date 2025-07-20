@@ -53,6 +53,7 @@ import CoinCreditSettings from '@/components/admin/CoinCreditSettings';
 import PaymentGatewaySettings from '@/components/admin/PaymentGatewaySettings';
 import ThemeTesterPanel from '@/components/admin/ThemeTesterPanel';
 import ContentManagement from '@/components/admin/ContentManagement';
+import { Reports } from '@/components/admin/Reports';
 
 
 import { logoutUser } from '@/utils/auth';
@@ -62,6 +63,7 @@ import { useNavigate } from 'react-router-dom';
 const menuItems = [
   { id: 'overview', title: 'Overview', icon: BarChart3 },
   { id: 'analytics', title: 'Analytics', icon: TrendingUp },
+  { id: 'reports', title: 'Reports', icon: FileText },
   { id: 'users', title: 'Users', icon: Users },
   { id: 'subscriptions', title: 'Plans', icon: CreditCard },
   { id: 'coin-credit', title: 'Coin Credit', icon: Coins },
@@ -243,6 +245,7 @@ const AdminDashboard = () => {
           <main className="flex-1 p-6 overflow-auto">
             {activeTab === 'overview' && <AdminOverview />}
             {activeTab === 'analytics' && <AnalyticsDashboard />}
+            {activeTab === 'reports' && <Reports />}
             {activeTab === 'users' && <UserManagement />}
             {activeTab === 'subscriptions' && <FeatureManagement />}
             {activeTab === 'coin-credit' && <CoinCreditSettings />}
