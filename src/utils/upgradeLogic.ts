@@ -1,3 +1,5 @@
+import { trackUpgradeEvent } from './upgradeAnalytics';
+
 interface UpgradeBonus {
   id: string;
   fromPlan: string;
@@ -229,10 +231,12 @@ export const processUpgrade = (
     // Only process bonuses for gateway payments
     let bonusAwarded = 0;
     let bonusMessage = '';
+    let bonusRule: UpgradeBonus | null = null;
+    const remainingDays = getRemainingDays(currentSubscription);
     
     if (paymentMethod === 'gateway') {
-      const remainingDays = getRemainingDays(currentSubscription);
-      const { bonusCoins, bonusRule } = calculateUpgradeBonus(fromPlan, toPlan, remainingDays);
+      const { bonusCoins, bonusRule: rule } = calculateUpgradeBonus(fromPlan, toPlan, remainingDays);
+      bonusRule = rule;
       
       if (bonusCoins > 0 && bonusRule) {
         const success = addCoinsToWallet(
@@ -263,6 +267,17 @@ export const processUpgrade = (
     };
     
     updateUserSubscription(updatedSubscription);
+    
+    // Track analytics event
+    trackUpgradeEvent(
+      userId,
+      fromPlan,
+      toPlan,
+      paymentMethod,
+      remainingDays,
+      bonusAwarded,
+      bonusRule?.id
+    );
     
     return {
       success: true,
