@@ -55,6 +55,7 @@ import ThemeTesterPanel from '@/components/admin/ThemeTesterPanel';
 import ContentManagement from '@/components/admin/ContentManagement';
 import { Reports } from '@/components/admin/Reports';
 import TransactionManagement from '@/components/admin/TransactionManagement';
+import NotificationCenter from '@/components/admin/NotificationCenter';
 
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -233,8 +234,11 @@ const AdminDashboard = () => {
               <SidebarTrigger className="mr-4" />
               <div className="flex-1" />
               
+              {/* Notification Center */}
+              <NotificationCenter />
+              
               {/* Mobile Menu Button */}
-              <div className="md:hidden">
+              <div className="md:hidden ml-2">
                 <Button variant="ghost" size="sm">
                   <Menu className="h-4 w-4" />
                 </Button>
