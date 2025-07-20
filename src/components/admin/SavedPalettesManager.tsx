@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,9 @@ import {
   Palette as PaletteIcon,
   Smile,
   Sun,
-  Moon
+  Moon,
+  Send,
+  Users
 } from 'lucide-react';
 import { ColorPalette } from '@/types/template';
 import { ColorRoles } from '@/types/colorRoles';
@@ -36,6 +39,8 @@ interface ColorPreset {
   scheme?: string;
   mood?: string;
   mode?: string;
+  sentToUsers?: boolean;
+  sentToUsersAt?: string;
 }
 
 interface SavedPalettesManagerProps {
@@ -94,6 +99,72 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
     return `preset_${name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
   };
 
+  // Convert admin preset to user preset format
+  const convertToUserPreset = (adminPreset: ColorPreset) => {
+    return {
+      id: generatePresetId(adminPreset.name + '_user'),
+      name: adminPreset.name,
+      savedAt: new Date().toISOString(),
+      template: 'modern-hero', // Default template for user presets
+      ...adminPreset.originalPalette
+    };
+  };
+
+  // Send preset to user presets
+  const handleSendToUserPresets = (presetId: string) => {
+    const preset = presets.find(p => p.id === presetId);
+    if (!preset) return;
+
+    try {
+      // Get existing user presets
+      const existingUserPresets = JSON.parse(localStorage.getItem('savedPalettes') || '[]');
+      
+      // Check if preset already exists for users
+      const existingUserPreset = existingUserPresets.find((up: any) => 
+        up.name === preset.name && up.template === 'modern-hero'
+      );
+      
+      if (existingUserPreset) {
+        toast({
+          title: 'Preset Already Exists',
+          description: `A preset named "${preset.name}" already exists in user presets`,
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      // Convert admin preset to user preset format
+      const userPreset = convertToUserPreset(preset);
+      
+      // Add to user presets
+      const updatedUserPresets = [...existingUserPresets, userPreset];
+      localStorage.setItem('savedPalettes', JSON.stringify(updatedUserPresets));
+      
+      // Mark admin preset as sent to users
+      const updatedPresets = presets.map(p => 
+        p.id === presetId 
+          ? { ...p, sentToUsers: true, sentToUsersAt: new Date().toISOString() }
+          : p
+      );
+      
+      savePresetsToStorage(updatedPresets);
+      
+      toast({
+        title: 'Success',
+        description: `Preset "${preset.name}" has been sent to user presets and is now available in the Studio`,
+        duration: 5000
+      });
+      
+    } catch (error) {
+      console.error('Error sending preset to users:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to send preset to user presets',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const handleSavePreset = () => {
     if (!presetName.trim()) {
       toast({
@@ -125,7 +196,8 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
       originalPalette: { ...currentPalette },
       scheme: currentScheme,
       mood: currentMood && currentMood !== 'none' ? currentMood : undefined,
-      mode: currentMode
+      mode: currentMode,
+      sentToUsers: false
     };
 
     const updatedPresets = [...presets, newPreset];
@@ -198,7 +270,9 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
         ...preset,
         id: generatePresetId(preset.name + '_copy'),
         name: preset.name + ' (Copy)',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        sentToUsers: false,
+        sentToUsersAt: undefined
       };
       
       const updatedPresets = [...presets, duplicatedPreset];
@@ -284,7 +358,7 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Save & Load Presets</h2>
-          <p className="text-muted-foreground">Manage your saved color presets</p>
+          <p className="text-muted-foreground">Manage your saved color presets and push them to users</p>
         </div>
         <div className="flex gap-2">
           <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
@@ -343,7 +417,7 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
             Saved Presets
           </CardTitle>
           <CardDescription>
-            Load and manage your saved color presets
+            Load, manage, and send your saved color presets to users
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -366,6 +440,12 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
                         <Badge variant="secondary" className="text-xs">
                           {new Date(preset.createdAt).toLocaleDateString()}
                         </Badge>
+                        {preset.sentToUsers && (
+                          <Badge variant="default" className="text-xs bg-green-100 text-green-800">
+                            <Users className="h-3 w-3 mr-1" />
+                            Available to Users
+                          </Badge>
+                        )}
                       </div>
                       {preset.description && (
                         <p className="text-sm text-muted-foreground mb-2">
@@ -408,6 +488,13 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
                           />
                         ))}
                       </div>
+
+                      {/* User Sent Info */}
+                      {preset.sentToUsers && preset.sentToUsersAt && (
+                        <p className="text-xs text-muted-foreground">
+                          Sent to users on {new Date(preset.sentToUsersAt).toLocaleDateString()}
+                        </p>
+                      )}
                     </div>
                     
                     <div className="flex gap-1 ml-4">
@@ -418,6 +505,15 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
                         title="Load Preset"
                       >
                         <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={preset.sentToUsers ? "secondary" : "default"}
+                        onClick={() => handleSendToUserPresets(preset.id)}
+                        title={preset.sentToUsers ? "Already sent to users" : "Send to User Presets"}
+                        disabled={preset.sentToUsers}
+                      >
+                        <Send className="h-4 w-4" />
                       </Button>
                       <Button
                         size="sm"
