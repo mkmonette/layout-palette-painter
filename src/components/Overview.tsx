@@ -40,7 +40,7 @@ const Overview = () => {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">📊 Overview</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Overview</h1>
         <p className="text-muted-foreground">Welcome back! Here's what's happening with your color palettes.</p>
       </div>
 
@@ -54,7 +54,7 @@ const Overview = () => {
                   <Palette className="h-6 w-6 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg">🎛️ Open Studio</h3>
+                  <h3 className="font-semibold text-lg">Open Studio</h3>
                   <p className="text-muted-foreground text-sm">Create and edit color palettes</p>
                 </div>
                 <ArrowRight className="h-5 w-5 text-muted-foreground" />
@@ -77,7 +77,7 @@ const Overview = () => {
                 <Save className="h-6 w-6 text-accent-foreground" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-lg">📁 Saved Palettes</h3>
+                <h3 className="font-semibold text-lg">Saved Palettes</h3>
                 <p className="text-muted-foreground text-sm">View your saved color palettes</p>
               </div>
               <ArrowRight className="h-5 w-5 text-muted-foreground" />
@@ -142,7 +142,7 @@ const Overview = () => {
               <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-semibold mb-3">🕘 Continue editing your last palette</h3>
+              <h3 className="text-xl font-semibold mb-3">Continue editing your last palette</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Template</p>
@@ -192,7 +192,7 @@ const Overview = () => {
             <div className="p-3 rounded-full bg-muted">
               <Save className="h-6 w-6 text-muted-foreground" />
             </div>
-            <h3 className="font-semibold">🎨 View All Saved Palettes</h3>
+            <h3 className="font-semibold">View All Saved Palettes</h3>
             <p className="text-muted-foreground text-sm">Browse and manage your complete palette collection</p>
             <Button 
               variant="outline"
@@ -215,7 +215,7 @@ const Overview = () => {
               <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-semibold mb-3">💡 Learning Tips & Tutorials</h3>
+              <h3 className="text-xl font-semibold mb-3">Learning Tips & Tutorials</h3>
               <div className="space-y-2 mb-4">
                 {tips.slice(0, 2).map((tip, index) => (
                   <div key={index} className="flex items-start gap-2">
@@ -226,7 +226,7 @@ const Overview = () => {
               </div>
               <Button variant="outline" size="sm">
                 <BookOpen className="h-4 w-4 mr-2" />
-                📘 View All Tutorials
+                View All Tutorials
               </Button>
             </div>
           </div>
