@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, X, Filter, Check, Clock, AlertTriangle, Info, AlertCircle } from 'lucide-react';
+import { Bell, X, Filter, Check, Clock, AlertTriangle, Info, AlertCircle, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 
 export interface Notification {
   id: string;
@@ -108,6 +110,80 @@ const getSeverityColor = (severity: string) => {
   }
 };
 
+// Real-time trigger function for notifications
+export const triggerNotification = ({ title, message, type, severity, subtype = '' }: {
+  title: string;
+  message: string;
+  type: 'security' | 'payment' | 'user' | 'system' | 'workflow';
+  severity: 'info' | 'warning' | 'critical';
+  subtype?: string;
+}) => {
+  const notifications = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const newNotif: Notification = {
+    id: 'notif_' + Date.now(),
+    title,
+    message,
+    type,
+    subtype,
+    severity,
+    timestamp: new Date().toISOString(),
+    read: false
+  };
+  notifications.unshift(newNotif);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
+  
+  // Trigger storage event to update other components
+  window.dispatchEvent(new Event('storage'));
+  
+  // Show toast notification
+  showToast(newNotif);
+  
+  return newNotif;
+};
+
+// Toast notification function
+const showToast = (notification: Notification) => {
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.className = `fixed bottom-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm animate-in slide-in-from-right-2 ${
+    notification.severity === 'critical' ? 'bg-destructive text-destructive-foreground' :
+    notification.severity === 'warning' ? 'bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100' :
+    'bg-primary text-primary-foreground'
+  }`;
+  
+  toast.innerHTML = `
+    <div class="flex items-start gap-3">
+      <div class="mt-1">
+        ${notification.severity === 'critical' ? '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' :
+          notification.severity === 'warning' ? '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' :
+          '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'}
+      </div>
+      <div class="flex-1">
+        <div class="font-medium text-sm">${notification.title}</div>
+        <div class="text-sm opacity-90 mt-1">${notification.message}</div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(toast);
+  
+  // Remove toast after 5 seconds
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    setTimeout(() => toast.remove(), 300);
+  }, 5000);
+};
+
+// Test notification samples
+export const testNotificationSamples = [
+  { title: "Payment Failed", message: "User abc@example.com had a payment issue", type: "payment" as const, severity: "warning" as const, subtype: "payment_failed" },
+  { title: "Failed Login", message: "5 failed attempts detected from IP 192.168.1.50", type: "security" as const, severity: "critical" as const, subtype: "failed_login" },
+  { title: "New Registration", message: "New user signed up for Pro plan", type: "user" as const, severity: "info" as const, subtype: "new_registration" },
+  { title: "System Alert", message: "High CPU usage detected on server", type: "system" as const, severity: "warning" as const, subtype: "high_usage" },
+  { title: "Subscription Upgrade", message: "User upgraded to premium plan", type: "user" as const, severity: "info" as const, subtype: "plan_upgrade" }
+];
+
 const formatTime = (timestamp: string) => {
   const date = new Date(timestamp);
   const now = new Date();
@@ -132,6 +208,8 @@ export const NotificationCenter = () => {
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([]);
   const [selectedType, setSelectedType] = useState<string>('all');
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   // Load notifications from localStorage
   useEffect(() => {
@@ -155,6 +233,24 @@ export const NotificationCenter = () => {
     }
   }, []);
 
+  // Listen for storage events (for real-time updates)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setNotifications(parsed);
+        } catch (error) {
+          console.error('Error parsing notifications from storage event:', error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   // Filter notifications when type changes
   useEffect(() => {
     if (selectedType === 'all') {
@@ -168,6 +264,20 @@ export const NotificationCenter = () => {
   const saveNotifications = (updatedNotifications: Notification[]) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedNotifications));
     setNotifications(updatedNotifications);
+  };
+
+  // Handle notification click - mark as read and show details
+  const handleNotificationClick = (notification: Notification) => {
+    // Mark as read
+    const updated = notifications.map(n => 
+      n.id === notification.id ? { ...n, read: true } : n
+    );
+    saveNotifications(updated);
+    
+    // Set selected notification and show modal
+    setSelectedNotification(notification);
+    setShowDetailsModal(true);
+    setIsOpen(false);
   };
 
   // Mark single notification as read
@@ -258,7 +368,7 @@ export const NotificationCenter = () => {
                   className={`border-0 rounded-none cursor-pointer hover:bg-muted/50 transition-colors ${
                     !notification.read ? 'bg-muted/30' : ''
                   }`}
-                  onClick={() => markAsRead(notification.id)}
+                  onClick={() => handleNotificationClick(notification)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
@@ -302,6 +412,75 @@ export const NotificationCenter = () => {
           )}
         </div>
       </PopoverContent>
+      
+      {/* Notification Details Modal */}
+      <Dialog open={showDetailsModal} onOpenChange={setShowDetailsModal}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {selectedNotification && getSeverityIcon(selectedNotification.severity)}
+              {selectedNotification?.title}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedNotification && (
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm font-medium mb-2">Message</h4>
+                <p className="text-sm text-muted-foreground">
+                  {selectedNotification.message}
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium mb-1">Type</h4>
+                  <Badge variant="outline" className="capitalize">
+                    {selectedNotification.type}
+                  </Badge>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium mb-1">Severity</h4>
+                  <Badge 
+                    variant="outline" 
+                    className={`capitalize ${getSeverityColor(selectedNotification.severity)}`}
+                  >
+                    {selectedNotification.severity}
+                  </Badge>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-medium mb-1">Timestamp</h4>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(selectedNotification.timestamp).toLocaleString()}
+                </p>
+              </div>
+              
+              {(selectedNotification.type === 'payment' || selectedNotification.type === 'security') && (
+                <div className="flex gap-2 pt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setShowDetailsModal(false);
+                      // Navigate to appropriate section based on type
+                      if (selectedNotification.type === 'payment') {
+                        window.location.hash = '#transactions';
+                      } else if (selectedNotification.type === 'security') {
+                        window.location.hash = '#security-logs';
+                      }
+                    }}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    View {selectedNotification.type === 'payment' ? 'Transactions' : 'Security Logs'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </Popover>
   );
 };

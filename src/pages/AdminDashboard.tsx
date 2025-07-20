@@ -55,7 +55,7 @@ import ThemeTesterPanel from '@/components/admin/ThemeTesterPanel';
 import ContentManagement from '@/components/admin/ContentManagement';
 import { Reports } from '@/components/admin/Reports';
 import TransactionManagement from '@/components/admin/TransactionManagement';
-import NotificationCenter from '@/components/admin/NotificationCenter';
+import NotificationCenter, { triggerNotification, testNotificationSamples } from '@/components/admin/NotificationCenter';
 
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -193,6 +193,12 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [activeAITab, setActiveAITab] = useState('openai');
+
+  // Test notification function
+  const handleTestNotification = () => {
+    const randomNotif = testNotificationSamples[Math.floor(Math.random() * testNotificationSamples.length)];
+    triggerNotification(randomNotif);
+  };
   
   // Palette generation state
   const [currentScheme, setCurrentScheme] = useState('random');
@@ -233,6 +239,17 @@ const AdminDashboard = () => {
             <div className="flex h-14 items-center px-4">
               <SidebarTrigger className="mr-4" />
               <div className="flex-1" />
+              
+              {/* Test Notification Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleTestNotification}
+                className="mr-3"
+              >
+                <TestTube className="h-4 w-4 mr-2" />
+                Trigger Test Notification
+              </Button>
               
               {/* Notification Center */}
               <NotificationCenter />
