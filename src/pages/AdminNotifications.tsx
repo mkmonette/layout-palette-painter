@@ -350,66 +350,110 @@ const AdminNotifications = () => {
                   </CardContent>
                 </Card>
               ) : (
-                filteredNotifications.map((notification) => (
-                  <Card
-                    key={notification.id}
-                    ref={(el) => {
-                      if (!notification.read) {
-                        unreadRefs.current[notification.id] = el;
-                      }
-                    }}
-                    className={`cursor-pointer transition-all hover:shadow-md ${
-                      !notification.read 
-                        ? 'ring-2 ring-primary/20 bg-primary/5' 
-                        : 'hover:bg-muted/50'
-                    } ${getSeverityColor(notification.severity)}`}
-                    onClick={() => handleNotificationClick(notification)}
-                  >
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="text-2xl">
-                          {getSeverityIcon(notification.severity)}
-                        </div>
-                        
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-start justify-between">
-                            <div className="space-y-1">
-                              <h3 className="font-semibold text-lg">
-                                {notification.title}
-                              </h3>
-                              <Badge variant="outline" className="text-xs">
-                                {notification.type.charAt(0).toUpperCase() + notification.type.slice(1)}
-                              </Badge>
-                            </div>
-                            
-                            <div className="text-right space-y-1">
-                              <Badge 
-                                variant={notification.severity === 'critical' ? 'destructive' : 'secondary'}
-                                className="text-xs"
-                              >
-                                {notification.severity.charAt(0).toUpperCase() + notification.severity.slice(1)}
-                              </Badge>
-                              <div className="text-sm text-muted-foreground">
-                                {formatTime(notification.timestamp)}
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <p className="text-muted-foreground leading-relaxed">
-                            {notification.message}
-                          </p>
-                          
-                          {!notification.read && (
-                            <div className="flex items-center gap-2 text-sm font-medium text-primary">
-                              <div className="w-2 h-2 bg-primary rounded-full"></div>
-                              Unread
-                            </div>
+                // Group notifications by type
+                (() => {
+                  const grouped = filteredNotifications.reduce((acc, notification) => {
+                    if (!acc[notification.type]) {
+                      acc[notification.type] = [];
+                    }
+                    acc[notification.type].push(notification);
+                    return acc;
+                  }, {} as Record<string, Notification[]>);
+
+                  const typeIcons = {
+                    security: Shield,
+                    payment: CreditCard,
+                    user: Users,
+                    system: Settings,
+                    workflow: Workflow
+                  };
+
+                  return Object.entries(grouped).map(([type, typeNotifications]) => {
+                    const unreadCount = typeNotifications.filter(n => !n.read).length;
+                    const Icon = typeIcons[type as keyof typeof typeIcons] || Bell;
+
+                    return (
+                      <div key={type} className="space-y-3">
+                        {/* Group Header with Badge */}
+                        <div className="flex items-center gap-3 px-2">
+                          <Icon className="h-5 w-5 text-muted-foreground" />
+                          <h2 className="text-lg font-semibold capitalize">
+                            {type}
+                          </h2>
+                          {unreadCount > 0 && (
+                            <Badge 
+                              variant="destructive" 
+                              className="h-6 px-2 bg-destructive text-destructive-foreground"
+                            >
+                              {unreadCount} new
+                            </Badge>
                           )}
                         </div>
+
+                        {/* Notifications in this group */}
+                        <div className="space-y-2 ml-8">
+                          {typeNotifications.map((notification) => (
+                            <Card
+                              key={notification.id}
+                              ref={(el) => {
+                                if (!notification.read) {
+                                  unreadRefs.current[notification.id] = el;
+                                }
+                              }}
+                              className={`cursor-pointer transition-all hover:shadow-md ${
+                                !notification.read 
+                                  ? 'ring-2 ring-primary/20 bg-primary/5' 
+                                  : 'hover:bg-muted/50'
+                              } ${getSeverityColor(notification.severity)}`}
+                              onClick={() => handleNotificationClick(notification)}
+                            >
+                              <CardContent className="p-4">
+                                <div className="flex items-start gap-4">
+                                  <div className="text-xl">
+                                    {getSeverityIcon(notification.severity)}
+                                  </div>
+                                  
+                                  <div className="flex-1 space-y-2">
+                                    <div className="flex items-start justify-between">
+                                      <div className="space-y-1">
+                                        <h3 className="font-medium text-base">
+                                          {notification.title}
+                                        </h3>
+                                      </div>
+                                      
+                                      <div className="text-right space-y-1">
+                                        <Badge 
+                                          variant={notification.severity === 'critical' ? 'destructive' : 'secondary'}
+                                          className="text-xs"
+                                        >
+                                          {notification.severity.charAt(0).toUpperCase() + notification.severity.slice(1)}
+                                        </Badge>
+                                        <div className="text-sm text-muted-foreground">
+                                          {formatTime(notification.timestamp)}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    <p className="text-muted-foreground text-sm leading-relaxed">
+                                      {notification.message}
+                                    </p>
+                                    
+                                    {!notification.read && (
+                                      <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                        Unread
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))
+                    );
+                  });
+                })()
               )}
             </div>
           </TabsContent>
