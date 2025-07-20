@@ -167,10 +167,35 @@ Return ONLY valid JSON with hex color values. Ensure text colors have sufficient
       'section-bg-2', 'section-bg-3', 'border', 'highlight', 'input-bg', 'input-text'
     ];
     
-    for (const key of requiredKeys) {
-      if (!palette[key]) {
-        throw new Error(`Missing color role: ${key}`);
+    const missingKeys = requiredKeys.filter(key => !palette[key]);
+    if (missingKeys.length > 0) {
+      console.warn('OpenAI response missing keys:', missingKeys);
+      console.warn('Received palette:', palette);
+      
+      // Provide default fallback colors for missing keys
+      const fallbackColors: Record<keyof ColorPalette, string> = {
+        'brand': '#2563eb',
+        'accent': '#dc2626',
+        'button-primary': '#2563eb',
+        'button-text': '#ffffff',
+        'button-secondary': '#f3f4f6',
+        'button-secondary-text': '#374151',
+        'text-primary': '#111827',
+        'text-secondary': '#6b7280',
+        'section-bg-1': '#ffffff',
+        'section-bg-2': '#f9fafb',
+        'section-bg-3': '#f3f4f6',
+        'border': '#e5e7eb',
+        'highlight': '#fbbf24',
+        'input-bg': '#ffffff',
+        'input-text': '#111827'
+      };
+      
+      for (const key of missingKeys) {
+        palette[key] = fallbackColors[key];
       }
+      
+      console.log('Applied fallback colors for missing keys');
     }
 
     // Apply contrast checking and fallback corrections
