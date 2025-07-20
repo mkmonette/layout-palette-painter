@@ -25,6 +25,8 @@ interface AdminPreset {
   scheme?: string;
   mood?: string;
   mode?: 'light' | 'dark';
+  sentToUsers?: boolean;
+  sentToUsersAt?: string;
 }
 
 const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
@@ -102,8 +104,13 @@ const AdminPresetsModal: React.FC<AdminPresetsModalProps> = ({
       if (savedPresets) {
         const parsedPresets = JSON.parse(savedPresets) as AdminPreset[];
         console.log('Parsed presets:', parsedPresets);
-        console.log('Number of presets:', parsedPresets.length);
-        setPresets(parsedPresets);
+        
+        // FILTER: Only show presets that have been sent to users
+        const userAvailablePresets = parsedPresets.filter(preset => preset.sentToUsers === true);
+        console.log('Number of total presets:', parsedPresets.length);
+        console.log('Number of user-available presets:', userAvailablePresets.length);
+        
+        setPresets(userAvailablePresets);
         
         // Backup mechanism - store in component state
         setBackupData(savedPresets);
