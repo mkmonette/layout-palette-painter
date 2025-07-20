@@ -56,6 +56,7 @@ import ContentManagement from '@/components/admin/ContentManagement';
 import { Reports } from '@/components/admin/Reports';
 import TransactionManagement from '@/components/admin/TransactionManagement';
 import NotificationCenter, { triggerNotification, testNotificationSamples } from '@/components/admin/NotificationCenter';
+import AICostCalculator from '@/components/admin/AICostCalculator';
 
 import { logoutUser } from '@/utils/auth';
 import { useNavigate } from 'react-router-dom';
@@ -280,9 +281,10 @@ const AdminDashboard = () => {
 
             {activeTab === 'ai-settings' && (
               <Tabs value={activeAITab} onValueChange={setActiveAITab} className="space-y-4">
-                <TabsList className="grid w-full grid-cols-4 lg:w-fit">
+                <TabsList className="grid w-full grid-cols-5 lg:w-fit">
                   <TabsTrigger value="openai">OpenAI</TabsTrigger>
                   <TabsTrigger value="ai-limits">AI Limits</TabsTrigger>
+                  <TabsTrigger value="cost-calculator">Cost Calculator</TabsTrigger>
                   <TabsTrigger value="usage-logs">Usage Logs</TabsTrigger>
                   <TabsTrigger value="prompt-control">Prompt Control</TabsTrigger>
                 </TabsList>
@@ -293,6 +295,10 @@ const AdminDashboard = () => {
                 
                 <TabsContent value="ai-limits">
                   <AIGenerationSettings />
+                </TabsContent>
+                
+                <TabsContent value="cost-calculator">
+                  <AICostCalculator />
                 </TabsContent>
                 
                 <TabsContent value="usage-logs">
