@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, X, Filter, Check, Clock, AlertTriangle, Info, AlertCircle, ExternalLink } from 'lucide-react';
+import { Bell, X, Filter, Check, Clock, AlertTriangle, Info, AlertCircle, ExternalLink, Settings, Shield, CreditCard, Users, Workflow } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -8,6 +8,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export interface Notification {
   id: string;
@@ -21,6 +24,26 @@ export interface Notification {
 }
 
 const STORAGE_KEY = 'admin_notifications';
+const PREFERENCES_KEY = 'notification_preferences';
+const FILTER_KEY = 'notification_last_filter';
+
+// Notification preferences interface
+export interface NotificationPreferences {
+  showSecurity: boolean;
+  showPayment: boolean;
+  showUser: boolean;
+  showSystem: boolean;
+  showWorkflow: boolean;
+}
+
+// Default preferences
+const defaultPreferences: NotificationPreferences = {
+  showSecurity: true,
+  showPayment: true,
+  showUser: true,
+  showSystem: true,
+  showWorkflow: true
+};
 
 // Test data
 const generateTestNotifications = (): Notification[] => [
@@ -210,6 +233,8 @@ export const NotificationCenter = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [preferences, setPreferences] = useState<NotificationPreferences>(defaultPreferences);
+  const [activeTab, setActiveTab] = useState('notifications');
 
   // Load notifications from localStorage
   useEffect(() => {
@@ -231,6 +256,23 @@ export const NotificationCenter = () => {
       setNotifications(testData);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(testData));
     }
+
+    // Load preferences
+    const storedPrefs = localStorage.getItem(PREFERENCES_KEY);
+    if (storedPrefs) {
+      try {
+        const parsedPrefs = JSON.parse(storedPrefs);
+        setPreferences(parsedPrefs);
+      } catch (error) {
+        console.error('Error parsing preferences:', error);
+      }
+    }
+
+    // Load last filter
+    const lastFilter = localStorage.getItem(FILTER_KEY);
+    if (lastFilter) {
+      setSelectedType(lastFilter);
+    }
   }, []);
 
   // Listen for storage events (for real-time updates)
@@ -251,14 +293,40 @@ export const NotificationCenter = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // Filter notifications when type changes
+  // Filter notifications when type or preferences change
   useEffect(() => {
-    if (selectedType === 'all') {
-      setFilteredNotifications(notifications);
-    } else {
-      setFilteredNotifications(notifications.filter(n => n.type === selectedType));
+    let filtered = notifications;
+
+    // Apply type filter
+    if (selectedType !== 'all') {
+      filtered = filtered.filter(n => n.type === selectedType);
     }
-  }, [notifications, selectedType]);
+
+    // Apply preferences filter
+    filtered = filtered.filter(notification => {
+      switch (notification.type) {
+        case 'security':
+          return preferences.showSecurity;
+        case 'payment':
+          return preferences.showPayment;
+        case 'user':
+          return preferences.showUser;
+        case 'system':
+          return preferences.showSystem;
+        case 'workflow':
+          return preferences.showWorkflow;
+        default:
+          return true;
+      }
+    });
+
+    setFilteredNotifications(filtered);
+  }, [notifications, selectedType, preferences]);
+
+  // Save filter selection to localStorage
+  useEffect(() => {
+    localStorage.setItem(FILTER_KEY, selectedType);
+  }, [selectedType]);
 
   // Save notifications to localStorage
   const saveNotifications = (updatedNotifications: Notification[]) => {
@@ -294,8 +362,20 @@ export const NotificationCenter = () => {
     saveNotifications(updated);
   };
 
-  // Get unread count
-  const unreadCount = notifications.filter(n => !n.read).length;
+  // Update preferences
+  const updatePreferences = (newPreferences: NotificationPreferences) => {
+    setPreferences(newPreferences);
+    localStorage.setItem(PREFERENCES_KEY, JSON.stringify(newPreferences));
+  };
+
+  // Get unread count (respecting preferences)
+  const unreadCount = notifications.filter(n => !n.read && (
+    (n.type === 'security' && preferences.showSecurity) ||
+    (n.type === 'payment' && preferences.showPayment) ||
+    (n.type === 'user' && preferences.showUser) ||
+    (n.type === 'system' && preferences.showSystem) ||
+    (n.type === 'workflow' && preferences.showWorkflow)
+  )).length;
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -314,103 +394,266 @@ export const NotificationCenter = () => {
       </PopoverTrigger>
       
       <PopoverContent className="w-96 p-0" align="end">
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold">Notifications</h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Filter by type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="security">Security</SelectItem>
-                <SelectItem value="payment">Payment</SelectItem>
-                <SelectItem value="user">User</SelectItem>
-                <SelectItem value="system">System</SelectItem>
-                <SelectItem value="workflow">Workflow</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {unreadCount > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={markAllAsRead}
-              className="w-full mt-2"
-            >
-              <Check className="h-4 w-4 mr-2" />
-              Mark all as read
-            </Button>
-          )}
-        </div>
-        
-        <div className="max-h-96 overflow-y-auto">
-          {filteredNotifications.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground">
-              No notifications found
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <div className="p-4 border-b">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold">Notification Center</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-          ) : (
-            filteredNotifications.map((notification, index) => (
-              <div key={notification.id}>
-                <Card 
-                  className={`border-0 rounded-none cursor-pointer hover:bg-muted/50 transition-colors ${
-                    !notification.read ? 'bg-muted/30' : ''
-                  }`}
-                  onClick={() => handleNotificationClick(notification)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="mt-1">
-                        {getSeverityIcon(notification.severity)}
+            
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="notifications" className="text-xs">
+                <Bell className="h-4 w-4 mr-1" />
+                Notifications
+                {unreadCount > 0 && (
+                  <Badge variant="secondary" className="ml-1 h-4 w-4 p-0 text-xs">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="preferences" className="text-xs">
+                <Settings className="h-4 w-4 mr-1" />
+                Preferences
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="notifications" className="mt-0">
+            <div className="p-4 border-b">
+              <div className="flex items-center gap-2 mb-3">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <Select value={selectedType} onValueChange={setSelectedType}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border z-50">
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="security">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Security
                       </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="text-sm font-medium truncate">
-                            {notification.title}
-                          </h4>
-                          {!notification.read && (
-                            <div className="h-2 w-2 bg-primary rounded-full flex-shrink-0" />
-                          )}
-                        </div>
-                        
-                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                          {notification.message}
-                        </p>
-                        
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-xs text-muted-foreground">
-                            {formatTime(notification.timestamp)}
-                          </span>
-                          <Badge 
-                            variant="outline" 
-                            className={`text-xs ${getSeverityColor(notification.severity)}`}
-                          >
-                            {notification.severity}
-                          </Badge>
-                        </div>
+                    </SelectItem>
+                    <SelectItem value="payment">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="h-4 w-4" />
+                        Payment
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                {index < filteredNotifications.length - 1 && <Separator />}
+                    </SelectItem>
+                    <SelectItem value="user">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        User
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="system">
+                      <div className="flex items-center gap-2">
+                        <Settings className="h-4 w-4" />
+                        System
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="workflow">
+                      <div className="flex items-center gap-2">
+                        <Workflow className="h-4 w-4" />
+                        Workflow
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            ))
-          )}
-        </div>
+              
+              {unreadCount > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={markAllAsRead}
+                  className="w-full"
+                >
+                  <Check className="h-4 w-4 mr-2" />
+                  Mark all as read ({unreadCount})
+                </Button>
+              )}
+            </div>
+            
+            <div className="max-h-80 overflow-y-auto">
+              {filteredNotifications.length === 0 ? (
+                <div className="p-6 text-center text-muted-foreground">
+                  <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>No notifications found</p>
+                  <p className="text-xs mt-1">
+                    {selectedType !== 'all' 
+                      ? `No ${selectedType} notifications to display`
+                      : 'All caught up!'
+                    }
+                  </p>
+                </div>
+              ) : (
+                filteredNotifications.map((notification, index) => (
+                  <div key={notification.id}>
+                    <Card 
+                      className={`border-0 rounded-none cursor-pointer hover:bg-muted/50 transition-colors ${
+                        !notification.read ? 'bg-muted/30 border-l-4 border-l-primary' : ''
+                      }`}
+                      onClick={() => handleNotificationClick(notification)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="mt-1">
+                            {getSeverityIcon(notification.severity)}
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="text-sm font-medium truncate">
+                                {notification.title}
+                              </h4>
+                              {!notification.read && (
+                                <div className="h-2 w-2 bg-primary rounded-full flex-shrink-0" />
+                              )}
+                            </div>
+                            
+                            <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                              {notification.message}
+                            </p>
+                            
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <Clock className="h-3 w-3 text-muted-foreground" />
+                              <span className="text-xs text-muted-foreground">
+                                {formatTime(notification.timestamp)}
+                              </span>
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs capitalize ${getSeverityColor(notification.severity)}`}
+                              >
+                                {notification.severity}
+                              </Badge>
+                              <Badge variant="secondary" className="text-xs capitalize">
+                                {notification.type}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    {index < filteredNotifications.length - 1 && <Separator />}
+                  </div>
+                ))
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="preferences" className="mt-0">
+            <div className="p-4 space-y-4">
+              <div className="mb-4">
+                <h4 className="text-sm font-medium mb-2">Notification Types</h4>
+                <p className="text-xs text-muted-foreground mb-4">
+                  Control which types of notifications you want to see
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-red-500" />
+                    <div>
+                      <Label htmlFor="security" className="text-sm font-medium">Security</Label>
+                      <p className="text-xs text-muted-foreground">Login attempts, security alerts</p>
+                    </div>
+                  </div>
+                  <Switch
+                    id="security"
+                    checked={preferences.showSecurity}
+                    onCheckedChange={(checked) => 
+                      updatePreferences({ ...preferences, showSecurity: checked })
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="h-4 w-4 text-green-500" />
+                    <div>
+                      <Label htmlFor="payment" className="text-sm font-medium">Payment</Label>
+                      <p className="text-xs text-muted-foreground">Payment issues, transaction alerts</p>
+                    </div>
+                  </div>
+                  <Switch
+                    id="payment"
+                    checked={preferences.showPayment}
+                    onCheckedChange={(checked) => 
+                      updatePreferences({ ...preferences, showPayment: checked })
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-blue-500" />
+                    <div>
+                      <Label htmlFor="user" className="text-sm font-medium">User Activity</Label>
+                      <p className="text-xs text-muted-foreground">Registrations, subscriptions</p>
+                    </div>
+                  </div>
+                  <Switch
+                    id="user"
+                    checked={preferences.showUser}
+                    onCheckedChange={(checked) => 
+                      updatePreferences({ ...preferences, showUser: checked })
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Settings className="h-4 w-4 text-gray-500" />
+                    <div>
+                      <Label htmlFor="system" className="text-sm font-medium">System</Label>
+                      <p className="text-xs text-muted-foreground">System errors, maintenance</p>
+                    </div>
+                  </div>
+                  <Switch
+                    id="system"
+                    checked={preferences.showSystem}
+                    onCheckedChange={(checked) => 
+                      updatePreferences({ ...preferences, showSystem: checked })
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Workflow className="h-4 w-4 text-purple-500" />
+                    <div>
+                      <Label htmlFor="workflow" className="text-sm font-medium">Workflow</Label>
+                      <p className="text-xs text-muted-foreground">Process updates, automation</p>
+                    </div>
+                  </div>
+                  <Switch
+                    id="workflow"
+                    checked={preferences.showWorkflow}
+                    onCheckedChange={(checked) => 
+                      updatePreferences({ ...preferences, showWorkflow: checked })
+                    }
+                  />
+                </div>
+              </div>
+              
+              <Separator />
+              
+              <div className="pt-2">
+                <p className="text-xs text-muted-foreground">
+                  Preferences are saved automatically and applied to future notifications.
+                </p>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </PopoverContent>
       
       {/* Notification Details Modal */}
