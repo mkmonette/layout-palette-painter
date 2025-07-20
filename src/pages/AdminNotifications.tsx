@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell, ArrowLeft, Filter, Check, Shield, CreditCard, Users, Settings, Workflow, ExternalLink, Grid, List, Download, FileSpreadsheet } from 'lucide-react';
-import XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
