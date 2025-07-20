@@ -22,11 +22,13 @@ import {
   ArrowRightLeft,
   Calculator,
   Plus,
-  Trash2
+  Trash2,
+  TestTube
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CoinPackagesTable from './CoinPackagesTable';
+import UpgradeTestPanel from './UpgradeTestPanel';
 
 interface UpgradeBonus {
   id: string;
@@ -127,7 +129,7 @@ const CoinCreditSettings = () => {
       </div>
 
       <Tabs defaultValue="packages" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="packages" className="flex items-center gap-2">
             <Coins className="h-4 w-4" />
             Coin Packages
@@ -143,6 +145,10 @@ const CoinCreditSettings = () => {
           <TabsTrigger value="upgrade-rewards" className="flex items-center gap-2">
             <Gift className="h-4 w-4" />
             Upgrade Rewards
+          </TabsTrigger>
+          <TabsTrigger value="test-panel" className="flex items-center gap-2">
+            <TestTube className="h-4 w-4" />
+            Test Panel
           </TabsTrigger>
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
@@ -419,6 +425,10 @@ const CoinCreditSettings = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="test-panel" className="mt-6">
+          <UpgradeTestPanel />
         </TabsContent>
 
         <TabsContent value="overview" className="mt-6">
