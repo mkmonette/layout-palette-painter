@@ -201,6 +201,11 @@ const SavedPalettesManager: React.FC<SavedPalettesManagerProps> = ({
     };
 
     const updatedPresets = [...presets, newPreset];
+    
+    // DEBUG: Log what we're saving and what's in user presets before saving
+    console.log('🔍 DEBUG: Saving new admin preset:', newPreset);
+    console.log('🔍 DEBUG: Current user presets before admin save:', localStorage.getItem('savedPalettes'));
+    
     savePresetsToStorage(updatedPresets);
 
     toast({
