@@ -2,100 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Check, Crown, Star, Zap, Sparkles, Coins, Plus } from 'lucide-react';
+import { Check, Crown, Star, Zap, Sparkles } from 'lucide-react';
 import { useEnhancedSubscription } from '@/contexts/EnhancedSubscriptionContext';
 import CheckoutModal from './CheckoutModal';
 import { SubscriptionPlan } from '@/types/subscription';
 
-interface CoinPackage {
-  id: string;
-  coins: number;
-  price: number;
-  bonus?: number;
-}
-
-interface CoinOption {
-  coins: number;
-  price: number;
-  bonus?: number;
-}
-
-interface CoinAddon {
-  id: string;
-  name: string;
-  coins: number;
-  price: number;
-  bonus?: number;
-}
+// Coin-based purchases removed - subscriptions now use secure payment gateways only
 
 const SubscriptionCheckout = () => {
   const { plans, currentPlan } = useEnhancedSubscription();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
-  const [selectedCoinOptions, setSelectedCoinOptions] = useState<{[planId: string]: CoinOption | null}>({});
-  const [coinPackages, setCoinPackages] = useState<CoinPackage[]>([]);
-  
-  // Load coin packages from admin settings
-  useEffect(() => {
-    const savedSettings = localStorage.getItem('coin_credit_settings');
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings);
-        if (parsed.coinPackages) {
-          setCoinPackages(parsed.coinPackages);
-        }
-      } catch (error) {
-        console.error('Error loading coin settings:', error);
-        // Fallback to default packages
-        setCoinPackages([
-          { id: '1', coins: 100, price: 4 },
-          { id: '2', coins: 200, price: 8 },
-          { id: '3', coins: 500, price: 18, bonus: 50 },
-          { id: '4', coins: 1000, price: 35, bonus: 150 },
-          { id: '5', coins: 2000, price: 65, bonus: 400 }
-        ]);
-      }
-    } else {
-      // Default packages if no settings found
-      setCoinPackages([
-        { id: '1', coins: 100, price: 4 },
-        { id: '2', coins: 200, price: 8 },
-        { id: '3', coins: 500, price: 18, bonus: 50 },
-        { id: '4', coins: 1000, price: 35, bonus: 150 },
-        { id: '5', coins: 2000, price: 65, bonus: 400 }
-      ]);
-    }
-  }, []);
+  // Coin-based subscription purchases removed
 
   const handlePlanSelect = (plan: SubscriptionPlan) => {
     setSelectedPlan(plan);
     setIsCheckoutOpen(true);
   };
 
-  const handleCoinSelection = (planId: string, value: string) => {
-    if (value === 'none') {
-      setSelectedCoinOptions(prev => ({ ...prev, [planId]: null }));
-    } else {
-      const option = coinPackages.find(opt => `${opt.coins}-${opt.price}` === value);
-      if (option) {
-        setSelectedCoinOptions(prev => ({ ...prev, [planId]: option }));
-      }
-    }
-  };
-
-  const getSelectedCoinAddon = (planId: string): CoinAddon | null => {
-    const option = selectedCoinOptions[planId];
-    if (!option) return null;
-    
-    return {
-      id: `coin-addon-${planId}`,
-      name: `${option.coins} Coins${option.bonus ? ` + ${option.bonus} Bonus` : ''}`,
-      coins: option.coins,
-      price: option.price,
-      bonus: option.bonus
-    };
-  };
+  // Coin-based functionality removed
 
   const getPlanIcon = (planName: string) => {
     switch (planName.toLowerCase()) {
@@ -196,14 +121,17 @@ const SubscriptionCheckout = () => {
         <h2 className="text-3xl font-bold tracking-tight">Choose Your Plan</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
           Unlock powerful features and take your color palette generation to the next level.
-          Switch plans anytime to match your needs.
+          All subscription purchases are made via secure payment gateways.
         </p>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-lg mx-auto">
+          <p className="text-sm text-blue-700">
+            💳 <strong>Secure Payments Only:</strong> All subscription purchases are processed through secure payment gateways. Coins are not accepted for plans.
+          </p>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         {plans.filter(plan => plan.status === 'active').map((plan) => {
-          const selectedCoinOption = selectedCoinOptions[plan.id];
-          const totalPrice = plan.price + (selectedCoinOption?.price || 0);
           
           return (
             <Card 
@@ -236,18 +164,11 @@ const SubscriptionCheckout = () => {
                 
                 <div className="pt-4">
                   <div className="text-4xl font-bold">
-                    {plan.price === 0 ? 'Free' : `$${totalPrice.toFixed(2)}`}
+                    {plan.price === 0 ? 'Free' : `$${plan.price.toFixed(2)}`}
                   </div>
                   {plan.price > 0 && (
                     <div className="text-sm text-muted-foreground">
                       per {plan.interval}
-                    </div>
-                  )}
-                  {selectedCoinOption && (
-                    <div className="mt-2 p-2 bg-blue-50 rounded-md border border-blue-200">
-                      <div className="text-sm font-semibold text-blue-700">
-                        Plan: ${plan.price.toFixed(2)} + Coins: ${selectedCoinOption.price.toFixed(2)}
-                      </div>
                     </div>
                   )}
                 </div>
@@ -262,48 +183,6 @@ const SubscriptionCheckout = () => {
                     </li>
                   ))}
                 </ul>
-
-                {/* Coin Credits Add-on Dropdown */}
-                <div className="pt-2 border-t">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Coins className="h-4 w-4 text-yellow-500" />
-                    <span className="text-sm font-medium">Add Coin Credits</span>
-                  </div>
-                  
-                  <Select
-                    value={selectedCoinOption ? `${selectedCoinOption.coins}-${selectedCoinOption.price}` : 'none'}
-                    onValueChange={(value) => handleCoinSelection(plan.id, value)}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="No coins selected" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">No coins</SelectItem>
-                      {coinPackages.map((option) => (
-                        <SelectItem 
-                          key={`${option.coins}-${option.price}`} 
-                          value={`${option.coins}-${option.price}`}
-                        >
-                          {option.coins} coins - ${option.price.toFixed(2)}
-                          {option.bonus && ` (+${option.bonus} bonus)`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  {selectedCoinOption && (
-                    <div className="mt-2 p-2 bg-yellow-50 rounded text-xs text-yellow-700">
-                      <div className="font-medium">
-                        {selectedCoinOption.coins + (selectedCoinOption.bonus || 0)} total coins
-                      </div>
-                      {selectedCoinOption.bonus && (
-                        <div className="text-green-600">
-                          Includes {selectedCoinOption.bonus} bonus coins!
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
 
                 <div className="pt-4">
                   {isCurrentPlan(plan) ? (
@@ -356,7 +235,7 @@ const SubscriptionCheckout = () => {
           setIsCheckoutOpen(false);
         }}
         selectedPlan={selectedPlan}
-        coinAddons={selectedPlan ? [getSelectedCoinAddon(selectedPlan.id)].filter(Boolean) : []}
+        coinAddons={[]}
         type="subscription"
       />
     </div>

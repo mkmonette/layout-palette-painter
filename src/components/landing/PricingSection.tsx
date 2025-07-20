@@ -66,6 +66,11 @@ const PricingSection = () => {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Choose the perfect plan for your needs. Upgrade or downgrade at any time.
           </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto mt-6">
+            <p className="text-sm text-blue-700">
+              💳 <strong>Secure Payments Only:</strong> All subscription purchases are made via secure payment gateways. Coins are not accepted for plans.
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">

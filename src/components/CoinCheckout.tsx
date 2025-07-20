@@ -105,9 +105,14 @@ const CoinCheckout = () => {
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold tracking-tight">Purchase Coins</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Buy coins to unlock premium features, generate AI colors, and purchase subscription plans.
-          Coins never expire and can be used across all platform features.
+          Buy coins to unlock premium features and generate AI colors.
+          Coins never expire and can be used for AI-powered features.
         </p>
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 max-w-lg mx-auto mt-4">
+          <p className="text-sm text-orange-700">
+            ⚠️ <strong>Note:</strong> Coins cannot be used to purchase subscription plans. Use secure payment methods for subscriptions.
+          </p>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
@@ -206,12 +211,12 @@ const CoinCheckout = () => {
                 <div className="text-muted-foreground">2 coins per generation</div>
               </div>
               <div className="space-y-1">
-                <div className="font-medium">Pro Plan</div>
-                <div className="text-muted-foreground">100 coins/month</div>
+                <div className="font-medium">Image Color Extraction</div>
+                <div className="text-muted-foreground">1 coin per image</div>
               </div>
               <div className="space-y-1">
-                <div className="font-medium">Enterprise Plan</div>
-                <div className="text-muted-foreground">300 coins/month</div>
+                <div className="font-medium">Advanced Features</div>
+                <div className="text-muted-foreground">Varies by feature</div>
               </div>
             </div>
             <div className="text-xs text-muted-foreground pt-2">

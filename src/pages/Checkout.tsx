@@ -30,8 +30,13 @@ const Checkout = () => {
             <h1 className="text-4xl font-bold tracking-tight">Upgrade Your Experience</h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Choose between subscription plans for ongoing access or purchase coins for flexible, 
-              pay-as-you-go usage. Both options unlock powerful AI features and premium templates.
+              pay-as-you-go usage. All subscription purchases are processed through secure payment gateways.
             </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto mt-4">
+              <p className="text-sm text-blue-700">
+                💳 <strong>Secure Payments:</strong> All subscription purchases are made via secure payment gateways. Coins are not accepted for plans.
+              </p>
+            </div>
           </div>
         </div>
 

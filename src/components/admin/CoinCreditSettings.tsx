@@ -148,62 +148,21 @@ const CoinCreditSettings = () => {
         </TabsContent>
 
         <TabsContent value="subscription-costs" className="mt-6">
-          <Card>
+          <Card className="border-orange-200 bg-orange-50/50">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
-                Subscription Plan Costs
+              <CardTitle className="flex items-center gap-2 text-orange-700">
+                <CreditCard className="h-5 w-5 text-orange-500" />
+                Subscription Plan Costs - DISABLED
               </CardTitle>
-              <CardDescription>
-                Set how many coins users need to spend to purchase subscription plans
+              <CardDescription className="text-orange-600">
+                Coin-based subscription purchases have been disabled. All subscription purchases now use secure payment gateways only.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="free-coins">Free Plan Cost</Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="free-coins"
-                      type="number"
-                      min="0"
-                      value={tempSettings.freeSubscriptionCost}
-                      onChange={(e) => updateSetting('freeSubscriptionCost', parseInt(e.target.value) || 0)}
-                      className="w-24"
-                    />
-                    <Badge variant="secondary">coins/month</Badge>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="pro-coins">Pro Plan Cost</Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="pro-coins"
-                      type="number"
-                      min="0"
-                      value={tempSettings.proSubscriptionCost}
-                      onChange={(e) => updateSetting('proSubscriptionCost', parseInt(e.target.value) || 0)}
-                      className="w-24"
-                    />
-                    <Badge variant="secondary">coins/month</Badge>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="enterprise-coins">Enterprise Plan Cost</Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="enterprise-coins"
-                      type="number"
-                      min="0"
-                      value={tempSettings.enterpriseSubscriptionCost}
-                      onChange={(e) => updateSetting('enterpriseSubscriptionCost', parseInt(e.target.value) || 0)}
-                      className="w-24"
-                    />
-                    <Badge variant="secondary">coins/month</Badge>
-                  </div>
-                </div>
+              <div className="p-4 bg-orange-100 border border-orange-200 rounded-lg">
+                <p className="text-sm text-orange-700 font-medium">
+                  ⚠️ Coin-based subscription purchases are no longer available. Users can only purchase subscriptions through PayPal, LemonSqueezy, or other secure payment methods.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -224,16 +183,8 @@ const CoinCreditSettings = () => {
                   <div className="text-muted-foreground">{settings.aiColorGeneration} coins</div>
                 </div>
                 <div>
-                  <div className="font-medium">Free Plan Cost</div>
-                  <div className="text-muted-foreground">{settings.freeSubscriptionCost} coins/month</div>
-                </div>
-                <div>
-                  <div className="font-medium">Pro Plan Cost</div>
-                  <div className="text-muted-foreground">{settings.proSubscriptionCost} coins/month</div>
-                </div>
-                <div>
-                  <div className="font-medium">Enterprise Plan Cost</div>
-                  <div className="text-muted-foreground">{settings.enterpriseSubscriptionCost} coins/month</div>
+                  <div className="font-medium text-orange-600">Subscription Costs</div>
+                  <div className="text-orange-500 text-sm">Disabled - Secure payments only</div>
                 </div>
                 <div>
                   <div className="font-medium">Coin Expiration</div>
