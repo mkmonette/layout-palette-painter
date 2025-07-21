@@ -669,7 +669,7 @@ const Dashboard = () => {
           </div>
         </div>
         
-        {/* Desktop Top Navigation Bar */}
+        {/* Desktop Top Navigation Bar - Hidden on mobile */}
         <div className="hidden md:block h-14 border-b border-border bg-card/90 backdrop-blur-md relative z-10">
           <div className="flex items-center justify-between px-4 h-full">
             <div className="flex items-center space-x-4">
@@ -759,8 +759,8 @@ const Dashboard = () => {
         </div>
 
         <div className="flex flex-1 overflow-hidden relative z-10">
-          {/* Left Sidebar */}
-          <div className="w-48 studio-sidebar flex flex-col py-2 space-y-1">
+          {/* Left Sidebar - Hidden on mobile */}
+          <div className="hidden md:flex w-48 studio-sidebar flex-col py-2 space-y-1">
             {sidebarItems.map(item => {
             if (!item.available) return null;
             return <Popover key={item.id}>
@@ -1061,12 +1061,12 @@ const Dashboard = () => {
           <div className="flex-1 flex bg-card/40 backdrop-blur-sm">
             {/* Canvas */}
             <div className="flex-1 overflow-auto flex items-start justify-center bg-card/20 backdrop-blur-sm">
-              {/* Mobile Canvas */}
-              <div className="md:hidden w-full h-full flex items-start justify-center pt-14 pb-14" style={{ minHeight: 'calc(100vh - 112px)' }}>
-                <div className="bg-background border rounded-lg shadow-lg overflow-auto w-full mx-2" style={{ height: 'calc(100vh - 140px)' }}>
+              {/* Mobile Canvas - Centered between toolbars */}
+              <div className="md:hidden w-full h-full flex items-center justify-center pt-14 pb-14 px-4" style={{ minHeight: 'calc(100vh - 112px)' }}>
+                <div className="bg-background border rounded-lg shadow-lg overflow-auto w-full max-w-full" style={{ height: 'calc(100vh - 140px)' }}>
                   {/* Mobile Preview Container - Scaled Desktop View */}
                   <div className="w-full h-full overflow-auto">
-                    <div className="min-w-[1280px] transform-gpu scale-[0.28] origin-top-left" style={{ height: 'calc(100vh * 3.57)' }} data-preview-element>
+                    <div className="min-w-[1280px] transform-gpu scale-[0.25] origin-top-left" style={{ height: 'calc(100vh * 4)' }} data-preview-element>
                       <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
                     </div>
                   </div>
@@ -1088,8 +1088,8 @@ const Dashboard = () => {
                </div>
              </div>
 
-            {/* Right Sidebar */}
-            <div className="w-48 bg-card/80 backdrop-blur-md border-l border-border flex flex-col">
+            {/* Right Sidebar - Hidden on mobile */}
+            <div className="hidden md:flex w-48 bg-card/80 backdrop-blur-md border-l border-border flex-col">
               {/* Sidebar Header */}
               <div className="p-3 border-b border-border">
                 <div className="flex items-center justify-between mb-2">
