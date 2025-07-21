@@ -623,8 +623,54 @@ const Dashboard = () => {
         {/* Vibrant animated background overlay */}
         <div className="absolute inset-0 workspace-background opacity-60 z-0" />
         
-        {/* Top Navigation Bar */}
-        <div className="h-14 border-b border-border bg-card/90 backdrop-blur-md relative z-10">
+        {/* Mobile Top Toolbar */}
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-b border-border shadow-sm">
+          <div className="flex items-center justify-between h-full px-2">
+            <div className="flex items-center justify-evenly w-full">
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
+                <Menu className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
+                <Palette className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
+                <Layers className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
+                <Settings className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
+                <Share className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Bottom Toolbar */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-t border-border shadow-sm">
+          <div className="flex items-center justify-between h-full px-2">
+            <div className="flex items-center justify-evenly w-full">
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleDownloadPDF}>
+                <Download className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleSave}>
+                <Save className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleGenerateColors}>
+                <RefreshCw className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
+                <Eye className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleFullscreenToggle}>
+                <Maximize className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Desktop Top Navigation Bar */}
+        <div className="hidden md:block h-14 border-b border-border bg-card/90 backdrop-blur-md relative z-10">
           <div className="flex items-center justify-between px-4 h-full">
             <div className="flex items-center space-x-4">
                <h1 className="text-3xl sm:text-2xl font-bold text-foreground leading-tight">
@@ -1015,54 +1061,32 @@ const Dashboard = () => {
           <div className="flex-1 flex bg-card/40 backdrop-blur-sm">
             {/* Canvas */}
             <div className="flex-1 overflow-auto flex items-start justify-center bg-card/20 backdrop-blur-sm">
-              <div className="bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
+              {/* Mobile Canvas */}
+              <div className="md:hidden w-full h-full flex items-start justify-center pt-14 pb-14" style={{ minHeight: 'calc(100vh - 112px)' }}>
+                <div className="bg-background border rounded-lg shadow-lg overflow-auto w-full mx-2" style={{ height: 'calc(100vh - 140px)' }}>
+                  {/* Mobile Preview Container - Scaled Desktop View */}
+                  <div className="w-full h-full overflow-auto">
+                    <div className="min-w-[1280px] transform-gpu scale-[0.28] origin-top-left" style={{ height: 'calc(100vh * 3.57)' }} data-preview-element>
+                      <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Desktop Canvas */}
+              <div className="hidden md:block bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
               transform: `scale(${zoomLevel / 100})`,
               transformOrigin: 'top center',
-              width: isMobile ? 'calc(100vw - 16px)' :
-              // Full width minus right sidebar and margins
-              'calc(100vw - 400px)',
-              // Left sidebar (192px) + right sidebar (192px) + margins (16px)
+              width: 'calc(100vw - 400px)',
               minHeight: '400px'
             }} data-preview-element>
 
-            {/* Mobile dropdown menu */}
-            {isMobileMenuOpen && <div className="sm:hidden absolute top-0 left-0 right-0 bg-background border-b border-border p-4 space-y-2 z-50">
-                <div className="grid grid-cols-2 gap-2">
-                   <Button variant="outline" size="sm" onClick={() => {
-                    handleGenerateColors();
-                    setIsMobileMenuOpen(false);
-                  }} disabled={isGenerating} className="text-base sm:text-sm font-bold px-2 py-1 rounded-sm">
-                     {isGenerating ? <RefreshCw className="h-3 w-3 mr-2 animate-spin" /> : <Wand2 className="h-3 w-3 mr-2" />}
-                     Generate
-                   </Button>
-                   <Button variant="outline" size="sm" onClick={() => {
-                    handleDownloadPDF();
-                    setIsMobileMenuOpen(false);
-                  }} disabled={!canDownload()} className="text-base sm:text-sm font-bold px-2 py-1 rounded-sm">
-                     <Download className="h-3 w-3 mr-2" />
-                     Export PDF
-                   </Button>
-                   <Button variant="outline" size="sm" onClick={() => {
-                    handleSave();
-                    setIsMobileMenuOpen(false);
-                  }} className="text-base sm:text-sm font-bold px-2 py-1 rounded-sm">
-                     <Save className="h-3 w-3 mr-2" />
-                     Save
-                   </Button>
-                   <Button variant="outline" size="sm" onClick={() => {
-                    handleFullscreenToggle();
-                    setIsMobileMenuOpen(false);
-                  }} className="text-base sm:text-sm font-bold px-2 py-1 rounded-sm">
-                     <Maximize className="h-3 w-3 mr-2" />
-                     Fullscreen
-                   </Button>
-                </div>
-              </div>}
+                {/* Desktop Preview Container */}
                 <div className="w-full h-auto overflow-visible">
                   <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
                 </div>
-              </div>
-            </div>
+               </div>
+             </div>
 
             {/* Right Sidebar */}
             <div className="w-48 bg-card/80 backdrop-blur-md border-l border-border flex flex-col">
@@ -1228,8 +1252,8 @@ const Dashboard = () => {
         setShowAutoGenerateConfirmModal(true);
       }} />
 
-        {/* Floating Generate Button */}
-        <Button onClick={handleGenerateColors} disabled={isGenerating} className="fixed bottom-6 right-6 h-12 w-12 rounded-sm floating-action z-50 p-2" size="icon">
+        {/* Floating Generate Button - Hidden on Mobile */}
+        <Button onClick={handleGenerateColors} disabled={isGenerating} className="hidden md:block fixed bottom-6 right-6 h-12 w-12 rounded-sm floating-action z-50 p-2" size="icon">
           <Sparkles className="h-5 w-5" />
         </Button>
       </div>
