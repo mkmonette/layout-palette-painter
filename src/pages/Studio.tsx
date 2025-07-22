@@ -142,6 +142,12 @@ const Dashboard = () => {
   const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
   const [mobileMode, setMobileMode] = useState<'generate' | 'ai'>('generate');
   const [showAIControlsPopup, setShowAIControlsPopup] = useState(false);
+  
+  // Mobile popup states
+  const [showTemplatesPopup, setShowTemplatesPopup] = useState(false);
+  const [showPaletteOptionsPopup, setShowPaletteOptionsPopup] = useState(false);
+  const [showImageUploadPopup, setShowImageUploadPopup] = useState(false);
+  const [showExportPopup, setShowExportPopup] = useState(false);
   const {
     remainingAIGenerations,
     maxAIGenerationsPerMonth,
@@ -652,14 +658,27 @@ const Dashboard = () => {
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-t border-border shadow-sm">
           <div className="flex items-center justify-between h-full px-2">
             <div className="flex items-center justify-evenly w-full">
-              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleDownloadPDF}>
-                <Download className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleSave}>
-                <Save className="w-5 h-5" />
+              {/* Button 1: Templates & Layout */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex-1 max-w-[60px] h-10 hover:bg-accent" 
+                onClick={() => setShowTemplatesPopup(true)}
+              >
+                <LayoutDashboard className="w-5 h-5" />
               </Button>
               
-              {/* Center Toggle Button */}
+              {/* Button 2: Palette Options */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex-1 max-w-[60px] h-10 hover:bg-accent" 
+                onClick={() => setShowPaletteOptionsPopup(true)}
+              >
+                <Palette className="w-5 h-5" />
+              </Button>
+              
+              {/* Button 3: Center Toggle Button */}
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -669,11 +688,24 @@ const Dashboard = () => {
                 {mobileMode === 'generate' ? <ToggleLeft className="w-5 h-5" /> : <ToggleRight className="w-5 h-5" />}
               </Button>
               
-              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
-                <Eye className="w-5 h-5" />
+              {/* Button 4: From Image */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex-1 max-w-[60px] h-10 hover:bg-accent" 
+                onClick={() => setShowImageUploadPopup(true)}
+              >
+                <ImageIcon className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleFullscreenToggle}>
-                <Maximize className="w-5 h-5" />
+              
+              {/* Button 5: Save & Export */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex-1 max-w-[60px] h-10 hover:bg-accent" 
+                onClick={() => setShowExportPopup(true)}
+              >
+                <Download className="w-5 h-5" />
               </Button>
             </div>
           </div>
@@ -1365,6 +1397,224 @@ const Dashboard = () => {
 
           </div>
         </div>
+
+        {/* Mobile Popups */}
+        {/* Templates & Layout Popup */}
+        <Dialog open={showTemplatesPopup} onOpenChange={setShowTemplatesPopup}>
+          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full">
+              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <div className="flex items-center justify-between">
+                  <DialogTitle className="text-lg font-semibold">Templates & Layout</DialogTitle>
+                  <Button variant="ghost" size="icon" onClick={() => setShowTemplatesPopup(false)}>
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+              </DialogHeader>
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-6">
+                  {/* Templates Section */}
+                  <div>
+                    <h3 className="text-base font-medium mb-3">Templates</h3>
+                    <Suspense fallback={<div className="text-sm text-muted-foreground">Loading templates...</div>}>
+                      <TemplateSelector 
+                        selectedTemplate={selectedTemplate} 
+                        onTemplateChange={setSelectedTemplate}
+                        colorPalette={colorPalette}
+                      />
+                    </Suspense>
+                  </div>
+                  
+                  {/* Background Settings */}
+                  <div>
+                    <h3 className="text-base font-medium mb-3">Background Settings</h3>
+                    <BackgroundCustomizer 
+                      settings={backgroundSettings} 
+                      onSettingsChange={setBackgroundSettings}
+                    />
+                  </div>
+                  
+                  {/* Theme Mode */}
+                  <div>
+                    <h3 className="text-base font-medium mb-3">Color Mode</h3>
+                    <ColorModeSelector
+                      selectedMode={colorMode}
+                      onModeChange={handleModeChange}
+                      disabled={!canAccessTemplateDarkMode}
+                    />
+                  </div>
+                </div>
+              </ScrollArea>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Palette Options Popup */}
+        <Dialog open={showPaletteOptionsPopup} onOpenChange={setShowPaletteOptionsPopup}>
+          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full">
+              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <div className="flex items-center justify-between">
+                  <DialogTitle className="text-lg font-semibold">Palette Options</DialogTitle>
+                  <Button variant="ghost" size="icon" onClick={() => setShowPaletteOptionsPopup(false)}>
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+              </DialogHeader>
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-6">
+                  {/* Color Scheme */}
+                  <div>
+                    <h3 className="text-base font-medium mb-3">Color Scheme</h3>
+                    <ColorSchemeSelector
+                      selectedScheme={selectedScheme}
+                      onSchemeChange={handleSchemeChange}
+                    />
+                  </div>
+                  
+                  {/* Color Moods */}
+                  {canAccessColorMood && (
+                    <div>
+                      <h3 className="text-base font-medium mb-3">Color Moods</h3>
+                      <InlineColorMoods
+                        currentPalette={colorPalette}
+                        onMoodSelect={handleMoodSelect}
+                        selectedMoodId={selectedMoodId}
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Admin Presets */}
+                  {currentUser && (
+                    <div>
+                      <h3 className="text-base font-medium mb-3">Admin Presets</h3>
+                      <Button
+                        onClick={() => {
+                          setShowPaletteOptionsPopup(false);
+                          setActiveModal('admin-presets');
+                        }}
+                        className="w-full"
+                      >
+                        <Shield className="h-4 w-4 mr-2" />
+                        Admin Presets
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {/* Current Palette Colors */}
+                  <div>
+                    <h3 className="text-base font-medium mb-3">Current Palette</h3>
+                    <ColorControls
+                      colorPalette={colorPalette}
+                      onColorChange={handleColorChange}
+                      lockedColors={lockedColors}
+                      onToggleLock={handleToggleLock}
+                    />
+                  </div>
+                  
+                  {/* Saved Palettes */}
+                  <div>
+                    <h3 className="text-base font-medium mb-3">Saved Palettes</h3>
+                    <SavedPalettesContent
+                      currentPalette={colorPalette}
+                      currentTemplate={selectedTemplate}
+                      onPaletteSelect={handleSavedPaletteSelect}
+                    />
+                  </div>
+                </div>
+              </ScrollArea>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Image Upload Popup */}
+        <Dialog open={showImageUploadPopup} onOpenChange={setShowImageUploadPopup}>
+          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full">
+              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <div className="flex items-center justify-between">
+                  <DialogTitle className="text-lg font-semibold">Generate from Image</DialogTitle>
+                  <Button variant="ghost" size="icon" onClick={() => setShowImageUploadPopup(false)}>
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+              </DialogHeader>
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Upload an image to extract colors and generate a palette
+                  </p>
+                  <ImageUploadGenerator
+                    onPaletteGenerated={(palette) => {
+                      setColorPalette(palette);
+                      setShowImageUploadPopup(false);
+                    }}
+                    isGenerating={isGenerating}
+                    setIsGenerating={setIsGenerating}
+                  />
+                </div>
+              </ScrollArea>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Save & Export Popup */}
+        <Dialog open={showExportPopup} onOpenChange={setShowExportPopup}>
+          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full">
+              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <div className="flex items-center justify-between">
+                  <DialogTitle className="text-lg font-semibold">Save & Export</DialogTitle>
+                  <Button variant="ghost" size="icon" onClick={() => setShowExportPopup(false)}>
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+              </DialogHeader>
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4">
+                  {/* Save Palette */}
+                  <div>
+                    <h3 className="text-base font-medium mb-3">Save Palette</h3>
+                    <Button
+                      onClick={() => {
+                        handleSave();
+                        setShowExportPopup(false);
+                      }}
+                      className="w-full"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Current Palette
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Saved: {savedPalettesCount}/{MAX_PALETTES} palettes
+                    </p>
+                  </div>
+                  
+                  {/* Export PDF */}
+                  <div>
+                    <h3 className="text-base font-medium mb-3">Export PDF</h3>
+                    <Button
+                      onClick={() => {
+                        handleDownloadPDF();
+                        setShowExportPopup(false);
+                      }}
+                      disabled={!canDownload()}
+                      className="w-full"
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Export as PDF
+                    </Button>
+                    {!canDownload() && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Upgrade to Pro for unlimited PDF exports
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </ScrollArea>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Modals */}
         <AdminPresetsModal isOpen={activeModal === 'admin-presets'} onClose={closeModal} onPresetSelect={palette => {
