@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -140,6 +140,8 @@ const Dashboard = () => {
   const [showAutoGenerateConfirmModal, setShowAutoGenerateConfirmModal] = useState(false);
   const [showAutoGenerateResultsModal, setShowAutoGenerateResultsModal] = useState(false);
   const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
+  const [mobileMode, setMobileMode] = useState<'generate' | 'ai'>('generate');
+  const [showAIControlsPopup, setShowAIControlsPopup] = useState(false);
   const {
     remainingAIGenerations,
     maxAIGenerationsPerMonth,
@@ -656,9 +658,17 @@ const Dashboard = () => {
               <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleSave}>
                 <Save className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={handleGenerateColors}>
-                <RefreshCw className="w-5 h-5" />
+              
+              {/* Center Toggle Button */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex-1 max-w-[60px] h-10 bg-primary/20 text-primary border border-primary/30" 
+                onClick={() => setMobileMode(mobileMode === 'generate' ? 'ai' : 'generate')}
+              >
+                {mobileMode === 'generate' ? <ToggleLeft className="w-5 h-5" /> : <ToggleRight className="w-5 h-5" />}
               </Button>
+              
               <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
                 <Eye className="w-5 h-5" />
               </Button>
@@ -668,6 +678,146 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* Mobile Action Bar - Shows above bottom toolbar */}
+        <div className="md:hidden fixed bottom-14 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border shadow-lg">
+          <div className="flex items-center justify-center h-12 px-4">
+            {mobileMode === 'generate' ? (
+              // Generate Mode
+              <Button 
+                onClick={handleGenerateColors} 
+                disabled={isGenerating}
+                className="flex-1 max-w-xs h-10 bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${isGenerating ? 'animate-spin' : ''}`} />
+                Generate
+              </Button>
+            ) : (
+              // AI Colors Mode
+              <div className="flex items-center space-x-2 w-full max-w-xs">
+                <Button 
+                  onClick={() => setShowAIControlsPopup(true)}
+                  variant="outline"
+                  size="sm"
+                  className="flex-shrink-0 h-10 px-3"
+                >
+                  <Sliders className="w-4 h-4" />
+                </Button>
+                <Button 
+                  onClick={() => canUseAIGeneration ? setShowAutoGenerateConfirmModal(true) : setUpsellModal({
+                    isOpen: true,
+                    templateName: 'AI Colors'
+                  })}
+                  disabled={!canUseAIGeneration}
+                  className="flex-1 h-10 bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  AI Colors
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* AI Controls Popup - Full Screen Mobile */}
+        {showAIControlsPopup && (
+          <div className="md:hidden fixed inset-0 z-[100] bg-background/95 backdrop-blur-md">
+            <div className="flex flex-col h-full">
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h2 className="text-lg font-semibold">AI Controls</h2>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setShowAIControlsPopup(false)}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 overflow-auto p-4 space-y-6">
+                {/* AI Quota Display */}
+                {canUseAIGeneration && (
+                  <div className="bg-card/50 rounded-lg p-4 border border-border">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">AI Generations</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {maxAIGenerationsPerMonth - remainingAIGenerations}/{maxAIGenerationsPerMonth} used this month
+                    </div>
+                  </div>
+                )}
+
+                {/* Color Scheme */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Color Scheme</h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['monochromatic', 'analogous', 'complementary', 'triadic', 'split-complementary', 'tetradic'].map((scheme) => (
+                      <Button
+                        key={scheme}
+                        variant={selectedScheme === scheme ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedScheme(scheme as ColorSchemeType)}
+                        className="text-xs capitalize h-8"
+                      >
+                        {scheme.replace('-', ' ')}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Color Mode */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Color Mode</h3>
+                  <div className="grid grid-cols-4 gap-2">
+                    {['normal', 'vibrant', 'muted', 'dark'].map((mode) => (
+                      <Button
+                        key={mode}
+                        variant={colorMode === mode ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setColorMode(mode as ColorMode)}
+                        className="text-xs capitalize h-8"
+                      >
+                        {mode}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Generation Count */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Generate Count</h3>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[1, 3, 5, 10].map((count) => (
+                      <Button
+                        key={count}
+                        variant={autogenerateCount === count ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setAutogenerateCount(count)}
+                        className="text-xs h-8"
+                      >
+                        {count}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Footer */}
+              <div className="p-4 border-t border-border">
+                <Button 
+                  onClick={() => setShowAIControlsPopup(false)}
+                  className="w-full h-10"
+                >
+                  Done
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
         
         {/* Desktop Top Navigation Bar - Hidden on mobile */}
         <div className="hidden md:block h-14 border-b border-border bg-card/90 backdrop-blur-md relative z-10">
