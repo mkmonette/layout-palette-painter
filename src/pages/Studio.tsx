@@ -1342,11 +1342,34 @@ const Dashboard = () => {
             {/* Canvas */}
             <div className="flex-1 overflow-auto flex items-start justify-center bg-card/20 backdrop-blur-sm">
               {/* Mobile Canvas - Centered between toolbars */}
-              <div className="md:hidden w-full h-full flex items-center justify-center pt-14 pb-14 px-4" style={{ minHeight: 'calc(100vh - 112px)' }}>
-                <div className="bg-background border rounded-lg shadow-lg overflow-auto w-full max-w-full" style={{ height: 'calc(100vh - 140px)' }}>
-                  {/* Mobile Preview Container - Scaled Desktop View */}
-                  <div className="w-full h-full overflow-auto">
-                    <div className="min-w-[1280px] transform-gpu scale-[0.25] origin-top-left" style={{ height: 'calc(100vh * 4)' }} data-preview-element>
+              <div 
+                className="md:hidden w-full flex items-center justify-center px-3" 
+                style={{ 
+                  height: 'calc(100vh - 56px - 56px - 48px)', // top toolbar + bottom toolbar + action bar
+                  marginTop: '56px', // top toolbar height (14 * 4px = 56px)
+                  marginBottom: '104px' // bottom toolbar + action bar (56px + 48px)
+                }}
+              >
+                <div 
+                  className="bg-background border rounded-xl shadow-lg overflow-hidden w-full" 
+                  style={{ 
+                    height: '100%',
+                    maxHeight: '100%'
+                  }}
+                >
+                  {/* Mobile Preview Container - Properly scaled desktop view */}
+                  <div className="w-full h-full overflow-hidden rounded-xl">
+                    <div 
+                      className="transform-gpu origin-top-center" 
+                      style={{ 
+                        width: '1280px',
+                        transform: 'scale(0.285)',
+                        transformOrigin: 'top center',
+                        height: 'calc(100% / 0.285)',
+                        margin: '0 auto'
+                      }} 
+                      data-preview-element
+                    >
                       <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
                     </div>
                   </div>
