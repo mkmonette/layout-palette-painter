@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders, CreditCard } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -155,10 +155,13 @@ const Dashboard = () => {
   const [showImageUploadPopup, setShowImageUploadPopup] = useState(false);
   const [showSavePalettePopup, setShowSavePalettePopup] = useState(false);
   const [showExportPopup, setShowExportPopup] = useState(false);
+  const [showUserProfilePopup, setShowUserProfilePopup] = useState(false);
   const {
     remainingAIGenerations,
     maxAIGenerationsPerMonth,
-    canUseAIGeneration
+    canUseAIGeneration,
+    currentPlan,
+    planName
   } = useFeatureAccess();
   
   // Coin balance state
@@ -654,9 +657,103 @@ const Dashboard = () => {
               <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
                 <Settings className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
-                <Share className="w-5 h-5" />
-              </Button>
+              
+              {/* User Profile Menu */}
+              <Popover open={showUserProfilePopup} onOpenChange={setShowUserProfilePopup}>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10 hover:bg-accent">
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  className="w-80 p-0 mr-2" 
+                  align="end" 
+                  sideOffset={8}
+                >
+                  <div className="p-4 space-y-4">
+                    {/* User Info Section - Bordered Container */}
+                    <Card className="p-4 border">
+                      <div className="flex flex-col items-center space-y-3">
+                        {/* Avatar */}
+                        <Avatar className="h-12 w-12">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-lg font-semibold">
+                            {currentUser?.username?.charAt(0).toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        
+                        {/* User Details */}
+                        <div className="text-center space-y-1">
+                          <h3 className="font-semibold text-base">{currentUser?.username || 'User'}</h3>
+                          <p className="text-sm text-muted-foreground">user@example.com</p>
+                          <div className="flex items-center justify-center space-x-2">
+                            <Badge variant="secondary" className="text-xs">
+                              {planName}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        {/* Upgrade Button */}
+                        <Button 
+                          onClick={() => {
+                            setShowUserProfilePopup(false);
+                            setActiveModal('pro-upsell');
+                          }}
+                          size="sm" 
+                          className="w-full"
+                          variant={isPro ? "outline" : "default"}
+                        >
+                          {isPro ? "Manage Plan" : "Upgrade Plan"}
+                        </Button>
+                        
+                        {/* Coins Row */}
+                        <div className="w-full flex items-center justify-between bg-muted/50 rounded-lg p-3">
+                          <div className="flex items-center space-x-2">
+                            <Coins className="h-4 w-4 text-amber-500" />
+                            <span className="text-sm font-medium">{coinBalance} coins</span>
+                          </div>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => {
+                              setShowUserProfilePopup(false);
+                              // Add coin purchase logic here
+                            }}
+                          >
+                            <CreditCard className="h-3 w-3 mr-1" />
+                            Buy
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                    
+                    {/* Navigation Links */}
+                    <div className="space-y-2">
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => {
+                          setShowUserProfilePopup(false);
+                          navigate('/dashboard');
+                        }}
+                      >
+                        <LayoutDashboard className="h-4 w-4 mr-2" />
+                        Dashboard
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start text-destructive hover:text-destructive"
+                        onClick={() => {
+                          setShowUserProfilePopup(false);
+                          handleLogout();
+                        }}
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Logout
+                      </Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>
