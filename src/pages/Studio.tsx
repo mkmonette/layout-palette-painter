@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -1595,13 +1596,13 @@ const Dashboard = () => {
 
         {/* Mobile Popups */}
         {/* Templates Popup */}
-        <Dialog open={showTemplatesPopup} onOpenChange={setShowTemplatesPopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Templates</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showTemplatesPopup} onOpenChange={setShowTemplatesPopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Templates</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <Suspense fallback={<div className="text-sm text-muted-foreground">Loading templates...</div>}>
                   <TemplateSelector 
                     selectedTemplate={selectedTemplate} 
@@ -1619,17 +1620,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Background Settings Popup */}
-        <Dialog open={showBackgroundPopup} onOpenChange={setShowBackgroundPopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Background Settings</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showBackgroundPopup} onOpenChange={setShowBackgroundPopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Background Settings</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <BackgroundCustomizer
                   settings={backgroundSettings}
                   onSettingsChange={setBackgroundSettings}
@@ -1644,17 +1645,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Theme Mode Popup */}
-        <Dialog open={showThemeModePopup} onOpenChange={setShowThemeModePopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Theme Mode</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showThemeModePopup} onOpenChange={setShowThemeModePopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Theme Mode</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-base font-medium mb-3">Color Mode</h3>
@@ -1675,17 +1676,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Scheme Popup */}
-        <Dialog open={showSchemePopup} onOpenChange={setShowSchemePopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Color Scheme</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showSchemePopup} onOpenChange={setShowSchemePopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Color Scheme</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <ColorSchemeSelector
                   selectedScheme={selectedScheme}
                   onSchemeChange={handleSchemeChange}
@@ -1700,17 +1701,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Moods Popup */}
-        <Dialog open={showMoodsPopup} onOpenChange={setShowMoodsPopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Color Moods</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showMoodsPopup} onOpenChange={setShowMoodsPopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Color Moods</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 {canAccessColorMood ? (
                   <InlineColorMoods
                     currentPalette={colorPalette}
@@ -1732,17 +1733,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Presets Popup */}
-        <Dialog open={showPresetsPopup} onOpenChange={setShowPresetsPopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Admin Presets</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showPresetsPopup} onOpenChange={setShowPresetsPopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Admin Presets</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 {currentUser ? (
                   <Button
                     onClick={() => {
@@ -1769,17 +1770,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Current Palette Popup */}
-        <Dialog open={showCurrentPalettePopup} onOpenChange={setShowCurrentPalettePopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Current Palette</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showCurrentPalettePopup} onOpenChange={setShowCurrentPalettePopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Current Palette</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <ColorControls
                   colorPalette={colorPalette}
                   onColorChange={handleColorChange}
@@ -1796,17 +1797,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Saved Palettes Popup */}
-        <Dialog open={showSavedPalettePopup} onOpenChange={setShowSavedPalettePopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Saved Palettes</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showSavedPalettePopup} onOpenChange={setShowSavedPalettePopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Saved Palettes</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <SavedPalettesContent
                   currentPalette={colorPalette}
                   currentTemplate={selectedTemplate}
@@ -1822,17 +1823,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Save Palette Popup */}
-        <Dialog open={showSavePalettePopup} onOpenChange={setShowSavePalettePopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Save Palette</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showSavePalettePopup} onOpenChange={setShowSavePalettePopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Save Palette</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <div className="space-y-4">
                   <p className="text-muted-foreground">
                     Save your current color palette for future use.
@@ -1862,17 +1863,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Image Upload Popup */}
-        <Dialog open={showImageUploadPopup} onOpenChange={setShowImageUploadPopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Generate from Image</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showImageUploadPopup} onOpenChange={setShowImageUploadPopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Generate from Image</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Upload an image to extract colors and generate a palette
@@ -1897,17 +1898,17 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Export PDF Popup */}
-        <Dialog open={showExportPopup} onOpenChange={setShowExportPopup}>
-          <DialogContent className="md:hidden w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
-            <div className="flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 py-3 border-b">
-                <DialogTitle className="text-lg font-semibold">Export PDF</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="flex-1 p-4">
+        <Drawer open={showExportPopup} onOpenChange={setShowExportPopup}>
+          <DrawerContent className="md:hidden fixed inset-0 z-[100] w-full h-full max-w-full max-h-full m-0 rounded-none border-0 p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DrawerHeader className="flex-shrink-0 px-4 py-3 border-b">
+                <DrawerTitle className="text-lg font-semibold">Export PDF</DrawerTitle>
+              </DrawerHeader>
+              <ScrollArea className="flex-1 p-4 overflow-y-auto">
                 <div className="space-y-4">
                   {/* Save Palette */}
                   <div>
@@ -1950,8 +1951,8 @@ const Dashboard = () => {
                 </div>
               </ScrollArea>
             </div>
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
         {/* Modals */}
         <AdminPresetsModal isOpen={activeModal === 'admin-presets'} onClose={closeModal} onPresetSelect={palette => {
