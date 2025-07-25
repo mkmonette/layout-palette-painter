@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CreditCard, ExternalLink, Crown, Shield, Trash2, Github, Chrome, Unlink, Link } from 'lucide-react';
+import { useAccountSettings } from '@/hooks/useAccountSettings';
 
 interface SubscriptionInfo {
   plan: string;
@@ -24,10 +25,7 @@ interface ConnectedAccount {
 
 const AccountSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo>({
-    plan: 'Free',
-    status: 'Active'
-  });
+  const { subscriptionInfo, billingInfo } = useAccountSettings();
   
   const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([
     {
@@ -272,7 +270,7 @@ const AccountSettings = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {subscriptionInfo.plan === 'Free' ? (
+          {!billingInfo.hasPaymentMethod ? (
             <div className="text-center py-6">
               <CreditCard className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
               <p className="text-muted-foreground">No billing information on file</p>
@@ -282,18 +280,24 @@ const AccountSettings = () => {
             </div>
           ) : (
             <>
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">VISA</span>
+              {billingInfo.paymentMethods.map((paymentMethod) => (
+                <div key={paymentMethod.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">
+                        {paymentMethod.brand?.toUpperCase() || 'CARD'}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium">•••• •••• •••• {paymentMethod.last4}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Expires {paymentMethod.expiryMonth}/{paymentMethod.expiryYear}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium">•••• •••• •••• 4242</p>
-                    <p className="text-sm text-muted-foreground">Expires 12/28</p>
-                  </div>
+                  {paymentMethod.isDefault && <Badge variant="secondary">Default</Badge>}
                 </div>
-                <Badge variant="secondary">Default</Badge>
-              </div>
+              ))}
               
               <div className="flex gap-2">
                 <Button 

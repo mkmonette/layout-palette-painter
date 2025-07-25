@@ -12,14 +12,10 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useProfile } from '@/hooks/useProfile';
 
 const Overview = () => {
-  // Mock data - in a real app, this would come from a context or API
-  const userStats = {
-    totalPalettes: 15,
-    basicExports: 10,
-    proExports: 5
-  };
+  const { profileStats } = useProfile();
 
   const lastSession = {
     template: 'Modern Clean',
@@ -98,7 +94,7 @@ const Overview = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Saved Palettes</p>
-                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{userStats.totalPalettes}</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{profileStats.totalPalettes}</p>
                 </div>
               </div>
             </CardContent>
@@ -112,7 +108,7 @@ const Overview = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">PDF Reports (Basic)</p>
-                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">{userStats.basicExports}</p>
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">{profileStats.basicExports}</p>
                 </div>
               </div>
             </CardContent>
@@ -126,7 +122,7 @@ const Overview = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">PDF Reports (Professional)</p>
-                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{userStats.proExports}</p>
+                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{profileStats.proExports}</p>
                 </div>
               </div>
             </CardContent>

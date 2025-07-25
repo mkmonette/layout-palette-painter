@@ -10,14 +10,13 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Camera, Eye, EyeOff, Save, Trash2, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useProfile } from '@/hooks/useProfile';
 
 const ProfileSettings = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [profileData, setProfileData] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    avatar: '',
+  const { profileData, updateProfile } = useProfile();
+  const [passwords, setPasswords] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
@@ -26,7 +25,7 @@ const ProfileSettings = () => {
   const { theme, setTheme } = useTheme();
 
   const handleProfileUpdate = () => {
-    // Simulate profile update
+    updateProfile(profileData);
     toast({
       title: "Profile Updated",
       description: "Your profile information has been saved successfully.",
@@ -34,7 +33,7 @@ const ProfileSettings = () => {
   };
 
   const handlePasswordChange = () => {
-    if (profileData.newPassword !== profileData.confirmPassword) {
+    if (passwords.newPassword !== passwords.confirmPassword) {
       toast({
         title: "Password Mismatch",
         description: "New password and confirmation password do not match.",
@@ -43,7 +42,7 @@ const ProfileSettings = () => {
       return;
     }
 
-    if (profileData.newPassword.length < 8) {
+    if (passwords.newPassword.length < 8) {
       toast({
         title: "Password Too Short",
         description: "Password must be at least 8 characters long.",
@@ -59,12 +58,11 @@ const ProfileSettings = () => {
     });
 
     // Clear password fields
-    setProfileData(prev => ({
-      ...prev,
+    setPasswords({
       currentPassword: '',
       newPassword: '',
       confirmPassword: ''
-    }));
+    });
   };
 
   const handleDeleteAccount = () => {
@@ -81,10 +79,9 @@ const ProfileSettings = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfileData(prev => ({
-          ...prev,
+        updateProfile({
           avatar: e.target?.result as string
-        }));
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -147,7 +144,7 @@ const ProfileSettings = () => {
               <Input
                 id="name"
                 value={profileData.name}
-                onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) => updateProfile({ name: e.target.value })}
                 placeholder="Enter your full name"
               />
             </div>
@@ -157,7 +154,7 @@ const ProfileSettings = () => {
                 id="email"
                 type="email"
                 value={profileData.email}
-                onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(e) => updateProfile({ email: e.target.value })}
                 placeholder="Enter your email"
               />
             </div>
@@ -187,8 +184,8 @@ const ProfileSettings = () => {
               <Input
                 id="current-password"
                 type={showPassword ? "text" : "password"}
-                value={profileData.currentPassword}
-                onChange={(e) => setProfileData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                value={passwords.currentPassword}
+                onChange={(e) => setPasswords(prev => ({ ...prev, currentPassword: e.target.value }))}
                 placeholder="Enter your current password"
               />
               <Button
@@ -213,8 +210,8 @@ const ProfileSettings = () => {
               <Input
                 id="new-password"
                 type="password"
-                value={profileData.newPassword}
-                onChange={(e) => setProfileData(prev => ({ ...prev, newPassword: e.target.value }))}
+                value={passwords.newPassword}
+                onChange={(e) => setPasswords(prev => ({ ...prev, newPassword: e.target.value }))}
                 placeholder="Enter new password"
               />
             </div>
@@ -224,8 +221,8 @@ const ProfileSettings = () => {
                 <Input
                   id="confirm-password"
                   type={showConfirmPassword ? "text" : "password"}
-                  value={profileData.confirmPassword}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                  value={passwords.confirmPassword}
+                  onChange={(e) => setPasswords(prev => ({ ...prev, confirmPassword: e.target.value }))}
                   placeholder="Confirm new password"
                 />
                 <Button
