@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { MoreHorizontal, Zap, ImageIcon, Settings, BookOpen, Layers, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Separator } from '@/components/ui/separator';
 
 interface MoreOptionsDropdownProps {
   onImageGeneratorClick: () => void;
@@ -27,8 +27,8 @@ const MoreOptionsDropdown: React.FC<MoreOptionsDropdownProps> = ({
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
         <Button 
           variant="outline" 
           className="flex items-center gap-2 h-9 px-3"
@@ -37,54 +37,74 @@ const MoreOptionsDropdown: React.FC<MoreOptionsDropdownProps> = ({
           <MoreHorizontal className="h-4 w-4" />
           <span className="text-sm hidden sm:inline">More</span>
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" side="top">
-        {/* Auto Generate Link */}
-        <DropdownMenuItem onClick={() => window.location.href = '/autogenerate'} className="flex items-center gap-2">
-          <Zap className="h-4 w-4" />
-          <span>Auto Generate</span>
-        </DropdownMenuItem>
-        
-        <DropdownMenuSeparator />
-        
-        {/* From Image */}
-        <DropdownMenuItem onClick={onImageGeneratorClick} className="flex items-center gap-2">
-          <ImageIcon className="h-4 w-4" />
-          <span>From Image</span>
-          <Badge variant="secondary" className="ml-auto text-xs">Pro</Badge>
-        </DropdownMenuItem>
-        
-        <DropdownMenuSeparator />
-        
-        {/* Background */}
-        <DropdownMenuItem onClick={onBackgroundClick} className="flex items-center gap-2">
-          <Layers className="h-4 w-4" />
-          <span>Background</span>
-        </DropdownMenuItem>
-        
-        <DropdownMenuSeparator />
-        
-        {/* Colors */}
-        <DropdownMenuItem onClick={onColorsClick} className="flex items-center gap-2">
-          <Settings className="h-4 w-4" />
-          <span>Colors</span>
-        </DropdownMenuItem>
-        
-        {/* Color Presets */}
-        <DropdownMenuItem onClick={onAdminPresetsClick} className="flex items-center gap-2">
-          <Palette className="h-4 w-4" />
-          <span>Color Presets</span>
-        </DropdownMenuItem>
-        
-        <DropdownMenuSeparator />
-        
-        {/* Sets */}
-        <DropdownMenuItem onClick={onSetsClick} className="flex items-center gap-2">
-          <BookOpen className="h-4 w-4" />
-          <span>Sets</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </PopoverTrigger>
+      <PopoverContent className="w-56 p-2" align="end" side="top">
+        <div className="space-y-1">
+          {/* Auto Generate Link */}
+          <button
+            onClick={() => handleItemClick(() => window.location.href = '/autogenerate')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <Zap className="h-4 w-4" />
+            <span>Auto Generate</span>
+          </button>
+          
+          <Separator />
+          
+          {/* From Image */}
+          <button
+            onClick={() => handleItemClick(onImageGeneratorClick)}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <ImageIcon className="h-4 w-4" />
+            <span>From Image</span>
+            <span className="ml-auto text-xs text-muted-foreground">Pro</span>
+          </button>
+          
+          <Separator />
+          
+          {/* Background */}
+          <button
+            onClick={() => handleItemClick(onBackgroundClick)}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <Layers className="h-4 w-4" />
+            <span>Background</span>
+          </button>
+          
+          <Separator />
+          
+          {/* Colors */}
+          <button
+            onClick={() => handleItemClick(onColorsClick)}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <Settings className="h-4 w-4" />
+            <span>Colors</span>
+          </button>
+          
+          {/* Color Presets */}
+          <button
+            onClick={() => handleItemClick(onAdminPresetsClick)}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <Palette className="h-4 w-4" />
+            <span>Color Presets</span>
+          </button>
+          
+          <Separator />
+          
+          {/* Sets */}
+          <button
+            onClick={() => handleItemClick(onSetsClick)}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <BookOpen className="h-4 w-4" />
+            <span>Sets</span>
+          </button>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 
