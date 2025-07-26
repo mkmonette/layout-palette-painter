@@ -667,9 +667,7 @@ const Dashboard = () => {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent 
-                  className="w-80 p-0 mr-2 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" 
-                  align="end" 
-                  sideOffset={8}
+                  className="w-80 p-0 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" 
                 >
                   <div className="p-4 space-y-4">
                     {/* User Info Section - Bordered Container */}
@@ -1102,7 +1100,7 @@ const Dashboard = () => {
                        <span className="text-sm text-sidebar-foreground truncate">{item.label}</span>
                     </Button>
                   </DropdownMenuTrigger>
-                   <DropdownMenuContent className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' ? 'w-80' : item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} side="right" align="start">
+                   <DropdownMenuContent className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' ? 'w-80' : item.id === 'moods' ? 'w-64' : 'w-64'} p-0 max-h-[80vh] overflow-y-auto`}>
                     <div className="p-4 border-b border-border">
                       <h3 className="font-medium text-sm">{item.label}</h3>
                     </div>
@@ -1320,7 +1318,7 @@ const Dashboard = () => {
                   <span className="text-sm text-sidebar-foreground truncate">Theme Mode</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 p-4" side="right" align="end">
+              <DropdownMenuContent className="w-64 p-4 max-h-[80vh] overflow-y-auto">
                 <div className="space-y-3">
                   <h3 className="font-medium text-xs">Choose Theme Mode</h3>
                   <div className="grid gap-2">
@@ -1503,7 +1501,7 @@ const Dashboard = () => {
                                AI Colors
                              </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-64 p-4" side="left" align="start">
+                          <PopoverContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                             <div className="space-y-3">
                               <h3 className="text-2xl sm:text-xl font-bold">AI Colors</h3>
                               <div className="space-y-2">
