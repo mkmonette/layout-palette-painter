@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders, CreditCard, Globe, Upload } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders, CreditCard } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -14,21 +14,6 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/u
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarHeader, 
-  SidebarProvider, 
-  SidebarTrigger, 
-  SidebarMenu, 
-  SidebarMenuItem, 
-  SidebarMenuButton, 
-  SidebarGroup, 
-  SidebarGroupLabel, 
-  SidebarGroupContent,
-  SidebarSeparator,
-  useSidebar
-} from '@/components/ui/sidebar';
 const TemplateSelector = lazy(() => import('@/components/TemplateSelector'));
 const TemplatesSection = lazy(() => import('@/components/TemplatesSection'));
 import ColorControls from '@/components/ColorControls';
@@ -652,18 +637,10 @@ const Dashboard = () => {
     label: 'Test Plans',
     available: process.env.NODE_ENV !== 'production'
   }];
-  // Desktop sidebar state
-  const [showDefaultTemplatesPopover, setShowDefaultTemplatesPopover] = useState(false);
-  const [showCustomTemplatesPopover, setShowCustomTemplatesPopover] = useState(false);
-  const [showUploadImagePopover, setShowUploadImagePopover] = useState(false);
-  const [showWebsiteUrlPopover, setShowWebsiteUrlPopover] = useState(false);
-
-  // Mobile layout for small screens
-  if (isMobile) {
-    return <TooltipProvider>
-        <div className="h-screen flex flex-col bg-background workspace-background relative">
-          {/* Vibrant animated background overlay */}
-          <div className="absolute inset-0 workspace-background opacity-60 z-0" />
+  return <TooltipProvider>
+      <div className="h-screen flex flex-col bg-background workspace-background relative">
+        {/* Vibrant animated background overlay */}
+        <div className="absolute inset-0 workspace-background opacity-60 z-0" />
         
         {/* Mobile Top Toolbar */}
         <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-b border-border shadow-sm">
@@ -690,7 +667,7 @@ const Dashboard = () => {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent 
-                  className="w-80 p-0 mr-2" 
+                  className="w-80 p-0 mr-2 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" 
                   align="end" 
                   sideOffset={8}
                 >
@@ -787,8 +764,8 @@ const Dashboard = () => {
           <div className="flex items-center justify-between h-full px-2">
             <div className="flex items-center justify-evenly w-full">
               {/* Button 1: Templates & Layout */}
-              <Popover>
-                <PopoverTrigger asChild>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -796,37 +773,23 @@ const Dashboard = () => {
                   >
                     <LayoutDashboard className="w-5 h-5" />
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-2 bg-background border shadow-lg z-50">
-                  <div className="space-y-1">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowTemplatesPopup(true)}
-                    >
-                      Templates
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowBackgroundPopup(true)}
-                    >
-                      Background Settings
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowThemeModePopup(true)}
-                    >
-                      Theme Mode
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuItem onClick={() => setShowTemplatesPopup(true)}>
+                    Templates
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowBackgroundPopup(true)}>
+                    Background Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowThemeModePopup(true)}>
+                    Theme Mode
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               
               {/* Button 2: Palette Options */}
-              <Popover>
-                <PopoverTrigger asChild>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -834,47 +797,25 @@ const Dashboard = () => {
                   >
                     <Palette className="w-5 h-5" />
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-2 bg-background border shadow-lg z-50">
-                  <div className="space-y-1">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowSchemePopup(true)}
-                    >
-                      Scheme
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowMoodsPopup(true)}
-                    >
-                      Moods
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowPresetsPopup(true)}
-                    >
-                      Presets
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowCurrentPalettePopup(true)}
-                    >
-                      Current Palette
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowSavedPalettePopup(true)}
-                    >
-                      Saved Palettes
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
+                 </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuItem onClick={() => setShowSchemePopup(true)}>
+                    Scheme
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowMoodsPopup(true)}>
+                    Moods
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowPresetsPopup(true)}>
+                    Presets
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowCurrentPalettePopup(true)}>
+                    Current Palette
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowSavedPalettePopup(true)}>
+                    Saved Palettes
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               
               {/* Button 3: Center Toggle Button */}
               <Button 
@@ -897,8 +838,8 @@ const Dashboard = () => {
               </Button>
               
               {/* Button 5: Save & Export */}
-              <Popover>
-                <PopoverTrigger asChild>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -906,26 +847,16 @@ const Dashboard = () => {
                   >
                     <Download className="w-5 h-5" />
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-2 bg-background border shadow-lg z-50">
-                  <div className="space-y-1">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowSavePalettePopup(true)}
-                    >
-                      Save Palette
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-sm"
-                      onClick={() => setShowExportPopup(true)}
-                    >
-                      Export PDF
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuItem onClick={() => setShowSavePalettePopup(true)}>
+                    Save Palette
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowExportPopup(true)}>
+                    Export PDF
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -1164,14 +1095,14 @@ const Dashboard = () => {
           <div className="hidden md:flex w-48 studio-sidebar flex-col py-2 space-y-1">
             {sidebarItems.map(item => {
             if (!item.available) return null;
-            return <Popover key={item.id}>
-                  <PopoverTrigger asChild>
+            return <DropdownMenu key={item.id}>
+                  <DropdownMenuTrigger asChild>
                      <Button variant="ghost" size="sm" className="w-full h-8 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
                        <item.icon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />
                        <span className="text-sm text-sidebar-foreground truncate">{item.label}</span>
                     </Button>
-                  </PopoverTrigger>
-                   <PopoverContent className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' ? 'w-80' : item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} side="right" align="start">
+                  </DropdownMenuTrigger>
+                   <DropdownMenuContent className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' ? 'w-80' : item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} side="right" align="start">
                     <div className="p-4 border-b border-border">
                       <h3 className="font-medium text-sm">{item.label}</h3>
                     </div>
@@ -1185,48 +1116,48 @@ const Dashboard = () => {
                                  Choose from built-in templates or your custom imports.
                                </p>
                                
-                                {/* Default Templates Popover */}
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm" onClick={() => console.log('Default Templates button clicked')}>
-                                      <span className="text-base sm:text-sm font-medium tracking-tight">🟦 Default Templates</span>
-                                    </Button>
-                                  </PopoverTrigger>
-                                    <PopoverContent className="w-[500px] p-4" side="right" align="start" alignOffset={-100} sideOffset={20} avoidCollisions={false} onOpenAutoFocus={() => console.log('Default Templates popover opened')}>
-                                    <div className="space-y-3">
-                                      <h3 className="text-2xl sm:text-xl font-bold">Default Templates</h3>
-                                      <div className="max-h-96 overflow-y-auto">
-                                        <div className="space-y-2">
-                                        <p className="text-sm font-normal text-muted-foreground leading-relaxed">
-                                          Choose from our built-in professional templates.
-                                        </p>
-                                          <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading templates...</div>}>
-                                            <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
-                                          </Suspense>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </PopoverContent>
-                                </Popover>
-                               
-                                {/* Custom Templates Popover */}
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm" onClick={() => console.log('Custom Templates button clicked')}>
-                                      <span className="text-base sm:text-sm font-medium tracking-tight">🟩 Custom Templates</span>
-                                    </Button>
-                                  </PopoverTrigger>
-                                    <PopoverContent className="w-[500px] p-4" side="right" align="start" alignOffset={-100} sideOffset={20} avoidCollisions={false} onOpenAutoFocus={() => console.log('Custom Templates popover opened')}>
-                                    <div className="space-y-3">
-                                      <h3 className="text-2xl sm:text-xl font-bold">Custom Templates</h3>
-                                      <div className="max-h-96 overflow-y-auto">
-                                        <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading custom templates...</div>}>
-                                          <TemplatesSection selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} showOnlyCustom={true} />
-                                        </Suspense>
-                                      </div>
-                                    </div>
-                                  </PopoverContent>
-                                </Popover>
+                                 {/* Default Templates Popover */}
+                                 <Popover>
+                                   <PopoverTrigger asChild>
+                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm" onClick={() => console.log('Default Templates button clicked')}>
+                                       <span className="text-base sm:text-sm font-medium tracking-tight">🟦 Default Templates</span>
+                                     </Button>
+                                   </PopoverTrigger>
+                                     <PopoverContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" onOpenAutoFocus={() => console.log('Default Templates popover opened')}>
+                                     <div className="space-y-3">
+                                       <h3 className="text-2xl sm:text-xl font-bold">Default Templates</h3>
+                                       <div className="max-h-96 overflow-y-auto">
+                                         <div className="space-y-2">
+                                         <p className="text-sm font-normal text-muted-foreground leading-relaxed">
+                                           Choose from our built-in professional templates.
+                                         </p>
+                                           <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading templates...</div>}>
+                                             <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
+                                           </Suspense>
+                                         </div>
+                                       </div>
+                                     </div>
+                                   </PopoverContent>
+                                 </Popover>
+                                
+                                 {/* Custom Templates Popover */}
+                                 <Popover>
+                                   <PopoverTrigger asChild>
+                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm" onClick={() => console.log('Custom Templates button clicked')}>
+                                       <span className="text-base sm:text-sm font-medium tracking-tight">🟩 Custom Templates</span>
+                                     </Button>
+                                   </PopoverTrigger>
+                                     <PopoverContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" onOpenAutoFocus={() => console.log('Custom Templates popover opened')}>
+                                     <div className="space-y-3">
+                                       <h3 className="text-2xl sm:text-xl font-bold">Custom Templates</h3>
+                                       <div className="max-h-96 overflow-y-auto">
+                                         <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading custom templates...</div>}>
+                                           <TemplatesSection selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} showOnlyCustom={true} />
+                                         </Suspense>
+                                       </div>
+                                     </div>
+                                   </PopoverContent>
+                                 </Popover>
                              </div>
                            </div>
                          </div>
@@ -1259,35 +1190,35 @@ const Dashboard = () => {
                                   Extract color palettes from images or websites.
                                 </p>
                                  
-                                 {/* Upload Image Popover */}
-                                 <Popover>
-                                   <PopoverTrigger asChild>
-                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                       <span className="text-xs">📷 Upload Image</span>
-                                     </Button>
-                                   </PopoverTrigger>
-                                    <PopoverContent className="w-64 p-4" side="right" align="start">
-                                     <div className="space-y-3">
-                                       <h3 className="font-medium text-xs">Upload Image</h3>
-                                       <ImageUploadGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
-                                     </div>
-                                   </PopoverContent>
-                                 </Popover>
-                                 
-                                 {/* Website URL Popover */}
-                                 <Popover>
-                                   <PopoverTrigger asChild>
-                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                       <span className="text-xs">🌐 Website URL</span>
-                                     </Button>
-                                   </PopoverTrigger>
-                                    <PopoverContent className="w-64 p-4" side="right" align="start">
-                                     <div className="space-y-3">
-                                       <h3 className="font-medium text-xs">Website URL</h3>
-                                       <WebsiteColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
-                                     </div>
-                                   </PopoverContent>
-                                 </Popover>
+                                  {/* Upload Image Popover */}
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                                        <span className="text-xs">📷 Upload Image</span>
+                                      </Button>
+                                    </PopoverTrigger>
+                                     <PopoverContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                      <div className="space-y-3">
+                                        <h3 className="font-medium text-xs">Upload Image</h3>
+                                        <ImageUploadGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
+                                  
+                                  {/* Website URL Popover */}
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                                        <span className="text-xs">🌐 Website URL</span>
+                                      </Button>
+                                    </PopoverTrigger>
+                                     <PopoverContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                      <div className="space-y-3">
+                                        <h3 className="font-medium text-xs">Website URL</h3>
+                                        <WebsiteColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
                                </div>}
 
                                {item.id === 'admin-presets' && <div className="space-y-2">
@@ -1377,19 +1308,19 @@ const Dashboard = () => {
                            </div>
                          </div>
                        </div>}
-                  </PopoverContent>
-                </Popover>;
+                   </DropdownMenuContent>
+                 </DropdownMenu>;
           })}
 
             {/* Template Theme Mode Selector */}
-            <Popover>
-              <PopoverTrigger asChild>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="w-full h-8 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
                   {colorMode === 'light' ? <Sun className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> : colorMode === 'light-midtone' ? <CloudSun className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> : colorMode === 'midtone' ? <Sunset className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" /> : colorMode === 'midtone-dark' ? <Moon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0 opacity-70" /> : <Moon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />}
                   <span className="text-sm text-sidebar-foreground truncate">Theme Mode</span>
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 p-4" side="right" align="end">
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64 p-4" side="right" align="end">
                 <div className="space-y-3">
                   <h3 className="font-medium text-xs">Choose Theme Mode</h3>
                   <div className="grid gap-2">
@@ -1453,8 +1384,8 @@ const Dashboard = () => {
                    Theme modes control the lightness range of generated colors
                  </div>
                 </div>
-             </PopoverContent>
-            </Popover>
+             </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
 
@@ -2014,228 +1945,10 @@ const Dashboard = () => {
       }} />
 
         {/* Floating Generate Button - Hidden on Mobile */}
-        <Button onClick={handleGenerateColors} disabled={isGenerating} className="md:hidden fixed bottom-6 right-6 h-12 w-12 rounded-sm floating-action z-50 p-2" size="icon">
+        <Button onClick={handleGenerateColors} disabled={isGenerating} className="hidden md:block fixed bottom-6 right-6 h-12 w-12 rounded-sm floating-action z-50 p-2" size="icon">
           <Sparkles className="h-5 w-5" />
         </Button>
       </div>
     </TooltipProvider>;
-  }
-
-  // Desktop layout with sidebar
-  return <TooltipProvider>
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex w-full bg-background workspace-background relative">
-        {/* Vibrant animated background overlay */}
-        <div className="absolute inset-0 workspace-background opacity-60 z-0" />
-        
-        {/* Sidebar */}
-        <Sidebar className="border-r">
-          <SidebarHeader className="p-4">
-            <div className="flex items-center gap-2">
-              <SidebarTrigger />
-              <h2 className="text-lg font-semibold">Studio</h2>
-            </div>
-          </SidebarHeader>
-          
-          <SidebarContent>
-            {/* Templates Group */}
-            <SidebarGroup>
-              <SidebarGroupLabel>Templates</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => setShowDefaultTemplatesPopover(true)}>
-                      <Layout className="h-4 w-4" />
-                      <span>Default Templates</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => setShowCustomTemplatesPopover(true)}>
-                      <Layers className="h-4 w-4" />
-                      <span>Custom Templates</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-
-            <SidebarSeparator />
-
-            {/* From Image Group */}
-            <SidebarGroup>
-              <SidebarGroupLabel>From Image</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => setShowUploadImagePopover(true)}>
-                      <Upload className="h-4 w-4" />
-                      <span>Upload Image</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => setShowWebsiteUrlPopover(true)}>
-                      <Globe className="h-4 w-4" />
-                      <span>Website URL</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-
-            <SidebarSeparator />
-
-            {/* Other Options */}
-            <SidebarGroup>
-              <SidebarGroupLabel>Other Options</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => setActiveModal('saved-palettes')}>
-                      <Save className="h-4 w-4" />
-                      <span>Saved Palettes</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => setActiveModal('admin-presets')}>
-                      <Shield className="h-4 w-4" />
-                      <span>Color Presets</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-        </Sidebar>
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col relative z-10">
-          {/* Top Toolbar */}
-          <div className="flex items-center justify-between p-4 border-b bg-card/90 backdrop-blur-md">
-            <div className="flex items-center gap-4">
-              <ColorThemeDropdown 
-                onSchemeClick={() => {}}
-                onMoodClick={() => {}}
-              />
-              <MoreOptionsDropdown
-                onImageGeneratorClick={() => setShowUploadImagePopover(true)}
-                onColorsClick={() => {}}
-                onSetsClick={() => setActiveModal('saved-palettes')}
-                onBackgroundClick={() => {}}
-                onAdminPresetsClick={() => setActiveModal('admin-presets')}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleSave}>
-                <Save className="h-4 w-4 mr-2" />
-                Save
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-              <Button onClick={handleGenerateColors} disabled={isGenerating}>
-                <Sparkles className="h-4 w-4 mr-2" />
-                Generate
-              </Button>
-            </div>
-          </div>
-
-          {/* Preview Area */}
-          <div className="flex-1 p-4">
-            <Card className="h-full">
-              <LivePreview
-                template={selectedTemplate}
-                colorPalette={colorPalette}
-                backgroundSettings={backgroundSettings}
-              />
-            </Card>
-          </div>
-        </div>
-
-        {/* Centered Popovers */}
-        <Dialog open={showDefaultTemplatesPopover} onOpenChange={setShowDefaultTemplatesPopover}>
-          <DialogContent className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] max-w-4xl max-h-[80vh] overflow-auto">
-            <DialogHeader>
-              <DialogTitle>Default Templates</DialogTitle>
-            </DialogHeader>
-            <div className="p-4">
-              <Suspense fallback={<div>Loading templates...</div>}>
-                <TemplateSelector
-                  selectedTemplate={selectedTemplate}
-                  onTemplateChange={setSelectedTemplate}
-                  colorPalette={colorPalette}
-                />
-              </Suspense>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={showCustomTemplatesPopover} onOpenChange={setShowCustomTemplatesPopover}>
-          <DialogContent className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] max-w-4xl max-h-[80vh] overflow-auto">
-            <DialogHeader>
-              <DialogTitle>Custom Templates</DialogTitle>
-            </DialogHeader>
-            <div className="p-4">
-              <Suspense fallback={<div>Loading custom templates...</div>}>
-                <TemplatesSection
-                  selectedTemplate={selectedTemplate}
-                  onTemplateChange={setSelectedTemplate}
-                  colorPalette={colorPalette}
-                  showOnlyCustom={true}
-                />
-              </Suspense>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={showUploadImagePopover} onOpenChange={setShowUploadImagePopover}>
-          <DialogContent className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] max-w-md">
-            <DialogHeader>
-              <DialogTitle>Upload Image</DialogTitle>
-            </DialogHeader>
-            <div className="p-4">
-              <ImageUploadGenerator
-                onPaletteGenerated={setColorPalette}
-                isGenerating={isGenerating}
-                setIsGenerating={setIsGenerating}
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={showWebsiteUrlPopover} onOpenChange={setShowWebsiteUrlPopover}>
-          <DialogContent className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] max-w-md">
-            <DialogHeader>
-              <DialogTitle>Website URL</DialogTitle>
-            </DialogHeader>
-            <div className="p-4">
-              <WebsiteColorGenerator
-                onPaletteGenerated={setColorPalette}
-                isGenerating={isGenerating}
-                setIsGenerating={setIsGenerating}
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Other Modals */}
-        <SavedPalettesModal
-          isOpen={activeModal === 'saved-palettes'}
-          onClose={() => setActiveModal(null)}
-          currentPalette={colorPalette}
-          currentTemplate={selectedTemplate}
-          onPaletteSelect={handleSavedPaletteSelect}
-          onTemplateChange={setSelectedTemplate}
-        />
-
-        <AdminPresetsModal
-          isOpen={activeModal === 'admin-presets'}
-          onClose={() => setActiveModal(null)}
-          onPresetSelect={setColorPalette}
-        />
-      </div>
-    </SidebarProvider>
-  </TooltipProvider>;
 };
 export default Dashboard;
