@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders, CreditCard } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders, CreditCard, Globe, Upload } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,21 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/u
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  Sidebar, 
+  SidebarContent, 
+  SidebarHeader, 
+  SidebarProvider, 
+  SidebarTrigger, 
+  SidebarMenu, 
+  SidebarMenuItem, 
+  SidebarMenuButton, 
+  SidebarGroup, 
+  SidebarGroupLabel, 
+  SidebarGroupContent,
+  SidebarSeparator,
+  useSidebar
+} from '@/components/ui/sidebar';
 const TemplateSelector = lazy(() => import('@/components/TemplateSelector'));
 const TemplatesSection = lazy(() => import('@/components/TemplatesSection'));
 import ColorControls from '@/components/ColorControls';
@@ -637,10 +652,18 @@ const Dashboard = () => {
     label: 'Test Plans',
     available: process.env.NODE_ENV !== 'production'
   }];
-  return <TooltipProvider>
-      <div className="h-screen flex flex-col bg-background workspace-background relative">
-        {/* Vibrant animated background overlay */}
-        <div className="absolute inset-0 workspace-background opacity-60 z-0" />
+  // Desktop sidebar state
+  const [showDefaultTemplatesPopover, setShowDefaultTemplatesPopover] = useState(false);
+  const [showCustomTemplatesPopover, setShowCustomTemplatesPopover] = useState(false);
+  const [showUploadImagePopover, setShowUploadImagePopover] = useState(false);
+  const [showWebsiteUrlPopover, setShowWebsiteUrlPopover] = useState(false);
+
+  // Mobile layout for small screens
+  if (isMobile) {
+    return <TooltipProvider>
+        <div className="h-screen flex flex-col bg-background workspace-background relative">
+          {/* Vibrant animated background overlay */}
+          <div className="absolute inset-0 workspace-background opacity-60 z-0" />
         
         {/* Mobile Top Toolbar */}
         <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-b border-border shadow-sm">
@@ -1991,10 +2014,228 @@ const Dashboard = () => {
       }} />
 
         {/* Floating Generate Button - Hidden on Mobile */}
-        <Button onClick={handleGenerateColors} disabled={isGenerating} className="hidden md:block fixed bottom-6 right-6 h-12 w-12 rounded-sm floating-action z-50 p-2" size="icon">
+        <Button onClick={handleGenerateColors} disabled={isGenerating} className="md:hidden fixed bottom-6 right-6 h-12 w-12 rounded-sm floating-action z-50 p-2" size="icon">
           <Sparkles className="h-5 w-5" />
         </Button>
       </div>
     </TooltipProvider>;
+  }
+
+  // Desktop layout with sidebar
+  return <TooltipProvider>
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen flex w-full bg-background workspace-background relative">
+        {/* Vibrant animated background overlay */}
+        <div className="absolute inset-0 workspace-background opacity-60 z-0" />
+        
+        {/* Sidebar */}
+        <Sidebar className="border-r">
+          <SidebarHeader className="p-4">
+            <div className="flex items-center gap-2">
+              <SidebarTrigger />
+              <h2 className="text-lg font-semibold">Studio</h2>
+            </div>
+          </SidebarHeader>
+          
+          <SidebarContent>
+            {/* Templates Group */}
+            <SidebarGroup>
+              <SidebarGroupLabel>Templates</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={() => setShowDefaultTemplatesPopover(true)}>
+                      <Layout className="h-4 w-4" />
+                      <span>Default Templates</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={() => setShowCustomTemplatesPopover(true)}>
+                      <Layers className="h-4 w-4" />
+                      <span>Custom Templates</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarSeparator />
+
+            {/* From Image Group */}
+            <SidebarGroup>
+              <SidebarGroupLabel>From Image</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={() => setShowUploadImagePopover(true)}>
+                      <Upload className="h-4 w-4" />
+                      <span>Upload Image</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={() => setShowWebsiteUrlPopover(true)}>
+                      <Globe className="h-4 w-4" />
+                      <span>Website URL</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarSeparator />
+
+            {/* Other Options */}
+            <SidebarGroup>
+              <SidebarGroupLabel>Other Options</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={() => setActiveModal('saved-palettes')}>
+                      <Save className="h-4 w-4" />
+                      <span>Saved Palettes</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={() => setActiveModal('admin-presets')}>
+                      <Shield className="h-4 w-4" />
+                      <span>Color Presets</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+        </Sidebar>
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col relative z-10">
+          {/* Top Toolbar */}
+          <div className="flex items-center justify-between p-4 border-b bg-card/90 backdrop-blur-md">
+            <div className="flex items-center gap-4">
+              <ColorThemeDropdown 
+                onSchemeClick={() => {}}
+                onMoodClick={() => {}}
+              />
+              <MoreOptionsDropdown
+                onImageGeneratorClick={() => setShowUploadImagePopover(true)}
+                onColorsClick={() => {}}
+                onSetsClick={() => setActiveModal('saved-palettes')}
+                onBackgroundClick={() => {}}
+                onAdminPresetsClick={() => setActiveModal('admin-presets')}
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleSave}>
+                <Save className="h-4 w-4 mr-2" />
+                Save
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+              <Button onClick={handleGenerateColors} disabled={isGenerating}>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Generate
+              </Button>
+            </div>
+          </div>
+
+          {/* Preview Area */}
+          <div className="flex-1 p-4">
+            <Card className="h-full">
+              <LivePreview
+                template={selectedTemplate}
+                colorPalette={colorPalette}
+                backgroundSettings={backgroundSettings}
+              />
+            </Card>
+          </div>
+        </div>
+
+        {/* Centered Popovers */}
+        <Dialog open={showDefaultTemplatesPopover} onOpenChange={setShowDefaultTemplatesPopover}>
+          <DialogContent className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] max-w-4xl max-h-[80vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>Default Templates</DialogTitle>
+            </DialogHeader>
+            <div className="p-4">
+              <Suspense fallback={<div>Loading templates...</div>}>
+                <TemplateSelector
+                  selectedTemplate={selectedTemplate}
+                  onTemplateChange={setSelectedTemplate}
+                  colorPalette={colorPalette}
+                />
+              </Suspense>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showCustomTemplatesPopover} onOpenChange={setShowCustomTemplatesPopover}>
+          <DialogContent className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] max-w-4xl max-h-[80vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>Custom Templates</DialogTitle>
+            </DialogHeader>
+            <div className="p-4">
+              <Suspense fallback={<div>Loading custom templates...</div>}>
+                <TemplatesSection
+                  selectedTemplate={selectedTemplate}
+                  onTemplateChange={setSelectedTemplate}
+                  colorPalette={colorPalette}
+                  showOnlyCustom={true}
+                />
+              </Suspense>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showUploadImagePopover} onOpenChange={setShowUploadImagePopover}>
+          <DialogContent className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] max-w-md">
+            <DialogHeader>
+              <DialogTitle>Upload Image</DialogTitle>
+            </DialogHeader>
+            <div className="p-4">
+              <ImageUploadGenerator
+                onPaletteGenerated={setColorPalette}
+                isGenerating={isGenerating}
+                setIsGenerating={setIsGenerating}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showWebsiteUrlPopover} onOpenChange={setShowWebsiteUrlPopover}>
+          <DialogContent className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] max-w-md">
+            <DialogHeader>
+              <DialogTitle>Website URL</DialogTitle>
+            </DialogHeader>
+            <div className="p-4">
+              <WebsiteColorGenerator
+                onPaletteGenerated={setColorPalette}
+                isGenerating={isGenerating}
+                setIsGenerating={setIsGenerating}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Other Modals */}
+        <SavedPalettesModal
+          isOpen={activeModal === 'saved-palettes'}
+          onClose={() => setActiveModal(null)}
+          currentPalette={colorPalette}
+          currentTemplate={selectedTemplate}
+          onPaletteSelect={handleSavedPaletteSelect}
+          onTemplateChange={setSelectedTemplate}
+        />
+
+        <AdminPresetsModal
+          isOpen={activeModal === 'admin-presets'}
+          onClose={() => setActiveModal(null)}
+          onPresetSelect={setColorPalette}
+        />
+      </div>
+    </SidebarProvider>
+  </TooltipProvider>;
 };
 export default Dashboard;
