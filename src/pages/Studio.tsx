@@ -1093,7 +1093,109 @@ const Dashboard = () => {
         <div className="flex flex-1 overflow-hidden relative z-10">
           {/* Left Sidebar - Hidden on mobile */}
           <div className="hidden md:flex w-48 studio-sidebar flex-col py-2 space-y-1">
-            {sidebarItems.map(item => {
+            {/* Templates Menu with Submenus */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-full h-8 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                  <Layout className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />
+                  <span className="text-sm text-sidebar-foreground truncate">Templates</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 p-0" side="right" align="start">
+                <div className="p-4 border-b border-border">
+                  <h3 className="font-medium text-sm">Templates</h3>
+                </div>
+                <div className="p-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                        <span className="text-sm">🟦 Default Templates</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <div className="space-y-3">
+                        <h3 className="text-2xl sm:text-xl font-bold">Default Templates</h3>
+                        <div className="max-h-96 overflow-y-auto">
+                          <div className="space-y-2">
+                            <p className="text-sm font-normal text-muted-foreground leading-relaxed">
+                              Choose from our built-in professional templates.
+                            </p>
+                            <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading templates...</div>}>
+                              <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
+                            </Suspense>
+                          </div>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                        <span className="text-sm">🟩 Custom Templates</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <div className="space-y-3">
+                        <h3 className="text-2xl sm:text-xl font-bold">Custom Templates</h3>
+                        <div className="max-h-96 overflow-y-auto">
+                          <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading custom templates...</div>}>
+                            <TemplatesSection selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} showOnlyCustom={true} />
+                          </Suspense>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* From Image Menu with Submenus */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-full h-8 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                  <ImageIcon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />
+                  <span className="text-sm text-sidebar-foreground truncate">From Image</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 p-0" side="right" align="start">
+                <div className="p-4 border-b border-border">
+                  <h3 className="font-medium text-sm">From Image</h3>
+                </div>
+                <div className="p-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                        <span className="text-sm">📷 Upload Image</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <div className="space-y-3">
+                        <h3 className="font-medium text-sm">Upload Image</h3>
+                        <ImageUploadGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
+                        <span className="text-sm">🌐 Website URL</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <div className="space-y-3">
+                        <h3 className="font-medium text-sm">Website URL</h3>
+                        <WebsiteColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Other Sidebar Items */}
+            {sidebarItems.filter(item => item.id !== 'templates' && item.id !== 'from-image').map(item => {
             if (!item.available) return null;
             return <DropdownMenu key={item.id}>
                   <DropdownMenuTrigger asChild>
@@ -1102,66 +1204,11 @@ const Dashboard = () => {
                        <span className="text-sm text-sidebar-foreground truncate">{item.label}</span>
                     </Button>
                   </DropdownMenuTrigger>
-                   <DropdownMenuContent className={`${item.id === 'templates' ? 'w-48' : item.id === 'schemes' ? 'w-80' : item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} side="right" align="start">
+                   <DropdownMenuContent className={`${item.id === 'schemes' ? 'w-80' : item.id === 'moods' ? 'w-64' : 'w-64'} p-0`} side="right" align="start">
                     <div className="p-4 border-b border-border">
                       <h3 className="font-medium text-sm">{item.label}</h3>
                     </div>
-                     {item.id === 'templates' ?
-                // No ScrollArea for templates - just natural height
-                <div className="h-fit">
-                         <div className="p-4 pt-3">
-                           <div className="space-y-2">
-                             <div className="space-y-2">
-                               <p className="text-xs text-muted-foreground">
-                                 Choose from built-in templates or your custom imports.
-                               </p>
-                               
-                                 {/* Default Templates Popover */}
-                                 <Popover>
-                                   <PopoverTrigger asChild>
-                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm" onClick={() => console.log('Default Templates button clicked')}>
-                                       <span className="text-base sm:text-sm font-medium tracking-tight">🟦 Default Templates</span>
-                                     </Button>
-                                   </PopoverTrigger>
-                                     <PopoverContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" onOpenAutoFocus={() => console.log('Default Templates popover opened')}>
-                                     <div className="space-y-3">
-                                       <h3 className="text-2xl sm:text-xl font-bold">Default Templates</h3>
-                                       <div className="max-h-96 overflow-y-auto">
-                                         <div className="space-y-2">
-                                         <p className="text-sm font-normal text-muted-foreground leading-relaxed">
-                                           Choose from our built-in professional templates.
-                                         </p>
-                                           <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading templates...</div>}>
-                                             <TemplateSelector selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} />
-                                           </Suspense>
-                                         </div>
-                                       </div>
-                                     </div>
-                                   </PopoverContent>
-                                 </Popover>
-                                
-                                 {/* Custom Templates Popover */}
-                                 <Popover>
-                                   <PopoverTrigger asChild>
-                                     <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm" onClick={() => console.log('Custom Templates button clicked')}>
-                                       <span className="text-base sm:text-sm font-medium tracking-tight">🟩 Custom Templates</span>
-                                     </Button>
-                                   </PopoverTrigger>
-                                     <PopoverContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" onOpenAutoFocus={() => console.log('Custom Templates popover opened')}>
-                                     <div className="space-y-3">
-                                       <h3 className="text-2xl sm:text-xl font-bold">Custom Templates</h3>
-                                       <div className="max-h-96 overflow-y-auto">
-                                         <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading custom templates...</div>}>
-                                           <TemplatesSection selectedTemplate={selectedTemplate} onTemplateChange={setSelectedTemplate} colorPalette={colorPalette} showOnlyCustom={true} />
-                                         </Suspense>
-                                       </div>
-                                     </div>
-                                   </PopoverContent>
-                                 </Popover>
-                             </div>
-                           </div>
-                         </div>
-                       </div> : item.id === 'schemes' ?
+                     {item.id === 'schemes' ?
                 // No ScrollArea for schemes - just natural height
                 <div className="h-fit">
                           <div className="p-4 pt-3">
@@ -1185,41 +1232,6 @@ const Dashboard = () => {
                                  <BackgroundCustomizer settings={backgroundSettings} onSettingsChange={setBackgroundSettings} />
                                </div>}
 
-                             {item.id === 'from-image' && <div className="space-y-2">
-                                <p className="text-base sm:text-sm font-normal text-muted-foreground leading-relaxed">
-                                  Extract color palettes from images or websites.
-                                </p>
-                                 
-                                  {/* Upload Image Popover */}
-                                  <Popover>
-                                    <PopoverTrigger asChild>
-                                      <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                        <span className="text-xs">📷 Upload Image</span>
-                                      </Button>
-                                    </PopoverTrigger>
-                                     <PopoverContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                      <div className="space-y-3">
-                                        <h3 className="font-medium text-xs">Upload Image</h3>
-                                        <ImageUploadGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
-                                      </div>
-                                    </PopoverContent>
-                                  </Popover>
-                                  
-                                  {/* Website URL Popover */}
-                                  <Popover>
-                                    <PopoverTrigger asChild>
-                                      <Button variant="outline" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                                        <span className="text-xs">🌐 Website URL</span>
-                                      </Button>
-                                    </PopoverTrigger>
-                                     <PopoverContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                      <div className="space-y-3">
-                                        <h3 className="font-medium text-xs">Website URL</h3>
-                                        <WebsiteColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
-                                      </div>
-                                    </PopoverContent>
-                                  </Popover>
-                               </div>}
 
                                {item.id === 'admin-presets' && <div className="space-y-2">
                                     <p className="text-xs text-muted-foreground">
