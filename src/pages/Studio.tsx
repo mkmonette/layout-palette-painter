@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders, CreditCard } from 'lucide-react';
+import { Layout, Shapes, Sun, Moon, Sunset, Save, Download, Settings, Bot, Wand2, Image as ImageIcon, Shield, Share, ZoomIn, ZoomOut, Plus, User, LogOut, Sparkles, Eye, Maximize, RotateCcw, RefreshCw, BookOpen, PanelLeftClose, PanelLeftOpen, Palette, Menu, X, CloudSun, LayoutDashboard, Layers, Lock, Unlock, Coins, ToggleLeft, ToggleRight, Sliders, CreditCard, ChevronDown } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -138,6 +138,8 @@ const Dashboard = () => {
   const [showColorMood, setShowColorMood] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showPDFExportModal, setShowPDFExportModal] = useState(false);
+  const [templatesExpanded, setTemplatesExpanded] = useState(false);
+  const [fromImageExpanded, setFromImageExpanded] = useState(false);
   const [showAutoGenerateConfirmModal, setShowAutoGenerateConfirmModal] = useState(false);
   const [showAutoGenerateResultsModal, setShowAutoGenerateResultsModal] = useState(false);
   const [generatedPalettes, setGeneratedPalettes] = useState<GeneratedPalette[]>([]);
@@ -1094,22 +1096,26 @@ const Dashboard = () => {
           {/* Left Sidebar - Hidden on mobile */}
           <div className="hidden md:flex w-48 studio-sidebar flex-col py-2 space-y-1 overflow-visible">
             {/* Templates Menu with Submenus */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full h-8 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+            <div className="space-y-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full h-8 justify-between px-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-sm"
+                onClick={() => setTemplatesExpanded(!templatesExpanded)}
+              >
+                <div className="flex items-center">
                   <Layout className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />
                   <span className="text-sm text-sidebar-foreground truncate">Templates</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 p-0 bg-background border shadow-lg z-[100]" side="right" align="start">
-                <div className="p-4 border-b border-border">
-                  <h3 className="font-medium text-sm">Templates</h3>
                 </div>
-                <div className="p-2">
+                <ChevronDown className={`h-3 w-3 transition-transform ${templatesExpanded ? 'rotate-180' : ''}`} />
+              </Button>
+              
+              {templatesExpanded && (
+                <div className="pl-4 space-y-1">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                        <span className="text-sm">🟦 Default Templates</span>
+                      <Button variant="ghost" size="sm" className="w-full h-7 justify-start px-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                        <span className="text-xs">🟦 Default Templates</span>
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -1131,8 +1137,8 @@ const Dashboard = () => {
                   
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                        <span className="text-sm">🟩 Custom Templates</span>
+                      <Button variant="ghost" size="sm" className="w-full h-7 justify-start px-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                        <span className="text-xs">🟩 Custom Templates</span>
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -1147,52 +1153,64 @@ const Dashboard = () => {
                     </DialogContent>
                   </Dialog>
                 </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              )}
+            </div>
 
             {/* From Image Menu with Submenus */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full h-8 justify-start px-3 relative text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+            <div className="space-y-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full h-8 justify-between px-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-sm"
+                onClick={() => setFromImageExpanded(!fromImageExpanded)}
+              >
+                <div className="flex items-center">
                   <ImageIcon className="h-4 w-4 text-sidebar-foreground mr-3 flex-shrink-0" />
                   <span className="text-sm text-sidebar-foreground truncate">From Image</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 p-0 bg-background border shadow-lg z-[100]" side="right" align="start">
-                <div className="p-4 border-b border-border">
-                  <h3 className="font-medium text-sm">From Image</h3>
                 </div>
-                <div className="p-2">
+                <ChevronDown className={`h-3 w-3 transition-transform ${fromImageExpanded ? 'rotate-180' : ''}`} />
+              </Button>
+              
+              {fromImageExpanded && (
+                <div className="pl-4 space-y-1">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                        <span className="text-sm">📷 Upload Image</span>
+                      <Button variant="ghost" size="sm" className="w-full h-7 justify-start px-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                        <span className="text-xs">📷 Upload Image</span>
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <DialogContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                       <div className="space-y-3">
-                        <h3 className="font-medium text-sm">Upload Image</h3>
-                        <ImageUploadGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                        <h3 className="text-2xl sm:text-xl font-bold">Upload Image</h3>
+                        <div className="max-h-96 overflow-y-auto">
+                          <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading...</div>}>
+                            <ImageUploadGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                          </Suspense>
+                        </div>
                       </div>
                     </DialogContent>
                   </Dialog>
                   
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start h-auto px-3 py-2 rounded-sm">
-                        <span className="text-sm">🌐 Website URL</span>
+                      <Button variant="ghost" size="sm" className="w-full h-7 justify-start px-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-sm">
+                        <span className="text-xs">🌐 Website URL</span>
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="w-64 p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <DialogContent className="w-[500px] p-4 z-[60] fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                       <div className="space-y-3">
-                        <h3 className="font-medium text-sm">Website URL</h3>
-                        <WebsiteColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                        <h3 className="text-2xl sm:text-xl font-bold">Website URL</h3>
+                        <div className="max-h-96 overflow-y-auto">
+                          <Suspense fallback={<div className="text-sm sm:text-xs font-normal text-muted-foreground">Loading...</div>}>
+                            <WebsiteColorGenerator onPaletteGenerated={setColorPalette} isGenerating={isGenerating} setIsGenerating={setIsGenerating} />
+                          </Suspense>
+                        </div>
                       </div>
                     </DialogContent>
                   </Dialog>
                 </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              )}
+            </div>
 
             {/* Other Sidebar Items */}
             {sidebarItems.filter(item => item.id !== 'templates' && item.id !== 'from-image').map(item => {
