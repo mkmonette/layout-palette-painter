@@ -1090,9 +1090,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden relative z-10">
+        <div className="flex flex-1 relative z-10">
           {/* Left Sidebar - Hidden on mobile */}
-          <div className="hidden md:flex w-48 studio-sidebar flex-col py-2 space-y-1">
+          <div className="hidden md:flex w-48 studio-sidebar flex-col py-2 space-y-1 overflow-visible">
             {/* Templates Menu with Submenus */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
