@@ -1101,7 +1101,7 @@ const Dashboard = () => {
                   <span className="text-sm text-sidebar-foreground truncate">Templates</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 p-0 bg-popover z-50" side="right" align="start">
+              <DropdownMenuContent className="w-48 p-0 bg-background border shadow-lg z-[100]" side="right" align="start">
                 <div className="p-4 border-b border-border">
                   <h3 className="font-medium text-sm">Templates</h3>
                 </div>
@@ -1158,7 +1158,7 @@ const Dashboard = () => {
                   <span className="text-sm text-sidebar-foreground truncate">From Image</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 p-0 bg-popover z-50" side="right" align="start">
+              <DropdownMenuContent className="w-48 p-0 bg-background border shadow-lg z-[100]" side="right" align="start">
                 <div className="p-4 border-b border-border">
                   <h3 className="font-medium text-sm">From Image</h3>
                 </div>
