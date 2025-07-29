@@ -640,14 +640,14 @@ const Dashboard = () => {
     available: process.env.NODE_ENV !== 'production'
   }];
   return <TooltipProvider>
-      <div className="h-screen flex flex-col bg-background workspace-background relative">
+      <div className="min-h-screen w-full flex flex-col bg-background workspace-background relative overflow-x-hidden">
         {/* Vibrant animated background overlay */}
         <div className="absolute inset-0 workspace-background opacity-60 z-0" />
         
         {/* Mobile Top Toolbar */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-b border-border shadow-sm">
-          <div className="flex items-center justify-between h-full px-2">
-            <div className="flex items-center justify-evenly w-full">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-b border-border shadow-sm safe-area-top">
+          <div className="flex items-center justify-between h-full px-3 sm:px-4">
+            <div className="flex items-center justify-evenly w-full gap-1 sm:gap-2">
               <Button variant="ghost" size="sm" className="flex-1 max-w-[60px] h-10" onClick={() => {}}>
                 <Menu className="w-5 h-5" />
               </Button>
@@ -762,9 +762,9 @@ const Dashboard = () => {
         </div>
 
         {/* Mobile Bottom Toolbar */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-t border-border shadow-sm">
-          <div className="flex items-center justify-between h-full px-2">
-            <div className="flex items-center justify-evenly w-full">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-14 bg-card/90 backdrop-blur-md border-t border-border shadow-sm safe-area-bottom">
+          <div className="flex items-center justify-between h-full px-2 sm:px-3">
+            <div className="flex items-center justify-evenly w-full gap-1">
               {/* Button 1: Templates & Layout */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -1092,9 +1092,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex flex-1 relative z-10">
+        <div className="flex flex-1 relative z-10 min-h-0">
           {/* Left Sidebar - Hidden on mobile */}
-          <div className="hidden md:flex w-48 studio-sidebar flex-col py-2 space-y-1 overflow-visible">
+          <div className="hidden md:flex w-full md:w-48 lg:w-64 max-w-xs studio-sidebar flex-col py-2 space-y-1 overflow-visible">\n
             {/* Templates Menu with Submenus */}
             <div className="space-y-1">
               <Button
@@ -1420,15 +1420,15 @@ const Dashboard = () => {
 
 
           {/* Main Content Area with Right Sidebar */}
-          <div className="flex-1 flex bg-card/40 backdrop-blur-sm">
+          <div className="flex-1 flex bg-card/40 backdrop-blur-sm min-h-0">
             {/* Canvas */}
-            <div className="flex-1 overflow-auto flex items-start justify-center bg-card/20 backdrop-blur-sm">
-              {/* Mobile Canvas - Centered between toolbars */}
-              <div className="md:hidden w-full h-full flex items-center justify-center pt-14 pb-14 px-4" style={{ minHeight: 'calc(100vh - 112px)' }}>
-                <div className="bg-background border rounded-lg shadow-lg overflow-auto w-full max-w-full" style={{ height: 'calc(100vh - 140px)' }}>
-                  {/* Mobile Preview Container - Scaled Desktop View */}
+            <div className="flex-1 overflow-hidden flex items-start justify-center bg-card/20 backdrop-blur-sm">
+              {/* Mobile Canvas - Responsive and touch-friendly */}
+              <div className="md:hidden w-full h-full flex items-center justify-center pt-14 pb-14 px-2 sm:px-4">
+                <div className="bg-background border rounded-lg shadow-lg overflow-hidden w-full h-full max-h-[calc(100vh-140px)]">
+                  {/* Mobile Preview Container - Responsive scaling */}
                   <div className="w-full h-full overflow-auto">
-                    <div className="min-w-[1280px] transform-gpu scale-[0.25] origin-top-left" style={{ height: 'calc(100vh * 4)' }} data-preview-element>
+                    <div className="w-full h-auto" data-preview-element>
                       <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
                     </div>
                   </div>
@@ -1436,11 +1436,12 @@ const Dashboard = () => {
               </div>
               
               {/* Desktop Canvas */}
-              <div className="hidden md:block bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 sm:m-5" style={{
-              transform: `scale(${zoomLevel / 100})`,
+              <div className="hidden md:block bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 lg:m-4 xl:m-6" style={{
+              transform: `scale(${Math.min(zoomLevel / 100, 1.2)})`, // Limit max zoom for responsiveness
               transformOrigin: 'top center',
-              width: 'calc(100vw - 400px)',
-              minHeight: '400px'
+              width: 'min(calc(100vw - 300px), 1200px)', // Responsive width with max
+              minHeight: '400px',
+              maxWidth: '100%'
             }} data-preview-element>
 
                 {/* Desktop Preview Container */}
@@ -1450,38 +1451,34 @@ const Dashboard = () => {
                </div>
              </div>
 
-            {/* Right Sidebar - Hidden on mobile */}
-            <div className="hidden md:flex w-48 bg-card/80 backdrop-blur-md border-l border-border flex-col">
+            {/* Right Sidebar - Hidden on mobile, responsive width */}
+            <div className="hidden md:flex w-full md:w-48 lg:w-56 xl:w-64 max-w-xs bg-card/80 backdrop-blur-md border-l border-border flex-col">
               {/* Sidebar Header */}
               <div className="p-3 border-b border-border">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xl sm:text-lg font-semibold">Controls</span>
-                  {/* Mobile hamburger menu for right sidebar */}
-                  <Button variant="ghost" size="sm" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="sm:hidden px-1 py-1 rounded-sm">
-                    {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                  </Button>
+                  <span className="text-lg lg:text-xl font-semibold">Controls</span>
                 </div>
                 
                 {/* Template Info */}
                 <div className="space-y-1">
-                 <span className="text-base sm:text-sm font-medium text-muted-foreground">Template</span>
-                 <div className="text-base sm:text-sm font-medium capitalize">
+                 <span className="text-sm font-medium text-muted-foreground">Template</span>
+                 <div className="text-sm font-medium capitalize truncate">
                    {selectedTemplate.replace('-', ' ')}
                  </div>
                 </div>
               </div>
 
               {/* Sidebar Content */}
-              <div className="flex-1 p-3 space-y-3">
+              <div className="flex-1 p-3 space-y-3 overflow-y-auto">
                 {/* Zoom Controls */}
                 <div className="space-y-2">
-                  <span className="text-base sm:text-sm font-medium text-muted-foreground uppercase tracking-wide">Zoom</span>
+                  <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Zoom</span>
                   <div className="flex items-center justify-between">
-                    <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-1 py-1 rounded-sm">
+                    <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoomLevel <= 50} className="px-2 py-1 rounded-sm flex-shrink-0">
                       <ZoomOut className="h-3 w-3" />
                     </Button>
-                    <span className="text-sm sm:text-xs font-medium text-center">{zoomLevel}%</span>
-                    <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-1 py-1 rounded-sm">
+                    <span className="text-xs font-medium text-center min-w-[3rem]">{zoomLevel}%</span>
+                    <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoomLevel >= 200} className="px-2 py-1 rounded-sm flex-shrink-0">
                       <ZoomIn className="h-3 w-3" />
                     </Button>
                   </div>
