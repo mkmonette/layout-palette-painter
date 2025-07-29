@@ -1439,9 +1439,9 @@ const Dashboard = () => {
               <div className="hidden md:block bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 lg:m-4 xl:m-6" style={{
               transform: `scale(${Math.min(zoomLevel / 100, 1.2)})`, // Limit max zoom for responsiveness
               transformOrigin: 'top center',
-              width: 'min(calc(100vw - 300px), 1200px)', // Responsive width with max
+              width: 'calc(100% - 2rem)', // Take available space minus margins
               minHeight: '400px',
-              maxWidth: '100%'
+              maxWidth: '1200px'
             }} data-preview-element>
 
                 {/* Desktop Preview Container */}
@@ -1452,7 +1452,7 @@ const Dashboard = () => {
              </div>
 
             {/* Right Sidebar - Hidden on mobile, responsive width */}
-            <div className="hidden md:flex w-full md:w-48 lg:w-56 xl:w-64 max-w-xs bg-card/80 backdrop-blur-md border-l border-border flex-col">
+            <div className="hidden md:flex w-48 lg:w-56 xl:w-64 flex-shrink-0 bg-card/80 backdrop-blur-md border-l border-border flex-col overflow-y-auto">
               {/* Sidebar Header */}
               <div className="p-3 border-b border-border">
                 <div className="flex items-center justify-between mb-2">
