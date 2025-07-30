@@ -1426,7 +1426,7 @@ const Dashboard = () => {
               {/* Mobile Canvas - Always desktop layout, scaled down */}
               <div className="md:hidden w-full overflow-hidden flex justify-center pt-14 pb-14">
                 <div 
-                  className="bg-background border rounded-lg shadow-lg"
+                  className="bg-background border rounded-lg shadow-lg mobile-desktop-preview"
                   style={{
                     width: '1280px',
                     minHeight: '720px',

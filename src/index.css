@@ -161,7 +161,59 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 245 100% 90%; /* Light text on hover */
     --sidebar-border: 240 15% 20%;           /* Dark border */
     --sidebar-ring: 280 100% 75%;            /* Bright purple focus ring */
-  }
+}
+
+/* Mobile Desktop Preview - Force desktop layout on mobile */
+.mobile-desktop-preview {
+  /* Override any responsive behavior within the preview */
+}
+
+.mobile-desktop-preview * {
+  /* Force desktop layout - override mobile media queries */
+}
+
+/* Force desktop layout for hero sections in mobile preview */
+.mobile-desktop-preview .hero-section,
+.mobile-desktop-preview .flex-col,
+.mobile-desktop-preview [class*="flex-col"] {
+  flex-direction: row !important;
+}
+
+/* Force desktop grid layouts */
+.mobile-desktop-preview .grid-cols-1 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* Force desktop text sizes */
+.mobile-desktop-preview .text-xl,
+.mobile-desktop-preview .text-2xl,
+.mobile-desktop-preview .text-3xl,
+.mobile-desktop-preview .text-4xl,
+.mobile-desktop-preview .text-5xl {
+  font-size: inherit !important;
+}
+
+/* Force desktop spacing */
+.mobile-desktop-preview .p-4,
+.mobile-desktop-preview .p-6,
+.mobile-desktop-preview .p-8,
+.mobile-desktop-preview .px-4,
+.mobile-desktop-preview .py-4 {
+  padding: inherit !important;
+}
+
+/* Ensure desktop layout for common responsive patterns */
+.mobile-desktop-preview .md\\:flex-row {
+  flex-direction: row !important;
+}
+
+.mobile-desktop-preview .md\\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.mobile-desktop-preview .md\\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
 
   /* Template wrapper and background styles */
   .template-wrapper {
