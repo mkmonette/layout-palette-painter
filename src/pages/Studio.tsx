@@ -108,6 +108,22 @@ const Dashboard = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  // Dynamic scale calculation for mobile preview
+  useEffect(() => {
+    const updateMobilePreviewScale = () => {
+      const previewContent = document.getElementById('mobile-preview-content');
+      if (previewContent && window.innerWidth < 768) {
+        const scale = Math.min(window.innerWidth / 1280, 0.4);
+        previewContent.style.transform = `scale(${scale})`;
+        previewContent.style.transformOrigin = 'top left';
+      }
+    };
+
+    updateMobilePreviewScale();
+    window.addEventListener('resize', updateMobilePreviewScale);
+    return () => window.removeEventListener('resize', updateMobilePreviewScale);
+  }, []);
+
   const [zoomLevel, setZoomLevel] = useState(100);
   const [autogenerateCount, setAutogenerateCount] = useState(10);
   const [upsellModal, setUpsellModal] = useState<{
@@ -1428,10 +1444,18 @@ const Dashboard = () => {
                 <div className="preview-wrapper">
                   <div 
                     className="preview-content bg-background border rounded-lg shadow-lg"
+                    id="mobile-preview-content"
                     data-preview-element
                   >
-                    {/* Simulated desktop viewport wrapper */}
-                    <div className="desktop-viewport-simulator">
+                    {/* Desktop viewport simulator with media query override */}
+                    <div 
+                      className="desktop-viewport-simulator" 
+                      style={{ 
+                        width: '1280px',
+                        minHeight: '720px',
+                        position: 'relative'
+                      }}
+                    >
                       <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
                     </div>
                   </div>

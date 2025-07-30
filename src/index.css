@@ -180,19 +180,14 @@ All colors MUST be HSL.
   min-height: 720px;
 }
 
-/* Desktop viewport simulator - force desktop layout */
+/* Desktop viewport simulator - comprehensive responsive override */
 .desktop-viewport-simulator {
-  width: 1280px;
-  min-height: 720px;
-  position: relative;
+  /* Simulate desktop environment */
+  container-type: inline-size;
+  container-name: desktop-sim;
 }
 
-/* Override ALL responsive behavior within the simulator */
-.desktop-viewport-simulator * {
-  /* Force desktop behavior for all elements */
-}
-
-/* Override Tailwind responsive classes to always show desktop version */
+/* Force all responsive classes to show desktop version */
 .desktop-viewport-simulator .hidden {
   display: block !important;
 }
@@ -209,6 +204,27 @@ All colors MUST be HSL.
   display: grid !important;
 }
 
+.desktop-viewport-simulator .lg\\:flex {
+  display: flex !important;
+}
+
+.desktop-viewport-simulator .lg\\:grid {
+  display: grid !important;
+}
+
+.desktop-viewport-simulator .xl\\:flex {
+  display: flex !important;
+}
+
+.desktop-viewport-simulator .xl\\:grid {
+  display: grid !important;
+}
+
+/* Grid layouts - force desktop columns */
+.desktop-viewport-simulator .grid-cols-1 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
 .desktop-viewport-simulator .lg\\:grid-cols-2 {
   grid-template-columns: repeat(2, 1fr) !important;
 }
@@ -217,12 +233,28 @@ All colors MUST be HSL.
   grid-template-columns: repeat(3, 1fr) !important;
 }
 
-.desktop-viewport-simulator .grid-cols-1 {
+.desktop-viewport-simulator .lg\\:grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+.desktop-viewport-simulator .md\\:grid-cols-2 {
   grid-template-columns: repeat(2, 1fr) !important;
 }
 
-/* Force flex layouts to remain horizontal */
+.desktop-viewport-simulator .md\\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+.desktop-viewport-simulator .sm\\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* Flex layouts - force horizontal on desktop */
 .desktop-viewport-simulator .flex-col {
+  flex-direction: row !important;
+}
+
+.desktop-viewport-simulator .sm\\:flex-row {
   flex-direction: row !important;
 }
 
@@ -230,47 +262,97 @@ All colors MUST be HSL.
   flex-direction: row !important;
 }
 
-/* Force desktop text sizes */
-.desktop-viewport-simulator .text-3xl {
-  font-size: 1.875rem !important;
-  line-height: 2.25rem !important;
+.desktop-viewport-simulator .lg\\:flex-row {
+  flex-direction: row !important;
 }
 
-.desktop-viewport-simulator .text-4xl {
-  font-size: 2.25rem !important;
-  line-height: 2.5rem !important;
+/* Navigation - show desktop nav */
+.desktop-viewport-simulator .hidden.md\\:flex {
+  display: flex !important;
 }
 
-.desktop-viewport-simulator .text-5xl {
-  font-size: 3rem !important;
-  line-height: 1 !important;
+.desktop-viewport-simulator .hidden.lg\\:flex {
+  display: flex !important;
 }
 
+.desktop-viewport-simulator .hidden.md\\:block {
+  display: block !important;
+}
+
+/* Text sizes - force desktop sizing */
 .desktop-viewport-simulator .md\\:text-6xl {
   font-size: 3.75rem !important;
   line-height: 1 !important;
 }
 
-/* Override mobile navigation hiding */
-.desktop-viewport-simulator .hidden.md\\:flex {
-  display: flex !important;
+.desktop-viewport-simulator .md\\:text-5xl {
+  font-size: 3rem !important;
+  line-height: 1 !important;
 }
 
-/* Force desktop spacing */
-.desktop-viewport-simulator .py-12 {
-  padding-top: 3rem !important;
-  padding-bottom: 3rem !important;
+.desktop-viewport-simulator .lg\\:text-6xl {
+  font-size: 3.75rem !important;
+  line-height: 1 !important;
 }
 
-.desktop-viewport-simulator .py-20 {
+.desktop-viewport-simulator .lg\\:text-5xl {
+  font-size: 3rem !important;
+  line-height: 1 !important;
+}
+
+/* Spacing overrides */
+.desktop-viewport-simulator .md\\:p-8 {
+  padding: 2rem !important;
+}
+
+.desktop-viewport-simulator .lg\\:p-12 {
+  padding: 3rem !important;
+}
+
+.desktop-viewport-simulator .md\\:py-20 {
   padding-top: 5rem !important;
   padding-bottom: 5rem !important;
 }
 
-/* Disable all media queries within the simulator */
+.desktop-viewport-simulator .lg\\:py-24 {
+  padding-top: 6rem !important;
+  padding-bottom: 6rem !important;
+}
+
+/* Gap overrides */
+.desktop-viewport-simulator .md\\:gap-8 {
+  gap: 2rem !important;
+}
+
+.desktop-viewport-simulator .lg\\:gap-12 {
+  gap: 3rem !important;
+}
+
+/* Width overrides */
+.desktop-viewport-simulator .md\\:w-1\\/2 {
+  width: 50% !important;
+}
+
+.desktop-viewport-simulator .lg\\:w-1\\/2 {
+  width: 50% !important;
+}
+
+/* Override any media queries that might interfere */
 @media (max-width: 1279px) {
   .desktop-viewport-simulator * {
-    /* This ensures media queries don't affect elements inside */
+    /* Prevent mobile styles from applying */
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-viewport-simulator * {
+    /* Prevent tablet styles from applying */
+  }
+}
+
+@media (max-width: 640px) {
+  .desktop-viewport-simulator * {
+    /* Prevent mobile styles from applying */
   }
 }
 
