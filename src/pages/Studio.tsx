@@ -1423,15 +1423,20 @@ const Dashboard = () => {
           <div className="flex-1 flex bg-card/40 backdrop-blur-sm min-h-0">
             {/* Canvas */}
             <div className="flex-1 overflow-hidden flex items-start justify-center bg-card/20 backdrop-blur-sm">
-              {/* Mobile Canvas - Responsive and touch-friendly */}
-              <div className="md:hidden w-full h-full flex items-center justify-center pt-14 pb-14 px-2 sm:px-4">
-                <div className="bg-background border rounded-lg shadow-lg overflow-hidden w-full h-full max-h-[calc(100vh-140px)]">
-                  {/* Mobile Preview Container - Responsive scaling */}
-                  <div className="w-full h-full overflow-auto">
-                    <div className="w-full h-auto" data-preview-element>
-                      <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
-                    </div>
-                  </div>
+              {/* Mobile Canvas - Always desktop layout, scaled down */}
+              <div className="md:hidden w-full overflow-hidden flex justify-center pt-14 pb-14">
+                <div 
+                  className="bg-background border rounded-lg shadow-lg"
+                  style={{
+                    width: '1280px',
+                    minHeight: '720px',
+                    transform: 'scale(0.28)',
+                    transformOrigin: 'top left',
+                    pointerEvents: 'auto'
+                  }}
+                  data-preview-element
+                >
+                  <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
                 </div>
               </div>
               
