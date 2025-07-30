@@ -163,56 +163,115 @@ All colors MUST be HSL.
     --sidebar-ring: 280 100% 75%;            /* Bright purple focus ring */
 }
 
-/* Mobile Desktop Preview - Force desktop layout on mobile */
-.mobile-desktop-preview {
-  /* Override any responsive behavior within the preview */
+/* Mobile Desktop Preview - Simulate desktop viewport */
+.preview-wrapper {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
 }
 
-.mobile-desktop-preview * {
-  /* Force desktop layout - override mobile media queries */
+.preview-content {
+  width: 1280px;
+  transform: scale(0.28);
+  transform-origin: top left;
+  pointer-events: auto;
+  min-height: 720px;
 }
 
-/* Force desktop layout for hero sections in mobile preview */
-.mobile-desktop-preview .hero-section,
-.mobile-desktop-preview .flex-col,
-.mobile-desktop-preview [class*="flex-col"] {
+/* Desktop viewport simulator - force desktop layout */
+.desktop-viewport-simulator {
+  width: 1280px;
+  min-height: 720px;
+  position: relative;
+}
+
+/* Override ALL responsive behavior within the simulator */
+.desktop-viewport-simulator * {
+  /* Force desktop behavior for all elements */
+}
+
+/* Override Tailwind responsive classes to always show desktop version */
+.desktop-viewport-simulator .hidden {
+  display: block !important;
+}
+
+.desktop-viewport-simulator .md\\:block {
+  display: block !important;
+}
+
+.desktop-viewport-simulator .md\\:flex {
+  display: flex !important;
+}
+
+.desktop-viewport-simulator .md\\:grid {
+  display: grid !important;
+}
+
+.desktop-viewport-simulator .lg\\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.desktop-viewport-simulator .lg\\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+.desktop-viewport-simulator .grid-cols-1 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* Force flex layouts to remain horizontal */
+.desktop-viewport-simulator .flex-col {
   flex-direction: row !important;
 }
 
-/* Force desktop grid layouts */
-.mobile-desktop-preview .grid-cols-1 {
-  grid-template-columns: repeat(2, 1fr) !important;
+.desktop-viewport-simulator .md\\:flex-row {
+  flex-direction: row !important;
 }
 
 /* Force desktop text sizes */
-.mobile-desktop-preview .text-xl,
-.mobile-desktop-preview .text-2xl,
-.mobile-desktop-preview .text-3xl,
-.mobile-desktop-preview .text-4xl,
-.mobile-desktop-preview .text-5xl {
-  font-size: inherit !important;
+.desktop-viewport-simulator .text-3xl {
+  font-size: 1.875rem !important;
+  line-height: 2.25rem !important;
+}
+
+.desktop-viewport-simulator .text-4xl {
+  font-size: 2.25rem !important;
+  line-height: 2.5rem !important;
+}
+
+.desktop-viewport-simulator .text-5xl {
+  font-size: 3rem !important;
+  line-height: 1 !important;
+}
+
+.desktop-viewport-simulator .md\\:text-6xl {
+  font-size: 3.75rem !important;
+  line-height: 1 !important;
+}
+
+/* Override mobile navigation hiding */
+.desktop-viewport-simulator .hidden.md\\:flex {
+  display: flex !important;
 }
 
 /* Force desktop spacing */
-.mobile-desktop-preview .p-4,
-.mobile-desktop-preview .p-6,
-.mobile-desktop-preview .p-8,
-.mobile-desktop-preview .px-4,
-.mobile-desktop-preview .py-4 {
-  padding: inherit !important;
+.desktop-viewport-simulator .py-12 {
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
 }
 
-/* Ensure desktop layout for common responsive patterns */
-.mobile-desktop-preview .md\\:flex-row {
-  flex-direction: row !important;
+.desktop-viewport-simulator .py-20 {
+  padding-top: 5rem !important;
+  padding-bottom: 5rem !important;
 }
 
-.mobile-desktop-preview .md\\:grid-cols-2 {
-  grid-template-columns: repeat(2, 1fr) !important;
-}
-
-.mobile-desktop-preview .md\\:grid-cols-3 {
-  grid-template-columns: repeat(3, 1fr) !important;
+/* Disable all media queries within the simulator */
+@media (max-width: 1279px) {
+  .desktop-viewport-simulator * {
+    /* This ensures media queries don't affect elements inside */
+  }
 }
 
   /* Template wrapper and background styles */
