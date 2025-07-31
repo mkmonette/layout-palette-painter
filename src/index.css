@@ -163,22 +163,6 @@ All colors MUST be HSL.
     --sidebar-ring: 280 100% 75%;            /* Bright purple focus ring */
 }
 
-/* Mobile Desktop Preview - Simulate desktop viewport */
-.preview-wrapper {
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  padding: 1rem 0;
-}
-
-.preview-content {
-  width: 1280px;
-  transform: scale(0.28);
-  transform-origin: top left;
-  pointer-events: auto;
-  min-height: 720px;
-}
 
 /* Desktop viewport simulator - comprehensive responsive override */
 .desktop-viewport-simulator {
@@ -335,6 +319,22 @@ All colors MUST be HSL.
 
 .desktop-viewport-simulator .lg\:w-1\/2 {
   width: 50% !important;
+}
+
+/* Mobile preview wrapper for desktop viewport simulation */
+.preview-wrapper {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.preview-content {
+  width: 1280px;
+  transform: scale(0.28);
+  transform-origin: top left;
+  pointer-events: auto;
 }
 
 /* Override any media queries that might interfere */

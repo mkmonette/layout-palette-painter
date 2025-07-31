@@ -111,11 +111,11 @@ const Dashboard = () => {
   // Dynamic scale calculation for mobile preview
   useEffect(() => {
     const updateMobilePreviewScale = () => {
-      const previewContent = document.getElementById('mobile-preview-content');
+      const previewContent = document.querySelector('.preview-content');
       if (previewContent && window.innerWidth < 768) {
-        const scale = Math.min(window.innerWidth / 1280, 0.4);
-        previewContent.style.transform = `scale(${scale})`;
-        previewContent.style.transformOrigin = 'top left';
+        const scale = Math.min((window.innerWidth - 32) / 1280, 0.32); // Account for padding
+        (previewContent as HTMLElement).style.transform = `scale(${scale})`;
+        (previewContent as HTMLElement).style.transformOrigin = 'top left';
       }
     };
 
