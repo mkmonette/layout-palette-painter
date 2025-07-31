@@ -329,11 +329,11 @@ All colors MUST be HSL.
 }
 
 /* Width overrides */
-.desktop-viewport-simulator .md\\:w-1\\/2 {
+.desktop-viewport-simulator .md\:w-1\/2 {
   width: 50% !important;
 }
 
-.desktop-viewport-simulator .lg\\:w-1\\/2 {
+.desktop-viewport-simulator .lg\:w-1\/2 {
   width: 50% !important;
 }
 
