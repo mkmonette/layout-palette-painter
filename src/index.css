@@ -321,6 +321,29 @@ All colors MUST be HSL.
   width: 50% !important;
 }
 
+/* Hero section specific overrides - Force 2-column layout */
+.desktop-viewport-simulator .hero-section {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 2rem !important;
+  align-items: center !important;
+}
+
+.desktop-viewport-simulator .hero-content {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 3rem !important;
+  align-items: center !important;
+}
+
+/* Force containers to be wide */
+.desktop-viewport-simulator .container {
+  max-width: 1200px !important;
+  width: 100% !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+}
+
 /* Mobile preview wrapper for desktop viewport simulation */
 .preview-wrapper {
   width: 100%;

@@ -108,14 +108,22 @@ const Dashboard = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  // Dynamic scale calculation for mobile preview
+  // Dynamic scale calculation for mobile preview - Force desktop layout
   useEffect(() => {
     const updateMobilePreviewScale = () => {
-      const previewContent = document.querySelector('.preview-content');
+      const previewContent = document.querySelector('.desktop-preview-wrapper');
       if (previewContent && window.innerWidth < 768) {
-        const scale = Math.min((window.innerWidth - 32) / 1280, 0.32); // Account for padding
+        const containerWidth = window.innerWidth - 32; // Account for padding
+        const scale = Math.min(containerWidth / 1280, 0.35);
         (previewContent as HTMLElement).style.transform = `scale(${scale})`;
         (previewContent as HTMLElement).style.transformOrigin = 'top left';
+        // Adjust container height to prevent overflow
+        const scaledHeight = 800 * scale;
+        (previewContent as HTMLElement).style.height = `${scaledHeight}px`;
+      } else if (previewContent) {
+        // Reset for desktop
+        (previewContent as HTMLElement).style.transform = 'scale(1)';
+        (previewContent as HTMLElement).style.height = 'auto';
       }
     };
 
@@ -1449,11 +1457,12 @@ const Dashboard = () => {
                   >
                     {/* Desktop viewport simulator with media query override */}
                     <div 
-                      className="desktop-viewport-simulator" 
+                      className="desktop-preview-wrapper desktop-viewport-simulator" 
                       style={{ 
                         width: '1280px',
                         minHeight: '720px',
-                        position: 'relative'
+                        position: 'relative',
+                        pointerEvents: 'auto'
                       }}
                     >
                       <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
