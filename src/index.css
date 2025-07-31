@@ -164,21 +164,11 @@ All colors MUST be HSL.
 }
 
 
-/* Mobile preview wrapper */
-.preview-wrapper {
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-
 /* Desktop viewport simulator - comprehensive responsive override */
 .desktop-viewport-simulator {
   /* Simulate desktop environment */
   container-type: inline-size;
   container-name: desktop-sim;
-  min-width: 1280px !important;
 }
 
 /* Force all responsive classes to show desktop version */

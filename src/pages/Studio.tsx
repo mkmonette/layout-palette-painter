@@ -113,17 +113,9 @@ const Dashboard = () => {
     const updateMobilePreviewScale = () => {
       const previewContent = document.querySelector('.preview-content');
       if (previewContent && window.innerWidth < 768) {
-        const containerWidth = window.innerWidth - 32; // Account for padding
-        const scale = Math.min(containerWidth / 1280, 0.35);
+        const scale = Math.min((window.innerWidth - 32) / 1280, 0.32); // Account for padding
         (previewContent as HTMLElement).style.transform = `scale(${scale})`;
         (previewContent as HTMLElement).style.transformOrigin = 'top left';
-        
-        // Set container height to fit scaled content
-        const scaledHeight = 720 * scale;
-        const wrapper = document.querySelector('.preview-wrapper');
-        if (wrapper) {
-          (wrapper as HTMLElement).style.height = `${scaledHeight}px`;
-        }
       }
     };
 
@@ -1449,20 +1441,21 @@ const Dashboard = () => {
             <div className="flex-1 overflow-hidden flex items-start justify-center bg-card/20 backdrop-blur-sm">
               {/* Mobile Canvas - Always desktop layout, scaled down */}
               <div className="md:hidden w-full overflow-hidden flex justify-center pt-14 pb-14">
-                <div className="preview-wrapper" style={{ height: 'auto' }}>
+                <div className="preview-wrapper">
                   <div 
                     className="preview-content bg-background border rounded-lg shadow-lg"
                     id="mobile-preview-content"
                     data-preview-element
-                    style={{ 
-                      width: '1280px',
-                      minHeight: '720px',
-                      transformOrigin: 'top left',
-                      position: 'relative'
-                    }}
                   >
                     {/* Desktop viewport simulator with media query override */}
-                    <div className="desktop-viewport-simulator w-full h-full">
+                    <div 
+                      className="desktop-viewport-simulator" 
+                      style={{ 
+                        width: '1280px',
+                        minHeight: '720px',
+                        position: 'relative'
+                      }}
+                    >
                       <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
                     </div>
                   </div>
