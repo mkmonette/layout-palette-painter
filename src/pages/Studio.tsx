@@ -126,19 +126,66 @@ const Dashboard = () => {
     return () => window.removeEventListener('resize', updateMobilePreviewScale);
   }, []);
 
-  // Force desktop layout in mobile preview
+  // Force desktop layout in mobile preview with more aggressive approach
   useEffect(() => {
     const forceDesktopLayout = () => {
-      const mobilePreview = document.querySelector('#mobile-preview-content');
-      if (mobilePreview && window.innerWidth < 768) {
-        // Add CSS class to override all responsive styles
-        mobilePreview.classList.add('force-desktop-layout');
+      if (window.innerWidth < 768) {
+        // Add comprehensive CSS to force desktop layout
+        const style = document.createElement('style');
+        style.id = 'mobile-desktop-override';
+        style.textContent = `
+          #mobile-preview-content .grid.lg\\:grid-cols-2 {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+          #mobile-preview-content .hidden.lg\\:flex {
+            display: flex !important;
+          }
+          #mobile-preview-content .hidden.lg\\:block {
+            display: block !important;
+          }
+          #mobile-preview-content .md\\:hidden {
+            display: none !important;
+          }
+          #mobile-preview-content .lg\\:hidden {
+            display: none !important;
+          }
+          #mobile-preview-content .flex-col.sm\\:flex-row {
+            flex-direction: row !important;
+          }
+          #mobile-preview-content .text-5xl.md\\:text-6xl {
+            font-size: 3.75rem !important;
+            line-height: 1 !important;
+          }
+          #mobile-preview-content .gap-12 {
+            gap: 3rem !important;
+          }
+          #mobile-preview-content .px-6.lg\\:px-16 {
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+          }
+          #mobile-preview-content .px-8.lg\\:px-16.xl\\:px-24 {
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+          }
+        `;
+        
+        // Remove existing style if present
+        const existing = document.getElementById('mobile-desktop-override');
+        if (existing) existing.remove();
+        
+        // Add the new style
+        document.head.appendChild(style);
       }
     };
 
     forceDesktopLayout();
     window.addEventListener('resize', forceDesktopLayout);
-    return () => window.removeEventListener('resize', forceDesktopLayout);
+    return () => {
+      window.removeEventListener('resize', forceDesktopLayout);
+      const existing = document.getElementById('mobile-desktop-override');
+      if (existing) existing.remove();
+    };
   }, [selectedTemplate, colorPalette]);
 
   const [zoomLevel, setZoomLevel] = useState(100);

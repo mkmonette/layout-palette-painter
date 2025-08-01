@@ -55,130 +55,143 @@
   padding: 1rem;
 }
 
-/* Force desktop layout - targeting the mobile preview specifically */
-.force-desktop-layout *,
-.desktop-viewport-simulator *,
-#mobile-preview-content * {
-  /* Override ALL responsive utilities */
-  box-sizing: border-box;
+/* Extremely aggressive desktop layout forcing - targets mobile preview container */
+@media (max-width: 767px) {
+  .force-desktop-layout,
+  .desktop-viewport-simulator,
+  #mobile-preview-content {
+    /* Override ALL Tailwind responsive classes */
+    
+    /* Grid layouts - FORCE 2-column */
+    .grid.lg\:grid-cols-2,
+    .grid[class*="lg:grid-cols-2"] {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    
+    /* Show all hidden large screen elements */
+    .hidden.lg\:flex,
+    .hidden.lg\:block,
+    .lg\:flex,
+    .lg\:block {
+      display: flex !important;
+    }
+    
+    .hidden.md\:flex,
+    .hidden.md\:block,
+    .md\:flex,
+    .md\:block {
+      display: flex !important;
+    }
+    
+    /* Hide all mobile-only elements */
+    .md\:hidden,
+    .lg\:hidden {
+      display: none !important;
+    }
+    
+    /* Force desktop text sizes */
+    .text-5xl.md\:text-6xl {
+      font-size: 3.75rem !important;
+      line-height: 1 !important;
+    }
+    
+    .text-xl.lg\:text-2xl {
+      font-size: 1.5rem !important;
+      line-height: 1.5 !important;
+    }
+    
+    /* Force horizontal button layout */
+    .flex-col.sm\:flex-row {
+      flex-direction: row !important;
+    }
+    
+    /* Force desktop spacing */
+    .gap-12 {
+      gap: 3rem !important;
+    }
+    
+    .px-6.lg\:px-16 {
+      padding-left: 4rem !important;
+      padding-right: 4rem !important;
+    }
+    
+    .px-8.lg\:px-16.xl\:px-24 {
+      padding-left: 6rem !important;
+      padding-right: 6rem !important;
+    }
+    
+    .py-20 {
+      padding-top: 5rem !important;
+      padding-bottom: 5rem !important;
+    }
+    
+    /* Force large container widths */
+    .max-w-7xl {
+      max-width: 80rem !important;
+    }
+    
+    .max-w-2xl {
+      max-width: 42rem !important;
+    }
+    
+    /* Force larger element sizes */
+    .w-96.xl\:w-\[500px\] {
+      width: 31.25rem !important;
+    }
+    
+    .h-96.xl\:h-\[500px\] {
+      height: 31.25rem !important;
+    }
+  }
 }
 
-/* Grid layouts - Force 2-column desktop layout */
-.force-desktop-layout .lg\\:grid-cols-2,
-.desktop-viewport-simulator .lg\\:grid-cols-2,
-#mobile-preview-content .lg\\:grid-cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+/* Additional universal overrides that work regardless of media queries */
+.desktop-viewport-simulator * {
+  /* Force all elements inside to ignore mobile breakpoints */
+  @media (max-width: 767px) {
+    /* Grid overrides */
+    &.grid.lg\:grid-cols-2 {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    
+    /* Flex overrides */
+    &.hidden.lg\:flex {
+      display: flex !important;
+    }
+    
+    &.md\:hidden {
+      display: none !important;
+    }
+  }
 }
 
-.force-desktop-layout .grid,
-.desktop-viewport-simulator .grid,
-#mobile-preview-content .grid {
-  display: grid !important;
-}
-
-/* Flex displays - Show all desktop elements */
-.force-desktop-layout .hidden.lg\\:flex,
-.desktop-viewport-simulator .hidden.lg\\:flex,
-#mobile-preview-content .hidden.lg\\:flex,
-.force-desktop-layout .lg\\:flex,
-.desktop-viewport-simulator .lg\\:flex,
-#mobile-preview-content .lg\\:flex {
-  display: flex !important;
-}
-
-.force-desktop-layout .hidden.md\\:flex,
-.desktop-viewport-simulator .hidden.md\\:flex,
-#mobile-preview-content .hidden.md\\:flex,
-.force-desktop-layout .md\\:flex,
-.desktop-viewport-simulator .md\\:flex,
-#mobile-preview-content .md\\:flex {
-  display: flex !important;
-}
-
-/* Hide mobile-only elements */
-.force-desktop-layout .md\\:hidden,
-.desktop-viewport-simulator .md\\:hidden,
-#mobile-preview-content .md\\:hidden,
-.force-desktop-layout .lg\\:hidden,
-.desktop-viewport-simulator .lg\\:hidden,
-#mobile-preview-content .lg\\:hidden {
-  display: none !important;
-}
-
-/* Text sizing - Force desktop sizes */
-.force-desktop-layout .text-5xl.md\\:text-6xl,
-.desktop-viewport-simulator .text-5xl.md\\:text-6xl,
-#mobile-preview-content .text-5xl.md\\:text-6xl {
-  font-size: 3.75rem !important;
-  line-height: 1 !important;
-}
-
-.force-desktop-layout .text-xl.lg\\:text-2xl,
-.desktop-viewport-simulator .text-xl.lg\\:text-2xl,
-#mobile-preview-content .text-xl.lg\\:text-2xl {
-  font-size: 1.5rem !important;
-  line-height: 1.5 !important;
-}
-
-/* Container sizing */
-.force-desktop-layout .max-w-7xl,
-.desktop-viewport-simulator .max-w-7xl,
-#mobile-preview-content .max-w-7xl {
-  max-width: 80rem !important;
-}
-
-.force-desktop-layout .max-w-2xl,
-.desktop-viewport-simulator .max-w-2xl,
-#mobile-preview-content .max-w-2xl {
-  max-width: 42rem !important;
-}
-
-/* Spacing - Force desktop gaps */
-.force-desktop-layout .gap-12,
-.desktop-viewport-simulator .gap-12,
-#mobile-preview-content .gap-12 {
-  gap: 3rem !important;
-}
-
-.force-desktop-layout .gap-4,
-.desktop-viewport-simulator .gap-4,
-#mobile-preview-content .gap-4 {
-  gap: 1rem !important;
-}
-
-/* Button layouts - Force horizontal */
-.force-desktop-layout .flex-col.sm\\:flex-row,
-.desktop-viewport-simulator .flex-col.sm\\:flex-row,
-#mobile-preview-content .flex-col.sm\\:flex-row {
-  flex-direction: row !important;
-}
-
-/* Padding and margins - Force desktop values */
-.force-desktop-layout .px-6.lg\\:px-16,
-.desktop-viewport-simulator .px-6.lg\\:px-16,
-#mobile-preview-content .px-6.lg\\:px-16 {
-  padding-left: 4rem !important;
-  padding-right: 4rem !important;
-}
-
-.force-desktop-layout .py-20,
-.desktop-viewport-simulator .py-20,
-#mobile-preview-content .py-20 {
-  padding-top: 5rem !important;
-  padding-bottom: 5rem !important;
-}
-
-/* Specific template overrides */
-.force-desktop-layout .w-96.xl\\:w-\\[500px\\],
-.desktop-viewport-simulator .w-96.xl\\:w-\\[500px\\],
-#mobile-preview-content .w-96.xl\\:w-\\[500px\\] {
-  width: 31.25rem !important;
-}
-
-.force-desktop-layout .h-96.xl\\:h-\\[500px\\],
-.desktop-viewport-simulator .h-96.xl\\:h-\\[500px\\],
-#mobile-preview-content .h-96.xl\\:h-\\[500px\\] {
-  height: 31.25rem !important;
+/* Specific template targeting for common patterns */
+.desktop-viewport-simulator .min-h-screen {
+  /* Override for AdvancedHeroTemplate */
+  @media (max-width: 767px) {
+    .flex {
+      display: flex !important;
+    }
+    
+    .flex-1 {
+      flex: 1 1 0% !important;
+    }
+    
+    .items-center {
+      align-items: center !important;
+    }
+    
+    .grid.lg\:grid-cols-2 {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    
+    .hidden.lg\:flex {
+      display: flex !important;
+    }
+  }
 }
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
