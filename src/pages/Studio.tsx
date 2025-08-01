@@ -741,6 +741,30 @@ const Dashboard = () => {
                 <Settings className="w-5 h-5" />
               </Button>
               
+              {/* Dark Mode Toggle */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex-1 max-w-[60px] h-10 hover:bg-accent" 
+                onClick={() => {
+                  const newDashboardDarkMode = !isDashboardDarkMode;
+                  setIsDashboardDarkMode(newDashboardDarkMode);
+                  if (newDashboardDarkMode) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                  toast({
+                    title: "Studio Dark Mode",
+                    description: "Studio interface appearance changed. This doesn't affect template colors.",
+                    variant: "default"
+                  });
+                }}
+                title={isDashboardDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {isDashboardDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </Button>
+              
               {/* User Profile Menu */}
               <Popover open={showUserProfilePopup} onOpenChange={setShowUserProfilePopup}>
                 <PopoverTrigger asChild>
