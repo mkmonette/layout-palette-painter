@@ -116,6 +116,8 @@ const Dashboard = () => {
         const scale = Math.min((window.innerWidth - 32) / 1280, 0.32); // Account for padding
         (previewContent as HTMLElement).style.transform = `scale(${scale})`;
         (previewContent as HTMLElement).style.transformOrigin = 'top left';
+        (previewContent as HTMLElement).style.width = '1280px';
+        (previewContent as HTMLElement).style.height = 'auto';
       }
     };
 
@@ -123,6 +125,21 @@ const Dashboard = () => {
     window.addEventListener('resize', updateMobilePreviewScale);
     return () => window.removeEventListener('resize', updateMobilePreviewScale);
   }, []);
+
+  // Force desktop layout in mobile preview
+  useEffect(() => {
+    const forceDesktopLayout = () => {
+      const mobilePreview = document.querySelector('#mobile-preview-content');
+      if (mobilePreview && window.innerWidth < 768) {
+        // Add CSS class to override all responsive styles
+        mobilePreview.classList.add('force-desktop-layout');
+      }
+    };
+
+    forceDesktopLayout();
+    window.addEventListener('resize', forceDesktopLayout);
+    return () => window.removeEventListener('resize', forceDesktopLayout);
+  }, [selectedTemplate, colorPalette]);
 
   const [zoomLevel, setZoomLevel] = useState(100);
   const [autogenerateCount, setAutogenerateCount] = useState(10);
