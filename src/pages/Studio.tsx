@@ -1539,7 +1539,7 @@ const Dashboard = () => {
                     data-preview-element
                     style={{
                       width: '1280px',
-                      minHeight: '720px',
+                      height: 'auto',
                       transform: `scale(${Math.min((window.innerWidth - 32) / 1280, 0.8)})`,
                       transformOrigin: 'top left',
                       position: 'relative'
@@ -1550,7 +1550,7 @@ const Dashboard = () => {
                       className="desktop-viewport-simulator" 
                       style={{ 
                         width: '1280px',
-                        minHeight: '720px',
+                        height: 'auto',
                         position: 'relative'
                       }}
                     >
@@ -1561,11 +1561,11 @@ const Dashboard = () => {
               </div>
               
               {/* Desktop Canvas */}
-              <div className="hidden md:block bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 lg:m-4 xl:m-6" style={{
+              <div className="hidden md:block bg-background border rounded-lg shadow-lg transition-transform duration-200 m-2 lg:m-4 xl:m-6" style={{
               transform: `scale(${Math.min(zoomLevel / 100, 1.2)})`, // Limit max zoom for responsiveness
               transformOrigin: 'top center',
               width: 'calc(100% - 2rem)', // Take available space minus margins
-              minHeight: '400px',
+              height: 'auto',
               maxWidth: '1200px'
             }} data-preview-element>
 
