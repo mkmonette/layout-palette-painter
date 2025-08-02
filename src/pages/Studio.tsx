@@ -111,19 +111,22 @@ const Dashboard = () => {
   // Dynamic scale calculation for mobile preview
   useEffect(() => {
     const updateMobilePreviewScale = () => {
-      const previewContent = document.querySelector('.preview-content');
-      if (previewContent && window.innerWidth < 768) {
-        const scale = Math.min((window.innerWidth - 32) / 1280, 0.32); // Account for padding
-        (previewContent as HTMLElement).style.transform = `scale(${scale})`;
-        (previewContent as HTMLElement).style.transformOrigin = 'top left';
-        (previewContent as HTMLElement).style.width = '1280px';
-        (previewContent as HTMLElement).style.height = 'auto';
+      const mobilePreviewElement = document.getElementById('mobile-preview-content');
+      if (mobilePreviewElement && window.innerWidth < 768) {
+        const availableWidth = window.innerWidth - 32; // Account for padding
+        const targetScale = Math.min(availableWidth / 1280, 0.8); // Max scale of 80%
+        mobilePreviewElement.style.transform = `scale(${targetScale})`;
+        mobilePreviewElement.style.transformOrigin = 'top left';
       }
     };
 
     updateMobilePreviewScale();
     window.addEventListener('resize', updateMobilePreviewScale);
-    return () => window.removeEventListener('resize', updateMobilePreviewScale);
+    window.addEventListener('orientationchange', updateMobilePreviewScale);
+    return () => {
+      window.removeEventListener('resize', updateMobilePreviewScale);
+      window.removeEventListener('orientationchange', updateMobilePreviewScale);
+    };
   }, []);
 
   // Force desktop layout in mobile preview with more aggressive approach
@@ -1528,12 +1531,19 @@ const Dashboard = () => {
             {/* Canvas */}
             <div className="flex-1 overflow-hidden flex items-start justify-center bg-card/20 backdrop-blur-sm">
               {/* Mobile Canvas - Always desktop layout, scaled down */}
-              <div className="md:hidden w-full overflow-hidden flex justify-center pt-14 pb-14">
-                <div className="preview-wrapper">
+              <div className="md:hidden w-full overflow-x-auto flex justify-center pt-14 pb-14">
+                <div className="w-full flex justify-center px-4">
                   <div 
-                    className="preview-content bg-background border rounded-lg shadow-lg"
+                    className="bg-background border rounded-lg shadow-lg"
                     id="mobile-preview-content"
                     data-preview-element
+                    style={{
+                      width: '1280px',
+                      minHeight: '720px',
+                      transform: `scale(${Math.min((window.innerWidth - 32) / 1280, 0.8)})`,
+                      transformOrigin: 'top left',
+                      position: 'relative'
+                    }}
                   >
                     {/* Desktop viewport simulator with media query override */}
                     <div 

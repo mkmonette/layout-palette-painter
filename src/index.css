@@ -485,6 +485,7 @@ All colors MUST be HSL.
 }
 
 /* Mobile preview wrapper for desktop viewport simulation */
+/* Mobile preview wrapper for desktop viewport simulation */
 .preview-wrapper {
   width: 100%;
   overflow: hidden;
@@ -495,7 +496,6 @@ All colors MUST be HSL.
 
 .preview-content {
   width: 1280px;
-  transform: scale(0.28);
   transform-origin: top left;
   pointer-events: auto;
 }
