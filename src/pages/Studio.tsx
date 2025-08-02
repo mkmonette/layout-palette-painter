@@ -1561,30 +1561,19 @@ const Dashboard = () => {
               </div>
               
               {/* Desktop Canvas */}
-              <div className="hidden md:block w-full h-full overflow-auto p-6">
-                <div className="w-full h-full flex items-center justify-center">
-                  <div 
-                    className="bg-background border rounded-lg shadow-lg"
-                    id="desktop-preview-content"
-                    style={{
-                      width: '1280px',
-                      minHeight: '720px',
-                      transform: 'scale(0.8)',
-                      transformOrigin: 'top left',
-                      position: 'relative'
-                    }}
-                    data-preview-element
-                  >
-                    <div className="desktop-viewport-simulator w-full h-full">
-                      <LivePreview 
-                        template={selectedTemplate} 
-                        colorPalette={colorPalette} 
-                        backgroundSettings={backgroundSettings} 
-                      />
-                    </div>
-                  </div>
+              <div className="hidden md:block bg-background border rounded-lg shadow-lg transition-transform duration-200 min-h-full m-2 lg:m-4 xl:m-6" style={{
+              transform: `scale(${Math.min(zoomLevel / 100, 1.2)})`, // Limit max zoom for responsiveness
+              transformOrigin: 'top center',
+              width: 'calc(100% - 2rem)', // Take available space minus margins
+              minHeight: '400px',
+              maxWidth: '1200px'
+            }} data-preview-element>
+
+                {/* Desktop Preview Container */}
+                <div className="w-full h-auto overflow-visible">
+                  <LivePreview template={selectedTemplate} colorPalette={colorPalette} backgroundSettings={backgroundSettings} />
                 </div>
-              </div>
+               </div>
              </div>
 
             {/* Right Sidebar - Hidden on mobile, responsive width */}
